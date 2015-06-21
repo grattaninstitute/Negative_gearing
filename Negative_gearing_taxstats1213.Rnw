@@ -74,6 +74,9 @@ write(package_cite_input, file = "package_cite_input.tex")
 % citations
 \input{package_cite_input}
 \raggedbottom
+\contentspage
+\listoffigures
+\listoftables
 
 \chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
 Reducing the tax concessions for investments in housing and other assets are attractive reforms. 
@@ -2032,7 +2035,7 @@ discount_only_to_negative_rent_income <- TRUE
 @
 
 <<Daley_discount>>=
-daley_taxstats <- 
+daley_taxstats.fn <- 
   # taxstats201213 %>%
   taxstats201213 %>%
   #
@@ -2098,234 +2101,9 @@ To better model how the losses will be used against future capital gains, we mod
 
 This model is biased towards a slow reduction in losses, because the model is based on those with losses \emph{after} the year's net capital gains. Some taxpayers will have had losses but also sufficiently large capital gains that they are not members of this model. 
 
-<<Probabilistic_losses_against_CG>>=
-capital_gains_and_losses <- 
-  daley_taxstats %>% 
-  mutate(ratio_CG_L = new_capital_gains/loss_carry_fwd) %>% 
-  group_by(
-    HasLoss = loss_carry_fwd != 0,
-    HasCG   = new_capital_gains > 0,
-    ratio_CG_L_geq_1 = new_capital_gains/loss_carry_fwd > 1
-  ) %>%
-  summarise(n = n(),
-            mean.r = mean(ratio_CG_L)) %>%
-  ungroup %>%
-  filter(HasLoss) %>%
-  mutate(prop = n/sum(n)) %>%
-  mutate(perc = paste0(formatC(100*prop, format="f", width=2, digits=2), "\\%"))
-@
-\begin{figure}
-\Caption{}{Dynamic model implied by taxstats}{fig:Dynamic_model_taxstats}
-\begin{center}
-\begin{tikzpicture}[node distance = 4cm, auto]
- \tikzstyle{every node}=[font=\small]
- \node [block, fill=white] (Start){Has Losses};
- \node [block, fill=Color1, right of = Start] (NoChange){No CG to offset any losses};
-  \node [block, fill=Color4, below of = Start] (FullLoss) {Enough CG to offset all losses};
-  \node [block, fill=Color5, below right of = Start] (PartialLoss) {Enough CG to offset losses partially};
-  \node [block, fill=black, left of = FullLoss] (End) {\color{white}No losses};
-  %
-  \draw[-latex, thick] (NoChange) to[out=135, in=45] (Start);
-  \draw[-latex] (Start) --node{\Sexpr{capital_gains_and_losses[2,]$perc}} (FullLoss);
-  \draw[-latex] (Start) to[out=0, in=90] node[anchor=east]{\Sexpr{capital_gains_and_losses[3,]$perc}} (PartialLoss);
-  \draw[-latex] (Start) --node[anchor=south]{\Sexpr{capital_gains_and_losses[1,]$perc}} (NoChange);
-  \draw[-latex] (PartialLoss) -- (Start);
-  \draw[-latex] (FullLoss) -- (End);
-\end{tikzpicture}
-\end{center}
-\end{figure}
-
-<<Modelling_dynamic1>>=
-daley_taxstats %>% 
-  filter(IsInvestor = Gross_rent_amt > 0) %>% 
-  group_by(LossCarried = loss_ignore_CG > 0, 
-           HasCG = new_capital_gains > 0, 
-           HasCGbig = new_capital_gains/loss_ignore_CG > 1) %>% 
-  summarise(prop = n(), 
-            mean_r = mean(new_capital_gains/loss_ignore_CG)) %>% 
-  ungroup %>% 
-  mutate(prop = prop/sum(prop))
-# Source: local data table [5 x 6]
-# 
-#   LossCarried HasCG HasCGbig       prop     mean_r  prop.cum
-# 1       FALSE FALSE       NA 0.53267454         NA 0.5326745
-# 2       FALSE  TRUE    FALSE 0.06006160       -Inf 0.5927361
-# 3        TRUE FALSE    FALSE 0.37792608  0.0000000 0.9706622
-# 4        TRUE  TRUE     TRUE 0.01617043 22.5069322 0.9868326
-# 5        TRUE  TRUE    FALSE 0.01316735  0.2471184 1.0000000
-
-# The tricky row is the set of investors with no losses. In my view, they are
-# indistinguishable from those with losses. As a consequence, we assign the same 
-
-daley_taxstats_for_for <- daley_taxstats
-new_daley <- daley_taxstats_for_for
-for (i in 1:50){
-  new_daley <-
-    new_daley %>% 
-    mutate(
-      HasLoss = loss_carry_fwd != 0,
-      HasCG   = new_capital_gains > 0,
-      ratio_CG_L_geq_1 = new_capital_gains/loss_carry_fwd > 1
-    ) %>%
-    mutate(rand = runif(nrow(.))) %>% 
-    #
-    # refer capital_gains_and_losses above
-    mutate(loss_carry_fwd_still = ifelse(rand <= 0.963632392, loss_carry_fwd, 
-                                      ifelse(rand > 0.963632392 + 0.028995795,
-                                             0,
-                                             loss_carry_fwd * (1 - 0.1981514)))) %>%
-    # take away from the taxable income that part of the loss carried forward that is 
-    # no longer part of loss carry fwd still
-    mutate(
-      new_Taxable_Income = new_Taxable_Income - (loss_carry_fwd - loss_carry_fwd_still),
-      old_tax = current_tax,
-      new_tax = income_tax(new_Taxable_Income),
-      diff = new_tax - old_tax
-    ) %>%
-    mutate(loss_carry_fwd = loss_carry_fwd_still)
-  
-  if (i %% 10 == 0 || i == 1){
-    cat("Extra revenue in year", i, ":\n")
-    new_daley %$%
-      cat(sum(diff) * 50 / 1e9, "bn\n")
-  }
-}
-@
-
-<<Probabilistic_losses_against_CG2>>=
-capital_gains_and_losses2 <- 
-  daley_taxstats %>% 
-  mutate(ratio_CG_L = ifelse(loss_carry_fwd == 0,0,income_no_salary/loss_carry_fwd)) %>% 
-  group_by(
-    HasLoss0 = loss_ignore_CG != 0,
-    HasLoss1 = loss_carry_fwd != 0,
-    HasCG   = new_capital_gains > 0,
-    ratio_CG_L_geq_1 = ratio_CG_L > 1
-  ) %>%
-  summarise(n = n(),
-            mean.r = mean(ratio_CG_L)) %>%
-  ungroup %>%
-  filter(HasLoss0) %>%
-  mutate(prop = n/sum(n)) %>%
-  mutate(perc = paste0(formatC(100*prop, format="f", width=2, digits=2), "\\%"))
-
-# Next step: for other income.
-@
-\clearpage\newpage
-<<Modelling2>>=
-# capital_gains_and_losses2
-# Source: local data table [4 x 8]
-# 
-#   HasLoss0 HasLoss1 HasCG ratio_CG_L_geq_1     n     mean.r        prop     perc
-# 1     TRUE     TRUE FALSE            FALSE 14980  0.0000000 0.927783971 92.78\\%
-# 2     TRUE    FALSE  TRUE            FALSE   629  0.0000000 0.038957017  3.90\\%
-# 3     TRUE     TRUE  TRUE            FALSE   427  0.1872945 0.026446179  2.64\\%
-# 4     TRUE     TRUE  TRUE             TRUE   110 25.9083588 0.006812833  0.68\\%
-new_daley <- daley_taxstats_for_for
-for (i in 1:70){
-  new_daley <-
-    new_daley %>% 
-    mutate(
-      HasLoss = loss_carry_fwd != 0,
-      HasCG   = new_capital_gains > 0,
-      ratio_CG_L_geq_1 = new_capital_gains/loss_carry_fwd > 1
-    ) %>%
-    mutate(rand = runif(nrow(.))) %>% 
-    #
-    # refer capital_gains_and_losses above
-    mutate(loss_carry_fwd_still = ifelse(rand <= 0.927783971, loss_carry_fwd, 
-                                      ifelse(rand > 0.927783971 & rand <= 0.927783971 + 0.038957017,
-                                             0,
-                                             loss_carry_fwd * (1 - 0.1872945)))) %>%
-    # take away from the taxable income that part of the loss carried forward that is 
-    # no longer part of loss carry fwd still
-    mutate(
-      new_Taxable_Income = new_Taxable_Income - (loss_carry_fwd - loss_carry_fwd_still),
-      old_tax = current_tax,
-      new_tax = income_tax(new_Taxable_Income),
-      diff = new_tax - old_tax
-    ) %>%
-    mutate(loss_carry_fwd = loss_carry_fwd_still)
-  
-  if (i %% 10 == 0 || i == 1){
-    cat("Extra revenue in year", i, ":\n")
-    new_daley %$%
-      cat(sum(diff) * 50 / 1e9, "bn\n")
-  }
-}
-
-@
-\begin{figure*}
-\Caption{}{Dynamic model II implied by taxstats}{fig:Dynamic_model_taxstats}
-\begin{center}
-\begin{tikzpicture}[node distance = 5.5cm, auto]
- \tikzstyle{every node}=[font=\small]
- \node[block] (Start) {Start};
- \node[block, fill = Color1, below of = Start] (EnoughCG0) {Losses exhausted by CG};
- \node[block, below of = EnoughCG0, fill=black] (End) {\color{white}Losses exhausted};
- \node[block, fill=theGrey, right of = Start] (LossesRemain1){Losses remain};
- \node[block, fill=Color2, right of = LossesRemain1] (NoCG1) {No CG in year 0};
- \node[block, fill=Color3, below of = LossesRemain1] (InitialCG) {Partial losses};
- \node[block, fill=theGrey!50, below of = NoCG1] (LossesRemain2) {Losses still remain};
- \node[block, fill=Color4, below right of = LossesRemain2] (NoCG2) {No CG to offset any losses};
- \node[block, fill=Color5, below of = LossesRemain2] (PartialLoss2) {Enough CG to offset losses partially};
- \node[block, fill=Color6, below left of = LossesRemain2] (SufficientCG) {\color{white}Enough CG to offset all losses};
- %
- \draw[-latex] (Start) --node[anchor=south]{96.1\%} (LossesRemain1);
- \draw[-latex] (Start) --node[anchor=west]{3.9\%} (EnoughCG0);
- \draw[-latex] (EnoughCG0) -- (End);
- \draw[-latex] (LossesRemain1) --node[anchor=south]{92.8\%} (NoCG1);
- \draw[-latex] (LossesRemain1) --node[anchor=west]{3.3\%} (InitialCG);
- \draw[-latex] (InitialCG) --node[anchor=south, align = center]{Losses reduced by\\ avg ratio of CG to losses} (LossesRemain2);
- \draw[-latex] (NoCG1) -- (LossesRemain2);
- \draw[-latex] (LossesRemain2) to[out=-45, in=135]node[anchor=south west]{96.4\%} (NoCG2);
- \draw[-latex] (NoCG2) to[out=90, in=0] (LossesRemain2);
- \draw[-latex] (LossesRemain2) to[out=-45, in=45]node[anchor=east]{0.74\%} (PartialLoss2);
- \draw[-latex] (PartialLoss2) --node[anchor=east, align = right]{Losses reduced by\\ avg ratio of CG to losses} (LossesRemain2);
- \draw[-latex] (LossesRemain2) --node[anchor=south east]{2.90\%} (SufficientCG);
- \draw[-latex] (SufficientCG) -- (End);
-\end{tikzpicture}
-\end{center}
-\end{figure*}
-
-\clearpage
-
-\subsection{Use non-salary income}
-<<Probabilistic_losses_against_CG3>>=
-capital_gains_and_losses3 <- 
-  daley_taxstats %>% 
-  mutate(ratio_CG_L = ifelse(loss_carry_fwd == 0,0,income_no_salary/loss_carry_fwd)) %>% 
-  group_by(
-    HasLoss0 = loss_ignore_CG != 0,
-    #HasLoss1 = loss_carry_fwd != 0,
-    HasOtherIncome   = income_no_salary > 0,
-    OtherIncomePositive = income_no_salary >= 0,
-    ratio_CG_L_geq_1 = ratio_CG_L > 1
-  ) %>%
-  summarise(n = n(),
-            mean.r = mean(ratio_CG_L)) %>%
-  ungroup %>%
-  filter(HasLoss0) %>%
-  mutate(prop = n/sum(n)) %>%
-  mutate(perc = paste0(formatC(100*prop, format="f", width=2, digits=2), "\\%"))
-@
-
-<<>>=
-# capital_gains_and_losses2
-# Source: local data table [4 x 8]
-# 
-#   HasLoss0 HasOtherIncome OtherIncomePositive ratio_CG_L_geq_1     n     mean.r       prop     perc
-# 1     TRUE           TRUE                TRUE            FALSE 10188  0.1486902 0.63099220 63.10\\%
-# 2     TRUE           TRUE                TRUE             TRUE  2108 42.8172082 0.13055865 13.06\\%
-# 3     TRUE          FALSE                TRUE            FALSE  3403  0.0000000 0.21076428 21.08\\%
-# 4     TRUE          FALSE               FALSE            FALSE   447 -0.5065284 0.02768488  2.77\\%
-@
 \subsubsection{Infer by age and income}
 \paragraph{Age}
-<<Prob_of_CG_event_by_age, eval=FALSE>>=
-# This is a garden path
-# It doesn't really work...
-
+<<Losses_and_transitions_by_age>>=
 daley_taxstats_with_age <- 
   daley_taxstats %>%
   # random
@@ -2382,94 +2160,9 @@ new_tax <- taxstats201213 %>%
   merge(size_of_CG_event, by = "age_imp") %>% 
   merge(losses_by_age, by = "age_imp") %>%
   merge(taxable_income_by_age, by = "age_imp")
-
-new_blood_tax <- 
-  new_tax %>%
-  filter(age_imp < 25) %>%
-  sample_frac(size = 0.1)
-  
-
-for (i in 1:30){
-  if (i == 1){
-    new_tax <- new_tax
-  } else {
-    new_tax <- new_tax %>%
-      bind_rows(new_blood_tax) 
-  } 
-  
-  new_tax <- 
-    new_tax %>%
-    mutate(rand = runif(nrow(.))) %>%
-    mutate(CG = ifelse(rand < CG_event_prob, size_of_hypoth_CG, 0),
-           now_Taxable_Income = avg.taxable_income + CG,
-           new_tax = income_tax(now_Taxable_Income),
-           diff = new_tax - tax_payable,
-           age_imp = age_imp + 1
-    )
-  
-  if (i %% 5 == 0 || i == 1){
-    new_tax %$%
-      cat("Extra revenue at Year", i, "\n", sum(diff) * 50 /1e9, "\n", nrow(.), "nrows", "\n")
-  }
-}
-  
-
-for (i in 1:30){
-  if (i == 1){
-    new_daley <- new_daley
-  } else {
-    new_daley <- new_daley %>%
-      bind_rows(new_blood) 
-  }
-  
-  new_daley <-
-    new_daley %>%
-    # We won't get new losses!
-    # filter(loss_carry_fwd > 0) %>%
-    mutate(rand = runif(nrow(.))) %>%
-    mutate(CG = ifelse(rand < CG_event_prob, size_of_hypoth_CG, 0),
-           loss_carry_fwd_still = pmax(0, loss_carry_fwd - CG),
-           CG_extant = pmax(0, CG - loss_carry_fwd),
-           #
-           # now we advance people's ages and reassign their expected CGs 
-           # accordingly
-           age_imp = age_imp + 1,
-           CG_event_prob = NULL, size_of_hypoth_CG = NULL) %>%
-    merge(prob_of_CG_event_by_age, by = "age_imp") %>%
-    merge(size_of_CG_event, by = "age_imp") %>%
-    #
-    # SPEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED
-    data.table %>%
-    mutate(
-      # Remove losses that are not still being carried forward
-      # Add the CG component of tax.
-      new_Taxable_Income = ifelse(age_imp == max(age_imp),
-                                  new_Taxable_Income - (loss_carry_fwd - loss_carry_fwd_still) + 
-                                    - new_capital_gains + (1 - new.discount) * CG_extant,
-                                  new_Taxable_Income - loss_carry_fwd - new_capital_gains + 
-                                    (1 - new.discount) * CG_extant),
-      new_tax = income_tax(new_Taxable_Income),
-      diff = new_tax - current_tax
-    ) %>%
-    # here we keep losses that remain, and add on the loss (as if it keeps recurring)
-    mutate(loss_carry_fwd = loss_carry_fwd_still + avg_loss_carried_fwd) 
-  
-  if (i %% 5 == 0 || i == 1){
-    new_daley %$%
-      cat("Extra revenue at Year", i, "\n", sum(diff) * 50 /1e9, "\n", nrow(.), "nrows", "\n")
-  }
-#   if (i %% 5 == 0 || i == 1){
-#     new_daley %>%
-#       select(loss_carry_fwd, Taxable_Income, new_Taxable_Income, loss_carry_fwd_still) %>%
-#       print
-#   }
-}
 @
 
 <<Probabilistic_losses_against_CG4>>=
-## Assume all investors are alike -- note that this will exclude the (large) number
-## of 'non-investors' who realize a capital gains but received no rent.
-
 capital_gains_by_losses4 <-
   daley_taxstats %>% 
   group_by(IsInvestor = Gross_rent_amt > 0, 
@@ -2564,72 +2257,20 @@ new_daley %<>%
         "New income2:\n",  paste0("$", round(sum(new_daley$diff2)*50/1e9, 1)), "bn\n\n")
   }
 }
-
-new_daley <-
-  daley_taxstats %>%
-  # random
-  mutate(age_imp = floor(17.5 + 5 * (11-age_range) + runif(nrow(.), -2.5, 2.5))) %>%
-  mutate(loss_carry_fwd_orig = loss_carry_fwd_not_CG) %>%
-  merge(size_of_CG_event, by = "age_imp") 
-
-for (i in 1:30){
-  new_daley %<>% 
-    #filter(loss_carry_fwd > 0) %>% 
-    mutate(rand = runif(nrow(.))) %>%
-    # All losses exhausted in case of capital gains event
-    mutate(now_Taxable_Income = ifelse(rand < 0.533 + 0.378, 
-                                       new_Taxable_Income,
-                                       new_Taxable_Income - pmax(0, loss_carry_fwd_orig * i - size_of_hypoth_CG)),
-           new_tax = income_tax(now_Taxable_Income),
-           diff = new_tax - current_tax,
-           loss_carry_fwd = ifelse(rand < 0.533 + 0.378, loss_carry_fwd, 0)
-    )
-  
-  if (i %% 5 == 0 || i == 1){
-    cat("Year", i, "New income:\n",  paste0("$", round(sum(new_daley$diff)*50/1e9, 1)), "bn\n")
-  }
-}
 @
-
-<<rf>>=
-daley_taxstats %>% 
-  mutate(
-    HasLoss0 = factor(loss_ignore_CG != 0),
-    HasLoss1 = loss_carry_fwd != 0
-  ) ->
-  dat.
-RF <- parallelRandomForest::randomForest(HasLoss0 ~ Taxable_Income + Age + Net_rent_amt, data = dat., ntree = 100)
-@
+Under these assumptions, the effect of the tax reduces from \$\Sexpr{round(50*sum(daley_taxstats$diff) / 1e9, 1)}~billion to \$\Sexpr{round(50*sum(new_daley$diff)/1e9, 1)}~billion after \Sexpr{i}~years.
 
 
-\subsection{Who loses?}
-There are \Sexpr{sum(daley_taxstats$diff > 0)} taxpayers in the sample file who would have had increased tax. There are \Sexpr{sum(daley_taxstats$diff < 0)} who would have reduced tax.
-<<Daley_boxplot>>=
-daley_taxstats %>%
-  mutate(quintile = ntile(Taxable_Income, 5)) %>%
-  mutate(quintile = factor(quintile)) %>%
-  grplot(aes(x = quintile, y = diff, fill = quintile)) + 
-  geom_boxplot() + coord_cartesian(ylim = c(-100,100))
-@
-
-<<daley_cameo_beneficiaries, echo = TRUE, results="markup">>=
-daley_taxstats %>% filter(diff > 0) %>% select(Sw_amt, Net_rent_amt, Net_CG_amt, Taxable_Income, new_Taxable_Income, current_tax, new_tax, diff)
-@
-
-<<daley_cameo_givers, echo = TRUE, results="markup">>=
-daley_taxstats %>% filter(diff < 0) %>% select(Sw_amt, Net_rent_amt, Net_CG_amt, Taxable_Income, new_Taxable_Income, current_tax, new_tax, diff)
-@
-\twocolumn
-
-<<Daley_decile>>=
-daley_taxstats %>% 
-  mutate(tx_inc_decile = ntile(Taxable_Income, 5)) %>%
-  grplot(aes(x = diff, y= ..density..,  fill = factor(tx_inc_decile))) + 
-  geom_density(alpha = I(0.3), bw = 2000) + 
-  facet_grid(tx_inc_decile ~ . ) + 
-  coord_cartesian(xlim = c(-10000,10000))
-  
-@
+\begin{table*}
+\Caption{Costings for the two policies}{Using the 2012-13 sample file, contemporaneous dollars}{tbl:Costings}
+\begin{tabular}{lrrr}
+ & & Initial change in revenue & Eventual change \\
+ \hline
+ Henry lite & & \$\Sexpr{round(sum(henry_taxstats$diff)*50/1e9, 1)}~bn & \$\Sexpr{round(sum(henry_taxstats$diff)*50/1e9, 1)}~bn\\[4pt]
+ Quarantine losses from salary & Simple & \$\Sexpr{round(50*sum(daley_taxstats$diff) / 1e9, 1)}~bn & \$\Sexpr{round(50*(sum(income_tax(daley_taxstats$new_Taxable_Income_post_carryfwd) - daley_taxstats$current_tax))/1e9, 1)}~bn \\
+                            & Secondary & \$\Sexpr{round(50*sum(daley_taxstats$diff) / 1e9, 1)}~bn & \$\Sexpr{round(50*sum(new_daley$diff)/1e9, 1)}~bn
+\end{tabular}
+\end{table*}
 
 
 \chapter{Dani's presentation numbers}
