@@ -1,0 +1,5 @@
+[0] Config.pm:320> INFO - This is Biber 1.9
+[0] Config.pm:323> INFO - Logfile is 'layout_of_grattan.blg'
+[27] biber-MSWIN:274> INFO - === %a %b %e, %Y, %H:%M:%S
+[28] Biber.pm:333> INFO - Reading 'layout_of_grattan.bcf'
+[82] Utils.pm:144> WARN - No data sources defined!

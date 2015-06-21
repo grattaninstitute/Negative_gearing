@@ -1,0 +1,175 @@
+---
+title: "Negative gearing"
+author: "Hugh Parsonage"
+date: "26 May 2015"
+output: html_document
+---
+
+```{r, dev = 'svg'}
+library(data.table)
+library(dplyr)
+library(car)
+library(grattan)
+library(ggplot2);require(scales)
+library(devEMF)
+
+fread("2013_sample_file.csv", na.strings = c("?")) %>% 
+  mutate(Age = car::recode(age_range, "0 = '70 and over';
+                            1 = '65 to 69';
+                            2 = '60 to 64';
+                            3 = '55 to 59';
+                            4 = '50 to 54';
+                            5 = '45 to 49';
+                            6 = '40 to 44';
+                            7 = '35 to 39';
+                            8 = '30 to 34';
+                            9 = '25 to 29';
+                            10 = '20 to 24';
+                            11 = 'under 20'")) %>% 
+  group_by(Age) %>%
+  summarise(number_of_people_negative_gearing_residential_property = 50*sum(Net_rent_amt < 0)) %>%
+    mutate(Age =  factor(Age,
+                     levels = c("under 20",
+                                '20 to 24',
+                                '25 to 29',
+                                '30 to 34',
+                                '35 to 39',
+                                '40 to 44',
+                                '45 to 49',
+                                '50 to 54',
+                                '55 to 59',
+                                '60 to 64',
+                                '65 to 69',
+                                '70 and over'), ordered = T)) %>%
+  arrange(Age) %T>% 
+  write.csv(., file = "Number_of_people_negv_gearn.csv", row.names=FALSE) %>%
+  ggplot(aes(x = Age, y = number_of_people_negative_gearing_residential_property)) + 
+  geom_bar(stat = "identity") +
+  theme_grattan(base_size = 14) 
+```
+
+## Taxable income
+
+```{r}
+fread("2013_sample_file.csv") %>%
+  mutate(Taxable_Income_if_no_NegGearg = Taxable_Income - pmin(0, Net_rent_amt)) %>% 
+  mutate(tax_payable                          = income_tax(Taxable_Income),
+         tax_payable_if_no_NegGearg           = income_tax(Taxable_Income_if_no_NegGearg),
+         benefit_due_to_NegGearg              = tax_payable_if_no_NegGearg - tax_payable,
+         Salary_decile                        = ntile(Sw_amt, 10),
+         Taxable_Income_if_no_NegGearg_decile = ntile(Taxable_Income_if_no_NegGearg,10)) %>%
+  group_by(Salary_decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  ggplot(aes(x = Salary_decile, y = mean_benefit_prop)) + 
+  geom_bar(stat = "identity") + 
+  theme_grattan() + 
+  scale_y_continuous(limits = c(0, 0.5), label = percent)
+```
+
+```{r}
+fread("2013_sample_file.csv") %>%
+  mutate(Taxable_Income_if_no_NegGearg = Taxable_Income - pmin(0, Net_rent_amt)) %>% 
+  mutate(tax_payable                          = income_tax(Taxable_Income),
+         tax_payable_if_no_NegGearg           = income_tax(Taxable_Income_if_no_NegGearg),
+         benefit_due_to_NegGearg              = tax_payable_if_no_NegGearg - tax_payable,
+         Salary_decile                        = ntile(Sw_amt, 10),
+         Taxable_Income_if_no_NegGearg_decile = ntile(Taxable_Income_if_no_NegGearg,10)) %>%
+  group_by(Taxable_Income_if_no_NegGearg_decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  ggplot(aes(x = Taxable_Income_if_no_NegGearg_decile, y = mean_benefit_prop)) + 
+  geom_bar(stat = "identity") + 
+  theme_grattan() + 
+  scale_y_continuous(limits = c(0, 0.5), label = percent)
+```
+
+```{r}
+sw_amt_deciles <- 
+  fread("2013_sample_file.csv") %>%
+  mutate(Taxable_Income_if_no_NegGearg = Taxable_Income - pmin(0, Net_rent_amt)) %>% 
+  mutate(tax_payable                          = income_tax(Taxable_Income),
+         tax_payable_if_no_NegGearg           = income_tax(Taxable_Income_if_no_NegGearg),
+         benefit_due_to_NegGearg              = tax_payable_if_no_NegGearg - tax_payable,
+         Salary_decile                        = ntile(Sw_amt, 10),
+         Taxable_Income_if_no_NegGearg_decile = ntile(Taxable_Income_if_no_NegGearg,10)) %>%
+  group_by(decile = Salary_decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  #
+  mutate(Decile_of = "Salary")
+
+tx_amt_deciles <- 
+  fread("2013_sample_file.csv") %>%
+  mutate(Taxable_Income_if_no_NegGearg = Taxable_Income - pmin(0, Net_rent_amt)) %>% 
+  mutate(tax_payable                          = income_tax(Taxable_Income),
+         tax_payable_if_no_NegGearg           = income_tax(Taxable_Income_if_no_NegGearg),
+         benefit_due_to_NegGearg              = tax_payable_if_no_NegGearg - tax_payable,
+         Taxable_Income_decile                = ntile(Taxable_Income, 10),
+         Taxable_Income_if_no_NegGearg_decile = ntile(Taxable_Income_if_no_NegGearg,10)) %>%
+  group_by(decile = Taxable_Income_decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  #
+  mutate(Decile_of = "Taxable Income")
+
+noneg_gearing_deciles <- 
+  fread("2013_sample_file.csv") %>%
+  mutate(Taxable_Income_if_no_NegGearg = Taxable_Income - pmin(0, Net_rent_amt)) %>% 
+  mutate(tax_payable                          = income_tax(Taxable_Income),
+         tax_payable_if_no_NegGearg           = income_tax(Taxable_Income_if_no_NegGearg),
+         benefit_due_to_NegGearg              = tax_payable_if_no_NegGearg - tax_payable,
+         Salary_decile                        = ntile(Sw_amt, 10),
+         Taxable_Income_if_no_NegGearg_decile = ntile(Taxable_Income_if_no_NegGearg,10)) %>%
+  group_by(decile = Taxable_Income_if_no_NegGearg_decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  #
+  mutate(Decile_of = "No negative gearing")
+```
+
+```{r, fig.show = 'asis', dev = 'svg'}
+rbind(tx_amt_deciles, noneg_gearing_deciles) %>%
+  mutate(Decile_of = factor(Decile_of, levels = c("Taxable Income", "Salary", "No negative gearing"))) %>%
+  grplot(aes(x = factor(decile), y = mean_benefit_prop, fill = Decile_of)) + 
+  scale_fill_manual(values = gpal(2,T)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,0.5), label=percent) + 
+  xlab("Decile") + 
+  annotate("text",
+           label = c("Taxable income deciles\nafter rental deductions", "Taxable income deciles\nbefore rental deductions"),
+           x = 9.33,
+           y = c(0.33, 0.42),
+           vjust = 0,
+           hjust = 1,
+           lineheight = 0.75,
+           color = gpal(2,T),
+           size = 7.14,
+           fontface = "bold")
+```
+
+
+## The majority of taxable gains are earned by individuals
+```{r}
+#fread("2012 2% individuals sample file.csv") 
+  
+```
+
+
+
+```{r}
+fread("2012 2% individuals sample file.csv",
+      select = c("Sw_amt",
+                 "Net_rent_amt")) %>%
+  filter(Net_rent_amt < 0) %>%
+  group_by(Income_decile = ntile(Sw_amt, 10)) %>%
+  summarise(prop_neg_gear = sum(Net_rent_amt)) %>%
+  #
+  ggplot(aes(x = Income_decile, y = prop_neg_gear)) + 
+  geom_bar(stat = "identity")
+```
