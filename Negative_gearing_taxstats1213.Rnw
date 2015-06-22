@@ -1,6 +1,6 @@
 \documentclass{grattan}
 
-\title{Negative gearing distributions}
+\title{Negative gearing and the capital gains discount}
 \author{Danielle Wood \and Hugh Parsonage}
 
 \addbibresource{bibliography.bib}
@@ -1981,7 +1981,7 @@ taxstats_ts %>%
   geom_line(aes(group = unit)) + 
   geom_dl(method = "last.qp")
 @
-
+\onecolumn
 \section{Henry-lite proposal}
 The proposal in the Henry review is to reduce both the capital gains discount and the amount one can deduct through negative gearing. In particular, the tax review proposes the discount be reduced to 30\%\ and a discount of 30\%\ be applied to both rental losses and rental income.\footnote{The income tax treatment of these household savings would be improved by applying a
 40 per cent discount to most interest income, net residential rental property income, capital
@@ -1995,7 +1995,7 @@ discount_only_to_negative_rent_income <- TRUE
 @
 
 
-<<Henry_proposal_mutate>>=
+<<Henry_proposal_mutate, echo=T>>=
 if (!discount_only_to_negative_rent_income){
   henry_taxstats <- 
   taxstats201213 %>%
@@ -2034,8 +2034,8 @@ new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
 
-<<Daley_discount>>=
-daley_taxstats.fn <- 
+<<Daley_discount, echo=TRUE>>=
+daley_taxstats <- 
   # taxstats201213 %>%
   taxstats201213 %>%
   #
@@ -2052,8 +2052,10 @@ daley_taxstats.fn <-
     income_no_salary = new_tot_inc - Net_rent_amt - Sw_amt,  # component of income from neither salary nor rent
     #
     # This is not quite true: it doesn't include medical offsets.
-    # You can only deduct Net_rent down to zero. Full tax on Sw_amt. Then deductions
-    new_Taxable_Income =  pmax(0, income_no_salary + Net_rent_amt) + Sw_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+    # You can only deduct Net_rent down to zero.  
+    # Include financial losses in deductions
+    # Full tax on Sw_amt. Then deductions
+    new_Taxable_Income =  pmax(0, income_no_salary + Net_rent_amt - Net_fincl_invstmt_lss_amt) + Sw_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
     old_Taxable_Income_no_offset = Tot_inc_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
     loss_ignore_CG = -1 * pmin(0, pmax(0, income_no_salary - new_capital_gains) + Net_rent_amt),
     #
@@ -2096,18 +2098,14 @@ if (discount_only_to_negative_rent_income){
 @
 Under this proposal, income tax would rise from \$\Sexpr{round(50*sum(daley_taxstats$current_tax)/1e9, 1)}~billion to \$\Sexpr{round(50*sum(daley_taxstats$new_tax)/1e9, 1)}~billion. (2012-13 taxstats) But the extra revenue due to this policy will reduce: losses brought forward (that would have otherwise been used to reduce ordinary taxable income) will be offset against capital gains. This will reduce the increased revenue for \$\Sexpr{round(sum(daley_taxstats$diff)*50/1e9,1)}~bn to \$\Sexpr{round(sum(daley_taxstats$diff_incl_carry_fwd)*50/1e9,1)}~bn.
 %
-\subsection{Pushing forward the losses in distribution}
-To better model how the losses will be used against future capital gains, we model each taxpayers as entering the simple stochastic model in \Vref{fig:Dynamic_model_taxstats}. We take all those with losses and use their capital gains profile to work out how those losses will be exhausted.
-
-This model is biased towards a slow reduction in losses, because the model is based on those with losses \emph{after} the year's net capital gains. Some taxpayers will have had losses but also sufficiently large capital gains that they are not members of this model. 
-
-\subsubsection{Infer by age and income}
+\subsection{Pushing forward the losses}
+\subsubsection{Infer by age}
 \paragraph{Age}
-<<Losses_and_transitions_by_age>>=
+<<Losses_and_transitions_by_age, echo=TRUE>>=
 daley_taxstats_with_age <- 
   daley_taxstats %>%
   # random
-  mutate(age_imp = floor(17.5 + 5 * (11-age_range) + runif(nrow(.), -2.5, 2.5))) %>%
+  mutate(age_imp = floor(17.5 + 5 * (11 - age_range) + runif(nrow(.), -2.5, 2.5))) %>%
   mutate(loss_carry_fwd_orig = loss_carry_fwd)
 
 prob_of_CG_event_by_age <- 
@@ -2130,39 +2128,9 @@ taxable_income_by_age <-
   daley_taxstats_with_age %>% 
   group_by(age_imp) %>%
   summarise(avg.taxable_income = mean(Taxable_Income))
-
-new_daley <- daley_taxstats_with_age %>%
-  merge(prob_of_CG_event_by_age, by = "age_imp") %>%
-  merge(size_of_CG_event, by = "age_imp") %>% 
-  merge(losses_by_age, by = "age_imp")
-
-
-# Very uneven distribution of age
-daley_taxstats_with_age %>% 
-  group_by(age_imp) %>%
-  tally %>% 
-  ungroup %>%
-  mutate(ratio = sum(n)/n)
-
-new_blood <- 
-  new_daley %>%
-  filter(age_imp < 25) %>%
-  sample_frac(size = 0.1)  # ten years of age every year
-  
-# Basic CG discount only
-new_tax <- taxstats201213 %>%
-  mutate(age_imp = floor(17.5 + 5 * (11-age_range) + runif(nrow(.), -2.5, 2.5))) %>%
-  mutate(new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-         new_Taxable_Income = Taxable_Income - Net_CG_amt + new_capital_gains,
-         current_tax = income_tax(Taxable_Income),
-         tax_payable = income_tax(new_Taxable_Income)) %>%
-  merge(prob_of_CG_event_by_age, by = "age_imp") %>%
-  merge(size_of_CG_event, by = "age_imp") %>% 
-  merge(losses_by_age, by = "age_imp") %>%
-  merge(taxable_income_by_age, by = "age_imp")
 @
 
-<<Probabilistic_losses_against_CG4>>=
+<<Probabilistic_losses_against_CG4, echo=TRUE>>=
 capital_gains_by_losses4 <-
   daley_taxstats %>% 
   group_by(IsInvestor = Gross_rent_amt > 0, 
@@ -2188,8 +2156,6 @@ capital_gains_by_losses4 <-
 # 7       TRUE    TRUE FALSE  14724 0.378
 # 8       TRUE    TRUE  TRUE   1143 0.029
 
-## Assume every investor's capital gain is big enough to offset losses completely:
-
 new_daley <- 
   daley_taxstats %>%
   # random
@@ -2198,29 +2164,27 @@ new_daley <-
   merge(size_of_CG_event, by = "age_imp") %>%
   mutate(hasHadCG = FALSE,  #yet
          whenCG.lastoccurred = 0,
-         prev_unexhausted_loss = 0) 
+         prev_unexhausted_loss = loss_ignore_CG) 
 
 for (i in 1:20){
 gc()
 new_daley %<>% 
-    select(loss_carry_fwd_orig, prev_unexhausted_loss,
+    select(age_imp, loss_carry_fwd_orig, prev_unexhausted_loss,
            whenCG.lastoccurred, size_of_hypoth_CG, 
            hasHadCG,
            new_Taxable_Income, current_tax) %>% 
     mutate(rand = runif(nrow(.))) %>%
-    mutate(noCGevent = rand < 0.533 + 0.378) %>%  # approx 90%
+    mutate(noCGevent = rand < 0.533 + 0.378) %>%  # approx 90% # v.s. table
     mutate(
       loss_carry_fwd = ifelse(noCGevent, 
                               loss_carry_fwd_orig * i,  #unimportant
                               #
-                              # if they do have a capital gains event, we assume 
-                              # all their losses are used. This will be equal to the
-                              # number of years the losses were incurred times the loss
-                              # in the first year.  Note that this doesn't include
-                              # the capital gains that we are assuming forms part of the income.
-                              # We measure losses only since the most recent CG event. That is,
-                              # if a CG event occurs previously, the losses are zeroed, but build up
-                              # at the same rate again.
+                              # if they do have a capital gains event, we
+                              # estimate the size of the CG event by the average 
+                              # for their age (in the groundhog year).  The losses have
+                              # accumulated over time: previously unexhuasted losses from
+                              # previous CG events where this hasn't been zero.  And the 
+                              # losses built up from the first year of the new policy. 
                               pmax(0, prev_unexhausted_loss + 
                                        loss_carry_fwd_orig * (i - 1 - whenCG.lastoccurred) - 
                                        size_of_hypoth_CG)),
@@ -2230,10 +2194,10 @@ new_daley %<>%
       now_Taxable_Income = ifelse(noCGevent, 
                                   new_Taxable_Income,
                                   pmax(0, new_Taxable_Income - loss_carry_fwd)),
+      # Here we assume CG in CG event year is zero to provide an upper bound of losses.
       now_Taxable_Income2 = ifelse(noCGevent,
                                    new_Taxable_Income,
                                    pmax(0, new_Taxable_Income - 
-                                          # size_of_hypoth_CG -  ##???
                                           loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
       new_tax = income_tax(now_Taxable_Income),
       new_tax2= income_tax(now_Taxable_Income2),
