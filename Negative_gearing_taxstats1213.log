@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.28)  15 JUN 2015 09:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.28)  22 JUN 2015 15:50
 entering extended mode
 **Negative_gearing_taxstats1213.tex
 (Negative_gearing_taxstats1213.tex
@@ -1942,6 +1942,10 @@ File: pgflibraryshapes.multipart.code.tex 2010/01/07 v3.0.0 (rcs-revision 1.2)
 \pgfnodepartsixbox=\box113
 \pgfnodepartfivebox=\box114
 )))
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\frontendlayer\tikz\librarie
+s\tikzlibraryautomata.code.tex"
+File: tikzlibraryautomata.code.tex 2008/07/14 v3.0.0 (rcs-revision 1.3)
+)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\ltxmisc\relsize.sty"
 Package: relsize 2003/07/04 ver 3.1
 )
@@ -2403,36 +2407,7 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'Negative_gearing_taxstats1213.bbl' found.
 
-(Negative_gearing_taxstats1213.bbl
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                Brown2012
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                ACOSS
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                Stewart2015
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                ODonnell2005
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-)
+(Negative_gearing_taxstats1213.bbl)
 Package biblatex Info: Reference section=0 on input line 73.
 Package biblatex Info: Reference segment=0 on input line 73.
 LaTeX Font Info:    Font shape `T1/ua1/m/sl' in size <10.95> not available
@@ -2442,79 +2417,372 @@ LaTeX Font Info:    Font shape `T1/ua1/m/sl' in size <10.95> not available
 
  <./logos/aus-gov-logo-stacked-black-eps-converted-to.pdf> <./logos/Vic_Gov_Log
 o-eps-converted-to.pdf> <./logos/UOM-Pos_S_PMS-eps-converted-to.pdf> <./logos/B
-hp.pdf> <./logos/TMF_logo_green-eps-converted-to.pdf>]
-(package_cite_input.tex)
-Chapter 1.
+hp.pdf> <./logos/TMF_logo_green-eps-converted-to.pdf>] (package_cite_input.tex
+
+LaTeX Warning: Citation 'R-parallelRandomForest' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-foreach' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-randomForest' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-zoo' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-httr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-rsdmx' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-readr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-readxl' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-xtable' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-grattan' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-directlabels' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-quadprog' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-scales' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-ggplot2' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-gridExtra' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-devEMF' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-car' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-magrittr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-tidyr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-dplyr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-data.table' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-knitr' undefined on input line 1.
+
+)
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 81.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 84.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 84.
-[3
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 80.
+ (Negative_gearing_taxstats1213.toc)
+\tf@toc=\write7
+ [3
+
+
+] (Negative_gearing_taxstats1213.lof
+[4
+
+
+])
+\tf@lof=\write8
+ [5] (Negative_gearing_taxstats1213.lot)
+\tf@lot=\write9
+ [6
 
 
 ]
-LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 111.
+Chapter 1.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 87.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 87.
 
-<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=85, 794.9
-7pt x 505.89pt>
+LaTeX Warning: Citation 'Daley2013' on page 7 undefined on input line 87.
+
+LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 87.
+
+LaTeX Warning: Citation 'Treasury2015a' on page 7 undefined on input line 95.
+
+[7
+
+
+]
+
+LaTeX Warning: Citation 'Treasury2014a' on page 8 undefined on input line 108.
+
+LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 114.
+
+<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=167, 794.
+97pt x 505.89pt>
 File: figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf Graphic 
 file (type pdf)
 
 <use figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>
 Package pdftex.def Info: figure/Majority_of_taxable_gains_are_earned_by_individ
-uals-1.pdf used on input line 112.
+uals-1.pdf used on input line 115.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
+
+
+LaTeX Warning: Citation 'ATOCapitalGainsByType' on page 8 undefined on input li
+ne 116.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 Package hyperref Info: bookmark level for unknown smallboxfloat defaults to 0 o
-n input line 117.
-[4] [5 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
+n input line 120.
+
+LaTeX Warning: Citation 'Evans2005' on page 8 undefined on input line 122.
+
+
+LaTeX Warning: Citation 'Kenny2005' on page 8 undefined on input line 122.
+
+
+LaTeX Warning: Citation 'BusinessTaxation1999' on page 8 undefined on input lin
+e 125.
+
+
+LaTeX Warning: Citation 'ATO2014a' on page 8 undefined on input line 132.
+
+
+LaTeX Warning: Citation 'Wood2010a' on page 8 undefined on input line 134.
+
+
+LaTeX Warning: Citation 'Wood2010a' on page 8 undefined on input line 134.
+
+[8]
+
+LaTeX Warning: Citation 'Evans2005' on page 9 undefined on input line 147.
+
+
+LaTeX Warning: Citation 'Minas2013' on page 9 undefined on input line 147.
+
+
+LaTeX Warning: Citation 'OECD2006b' on page 9 undefined on input line 147.
+
+[9 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
 <figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf, id=
-141, 794.97pt x 505.89pt>
+204, 794.97pt x 505.89pt>
 File: figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
  Graphic file (type pdf)
 
 <use figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf>
 Package pdftex.def Info: figure/Nearly_eighty_per_cent_of_capital_gains_are_ear
-ned_by_those_-1.pdf used on input line 151.
+ned_by_those_-1.pdf used on input line 154.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
-[6 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
->]
-<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=181, 794.97pt x 5
+
+LaTeX Warning: Citation 'ATO2013i' on page 10 undefined on input line 155.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 10 undefined on input line 158.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 10 undefined on input line 160.
+
+[10 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pd
+f>]
+
+LaTeX Warning: Citation 'Fane2004' on page 11 undefined on input line 166.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 166.
+
+
+LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 190.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 11 undefined on input line 190
+.
+
+
+LaTeX Warning: Citation 'Burman1999' on page 11 undefined on input line 190.
+
+
+LaTeX Warning: Citation 'ATO2014e' on page 11 undefined on input line 190.
+
+
+LaTeX Warning: Citation 'Burman1999' on page 11 undefined on input line 192.
+
+
+<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=231, 794.97pt x 5
 05.89pt>
 File: figure/Real_effective_marginal_tax_rates_are_lower-1.pdf Graphic file (ty
 pe pdf)
  <use figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>
 Package pdftex.def Info: figure/Real_effective_marginal_tax_rates_are_lower-1.p
-df used on input line 188.
+df used on input line 193.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
 
-[7] [8 <./figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>] [9]
-LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 217.
 
-<figure/Net_rent_over_time-1.pdf, id=272, 794.97pt x 505.89pt>
+LaTeX Warning: Citation 'Engen1996' on page 11 undefined on input line 194.
+
+
+LaTeX Warning: Citation 'OECD2007' on page 11 undefined on input line 194.
+
+
+LaTeX Warning: Citation 'chetty2013subsidies' on page 11 undefined on input lin
+e 194.
+
+
+LaTeX Warning: Citation 'chetty2013subsidies' on page 11 undefined on input lin
+e 194.
+
+
+LaTeX Warning: Citation 'Antolin' on page 11 undefined on input line 194.
+
+
+LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 198.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 198.
+
+[11] [12 <./figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>]
+
+LaTeX Warning: Citation 'Lindsey1987' on page 13 undefined on input line 208.
+
+
+LaTeX Warning: Citation 'OECD2006b' on page 13 undefined on input line 208.
+
+
+LaTeX Warning: Citation 'Johnson2008' on page 13 undefined on input line 208.
+
+
+LaTeX Warning: Citation 'Burman2009' on page 13 undefined on input line 210.
+
+
+LaTeX Warning: Citation 'OECD2006a' on page 13 undefined on input line 212.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 13 undefined on input line 212
+.
+
+
+LaTeX Warning: Citation 'Burman2009' on page 13 undefined on input line 212.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 13 undefined on input line 212.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 13 undefined on input line 212.
+
+
+LaTeX Warning: Citation 'Harding2013' on page 13 undefined on input line 214.
+
+
+LaTeX Warning: Citation 'Harding2013' on page 13 undefined on input line 214.
+
+
+LaTeX Warning: Citation 'prebble2010tax' on page 13 undefined on input line 214
+.
+
+[13]
+
+LaTeX Warning: Citation 'Fane2004' on page 14 undefined on input line 219.
+
+
+LaTeX Warning: Citation 'ACOSS' on page 14 undefined on input line 222.
+
+<figure/Net_rent_over_time-1.pdf, id=288, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
-Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 229
+Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 234
 .
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 242.
 
-<figure/Negative_gearing_real_over_time-1.pdf, id=273, 794.97pt x 505.89pt>
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
+File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+Package microtype Info: Loading generic settings for font family
+(microtype)             `lmtt' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
+Overfull \hbox (804.86293pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## Response [http://data.gov.au/dataset/e29ef9ca-0d1a
+-47ec-9e9b-14a79a941511/resource/5bfb5001-2d3c-46cb-a76d-1b86b6913ac3/download/
+taxstats2013company1selecteditemsforincomeyears197980to201213.xlsx][] 
+ []
+
+
+Overfull \hbox (149.11641pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ##   Content-Type: application/vnd.openxmlformats-off
+icedocument.spreadsheetml.sheet[] 
+ []
+
+<figure/Net_rent_over_time_companies-1.pdf, id=289, 794.97pt x 505.89pt>
+File: figure/Net_rent_over_time_companies-1.pdf Graphic file (type pdf)
+
+<use figure/Net_rent_over_time_companies-1.pdf>
+Package pdftex.def Info: figure/Net_rent_over_time_companies-1.pdf used on inpu
+t line 256.
+(pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 256--258
+\T1/ua1/m/it/9/-4ls (+14) Sou\T1/ua1/m/it/9/-4ls (+20) r\T1/ua1/m/it/9/-4ls (+1
+4) ce\T1/ua1/m/it/9/-4ls (+20) : \T1/ua1/m/it/9/-4ls (+14) S\T1/ua1/m/it/9/-4ls
+ (+20) i\T1/ua1/m/it/9/-4ls (+14) mp\T1/ua1/m/it/9/-4ls (+20) l\T1/ua1/m/it/9/-
+4ls (+14) e ca\T1/ua1/m/it/9/-4ls (+20) l-\T1/ua1/m/it/9/-4ls (+14) cu\T1/ua1/m
+/it/9/-4ls (+20) -l\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) -ti\T1/
+ua1/m/it/9/-4ls (+14) on o\T1/ua1/m/it/9/-4ls (+20) f [][]$\T1/ua1/m/it/9/-4ls 
+(+14) h\T1/ua1/m/it/9/-4ls (+20) tt\T1/ua1/m/it/9/-4ls (+14) p \T1/ua1/m/it/9/-
+4ls (+20) : / / \T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/
+m/it/9/-4ls (+14) a \T1/ua1/m/it/9/-4ls (+20) . \T1/ua1/m/it/9/-4ls (+14) go\T1
+/ua1/m/it/9/-4ls (+20) v . \T1/ua1/m/it/9/-4ls (+14) au \T1/ua1/m/it/9/-4ls (+2
+0) /$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 256--258
+$\T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/m/it/9/-4ls (+1
+4) ase\T1/ua1/m/it/9/-4ls (+20) t / \T1/ua1/m/it/9/-4ls (+14) e29e\T1/ua1/m/it/
+9/-4ls (+20) f\T1/ua1/m/it/9/-4ls (+14) 9ca\T1/ua1/m/it/9/-4ls (+20) -[]0\T1/ua
+1/m/it/9/-4ls (+14) d\T1/ua1/m/it/9/-4ls (+20) 1\T1/ua1/m/it/9/-4ls (+14) a\T1/
+ua1/m/it/9/-4ls (+20) -[]47\T1/ua1/m/it/9/-4ls (+14) ec\T1/ua1/m/it/9/-4ls (+20
+) -[]\T1/ua1/m/it/9/-4ls (+14) 9e9b\T1/ua1/m/it/9/-4ls (+20) -[]14\T1/ua1/m/it/
+9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) 7\T1/ua1/m/it/9/-4ls (+14) 9a9\T1/ua1/m
+/it/9/-4ls (+20) 41511 / r\T1/ua1/m/it/9/-4ls (+14) esou\T1/ua1/m/it/9/-4ls (+2
+0) r\T1/ua1/m/it/9/-4ls (+14) ce \T1/ua1/m/it/9/-4ls (+20) /$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 256--258
+$\T1/ua1/m/it/9/-4ls (+20) 5\T1/ua1/m/it/9/-4ls (+14) b\T1/ua1/m/it/9/-4ls (+20
+) f\T1/ua1/m/it/9/-4ls (+14) b\T1/ua1/m/it/9/-4ls (+20) 5001-[]\T1/ua1/m/it/9/-
+4ls (+14) 2d3c\T1/ua1/m/it/9/-4ls (+20) -[]4\T1/ua1/m/it/9/-4ls (+14) 6cb\T1/ua
+1/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) 7\T
+1/ua1/m/it/9/-4ls (+14) 6d\T1/ua1/m/it/9/-4ls (+20) -[]1\T1/ua1/m/it/9/-4ls (+1
+4) b86b69\T1/ua1/m/it/9/-4ls (+20) 1\T1/ua1/m/it/9/-4ls (+14) 3ac3 \T1/ua1/m/it
+/9/-4ls (+20) / \T1/ua1/m/it/9/-4ls (+14) down\T1/ua1/m/it/9/-4ls (+20) l\T1/ua
+1/m/it/9/-4ls (+14) oad \T1/ua1/m/it/9/-4ls (+20) /$
+ []
+
+<figure/Negative_gearing_real_over_time-1.pdf, id=291, 794.97pt x 505.89pt>
 File: figure/Negative_gearing_real_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Negative_gearing_real_over_time-1.pdf>
 Package pdftex.def Info: figure/Negative_gearing_real_over_time-1.pdf used on i
-nput line 238.
+nput line 264.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 241--242
+Underfull \hbox (badness 10000) in paragraph at lines 267--268
 []\T1/ua1/m/it/9/-4ls (+14) Sou\T1/ua1/m/it/9/-4ls (+20) r\T1/ua1/m/it/9/-4ls (
 +14) ce\T1/ua1/m/it/9/-4ls (+20) : \T1/ua1/m/it/9/-4ls (+10) G\T1/ua1/m/it/9/-4
 ls (+20) r\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) t-t\T1/ua1/m/it/
@@ -2529,7 +2797,7 @@ ua1/m/it/9/-4ls (+14) go\T1/ua1/m/it/9/-4ls (+20) v . \T1/ua1/m/it/9/-4ls (+14)
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 241--242
+Underfull \hbox (badness 10000) in paragraph at lines 267--268
 $\T1/ua1/m/it/9/-4ls (+14) e29e\T1/ua1/m/it/9/-4ls (+20) f\T1/ua1/m/it/9/-4ls (
 +14) 9ca\T1/ua1/m/it/9/-4ls (+20) -[]0\T1/ua1/m/it/9/-4ls (+14) d\T1/ua1/m/it/9
 /-4ls (+20) 1\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) -[]47\T1/ua1/
@@ -2541,7 +2809,7 @@ m/it/9/-4ls (+14) ec\T1/ua1/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) 9e9b
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 241--242
+Underfull \hbox (badness 10000) in paragraph at lines 267--268
 $\T1/ua1/m/it/9/-4ls (+14) 233cb\T1/ua1/m/it/9/-4ls (+20) f\T1/ua1/m/it/9/-4ls 
 (+14) 28\T1/ua1/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) 6\T1/ua1/m/it/9/
 -4ls (+20) f\T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/m/it/9/-4ls (+20) -[]4\T1/ua1/m
@@ -2555,35 +2823,103 @@ ua1/m/it/9/-4ls (+20) /$
  []
 
 
-<figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf, id=277, 794.97pt
+<figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf, id=295, 794.97pt
  x 505.89pt>
 File: figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf Graphic file
  (type pdf)
 
 <use figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf>
 Package pdftex.def Info: figure/Interest_makes_up_the_bulk_of_rental_deductions
--1.pdf used on input line 248.
+-1.pdf used on input line 274.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
- [10]
-[11 <./figure/Net_rent_over_time-1.pdf> <./figure/Negative_gearing_real_over_ti
-me-1.pdf>] [12 <./figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf>
-] <figure/Age_negative_gearing_investments-1.pdf, id=352, 794.97pt x 505.89pt>
+
+
+LaTeX Warning: Citation 'ATO2013i' on page 14 undefined on input line 277.
+
+
+LaTeX Warning: Citation 'Daley2007' on page 14 undefined on input line 280.
+
+
+LaTeX Warning: Citation 'RBA2015a' on page 14 undefined on input line 280.
+
+[14]
+
+LaTeX Warning: Citation 'ACOSS' on page 15 undefined on input line 282.
+
+
+LaTeX Warning: Citation 'RBA2014' on page 15 undefined on input line 284.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 15 undefined on input line 290.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 15 undefined on input line 290.
+
+
+LaTeX Warning: Citation 'Inquiry2014' on page 15 undefined on input line 294.
+
+
+LaTeX Warning: Citation 'Eslake2013' on page 15 undefined on input line 294.
+
+
+LaTeX Warning: Citation 'ATO2015' on page 15 undefined on input line 294.
+
+
+LaTeX Warning: Citation 'ATO2014e' on page 15 undefined on input line 294.
+
+[15 <./figure/Net_rent_over_time-1.pdf>]
+
+LaTeX Warning: Citation 'Treasury2015' on page 16 undefined on input line 296.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 16 undefined on input line 298
+.
+
+
+LaTeX Warning: Citation 'Brown2012' on page 16 undefined on input line 301.
+
+<figure/Age_negative_gearing_investments-1.pdf, id=336, 794.97pt x 505.89pt>
 File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
 Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on 
-input line 282.
+input line 308.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
- [13]
-<figure/Effect_of_Deductions-1.pdf, id=385, 794.97pt x 505.89pt>
+
+
+LaTeX Warning: Citation 'ATO2013i' on page 16 undefined on input line 311.
+
+[16 <./figure/Net_rent_over_time_companies-1.pdf>] [17 <./figure/Negative_geari
+ng_real_over_time-1.pdf> <./figure/Interest_makes_up_the_bulk_of_rental_deducti
+ons-1.pdf>]
+
+LaTeX Warning: Citation 'RBA2014' on page 18 undefined on input line 314.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 18 undefined on input line 314
+.
+
+
+LaTeX Warning: Citation 'ODonnell2005' on page 18 undefined on input line 314.
+
+
+LaTeX Warning: Citation 'Inquiry2014' on page 18 undefined on input line 317.
+
+
+LaTeX Warning: Citation 'RBA2015' on page 18 undefined on input line 319.
+
+
+LaTeX Warning: Citation 'HILDA2015' on page 18 undefined on input line 319.
+
+<figure/Effect_of_Deductions-1.pdf, id=377, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
 Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 3
-01.
+27.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-Underfull \hbox (badness 2894) in paragraph at lines 301--303
+Underfull \hbox (badness 2894) in paragraph at lines 327--329
 \T1/ua1/m/it/9/-4ls (+14) No\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/m/it/9/-4ls (+14
 ) es\T1/ua1/m/it/9/-4ls (+20) : T\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls
  (+20) x-\T1/ua1/m/it/9/-4ls (+14) ab\T1/ua1/m/it/9/-4ls (+20) l\T1/ua1/m/it/9/
@@ -2596,153 +2932,256 @@ Underfull \hbox (badness 2894) in paragraph at lines 301--303
 4ls (+20) -ti\T1/ua1/m/it/9/-4ls (+14) ons means $[] \OMS/lmsy/m/n/9/-4ls  $
  []
 
-<figure/Capital_city_rents-1.pdf, id=390, 794.97pt x 794.97pt>
+
+LaTeX Warning: Citation 'ATO2013i' on page 18 undefined on input line 330.
+
+
+LaTeX Warning: Citation 'Daley2013' on page 18 undefined on input line 343.
+
+[18 <./figure/Age_negative_gearing_investments-1.pdf>]
+<figure/Capital_city_rents-1.pdf, id=393, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
-Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 324
+Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 350
 .
 (pdftex.def)             Requested size: 330.05202pt x 330.0641pt.
- [14 <./figure/Age_negative_gearing_investments-1.pdf>] [15 <./figure/Effect_of
-_Deductions-1.pdf> <./figure/Capital_city_rents-1.pdf>] [16] [17] [18] [19]
-<figure/NegGearing_share_by_deciles-1.pdf, id=527, 794.97pt x 505.89pt>
+
+
+LaTeX Warning: Citation 'ABS2015' on page 19 undefined on input line 356.
+
+
+LaTeX Warning: Citation 'Kelly2011' on page 19 undefined on input line 356.
+
+
+LaTeX Warning: Citation 'Kelly2013' on page 19 undefined on input line 356.
+
+[19 <./figure/Effect_of_Deductions-1.pdf>]
+
+LaTeX Warning: Citation 'Commission2004' on page 20 undefined on input line 361
+.
+
+
+LaTeX Warning: Citation 'ATO2014b' on page 20 undefined on input line 361.
+
+
+LaTeX Warning: Citation 'ATO2014c' on page 20 undefined on input line 361.
+
+
+LaTeX Warning: Citation 'ATO2014d' on page 20 undefined on input line 363.
+
+
+LaTeX Warning: Citation 'RBA2014' on page 20 undefined on input line 363.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 20 undefined on input line 363
+.
+
+
+LaTeX Warning: Citation 'RBA2014' on page 20 undefined on input line 374.
+
+[20 <./figure/Capital_city_rents-1.pdf>]
+
+LaTeX Warning: Citation 'Commission2004' on page 21 undefined on input line 381
+.
+
+[21]
+
+LaTeX Warning: Citation 'Stewart2015' on page 22 undefined on input line 390.
+
+
+LaTeX Warning: Citation 'PBO2014' on page 22 undefined on input line 390.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 22 undefined on input line 410.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 22 undefined on input line 412.
+
+[22]
+
+LaTeX Warning: Citation 'Rider2004' on page 23 undefined on input line 415.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 23 undefined on input line 419
+.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 23 undefined on input line 430.
+
+[23]
+
+LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 432.
+
+
+LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 432.
+
+[24] <figure/NegGearing_share_by_deciles-1.pdf, id=495, 794.97pt x 505.89pt>
 File: figure/NegGearing_share_by_deciles-1.pdf Graphic file (type pdf)
 
 <use figure/NegGearing_share_by_deciles-1.pdf>
 Package pdftex.def Info: figure/NegGearing_share_by_deciles-1.pdf used on input
- line 429.
+ line 455.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/NegGearing_amount_by_deciles-1.pdf, id=528, 794.97pt x 505.89pt>
+<figure/NegGearing_amount_by_deciles-1.pdf, id=496, 794.97pt x 505.89pt>
 File: figure/NegGearing_amount_by_deciles-1.pdf Graphic file (type pdf)
 
 <use figure/NegGearing_amount_by_deciles-1.pdf>
 Package pdftex.def Info: figure/NegGearing_amount_by_deciles-1.pdf used on inpu
-t line 439.
+t line 465.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/NegGearing_avg_amount_by_deciles-1.pdf, id=529, 794.97pt x 505.89pt>
+<figure/NegGearing_avg_amount_by_deciles-1.pdf, id=497, 794.97pt x 505.89pt>
 File: figure/NegGearing_avg_amount_by_deciles-1.pdf Graphic file (type pdf)
 
 <use figure/NegGearing_avg_amount_by_deciles-1.pdf>
 Package pdftex.def Info: figure/NegGearing_avg_amount_by_deciles-1.pdf used on 
-input line 449.
+input line 475.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Percentage_of_taxpayers_with_a_net_rental_loss_by_age_group-1.pdf, id=5
-31, 844.15375pt x 546.04pt>
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 488.
+
+
+<figure/Percentage_of_taxpayers_with_a_net_rental_loss_by_age_group-1.pdf, id=4
+98, 844.15375pt x 546.04pt>
 File: figure/Percentage_of_taxpayers_with_a_net_rental_loss_by_age_group-1.pdf 
 Graphic file (type pdf)
 
 <use figure/Percentage_of_taxpayers_with_a_net_rental_loss_by_age_group-1.pdf>
 Package pdftex.def Info: figure/Percentage_of_taxpayers_with_a_net_rental_loss_
-by_age_group-1.pdf used on input line 519.
+by_age_group-1.pdf used on input line 545.
 (pdftex.def)             Requested size: 330.05202pt x 213.4963pt.
 
-<figure/Age_negative_gearing_not_negative_gearing-1.pdf, id=533, 794.97pt x 505
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 548.
+
+
+<figure/Age_negative_gearing_not_negative_gearing-1.pdf, id=499, 794.97pt x 505
 .89pt>
 File: figure/Age_negative_gearing_not_negative_gearing-1.pdf Graphic file (type
  pdf)
  <use figure/Age_negative_gearing_not_negative_gearing-1.pdf>
 Package pdftex.def Info: figure/Age_negative_gearing_not_negative_gearing-1.pdf
- used on input line 529.
+ used on input line 555.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
 <figure/Negatively_geared_investors_as_a_share_of_all_property_investors_by_age
--1.pdf, id=534, 794.97pt x 505.89pt>
+-1.pdf, id=500, 794.97pt x 505.89pt>
 File: figure/Negatively_geared_investors_as_a_share_of_all_property_investors_b
 y_age-1.pdf Graphic file (type pdf)
 
 <use figure/Negatively_geared_investors_as_a_share_of_all_property_investors_by
 _age-1.pdf>
 Package pdftex.def Info: figure/Negatively_geared_investors_as_a_share_of_all_p
-roperty_investors_by_age-1.pdf used on input line 537.
+roperty_investors_by_age-1.pdf used on input line 563.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Capital_gains_by_taxable_income_decile-1.pdf, id=536, 794.97pt x 505.89
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 566.
+
+
+<figure/Capital_gains_by_taxable_income_decile-1.pdf, id=501, 794.97pt x 505.89
 pt>
 File: figure/Capital_gains_by_taxable_income_decile-1.pdf Graphic file (type pd
 f)
  <use figure/Capital_gains_by_taxable_income_decile-1.pdf>
 Package pdftex.def Info: figure/Capital_gains_by_taxable_income_decile-1.pdf us
-ed on input line 548.
+ed on input line 574.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Capital_gains_by_taxable_income_without_CG_decile-1.pdf, id=538, 794.97
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 577.
+
+
+<figure/Capital_gains_by_taxable_income_without_CG_decile-1.pdf, id=502, 794.97
 pt x 505.89pt>
 File: figure/Capital_gains_by_taxable_income_without_CG_decile-1.pdf Graphic fi
 le (type pdf)
 
 <use figure/Capital_gains_by_taxable_income_without_CG_decile-1.pdf>
 Package pdftex.def Info: figure/Capital_gains_by_taxable_income_without_CG_deci
-le-1.pdf used on input line 557.
+le-1.pdf used on input line 583.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Net_capital_gains_by_age-1.pdf, id=540, 794.97pt x 505.89pt>
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 584.
+
+<figure/Net_capital_gains_by_age-1.pdf, id=503, 794.97pt x 505.89pt>
 File: figure/Net_capital_gains_by_age-1.pdf Graphic file (type pdf)
 
 <use figure/Net_capital_gains_by_age-1.pdf>
 Package pdftex.def Info: figure/Net_capital_gains_by_age-1.pdf used on input li
-ne 566.
+ne 592.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Net_capital_gains_by_age_by_decile-1.pdf, id=542, 794.97pt x 505.89pt>
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 595.
+
+
+<figure/Net_capital_gains_by_age_by_decile-1.pdf, id=504, 794.97pt x 505.89pt>
 File: figure/Net_capital_gains_by_age_by_decile-1.pdf Graphic file (type pdf)
 
 <use figure/Net_capital_gains_by_age_by_decile-1.pdf>
 Package pdftex.def Info: figure/Net_capital_gains_by_age_by_decile-1.pdf used o
-n input line 579.
+n input line 605.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Prop_working_by_age_by_decile-1.pdf, id=543, 794.97pt x 505.89pt>
+<figure/Prop_working_by_age_by_decile-1.pdf, id=505, 794.97pt x 505.89pt>
 File: figure/Prop_working_by_age_by_decile-1.pdf Graphic file (type pdf)
 
 <use figure/Prop_working_by_age_by_decile-1.pdf>
 Package pdftex.def Info: figure/Prop_working_by_age_by_decile-1.pdf used on inp
-ut line 585.
+ut line 611.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Net_capital_gains_decile_over60-1.pdf, id=545, 794.97pt x 505.89pt>
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 612.
+
+<figure/Net_capital_gains_decile_over60-1.pdf, id=506, 794.97pt x 505.89pt>
 File: figure/Net_capital_gains_decile_over60-1.pdf Graphic file (type pdf)
 
 <use figure/Net_capital_gains_decile_over60-1.pdf>
 Package pdftex.def Info: figure/Net_capital_gains_decile_over60-1.pdf used on i
-nput line 592.
+nput line 618.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-<figure/Net_capital_gains_decile_under60-1.pdf, id=547, 794.97pt x 505.89pt>
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 621.
+
+<figure/Net_capital_gains_decile_under60-1.pdf, id=507, 794.97pt x 505.89pt>
 File: figure/Net_capital_gains_decile_under60-1.pdf Graphic file (type pdf)
 
 <use figure/Net_capital_gains_decile_under60-1.pdf>
 Package pdftex.def Info: figure/Net_capital_gains_decile_under60-1.pdf used on 
-input line 601.
+input line 627.
 (pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
- [20 <./figure/NegGearing_share_by_deciles-1.pdf>] [21 <./figure/NegGearing_amo
-unt_by_deciles-1.pdf> <./figure/NegGearing_avg_amount_by_deciles-1.pdf>] [22 <.
-/figure/Percentage_of_taxpayers_with_a_net_rental_loss_by_age_group-1.pdf>] [23
- <./figure/Age_negative_gearing_not_negative_gearing-1.pdf> <./figure/Negativel
-y_geared_investors_as_a_share_of_all_property_investors_by_age-1.pdf>] [24 <./f
-igure/Capital_gains_by_taxable_income_decile-1.pdf> <./figure/Capital_gains_by_
-taxable_income_without_CG_decile-1.pdf>] [25 <./figure/Net_capital_gains_by_age
--1.pdf> <./figure/Net_capital_gains_by_age_by_decile-1.pdf>] [26 <./figure/Prop
-_working_by_age_by_decile-1.pdf> <./figure/Net_capital_gains_decile_over60-1.pd
-f>] [27 <./figure/Net_capital_gains_decile_under60-1.pdf>]
+
+
+LaTeX Warning: Citation 'ATO2013i' on page 25 undefined on input line 630.
+
+[25 <./figure/NegGearing_share_by_deciles-1.pdf>] [26 <./figure/NegGearing_amou
+nt_by_deciles-1.pdf> <./figure/NegGearing_avg_amount_by_deciles-1.pdf>]
+[27 <./figure/Percentage_of_taxpayers_with_a_net_rental_loss_by_age_group-1.pdf
+>] [28 <./figure/Age_negative_gearing_not_negative_gearing-1.pdf> <./figure/Neg
+atively_geared_investors_as_a_share_of_all_property_investors_by_age-1.pdf>]
+[29 <./figure/Capital_gains_by_taxable_income_decile-1.pdf> <./figure/Capital_g
+ains_by_taxable_income_without_CG_decile-1.pdf>] [30 <./figure/Net_capital_gain
+s_by_age-1.pdf> <./figure/Net_capital_gains_by_age_by_decile-1.pdf>] [31 <./fig
+ure/Prop_working_by_age_by_decile-1.pdf> <./figure/Net_capital_gains_decile_ove
+r60-1.pdf>] [32 <./figure/Net_capital_gains_decile_under60-1.pdf>]
 Chapter 2.
 
 LaTeX Font Warning: Font shape `T1/ua1/m/sc' undefined
-(Font)              using `T1/ua1/m/n' instead on input line 614.
+(Font)              using `T1/ua1/m/n' instead on input line 640.
 
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 615.
 
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
-File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-Package microtype Info: Loading generic settings for font family
-(microtype)             `lmtt' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
+LaTeX Warning: Citation 'TaxExpenditures201213' on page 33 undefined on input l
+ine 646.
 
-Underfull \hbox (badness 10000) in paragraph at lines 630--630
+
+Underfull \hbox (badness 10000) in paragraph at lines 656--656
 [][][]\T1/ua1/m/n/9/-4ls (+14) See [][]$h\T1/ua1/m/n/9/-4ls (+20) tt\T1/ua1/m/n
 /9/-4ls (+14) ps \T1/ua1/m/n/9/-4ls (+20) : / / \T1/ua1/m/n/9/-4ls (+14) www \T
 1/ua1/m/n/9/-4ls (+20) . \T1/ua1/m/n/9/-4ls (+14) a\T1/ua1/m/n/9/-4ls (+20) t\T
@@ -2757,113 +3196,146 @@ ls (+20) / T\T1/ua1/m/n/9/-4ls (+14) a\T1/ua1/m/n/9/-4ls (+20) x-[]\T1/ua1/m/n/
 n/9/-4ls (+20) /$
  []
 
-[28
+[33
 
-] [29] [30
+] [34] [35
+
+] [36
+
 
 ]
-<figure/Henry_proposal_change_in_tax_burden_by_decile-1.pdf, id=718, 794.97pt x
- 505.89pt>
-File: figure/Henry_proposal_change_in_tax_burden_by_decile-1.pdf Graphic file (
-type pdf)
- <use figure/Henry_proposal_change_in_tax_burden_by_decile-1.pdf>
-Package pdftex.def Info: figure/Henry_proposal_change_in_tax_burden_by_decile-1
-.pdf used on input line 726.
-(pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-[31
+LaTeX Warning: Citation 'Treasury2010a' on page 37 undefined on input line 745.
 
- <./figure/Henry_proposal_change_in_tax_burden_by_decile-1.pdf>]
+
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 756.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 760.
+[37
 
-Underfull \hbox (badness 10000) in paragraph at lines 756--756
-[][]\T1/lmtt/m/n/10.95/-4ls daley_taxstats[] []%>%[] []\T1/lmtt/bx/n/10.95/-4ls
- fil-ter[][]\T1/lmtt/m/n/10.95/-4ls (diff[] []>[] []0[][])[] []%>%[] []\T1/lmtt
-/bx/n/10.95/-4ls se-lect[][]\T1/lmtt/m/n/10.95/-4ls (Sw_amt, Net_rent_amt, Net_
-CG_amt, Tax-able_Income, new_Taxable_Income, cur-
+]
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 823
+.
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
+File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+Package microtype Info: Loading generic settings for font family
+(microtype)             `lmtt' (encoding: TS1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
+Overfull \hbox (192.97697pt too wide) in paragraph at lines 827--827
+[]    []\T1/lmtt/m/n/10.95/-4ls new_Taxable_Income[] []=[]  []\T1/lmtt/bx/n/10.
+95/-4ls pmax[][]\T1/lmtt/m/n/10.95/-4ls ([][]0[][], income_no_salary[] []+[] []
+Net_rent_amt[] []-[] []Net_fincl_invstmt_lss_amt)[] []+[] []Sw_amt[] []-[] []To
+t_ded_amt[] []-[] []PP_loss_claimed[] []-[] []NPP_loss_claimed,[][] 
  []
 
 
-Overfull \hbox (131.81046pt too wide) in paragraph at lines 790--790
-[][]\T1/lmtt/m/n/10.95/-4ls daley_taxstats[] []%>%[] []\T1/lmtt/bx/n/10.95/-4ls
- fil-ter[][]\T1/lmtt/m/n/10.95/-4ls (diff[] []<[] []0[][])[] []%>%[] []\T1/lmtt
-/bx/n/10.95/-4ls se-lect[][]\T1/lmtt/m/n/10.95/-4ls (Sw_amt, Net_rent_amt, Net_
-CG_amt, Taxable_Income, new_Taxable_Income, current_tax, new_tax, diff)[][] 
+Overfull \hbox (27.45944pt too wide) in paragraph at lines 828--828
+[]    []\T1/lmtt/m/n/10.95/-4ls old_Taxable_Income_no_offset[] []= Tot_inc_amt[
+] []-[] []Tot_ded_amt[] []-[] []PP_loss_claimed[] []-[] []NPP_loss_claimed[] []
+-[] []Net_fincl_invstmt_lss_amt,[][] 
  []
 
-[32
+[38]
+Underfull \vbox (badness 10000) detected at line 868
+ []
 
-] [33]
+
+Underfull \vbox (badness 10000) detected at line 868
+ []
+
+[39] [40] [41]
+Underfull \vbox (badness 10000) detected at line 1028
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1028
+ []
+
+[42]
+Underfull \vbox (badness 10000) detected at line 1028
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 1028
+ []
+
+[43] [44] [45] [46]
 Chapter 3.
-[34
+[47
 
+] [48
 
-
-] [35
-
-] [36]
-Overfull \hbox (7.61482pt too wide) in paragraph at lines 949--949
+] [49]
+Overfull \hbox (7.61482pt too wide) in paragraph at lines 1169--1169
 []  []\T1/lmtt/m/n/10.95/-4ls daley_discount_remark_1112[] []<-[] []"in which t
 he discount is only applied to rental losses (not rental income, contra Henry)"
 [][] 
  []
 
 
-Overfull \vbox (1.85608pt too high) detected at line 965
+Overfull \vbox (1.85608pt too high) detected at line 1185
  []
 
-[37] [38] [39] [40] [41
+[50] [51] [52] [53]
 
+LaTeX Warning: Empty bibliography on input line 1249.
 
-] [42] [43]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1025.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1025.
- [44
-
-] (Negative_gearing_taxstats1213.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1025.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1025.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1250.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1250.
+(Negative_gearing_taxstats1213.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1250.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1250.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1025.
+
+LaTeX Warning: There were undefined references.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1250.
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                Negative_gearing_taxstats1213
+(biblatex)                and rerun LaTeX afterwards.
+
 Package logreq Info: Writing requests to 'Negative_gearing_taxstats1213.run.xml
 '.
  ) 
 Here is how much of TeX's memory you used:
- 45513 strings out of 493698
- 916018 string characters out of 3141979
- 1436054 words of memory out of 3000000
- 46868 multiletter control sequences out of 15000+200000
- 360037 words of font info for 703 fonts, out of 3000000 for 9000
+ 45099 strings out of 493698
+ 912080 string characters out of 3141979
+ 1437692 words of memory out of 3000000
+ 46758 multiletter control sequences out of 15000+200000
+ 311107 words of font info for 504 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 71i,21n,102p,10510b,1848s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
-iles (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files (x86)/
-MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files (x86)/MiKTeX 2.9/
-fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips
-/fontname/8r.enc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
-/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-/cmr17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi10.pfb>
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi7.pfb><C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi8.pfb><C:/Program Files (x86)/
-MiKTeX 2.9/fonts/type1/public/lm/lmmi9.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
-onts/type1/public/lm/lmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
-ublic/lm/lmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9
-.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Pr
-ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy7.pfb><C:/Program Files 
-(x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/lm/lmsy9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
-ype1/public/lm/lmtk10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
-/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtti10
-.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1b8a.pfb><C:/Pr
-ogram Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1r8a.pfb><C:/Program Files
- (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1ri8a.pfb>
-Output written on Negative_gearing_taxstats1213.pdf (44 pages, 825643 bytes).
+ 71i,21n,102p,10510b,2004s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1.enc}{C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files (x86)/MiK
+TeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files (x86)/MiKTeX 2.9/fon
+ts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvip
+s/lm/lm-rm.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.e
+nc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:
+/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi10.pfb><C:/Program Fi
+les (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi7.pfb><C:/Program Files (x86)/Mi
+KTeX 2.9/fonts/type1/public/lm/lmmi8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fon
+ts/type1/public/lm/lmmi9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
+lic/lm/lmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr8.
+pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Progr
+am Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy7.pfb><C:/Program Files (x86)/MiKTeX 2
+.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
+e1/public/lm/lmsy9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm
+/lmtk10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb
+><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtti10.pfb><C:/Progr
+am Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/urw/arial/ua1ri8a.pfb>
+Output written on Negative_gearing_taxstats1213.pdf (53 pages, 769470 bytes).
 PDF statistics:
- 1051 PDF objects out of 1200 (max. 8388607)
- 268 named destinations out of 1000 (max. 500000)
- 85706 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 859 PDF objects out of 1000 (max. 8388607)
+ 212 named destinations out of 1000 (max. 500000)
+ 76490 words of extra memory for PDF output out of 89155 (max. 10000000)
 
