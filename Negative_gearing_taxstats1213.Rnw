@@ -2382,7 +2382,7 @@ for (i in 1:eventual){
 gc()
 new_daley %<>%
   mutate(rand = runif(nrow(.))) %>%
-  mutate(noCGevent = rand < 0.533 + 0.378) %>%
+  mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
   mutate(HasCG = !noCGevent) %>%
   merge(taxable_income_by_CG, by = "HasCG")  %>%
   mutate(
