@@ -1,0 +1,169 @@
+---
+title: "neg_gearing"
+author: "Hugh Parsonage"
+date: "26 May 2015"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r, dev = 'svg'}
+library(data.table)
+library(dplyr)
+library(magrittr)
+library(car)
+library(grattan)
+library(ggplot2)
+library(scales)
+library(devEMF)
+library(directlabels)
+
+my_emf <- function(...) svg(...)
+fread("./2012-13/Sample_file_1213/2013 2% individuals sample file/2013_sample_file.csv", na.strings = c("?")) %>% 
+  mutate(Age = car::recode(age_range, "0 = '70 and over';
+                            1 = '65 to 69';
+                            2 = '60 to 64';
+                            3 = '55 to 59';
+                            4 = '50 to 54';
+                            5 = '45 to 49';
+                            6 = '40 to 44';
+                            7 = '35 to 39';
+                            8 = '30 to 34';
+                            9 = '25 to 29';
+                            10 = '20 to 24';
+                            11 = 'under 20'")) %>% 
+  group_by(Age) %>%
+  summarise(number_of_people_negative_gearing_residential_property = 50*sum(Net_rent_amt < 0)) %>%
+    mutate(Age =  factor(Age,
+                     levels = c("under 20",
+                                '20 to 24',
+                                '25 to 29',
+                                '30 to 34',
+                                '35 to 39',
+                                '40 to 44',
+                                '45 to 49',
+                                '50 to 54',
+                                '55 to 59',
+                                '60 to 64',
+                                '65 to 69',
+                                '70 and over'), ordered = T)) %>%
+  arrange(Age) %T>% 
+  write.csv(., file = "Number_of_people_negv_gearn.csv", row.names=FALSE) %>%
+  ggplot(aes(x = Age, y = number_of_people_negative_gearing_residential_property)) + 
+  geom_bar(stat = "identity") +
+  theme_grattan(base_size = 14) 
+
+```
+
+
+```{r}
+fread("./2012-13/Sample_file_1213/2013 2% individuals sample file/2013_sample_file.csv") %>%
+  mutate(Taxable_Income_if_no_NegGearg = Taxable_Income - pmin(0, Net_rent_amt)) %>% 
+  mutate(tax_payable                = income_tax(Taxable_Income),
+         tax_payable_if_no_NegGearg = income_tax(Taxable_Income_if_no_NegGearg),
+         benefit_due_to_NegGearg    = tax_payable_if_no_NegGearg - tax_payable,
+         Salary_decile              = ntile(Taxable_Income_if_no_NegGearg, 100)) %>%
+  group_by(Salary_decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  ggplot(aes(x = Salary_decile, y = mean_benefit_prop)) + 
+  geom_bar(stat = "identity") + 
+  theme_grattan() + 
+  scale_y_continuous(limits = c(0, 0.5), label = percent)
+```
+
+
+```{r}
+selected_columns <- c("Taxable_Income", "Net_rent_amt", "Sw_amt")
+tax2013 <- fread("./2012-13/Sample_file_1213/2013 2% individuals sample file/2013_sample_file.csv", 
+                 select = selected_columns)
+
+tax2012 <- fread("./2011-12/Sample_file_1112/2012 2% individuals sample file.csv", 
+                 select = selected_columns)
+tax2011 <- fread("./2010-11/Sample_file_1011/2011 1% individuals sample file/2011 1% individuals sample file.txt",
+                 select = selected_columns)
+tax2010 <- fread("./2009-10/Sample_file_0910/2010 1% individuals sample file/2010 1% individuals sample file.txt",
+                 select = selected_columns)
+tax2009 <- fread("./2008-09/Sample_file_0809/2009 1% individuals sample file/2009 1% individuals sample file.txt",
+                 select = selected_columns)
+tax2008 <- fread("./2007-08/Sample_File_0708/2008 1% individuals sample file/2008 1% individuals sample file.txt",
+                 select = selected_columns)
+tax2007 <- fread("./2006-07/Sample_File_0607/2006-07 Individuals sample file/SampleFile0607.txt",
+                 select = selected_columns)
+tax2006 <- fread("./2005-06/Sample_File_0506/2005-06 Individuals sample file/2005-06 Individuals sample file.txt",
+                 select = selected_columns)
+tax2005 <- fread("./2004-05/Sample_File_0405/Sample file 2004-05/Sample file 2004-05.txt",
+                 select = selected_columns)
+tax2004 <- fread("./2003-04/Sample_File_0304/Sample file 2003-04/Sample file 2003-04.txt",
+                 select = selected_columns)
+
+
+tax2004 %<>% mutate(Year = "2004")
+tax2005 %<>% mutate(Year = "2005")
+tax2006 %<>% mutate(Year = "2006")
+tax2007 %<>% mutate(Year = "2007")
+tax2008 %<>% mutate(Year = "2008")
+tax2009 %<>% mutate(Year = "2009")
+tax2010 %<>% mutate(Year = "2010")
+tax2011 %<>% mutate(Year = "2011")
+tax2012 %<>% mutate(Year = "2012")
+tax2013 %<>% mutate(Year = "2013")
+
+bind_rows(tax2004,
+          #tax2005,
+          tax2006,
+          tax2007,
+          tax2008,
+          #tax2009,
+          tax2010,
+          tax2011,
+          tax2012,
+          tax2013) %>% data.table %>%
+  mutate(Taxable_Income_if_no_NegGearg = Taxable_Income - pmin(0, Net_rent_amt)) %>% 
+  mutate(tax_payable                = income_tax(Taxable_Income),
+         tax_payable_if_no_NegGearg = income_tax(Taxable_Income_if_no_NegGearg),
+         benefit_due_to_NegGearg    = tax_payable_if_no_NegGearg - tax_payable) ->
+  all.yrs
+```
+
+```{r}
+all.yrs %>%
+  group_by(Year, Salary_quintile = ntile(Sw_amt, 5)) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  group_by(Year) %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  #
+  grplot(aes(x = Salary_quintile, y = mean_benefit_prop,
+             color = Year, group = Year)) + 
+  geom_line(size = 1) + 
+  scale_y_continuous(label = percent, limits = c(0,1)) +
+  scale_color_manual(values = c(grey(c(5:0)/6), gpal(2))) +
+  xlab("Salary quintile") + 
+  theme_grattan() ->
+  p
+direct.label(p, list("last.qp", dl.trans(x = x + 0.1)))
+```
+
+```{r}
+all.yrs %>%
+  group_by(Year, Income_if_no_NegGearg_decile = ntile(Taxable_Income_if_no_NegGearg, 5)) %>%
+  summarise(mean_benefit = mean(benefit_due_to_NegGearg)) %>%
+  ungroup %>%
+  group_by(Year) %>%
+  mutate(mean_benefit_prop = mean_benefit/sum(mean_benefit)) %>%
+  #
+  grplot(aes(x = Income_if_no_NegGearg_decile, y = mean_benefit_prop,
+             color = Year, group = Year)) + 
+  geom_line(size = 1) + 
+  scale_y_continuous(label = percent, limits = c(0,1)) +
+  scale_color_manual(values = c(grey(c(5:0)/6), gpal(2))) +
+  xlab("Income (rental losses not deducted) quintile") + 
+  theme_grattan() ->
+  p
+direct.label(p, list("last.qp", dl.trans(x = x + 0.1)))
+```
+
