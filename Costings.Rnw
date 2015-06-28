@@ -718,9 +718,12 @@ historical_CGT_tax_exp <- read_excel("../CGT-Tax-Expenditures-Historical.xlsx") 
   mutate(Year = as.numeric(gsub("^.*([0-9]{4}).*$", "\\1", FY)) + 1) %>%
   select(Year, CGT_discount_for_individuals_and_trusts_millions)
 
+costs_years_orig_CGT_discount <- bind_rows(lapply(2004:2013, FUN = function(year) cost_of_daley_policy(year = year, CGT.discount = 0.50)))
 costs_years <- bind_rows(lapply(2004:2013, FUN = cost_of_daley_policy))
+costs_years_no_CGT_discount <- bind_rows(lapply(2004:2013, FUN = function(year) cost_of_daley_policy(year = year, CGT.discount = 0.00)))
 
 costs_years_CGT <- merge(costs_years, historical_CGT_tax_exp, by = "Year")
+costs_years_CGT_matcher <- merge(costs_years_no_CGT_discount, historical_CGT_tax_exp, by = "Year")
 write_csv(costs_years_CGT, "Costings_by_year_with_tax_expenditures.csv")
 @
 
