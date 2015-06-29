@@ -81,7 +81,11 @@ sample_file_of <- function(year = 2013){
 }
 
 weighting <- function(year = 2013){
-  percentage_sample <- as.numeric(gsub("^.*(.)%.*$", "\\1", sample_file_of(year)))
+  if (year > 2013){
+    percentage_sample <- 2
+  } else {
+    percentage_sample <- as.numeric(gsub("^.*(.)%.*$", "\\1", sample_file_of(year)))
+  }
   # 
   # Some files don't signal the percentage amount
   if (is.na(percentage_sample)){
@@ -541,9 +545,17 @@ Under these assumptions, the effect of the tax reduces from \$\Sexpr{round(50*su
 cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30){
   fy.year <- yr2fy(year)
   
+  if (year == 2014){
+    daley_taxstats <- 
+      fread(sample_file_of(2013)) %>%  
+      mutate(
+        Sw_amt = Sw_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")
+      )
+  } else {
   daley_taxstats <- 
     # fread(sample_file_of(2013)) %>%
     fread(sample_file_of(year = year)) 
+  }
   
   # Year specific housekeeping
   # Before 2011-12, there is no variable Net_fincl_lss_amt
@@ -553,13 +565,6 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   if (!("ETP_txbl_amt" %in% names(daley_taxstats)))
     daley_taxstats[,ETP_txbl_amt := 0]
   
-  
-  if (year == 2014){
-    daley_taxstats %<>% 
-      mutate(
-        Sw_amt = Sw_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")
-      )
-  }
   progress_bar <- txtProgressBar(min = 0, max = eventual, title = "Progress")
   
   for (i in 1:eventual){
