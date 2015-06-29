@@ -714,9 +714,15 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
 @
 
 <<SQL_for_ATO>>=
-sqldf("SELECT Taxable_Income, tax
+# tax2013 <- fread(sample_file_of(2013))
+
+sqldf("SELECT tax, medicare_levy, LITO, MAX(0,tax + medicare_levy - LITO) as current_tax,
+              taxn, medicare_levyn, LITOn, MAX(0,taxn + medicare_levyn - LITOn) as new_tax,
+              Net_CG_amt
         FROM (
-        SELECT Taxable_Income, CASE 
+        SELECT Taxable_Income
+              ,Net_CG_amt
+                  ,CASE 
                       WHEN Taxable_Income < 18200
                             THEN 0
                             ELSE CASE
@@ -724,7 +730,7 @@ sqldf("SELECT Taxable_Income, tax
                                  THEN 0.19 * (Taxable_Income - 18200)
                                  ELSE CASE 
                                           WHEN Taxable_Income < 80000
-                                          THEN 3572 + 0.325 * (Taxable_Income - 18200)
+                                          THEN 3572 + 0.325 * (Taxable_Income - 37000)
                                           ELSE CASE 
                                                WHEN Taxable_Income < 180000
                                                THEN 17547 + 0.37 * (Taxable_Income - 80000)
@@ -734,10 +740,56 @@ sqldf("SELECT Taxable_Income, tax
 
                                  END 
                             END as tax 
+                  ,CASE 
+                       WHEN Taxable_Income < 20542
+                       THEN 0
+                       ELSE CASE 
+                                WHEN Taxable_Income < 24167
+                                THEN 0.010 * (Taxable_Income - 20542)
+                                ELSE 0.015 * (Taxable_Income)
+                                END
+                       END as medicare_levy
+                  ,CASE 
+                      WHEN Taxable_Income < 37000
+                      THEN 445
+                      ELSE MAX(0,445 - ((Taxable_Income - 37000)*0.015))
+                      END as LITO
+                  ,CASE 
+                      WHEN new_Taxable_Income < 18200
+                            THEN 0
+                            ELSE CASE
+                                 WHEN new_Taxable_Income < 37000
+                                 THEN 0.19 * (new_Taxable_Income - 18200)
+                                 ELSE CASE 
+                                          WHEN new_Taxable_Income < 80000
+                                          THEN 3572 + 0.325 * (new_Taxable_Income - 37000)
+                                          ELSE CASE 
+                                               WHEN new_Taxable_Income < 180000
+                                               THEN 17547 + 0.37 * (new_Taxable_Income - 80000)
+                                               ELSE 54547 + 0.45 * (new_Taxable_Income - 180000)
+                                               END
+                                          END
+
+                                 END 
+                            END as taxn 
+                  ,CASE 
+                       WHEN new_Taxable_Income < 20542
+                       THEN 0
+                       ELSE CASE 
+                                WHEN new_Taxable_Income < 24167
+                                THEN 0.010 * (new_Taxable_Income - 20542)
+                                ELSE 0.015 * (new_Taxable_Income)
+                                END
+                       END as medicare_levyn
+                  ,CASE 
+                      WHEN new_Taxable_Income < 37000
+                      THEN 445
+                      ELSE MAX(0,445 - ((new_Taxable_Income - 37000)*0.015))
+                      END as LITOn
         FROM (SELECT Net_CG_amt
                     ,Taxable_Income
                     ,Taxable_Income - Net_CG_amt +  2 * Net_CG_Amt * (1 - 0.30) AS new_Taxable_Income 
-              FROM daley_taxstats))") %>% head
+              FROM tax2013))") %>% head
 
 @
 
