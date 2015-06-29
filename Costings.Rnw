@@ -69,7 +69,7 @@ citPkgs <- names(sessionInfo()$otherPkgs)
 knitr::write_bib(citPkgs, file="bibliography2.bib")      
 package_cite_input <- paste0("\\nocite{", paste0(paste0("R-", citPkgs), collapse=","), "}")
 write(package_cite_input, file = "package_cite_input.tex")
-      
+in.what.dollars <- "2013-14"
 @
 
 <<paths_to_sample_files>>=
@@ -711,6 +711,34 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
     )
   })
 }
+@
+
+<<SQL_for_ATO>>=
+sqldf("SELECT Taxable_Income, tax
+        FROM (
+        SELECT Taxable_Income, CASE 
+                      WHEN Taxable_Income < 18200
+                            THEN 0
+                            ELSE CASE
+                                 WHEN Taxable_Income < 37000
+                                 THEN 0.19 * (Taxable_Income - 18200)
+                                 ELSE CASE 
+                                          WHEN Taxable_Income < 80000
+                                          THEN 3572 + 0.325 * (Taxable_Income - 18200)
+                                          ELSE CASE 
+                                               WHEN Taxable_Income < 180000
+                                               THEN 17547 + 0.37 * (Taxable_Income - 80000)
+                                               ELSE 54547 + 0.45 * (Taxable_Income - 180000)
+                                               END
+                                          END
+
+                                 END 
+                            END as tax 
+        FROM (SELECT Net_CG_amt
+                    ,Taxable_Income
+                    ,Taxable_Income - Net_CG_amt +  2 * Net_CG_Amt * (1 - 0.30) AS new_Taxable_Income 
+              FROM daley_taxstats))") %>% head
+
 @
 
 
