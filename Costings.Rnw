@@ -75,6 +75,7 @@ in.what.dollars <- "2013-14"
 
 <<paths_to_sample_files>>=
 sample_file_of <- function(year = 2013){
+  year <- min(2013, year)
   fy.year <- paste0(year - 1, "-", formatC(year - 2000, flag = "0", width=2))
   # List all files with sample in them that have csv or txt at the end.
   list.of.files <- list.files(path = "./IndividualSampleFile", pattern = paste0("(s|S)ample.*((csv)|(txt))$"), recursive = TRUE, full.names = TRUE)
@@ -83,7 +84,7 @@ sample_file_of <- function(year = 2013){
 
 weighting <- function(year = 2013){
   if (year > 2013){
-    percentage_sample <- 2
+    percentage_sample <- 2 * aus_pop_qtr(paste0(year, "-Q4")) / aus_pop_qtr("2013-Q4")
   } else {
     percentage_sample <- as.numeric(gsub("^.*(.)%.*$", "\\1", sample_file_of(year)))
   }
