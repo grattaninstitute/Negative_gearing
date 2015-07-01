@@ -83,8 +83,22 @@ sample_file_of <- function(year = 2013){
 }
 
 weighting <- function(year = 2013){
+  # From Budget Table 1 from BP 1
+  # http://budget.gov.au/2015-16/content/bp1/html/bp1_bs2.htm
+  wage.growth <- 1.0275
+  #Use the one from Department of employment forecasts
+  #2014 Regional Projections to November 2018
+  
+#   lf.url <- "http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/LF/0.6.3.1599.10.M/ABS?startTime=1981"
+#   lf <- readSDMX(lf.url)
+#   lf <- as.data.frame(lf) 
+#   
+#   lf.201314 <- lf[lf$obsTime == "2014-06",]$obsValue / lf[lf$obsTime == "2013-06",]$obsValue
+#   # May good enough for now
+#   lf.201315 <- lf[lf$obsTime == "2015-05",]$obsValue / lf[lf$obsTime == "2013-06",]$obsValue
+  lf.growth <- 1.015
   if (year > 2013){
-    percentage_sample <- 2 * aus_pop_qtr(paste0(year, "-Q4")) / aus_pop_qtr("2013-Q4")
+    percentage_sample <- 2 
   } else {
     percentage_sample <- as.numeric(gsub("^.*(.)%.*$", "\\1", sample_file_of(year)))
   }
@@ -92,18 +106,18 @@ weighting <- function(year = 2013){
   # Some files don't signal the percentage amount
   if (is.na(percentage_sample)){
     return(100)
-  } else{
-  100 / percentage_sample
+  } else {
+    # Use population projections?
+    # 100 * aus_pop_qtr(paste0(year, "-Q4")) / aus_pop_qtr("2013-Q4") / percentage_sample
+    #
+    if (year > 2013)
+      100 * (lf.growth)^(year - 2013) / percentage_sample
+    else 
+      100 / percentage_sample
   }
 }
 
-lf.url <- "http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/LF/0.6.3.1599.10.M/ABS?startTime=1981&endTime=2015"
-lf <- readSDMX(lf.url)
-lf <- as.data.frame(lf) 
 
-lf.201314 <- lf[lf$obsTime == "2014-06",]$obsValue / lf[lf$obsTime == "2013-06",]$obsValue
-# May good enough for now
-lf.201315 <- lf[lf$obsTime == "2015-05",]$obsValue / lf[lf$obsTime == "2013-06",]$obsValue
 
 @
 
@@ -547,11 +561,15 @@ Under these assumptions, the effect of the tax reduces from \$\Sexpr{round(50*su
 cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30){
   fy.year <- yr2fy(year)
   
-  if (year == 2014){
+  if (year >= 2014){
+    # Inflate the wages for future years.  Adjust the variables which depend on Sw_amt
+    # accordingly (otherwise the difference just becomes smaller).
     daley_taxstats <- 
       fread(sample_file_of(2013)) %>%  
       mutate(
-        Sw_amt = Sw_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)
       )
   } else {
   daley_taxstats <- 
@@ -567,7 +585,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   if (!("ETP_txbl_amt" %in% names(daley_taxstats)))
     daley_taxstats[,ETP_txbl_amt := 0]
   
-  progress_bar <- txtProgressBar(min = 0, max = eventual, title = "Progress")
+  progress_bar <- txtProgressBar(min = 0, initial = i - 1, max = eventual, title = "Progress")
   
   for (i in 1:eventual){
     daley_taxstats %<>%
