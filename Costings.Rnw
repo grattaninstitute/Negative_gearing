@@ -195,7 +195,7 @@ fread(sample_file_of(2013)) %>%
     current_assessable_income = Taxable_Income,
     #proposed_non_cap_assessable_income = Taxable_Income,
     proposal_capital_tax = income_tax(Taxable_Income - Net_CG_amt + (1 - new_discount) * (2 * Net_CG_amt))
-  ) %$% {50*(sum(proposal_capital_tax) - sum(current_tax))}
+  ) %$% {50*(sum(proposal_capital_tax) - sum(current_tax))/1e9}
 @
 
 
@@ -307,33 +307,17 @@ discount_only_to_negative_rent_income <- TRUE
 
 
 <<Henry_proposal_mutate, echo=T>>=
-if (!discount_only_to_negative_rent_income){
-  henry_taxstats <- 
-  fread(sample_file_of(2013)) %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    #new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
-    current_tax = income_tax(Taxable_Income),
-    new_tax = income_tax(new_Taxable_Income),
-    diff = new_tax - current_tax
-  )
-  henry_discount_remark <- "in which the discount is applied to both rental income and rental losses"
-} else {
-  henry_taxstats <- 
+henry_taxstats <- 
   fread(sample_file_of(2013)) %>%
   mutate(
     new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
     new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    #new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
+    new_invstment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount),
+    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
     current_tax = income_tax(Taxable_Income),
     new_tax = income_tax(new_Taxable_Income),
     diff = new_tax - current_tax
   )
-  henry_discount_remark <- "in which the discount is only applied to rental losses (not rental income, contra Henry)"
-}
 @
 
 Under this proposal, \Sexpr{henry_discount_remark}, income tax would rise from \$\Sexpr{round(50*sum(henry_taxstats$current_tax)/1e9, 1)}~billion to \$\Sexpr{round(50*sum(henry_taxstats$new_tax)/1e9, 1)}~billion.
