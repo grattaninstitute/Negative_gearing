@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.28)  1 JUL 2015 12:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.28)  3 JUL 2015 10:14
 entering extended mode
 **Costings.tex
 (Costings.tex
@@ -2590,11 +2590,18 @@ LaTeX Warning: Citation 'Treasury2010a' on page 10 undefined on input line 210.
 
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 225.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 226.
+
+Overfull \hbox (170.12001pt too wide) in paragraph at lines 231--231
+[]    []\T1/lmtt/m/n/10.95/-4ls new_Taxable_Income[] []= Taxable_Income[] []-[]
+ []Net_CG_amt[] []-[] []Net_rent_amt[] []+[] []new_capital_gains[] []+[] []new_
+net_rent[] []-[] []Net_fincl_invstmt_lss_amt[] []+[] []new_invstment_lss,[][] 
+ []
+
 [10
 
 ]
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 296
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 282
 .
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -2604,99 +2611,103 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Overfull \hbox (192.97697pt too wide) in paragraph at lines 300--300
+Overfull \hbox (192.97697pt too wide) in paragraph at lines 286--286
 []    []\T1/lmtt/m/n/10.95/-4ls new_Taxable_Income[] []=[]  []\T1/lmtt/bx/n/10.
 95/-4ls pmax[][]\T1/lmtt/m/n/10.95/-4ls ([][]0[][], income_no_salary[] []+[] []
 Net_rent_amt[] []-[] []Net_fincl_invstmt_lss_amt)[] []+[] []Sw_amt[] []-[] []To
 t_ded_amt[] []-[] []PP_loss_claimed[] []-[] []NPP_loss_claimed,[][] 
  []
 
-[11]
-Underfull \vbox (badness 10000) detected at line 341
+
+Underfull \vbox (badness 10000) detected at line 327
  []
 
 
-Underfull \vbox (badness 10000) detected at line 341
+Underfull \vbox (badness 10000) detected at line 327
+ []
+
+[11]
+Underfull \vbox (badness 10000) detected at line 327
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 327
  []
 
 [12] [13] [14]
-Overfull \vbox (1.17982pt too high) detected at line 511
+Underfull \vbox (badness 10000) detected at line 497
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 497
  []
 
 [15]
-Underfull \vbox (badness 10000) detected at line 511
+Underfull \vbox (badness 10000) detected at line 497
  []
 
 
-Underfull \vbox (badness 10000) detected at line 511
+Underfull \vbox (badness 10000) detected at line 497
  []
 
-[16] [17] [18]
-Overfull \hbox (309.49231pt too wide) in paragraph at lines 557--557
+[16] [17]
+Overfull \hbox (309.49231pt too wide) in paragraph at lines 543--543
 []\T1/lmtt/m/n/10.95/-4ls ## Response [http://data.gov.au/dataset/e29ef9ca-0d1a
 -47ec-9e9b-14a79a941511/resource/79aeec03-7596-47f8-86db-b02ca6496699/download/
 taxstats2013trust1selecteditemsbyyear.xlsx][] 
  []
 
-<figure/Trusts_CG-1.pdf, id=192, 794.97pt x 505.89pt>
+<figure/Trusts_CG-1.pdf, id=187, 794.97pt x 505.89pt>
 File: figure/Trusts_CG-1.pdf Graphic file (type pdf)
 
 <use figure/Trusts_CG-1.pdf>
-Package pdftex.def Info: figure/Trusts_CG-1.pdf used on input line 564.
+Package pdftex.def Info: figure/Trusts_CG-1.pdf used on input line 550.
 (pdftex.def)             Requested size: 688.5568pt x 438.1832pt.
 
 
-LaTeX Warning: Float too large for page by 36.14996pt on input line 568.
+LaTeX Warning: Float too large for page by 36.14996pt on input line 554.
 
 
-Overfull \hbox (138.63995pt too wide) in paragraph at lines 574--575
+Overfull \hbox (144.3427pt too wide) in paragraph at lines 560--561
 []\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in fread("Costings_by_year_with_tax_expend
-itures.csv"): File is empty: C:\Users\HPARSO~1\AppData\Local\Temp\RtmpklPIw7\fi
-le19483cd41aa[] 
+itures.csv"): File is empty: C:\Users\HPARSO~1\AppData\Local\Temp\Rtmpqu5xIY\fi
+le3234692c559a[] 
  []
 
-[19] [20 <./figure/Trusts_CG-1.pdf>] [21]
-Underfull \vbox (badness 10000) detected at line 685
- []
-
-
-Underfull \vbox (badness 10000) detected at line 685
- []
-
-[22]
-Underfull \vbox (badness 10000) detected at line 685
+[18] [19 <./figure/Trusts_CG-1.pdf>] [20] [21]
+Underfull \vbox (badness 10000) detected at line 674
  []
 
 
-Underfull \vbox (badness 10000) detected at line 685
+Underfull \vbox (badness 10000) detected at line 674
  []
 
-[23] [24]
+[22] [23]
 Chapter 2.
-[25
+[24
 
-] [26
+] [25
 
-] [27]
-Overfull \hbox (7.61482pt too wide) in paragraph at lines 813--813
+] [26]
+Overfull \hbox (7.61482pt too wide) in paragraph at lines 802--802
 []  []\T1/lmtt/m/n/10.95/-4ls daley_discount_remark_1112[] []<-[] []"in which t
 he discount is only applied to rental losses (not rental income, contra Henry)"
 [][] 
  []
 
 
-Overfull \vbox (1.85608pt too high) detected at line 829
+Overfull \vbox (1.85608pt too high) detected at line 818
  []
 
-[28] [29] [30] [31]
+[27] [28] [29] [30]
 
-LaTeX Warning: Empty bibliography on input line 895.
+LaTeX Warning: Empty bibliography on input line 884.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 896.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 896.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 885.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 885.
 (Costings.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 896.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 896.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 885.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 885.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -2704,7 +2715,7 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 896.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 885.
 
 Package biblatex Warning: Please (re)run Biber on the file:
 (biblatex)                Costings
@@ -2713,9 +2724,9 @@ Package biblatex Warning: Please (re)run Biber on the file:
 Package logreq Info: Writing requests to 'Costings.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 44310 strings out of 493698
- 893858 string characters out of 3141979
- 1427988 words of memory out of 3000000
+ 44309 strings out of 493698
+ 893851 string characters out of 3141979
+ 1429988 words of memory out of 3000000
  46379 multiletter control sequences out of 15000+200000
  250857 words of font info for 314 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
@@ -2739,9 +2750,9 @@ x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files (x86)/MiKTeX
 type1/public/lm/lmtti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
 arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1r8
 a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1ri8a.pfb>
-Output written on Costings.pdf (31 pages, 398424 bytes).
+Output written on Costings.pdf (30 pages, 396643 bytes).
 PDF statistics:
- 335 PDF objects out of 1000 (max. 8388607)
- 72 named destinations out of 1000 (max. 500000)
+ 330 PDF objects out of 1000 (max. 8388607)
+ 71 named destinations out of 1000 (max. 500000)
  74836 words of extra memory for PDF output out of 89155 (max. 10000000)
 

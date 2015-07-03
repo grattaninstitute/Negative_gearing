@@ -28,9 +28,9 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.3}Henry-lite proposal}{10}{section.1.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.4}Daley (quarantining salary from losses), 30\%\ discount}{11}{section.1.4}
+\contentsline {section}{\numberline {1.4}Daley (quarantining salary from losses), 30\%\ discount}{10}{section.1.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.4.1}Parameters}{11}{subsection.1.4.1}
+\contentsline {subsection}{\numberline {1.4.1}Parameters}{10}{subsection.1.4.1}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.4.2}Pushing forward the losses}{13}{subsection.1.4.2}
 \defcounter {refsection}{0}\relax 
@@ -38,12 +38,12 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {paragraph}{\nonumberline Age}{18}{section*.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {2}Dani's presentation numbers}{25}{chapter..2}
+\contentsline {chapter}{\numberline {2}Dani's presentation numbers}{24}{chapter..2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.1}Reduce CGT discount and limit negative gearing}{26}{section.2.1}
+\contentsline {section}{\numberline {2.1}Reduce CGT discount and limit negative gearing}{25}{section.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.2}Daley discount}{27}{section.2.2}
+\contentsline {section}{\numberline {2.2}Daley discount}{26}{section.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.3}Daley (30\%\ symmetrical discount)}{27}{section.2.3}
+\contentsline {section}{\numberline {2.3}Daley (30\%\ symmetrical discount)}{26}{section.2.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.4}Summary}{29}{section.2.4}
+\contentsline {section}{\numberline {2.4}Summary}{28}{section.2.4}

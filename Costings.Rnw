@@ -318,6 +318,8 @@ henry_taxstats <-
     new_tax = income_tax(new_Taxable_Income),
     diff = new_tax - current_tax
   )
+
+henry_discount_remark <- "in which the discount is only applied to negative rental income"
 @
 
 Under this proposal, \Sexpr{henry_discount_remark}, income tax would rise from \$\Sexpr{round(50*sum(henry_taxstats$current_tax)/1e9, 1)}~billion to \$\Sexpr{round(50*sum(henry_taxstats$new_tax)/1e9, 1)}~billion.
@@ -973,6 +975,36 @@ costs_years_CGT %>%
                             & Secondary & \$\Sexpr{round(50*sum(daley_taxstats$diff) / 1e9, 1)}~bn & \$\Sexpr{round(50*sum(new_daley$diff)/1e9, 1)}~bn
 \end{tabular}
 \end{table*}
+
+<<Figure4_Probability_of_CG_by_Income_decile_by_age>>=
+# Average CG probability by age and income decile, then smoothed.
+fread(sample_file_of(2013)) %>% 
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", age)) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65-69", "70+"))) %>% 
+  group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
+  summarise(prop_cg = mean(Net_CG_amt > 0))  %>% 
+  grplot(aes(x = Income_decile, y = prop_cg, group=factor(age), color = factor(age), label = age)) +
+  annotate("segment",
+           x = -Inf, y = 0.10,
+           xend = 10, yend = 0.10,
+           color = '#DADADA') +
+  annotate("segment", 
+           x = -Inf, y = 0.20,
+           xend = 10, yend = 0.20,
+           color = '#DADADA') + 
+  annotate("segment", 
+           x = -Inf, y = 0.30,
+           xend = 10, yend = 0.30,
+           color = '#DADADA') + 
+  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.2)) + 
+  scale_x_continuous(expand = c(0,0), breaks = 1:10) + annotate("blank", x = 13, y = 0.1) + theme(axis.line.x = element_blank()) + annotate("segment", x = 1, xend = 10, y = 0, yend = 0) + 
+  scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.3), breaks = c(0:3)/10 ) + 
+  stat_smooth(size = 2, se = FALSE) + 
+  scale_color_manual(values = rev(gpal(7))) + 
+  theme(axis.title.x = element_text(hjust = 0.28), # requires segment
+        panel.grid.major = element_blank()) + xlab("Income decile") 
+@
+
 
 <<Probabilistic_losses_against_CG4>>=
 new_daley <- daley_taxstats %>%

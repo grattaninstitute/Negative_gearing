@@ -161,7 +161,7 @@ Note under this scenario, anyone who has a nonnegative salary \EMPH{cannot obtai
 
 \subsection{Application to taxstats}
 % latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Jul 01 12:17:17 2015
+% Fri Jul 03 10:12:22 2015
 \begin{table*}[ht]
 \centering
 \caption{Summary table for taxable income based on $I_A' = I_S + \max(0, I_A - I_s)$.} 
@@ -188,7 +188,7 @@ So under the current regime where \$159.2~billion is payable in income tax, the 
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## Response [https://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download/taxstats2013individual01selecteditemsbyyear.xlsx]
-##   Date: 2015-07-01 12:17
+##   Date: 2015-07-03 10:12
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 270 kB
@@ -222,38 +222,24 @@ provide a means of adjusting for the effect of inflation. \textcite{Treasury2010
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwa{if} \hlstd{(}\hlopt{!}\hlstd{discount_only_to_negative_rent_income)\{}
-  \hlstd{henry_taxstats} \hlkwb{<-}
-  \hlkwd{fread}\hlstd{(}\hlkwd{sample_file_of}\hlstd{(}\hlnum{2013}\hlstd{))} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlcom{#new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income}
-    \hlkwc{new_net_rent} \hlstd{= Net_rent_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent,}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)}
-  \hlstd{henry_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is applied to both rental income and rental losses"}
-\hlstd{\}} \hlkwa{else} \hlstd{\{}
-  \hlstd{henry_taxstats} \hlkwb{<-}
+\hlstd{henry_taxstats} \hlkwb{<-}
   \hlkwd{fread}\hlstd{(}\hlkwd{sample_file_of}\hlstd{(}\hlnum{2013}\hlstd{))} \hlopt{%>%}
   \hlkwd{mutate}\hlstd{(}
     \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
     \hlkwc{new_net_rent} \hlstd{= Net_rent_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount} \hlopt{*} \hlstd{(Net_rent_amt} \hlopt{<} \hlnum{0}\hlstd{)),}  \hlcom{# discount only to negative income}
-    \hlcom{#new_net_rent = Net_rent_amt * (1 - new.discount),}
-    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent,}
+    \hlkwc{new_invstment_lss} \hlstd{= Net_fincl_invstmt_lss_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
+    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent} \hlopt{-} \hlstd{Net_fincl_invstmt_lss_amt} \hlopt{+} \hlstd{new_invstment_lss,}
     \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income),}
     \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income),}
     \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
   \hlstd{)}
-  \hlstd{henry_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is only applied to rental losses (not rental income, contra Henry)"}
-\hlstd{\}}
+
+\hlstd{henry_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is only applied to negative rental income"}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
-Under this proposal, in which the discount is only applied to rental losses (not rental income, contra Henry), income tax would rise from \$159.2~billion to \$161.8~billion.
+Under this proposal, in which the discount is only applied to negative rental income, income tax would rise from \$159.2~billion to \$161.8~billion.
 
 \section{Daley (quarantining salary from losses), 30\%\ discount}
 \subsection{Parameters}
@@ -491,7 +477,7 @@ Under this proposal, income tax would rise from \$159~billion to \$162.9~billion
 ## Year 5 New income:
 ##  $3.6 bn
 ##  New income2:
-##  $3.3 bn
+##  $3.4 bn
 ## 
 ## Year 10 New income:
 ##  $3.3 bn
@@ -499,18 +485,18 @@ Under this proposal, income tax would rise from \$159~billion to \$162.9~billion
 ##  $3.2 bn
 ## 
 ## Year 15 New income:
-##  $3.2 bn
+##  $3.1 bn
 ##  New income2:
 ##  $3.1 bn
 ## 
 ## Year 20 New income:
-##  $3.1 bn
+##  $3.2 bn
 ##  New income2:
-##  $3.1 bn
+##  $3.2 bn
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.1~billion after 20~years.
+Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.2~billion after 20~years.
 
 
 
@@ -549,7 +535,7 @@ Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.1
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## Response [http://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/79aeec03-7596-47f8-86db-b02ca6496699/download/taxstats2013trust1selecteditemsbyyear.xlsx]
-##   Date: 2015-07-01 12:17
+##   Date: 2015-07-03 10:13
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 189 kB
@@ -571,7 +557,7 @@ Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.1
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fread("{}Costings\_by\_year\_with\_tax\_expenditures.csv"{}): File is empty: C:\textbackslash{}Users\textbackslash{}HPARSO\textasciitilde{}1\textbackslash{}AppData\textbackslash{}Local\textbackslash{}Temp\textbackslash{}RtmpklPIw7\textbackslash{}file19483cd41aa}}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fread("{}Costings\_by\_year\_with\_tax\_expenditures.csv"{}): File is empty: C:\textbackslash{}Users\textbackslash{}HPARSO\textasciitilde{}1\textbackslash{}AppData\textbackslash{}Local\textbackslash{}Temp\textbackslash{}Rtmpqu5xIY\textbackslash{}file3234692c559a}}
 
 {\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'costs\_years\_CGT' not found}}\end{kframe}
 \end{knitrout}
@@ -595,11 +581,14 @@ Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.1
 \begin{tabular}{lrrr}
  & & Initial change in revenue & Eventual change \\
  \hline
- Henry lite & & \$2.6~bn & \$2.6~bn\\[4pt]
+ Henry lite & & \$2.5~bn & \$2.5~bn\\[4pt]
  Quarantine losses from salary & Simple & \$4~bn & \$1.2~bn \\
-                            & Secondary & \$4~bn & \$3.1~bn
+                            & Secondary & \$4~bn & \$3.2~bn
 \end{tabular}
 \end{table*}
+
+
+
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -610,77 +599,77 @@ Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.1
 ## Source: local data table [5 x 4]
 ## 
 ##   quintile   avg.loss age.of.losses   n
-## 1        1   709.4526             1 285
-## 2        2  2740.9930             1 285
-## 3        3  5333.0915             1 284
-## 4        4  9426.8316             1 285
-## 5        5 23438.2359             1 284
+## 1        1   762.4212             1 292
+## 2        2  2900.2234             1 291
+## 3        3  5841.5052             1 291
+## 4        4 10260.6460             1 291
+## 5        5 24135.1649             1 291
 ## Year 5 
-##  New tax $3.3 
+##  New tax $3.4 
 ##  Number -ve taxable income 0 
 ## Source: local data table [5 x 4]
 ## 
-##   quintile   avg.loss age.of.losses   n
-## 1        1   2632.428      3.557895 285
-## 2        2  10367.292      3.718310 284
-## 3        3  21332.342      4.292254 284
-## 4        4  39513.296      4.633803 284
-## 5        5 110492.539      4.781690 284
+##   quintile  avg.loss age.of.losses   n
+## 1        1  2583.482      3.364964 274
+## 2        2 10135.099      3.543796 274
+## 3        3 20880.412      4.291971 274
+## 4        4 38269.296      4.594891 274
+## 5        5 97563.524      4.769231 273
 ## Year 10 
 ##  New tax $3.2 
 ##  Number -ve taxable income 0 
 ## Source: local data table [5 x 4]
 ## 
 ##   quintile   avg.loss age.of.losses   n
-## 1        1   3071.055      4.242215 289
-## 2        2  13576.201      5.520833 288
-## 3        3  31445.344      6.819444 288
-## 4        4  65601.125      8.079861 288
-## 5        5 185823.236      8.972222 288
+## 1        1   3257.701      4.548043 281
+## 2        2  13959.032      5.678571 280
+## 3        3  30315.004      6.671429 280
+## 4        4  62682.596      8.253571 280
+## 5        5 182978.804      9.042857 280
 ## Year 15 
 ##  New tax $3.1 
 ##  Number -ve taxable income 0 
 ## Source: local data table [5 x 4]
 ## 
 ##   quintile   avg.loss age.of.losses   n
-## 1        1   3895.258      4.714286 287
-## 2        2  15727.853      6.629371 286
-## 3        3  35186.413      7.912587 286
-## 4        4  77204.699     10.555944 286
-## 5        5 233910.402     12.297203 286
+## 1        1   3550.421      5.082192 292
+## 2        2  15228.565      6.667808 292
+## 3        3  37668.704      8.463918 291
+## 4        4  83501.719     10.445205 292
+## 5        5 261967.292     12.924399 291
 ## Year 20 
-##  New tax $3 
+##  New tax $3.2 
 ##  Number -ve taxable income 0 
 ## Source: local data table [5 x 4]
 ## 
-##   quintile   avg.loss age.of.losses   n
-## 1        1   4041.979      4.650685 292
-## 2        2  16541.366      6.595890 292
-## 3        3  39637.123      9.852740 292
-## 4        4  87552.479     12.328767 292
-## 5        5 290681.928     15.171233 292
+##   quintile  avg.loss age.of.losses   n
+## 1        1   3489.27      4.940351 285
+## 2        2  14635.23      5.947368 285
+## 3        3  37105.45      8.676056 284
+## 4        4  81486.31     12.070175 285
+## 5        5 261538.74     15.193662 284
 ## Year 25 
-##  New tax $3 
+##  New tax $3.2 
 ##  Number -ve taxable income 0 
 ## Source: local data table [5 x 4]
 ## 
 ##   quintile   avg.loss age.of.losses   n
-## 1        1   4347.433      5.123333 300
-## 2        2  16454.687      6.590000 300
-## 3        3  38513.050      8.685619 299
-## 4        4  87987.553     13.093333 300
-## 5        5 331471.856     18.217391 299
+## 1        1   3573.004      5.775439 285
+## 2        2  15375.161      6.575439 285
+## 3        3  36302.456      8.589474 285
+## 4        4  81293.923     11.915789 285
+## 5        5 300548.744     17.066667 285
 ## Year 30 
 ##  New tax $3.1 
 ##  Number -ve taxable income 0 
 ## Source: local data table [5 x 4]
 ## 
 ##   quintile   avg.loss age.of.losses   n
-## 1        1   3576.056      5.449123 285
-## 2        2  16660.235      6.761404 285
-## 3        3  39950.898      9.407018 285
-## 4        4  87275.112     13.028070 285
-## 5        5 301953.468     18.693662 284
+## 1        1   3580.153      4.880952 294
+## 2        2  15517.963      6.619048 294
+## 3        3  37280.986      9.717687 294
+## 4        4  80948.724     12.098639 294
+## 5        5 327866.720     18.498294 293
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
