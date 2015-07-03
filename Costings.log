@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.28)  1 JUL 2015 12:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.28)  3 JUL 2015 14:25
 entering extended mode
 **Costings.tex
 (Costings.tex
@@ -2519,11 +2519,17 @@ LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
 
 ]
 Chapter 1.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 90.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 90.
 
-LaTeX Font Warning: Font shape `T1/ua1/m/sc' undefined
-(Font)              using `T1/ua1/m/n' instead on input line 92.
+LaTeX Warning: Citation 'TaxExpenditures201213' on page 6 undefined on input li
+ne 90.
 
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 93.
+LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 90.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 98.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -2531,180 +2537,421 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 98.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 98.
 
-
-LaTeX Warning: Citation 'TaxExpenditures201213' on page 6 undefined on input li
-ne 98.
-
-LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 98.
-
-Underfull \hbox (badness 10000) in paragraph at lines 108--108
-[][][]\T1/ua1/m/n/9/-4ls (+14) See [][]$h\T1/ua1/m/n/9/-4ls (+20) tt\T1/ua1/m/n
-/9/-4ls (+14) ps \T1/ua1/m/n/9/-4ls (+20) : / / \T1/ua1/m/n/9/-4ls (+14) www \T
-1/ua1/m/n/9/-4ls (+20) . \T1/ua1/m/n/9/-4ls (+14) a\T1/ua1/m/n/9/-4ls (+20) t\T
-1/ua1/m/n/9/-4ls (+14) o \T1/ua1/m/n/9/-4ls (+20) . \T1/ua1/m/n/9/-4ls (+14) go
-\T1/ua1/m/n/9/-4ls (+20) v . \T1/ua1/m/n/9/-4ls (+14) au \T1/ua1/m/n/9/-4ls (+2
-0) / I\T1/ua1/m/n/9/-4ls (+14) nd\T1/ua1/m/n/9/-4ls (+20) ivi\T1/ua1/m/n/9/-4ls
- (+14) dua\T1/ua1/m/n/9/-4ls (+20) l\T1/ua1/m/n/9/-4ls (+14) s \T1/ua1/m/n/9/-4
-ls (+20) / T\T1/ua1/m/n/9/-4ls (+14) a\T1/ua1/m/n/9/-4ls (+20) x-[]\T1/ua1/m/n/
-9/-4ls (+14) Re\T1/ua1/m/n/9/-4ls (+20) t\T1/ua1/m/n/9/-4ls (+14) u\T1/ua1/m/n/
-9/-4ls (+20) r\T1/ua1/m/n/9/-4ls (+14) n \T1/ua1/m/n/9/-4ls (+20) / \T1/ua1/m/n
-/9/-4ls (+14) 2\T1/ua1/m/n/9/-4ls (+20) 01\T1/ua1/m/n/9/-4ls (+14) 3 \T1/ua1/m/
-n/9/-4ls (+20) /$
- []
-
-[6
-
-
-]
-Package hyperref Info: bookmark level for unknown smallboxfloat defaults to 0 o
-n input line 129.
-LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 167.
- [7] [8
-
-]
-Overfull \hbox (707.91629pt too wide) in paragraph at lines 196--196
+Overfull \hbox (707.91629pt too wide) in paragraph at lines 105--105
 []\T1/lmtt/m/n/10.95/-4ls ## Response [https://data.gov.au/dataset/e29ef9ca-0d1
 a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download
 /taxstats2013individual01selecteditemsbyyear.xlsx][] 
  []
 
 
-Overfull \hbox (149.11641pt too wide) in paragraph at lines 196--196
+Overfull \hbox (149.11641pt too wide) in paragraph at lines 105--105
 []\T1/lmtt/m/n/10.95/-4ls ##   Content-Type: application/vnd.openxmlformats-off
 icedocument.spreadsheetml.sheet[] 
  []
 
-[9
 
-
-]
-
-LaTeX Warning: Citation 'Treasury2010a' on page 10 undefined on input line 210.
-
+LaTeX Warning: Citation 'Treasury2010a' on page 6 undefined on input line 114.
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 225.
-[10
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 130.
+
+Overfull \hbox (9.53716pt too wide) in paragraph at lines 132--132
+[]    []\T1/lmtt/m/n/10.95/-4ls new_capital_gains[] []=[] []2[] []*[] []Net_CG_
+amt[] []*[] []([][]1[] []-[] []new.discount),[][] 
+ []
+
+
+Overfull \hbox (136.26224pt too wide) in paragraph at lines 133--133
+[]    []\T1/lmtt/m/n/10.95/-4ls new_net_rent[] []= Net_rent_amt[] []*[] []([][]
+1[] []-[] []new.discount[] []*[] [](Net_rent_amt[] []<[] []0[][])),[]  []\T1/lm
+tt/m/it/10.95/-4ls # dis-
+ []
+
+
+Overfull \hbox (72.22134pt too wide) in paragraph at lines 134--134
+[]    []\T1/lmtt/m/n/10.95/-4ls new_invstment_lss[] []= Net_fincl_invstmt_lss_a
+mt[] []*[] []([][]1[] []-[] []new.discount),[][] 
+ []
+
+
+Overfull \hbox (528.62479pt too wide) in paragraph at lines 135--135
+[]    []\T1/lmtt/m/n/10.95/-4ls new_Taxable_Income[] []= Taxable_Income[] []-[]
+ []Net_CG_amt[] []-[] []Net_rent_amt[] []+[] []new_capital_gains[] []+[] []new_
+net_rent[] []-[] []Net_fincl_invstmt_lss_amt[] []+[] []new_invstment_lss,[][] 
+ []
+
+
+Overfull \hbox (183.51683pt too wide) in paragraph at lines 141--141
+[][]\T1/lmtt/m/n/10.95/-4ls henry_discount_remark[] []<-[] []"in which the disc
+ount is only applied to negative rental income"[][] 
+ []
+
+[6
+
 
 ]
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 296
-.
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
-File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-Package microtype Info: Loading generic settings for font family
-(microtype)             `lmtt' (encoding: TS1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
-Overfull \hbox (192.97697pt too wide) in paragraph at lines 300--300
-[]    []\T1/lmtt/m/n/10.95/-4ls new_Taxable_Income[] []=[]  []\T1/lmtt/bx/n/10.
-95/-4ls pmax[][]\T1/lmtt/m/n/10.95/-4ls ([][]0[][], income_no_salary[] []+[] []
-Net_rent_amt[] []-[] []Net_fincl_invstmt_lss_amt)[] []+[] []Sw_amt[] []-[] []To
-t_ded_amt[] []-[] []PP_loss_claimed[] []-[] []NPP_loss_claimed,[][] 
- []
-
-[11]
-Underfull \vbox (badness 10000) detected at line 341
+Underfull \hbox (badness 10000) in paragraph at lines 166--167
+[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in `[.data.table`(`_dt`, , list(mean.tx.i 
+=
  []
 
 
-Underfull \vbox (badness 10000) detected at line 341
- []
-
-[12] [13] [14]
-Overfull \vbox (1.17982pt too high) detected at line 511
- []
-
-[15]
-Underfull \vbox (badness 10000) detected at line 511
+Underfull \hbox (badness 10000) in paragraph at lines 166--167
+\T1/lmtt/bx/n/10.95/-4ls mean(new_Taxable_Income)), : ob-ject 'new_Taxable_Inco
+me'
  []
 
 
-Underfull \vbox (badness 10000) detected at line 511
+Underfull \hbox (badness 10000) in paragraph at lines 168--168
+[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in merge.data.table(., tax-able_income_by_
+CG, by
  []
 
-[16] [17] [18]
-Overfull \hbox (309.49231pt too wide) in paragraph at lines 557--557
+[7
+
+]
+Chapter 2.
+
+Overfull \hbox (667.99709pt too wide) in paragraph at lines 182--182
 []\T1/lmtt/m/n/10.95/-4ls ## Response [http://data.gov.au/dataset/e29ef9ca-0d1a
 -47ec-9e9b-14a79a941511/resource/79aeec03-7596-47f8-86db-b02ca6496699/download/
 taxstats2013trust1selecteditemsbyyear.xlsx][] 
  []
 
-<figure/Trusts_CG-1.pdf, id=192, 794.97pt x 505.89pt>
+
+Overfull \hbox (149.11641pt too wide) in paragraph at lines 182--182
+[]\T1/lmtt/m/n/10.95/-4ls ##   Content-Type: application/vnd.openxmlformats-off
+icedocument.spreadsheetml.sheet[] 
+ []
+
+LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 188.
+<figure/Trusts_CG-1.pdf, id=112, 794.97pt x 505.89pt>
 File: figure/Trusts_CG-1.pdf Graphic file (type pdf)
 
 <use figure/Trusts_CG-1.pdf>
-Package pdftex.def Info: figure/Trusts_CG-1.pdf used on input line 564.
-(pdftex.def)             Requested size: 688.5568pt x 438.1832pt.
+Package pdftex.def Info: figure/Trusts_CG-1.pdf used on input line 189.
+(pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
+<figure/Costings_due_to_CG_vs_tax_expenditure-1.pdf, id=113, 794.97pt x 505.89p
+t>
+File: figure/Costings_due_to_CG_vs_tax_expenditure-1.pdf Graphic file (type pdf
+)
+ <use figure/Costings_due_to_CG_vs_tax_expenditure-1.pdf>
+Package pdftex.def Info: figure/Costings_due_to_CG_vs_tax_expenditure-1.pdf use
+d on input line 198.
+(pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
 
-LaTeX Warning: Float too large for page by 36.14996pt on input line 568.
-
-
-Overfull \hbox (138.63995pt too wide) in paragraph at lines 574--575
-[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in fread("Costings_by_year_with_tax_expend
-itures.csv"): File is empty: C:\Users\HPARSO~1\AppData\Local\Temp\RtmpklPIw7\fi
-le19483cd41aa[] 
- []
-
-[19] [20 <./figure/Trusts_CG-1.pdf>] [21]
-Underfull \vbox (badness 10000) detected at line 685
- []
-
-
-Underfull \vbox (badness 10000) detected at line 685
- []
-
-[22]
-Underfull \vbox (badness 10000) detected at line 685
+Overfull \hbox (18.20625pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ##    Year Selected items unit fy.year       value va
+lue.real[] 
  []
 
 
-Underfull \vbox (badness 10000) detected at line 685
- []
-
-[23] [24]
-Chapter 2.
-[25
-
-] [26
-
-] [27]
-Overfull \hbox (7.61482pt too wide) in paragraph at lines 813--813
-[]  []\T1/lmtt/m/n/10.95/-4ls daley_discount_remark_1112[] []<-[] []"in which t
-he discount is only applied to rental losses (not rental income, contra Henry)"
-[][] 
+Overfull \hbox (17.9878pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 1  2004      Net rent2    $ 2003-04 -3055643933  -
+3.996707[] 
  []
 
 
-Overfull \vbox (1.85608pt too high) detected at line 829
+Overfull \hbox (18.27524pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 2  2005      Net rent2    $ 2004-05 -4459172398  -
+5.672408[] 
  []
 
-[28] [29] [30] [31]
 
-LaTeX Warning: Empty bibliography on input line 895.
+Overfull \hbox (17.9878pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 3  2006      Net rent2    $ 2005-06 -5528457309  -
+6.805237[] 
+ []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 896.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 896.
+
+Overfull \hbox (17.9878pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 4  2007      Net rent2    $ 2006-07 -6973404963  -
+8.343041[] 
+ []
+
+
+Overfull \hbox (17.9648pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 5  2008      Net rent2    $ 2007-08 -9064668850 -1
+0.457724[] 
+ []
+
+
+Overfull \hbox (17.9878pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 6  2009      Net rent2    $ 2008-09 -7044894299  -
+7.963794[] 
+ []
+
+
+Overfull \hbox (18.27524pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 7  2010      Net rent2    $ 2009-10 -5250216278  -
+5.775780[] 
+ []
+
+
+Overfull \hbox (18.27524pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 8  2011      Net rent2    $ 2010-11 -8360359603  -
+8.930003[] 
+ []
+
+
+Overfull \hbox (17.9878pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 9  2012      Net rent2    $ 2011-12 -8251182161  -
+8.623294[] 
+ []
+
+
+Overfull \hbox (18.25224pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 10 2013      Net rent2    $ 2012-13 -5394063978  -
+5.486710[] 
+ []
+
+
+Overfull \hbox (42.48889pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ##    Initial_revenue_diff Eventual_revenue_diff even
+tual_means...[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 1               3.41490               2.52109    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 2               4.25048               3.23566    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 3               4.86593               3.69320    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 4               6.64907               5.25528    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 5               6.41985               5.01011    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 6               4.20241               3.28769    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 7               3.81968               3.03166    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 8               4.67682               3.70301    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.22586pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 9               4.60977               3.67198    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (47.20287pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 10              4.24824               3.31782    A
+fter 20 years[] 
+ []
+
+
+Overfull \hbox (46.49002pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ##    Diff_due_CG CGT_discount_for_individuals_and_tr
+usts_millions[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 1      1.70437                                    
+         2920[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 2      2.07313                                    
+         4260[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 3      2.56198                                    
+         4960[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 4      4.19600                                    
+         6150[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 5      3.54154                                    
+         9740[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 6      1.55629                                    
+         9170[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 7      1.43281                                    
+         4320[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 8      1.67475                                    
+         4410[] 
+ []
+
+
+Overfull \hbox (47.57079pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 9      1.33249                                    
+         4930[] 
+ []
+
+
+Overfull \hbox (47.54779pt too wide) in paragraph at lines 249--249
+[]\T1/lmtt/m/n/10.95/-4ls ## 10     1.31582                                    
+         4080[] 
+ []
+
+[8
+
+ <./figure/Trusts_CG-1.pdf>]
+<figure/Figure4_Probability_of_CG_by_Income_decile_by_age-1.pdf, id=126, 794.97
+pt x 505.89pt>
+File: figure/Figure4_Probability_of_CG_by_Income_decile_by_age-1.pdf Graphic fi
+le (type pdf)
+
+<use figure/Figure4_Probability_of_CG_by_Income_decile_by_age-1.pdf>
+Package pdftex.def Info: figure/Figure4_Probability_of_CG_by_Income_decile_by_a
+ge-1.pdf used on input line 256.
+(pdftex.def)             Requested size: 330.05202pt x 210.04077pt.
+
+Overfull \hbox (6.39835pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## Running under: Windows 7 x64 (build 7601) Service 
+Pack 1[] 
+ []
+
+
+Overfull \hbox (86.38623pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [1] LC_COLLATE=English_Australia.1252  LC_CTYPE=En
+glish_Australia.1252[] 
+ []
+
+
+Overfull \hbox (92.52588pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [1] grid      stats     graphics  grDevices utils 
+    datasets  methods[] 
+ []
+
+
+Overfull \hbox (29.70372pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ##  [5] proto_0.3-10                parallelRandomFor
+est_4.6-10[] 
+ []
+
+
+Overfull \hbox (1.19pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [15] grattan_0.2                 directlabels_2013
+.6.15[] 
+ []
+
+
+Overfull \hbox (69.46196pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ##  [1] reshape2_1.4.1   splines_3.2.0    lattice_0.2
+0-31  tcltk_3.2.0[] 
+ []
+
+
+Overfull \hbox (74.96924pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ##  [5] colorspace_1.2-4 mgcv_1.8-6       chron_2.3-4
+5     XML_3.98-1.1[] 
+ []
+
+
+Overfull \hbox (81.02841pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ##  [9] nloptr_1.0.4     plyr_1.8.3       stringr_0.6
+.2    munsell_0.4.2[] 
+ []
+
+
+Overfull \hbox (75.1877pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [13] gtable_0.1.2     codetools_0.2-11 evaluate_0.
+7     labeling_0.3[] 
+ []
+
+
+Overfull \hbox (86.63918pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [17] SparseM_1.6      quantreg_5.05    pbkrtest_0.
+4-2   parallel_3.2.0[] 
+ []
+
+
+Overfull \hbox (63.70172pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [21] highr_0.4        Rcpp_0.11.5      formatR_1.0
+      lme4_1.1-7[] 
+ []
+
+
+Overfull \hbox (92.4109pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [25] digest_0.6.8     tools_3.2.0      bitops_1.0-
+6     lazyeval_0.1.10[] 
+ []
+
+
+Overfull \hbox (86.37473pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [29] RCurl_1.95-4.5   MASS_7.3-40      Matrix_1.2-
+0     assertthat_0.1[] 
+ []
+
+
+Overfull \hbox (75.27968pt too wide) in paragraph at lines 303--303
+[]\T1/lmtt/m/n/10.95/-4ls ## [33] minqa_1.2.4      iterators_1.0.7  nnet_7.3-9 
+      nlme_3.1-120[] 
+ []
+
+[9 <./figure/Costings_due_to_CG_vs_tax_expenditure-1.pdf>]
+
+LaTeX Warning: Empty bibliography on input line 307.
+
+[10 <./figure/Figure4_Probability_of_CG_by_Income_decile_by_age-1.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 308.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 308.
+
 (Costings.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 896.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 896.
-
-
-LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 308.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 308.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 896.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 308.
 
 Package biblatex Warning: Please (re)run Biber on the file:
 (biblatex)                Costings
@@ -2713,35 +2960,25 @@ Package biblatex Warning: Please (re)run Biber on the file:
 Package logreq Info: Writing requests to 'Costings.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 44310 strings out of 493698
- 893858 string characters out of 3141979
- 1427988 words of memory out of 3000000
- 46379 multiletter control sequences out of 15000+200000
- 250857 words of font info for 314 fonts, out of 3000000 for 9000
+ 43929 strings out of 493698
+ 887290 string characters out of 3141979
+ 1422931 words of memory out of 3000000
+ 46160 multiletter control sequences out of 15000+200000
+ 224072 words of font info for 236 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  71i,20n,102p,10489b,1746s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1.enc}{C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files (x86)/MiK
-TeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files (x86)/MiKTeX 2.9/fon
-ts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvip
-s/fontname/8r.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.e
-nc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:
-/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi10.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi7.pfb><C:/Program Files (x86)/Mi
-KTeX 2.9/fonts/type1/public/lm/lmmi8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fon
-ts/type1/public/lm/lmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
-lic/lm/lmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy10
-.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy7.pfb><C:/Pro
-gram Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files (
-x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
-type1/public/lm/lmtti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
-arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1r8
-a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1ri8a.pfb>
-Output written on Costings.pdf (31 pages, 398424 bytes).
+{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}{C:/Progra
+m Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}<C:/Program Files (x86)/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
+ype1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
+/lm/lmtti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1b8a
+.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1r8a.pfb><C:/Pr
+ogram Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1ri8a.pfb>
+Output written on Costings.pdf (10 pages, 286389 bytes).
 PDF statistics:
- 335 PDF objects out of 1000 (max. 8388607)
- 72 named destinations out of 1000 (max. 500000)
- 74836 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 184 PDF objects out of 1000 (max. 8388607)
+ 27 named destinations out of 1000 (max. 500000)
+ 62558 words of extra memory for PDF output out of 74296 (max. 10000000)
 

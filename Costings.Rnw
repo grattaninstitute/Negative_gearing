@@ -116,9 +116,6 @@ weighting <- function(year = 2013){
       100 / percentage_sample
   }
 }
-
-
-
 @
 
 % citations
@@ -130,14 +127,6 @@ weighting <- function(year = 2013){
 
 \chapter{Costings}
 \section{Introduction}
-\subsection{Technical assumptions}
-The key assumptions that apply to each of the proposal costings are:
-\begin{enumerate}
-\item The 2012-13 2\%\ sample file obtained through \textsc{taxstats} is accurate and representative of that year.
-\item The \verb=grattan::income_tax= function in the grattan R package is accurate and complete for the 2012-13 financial year.
-\item The 2012-13 financial year is sufficiently representative of future years.
-\end{enumerate}
-
 \subsection{Overview of tax expenditure sanity checking}
 The tax expenditure for the capital gains tax discount (E17) is \$4,180~billion.\footcite{TaxExpenditures201213} 
 <<TaxStatsCapitalGainsDiscount>>=
@@ -151,112 +140,6 @@ fread(sample_file_of(2013)) %>%
 @
 
 This differs from the amount implicit in taxstats of \$\Sexpr{apparent_CG_tax_expenditure_201213_billions}~billion. The discrepancy may be the absence of benenfits to trusts in this statistic. 
-
-\section{30\%\ CGT discount and negative gearing only for the non-salary component of taxable income}
-Instead of a 50\%\ discount on the amount of capital gains that may be taxed, we propose a 30\%\ discount on the component of capital gains forming one's assessable income. Further, we propose that individuals be no longer permitted to deduct losses arising from their investments against any income other than investments and capital gains; in particular, negative gearing against salaries and wages will cease.
-\subsection{Status quo}
-Currently, assessable income ($I_A$) is encoded directly into tax stats
-\[I_A = \verb=Taxable_Income=\]
-An individual's capital gains amount is recorded in Income item 18 labels A (Net capital gains) and H (Total capital gains). Item A includes the 50\%\ discount and capital losses, but item H does not.\footnote{See \url{https://www.ato.gov.au/Individuals/Tax-Return/2013/Supplementary-tax-return/Income-questions-13-24/18---Capital-gains/}} This corresponds to items \verb=Net_CG_amt= and \verb=Tot_CY_CG_amt= respectively. We thus ignore \verb=Tot_CY_CG_amt=.
-
-Capital gains tax for individuals is not a separate tax; it is simply a component of an individual's income tax. Once the appropriate deductions and discounts have been made, it is simply added on to a person's assessable income:
-\[I_A = \text{Capital gains (after discounts, deductions)} + \text{Other income}\]
-and
-\[\text{tax payable} = T(I_A)\]
-where $T$ is not a function of capital gains, $\frac{\partial T(\cdot)}{\partial \text{Capital gain}} = 0$.
-%
-\subsection{Our proposal}
-We need to determine:
-\begin{enumerate}
-\item Total capital gains (pre-discount) for each taxpayer
-\item The amount they could deduct, but can no longer
-\end{enumerate}
-\subsubsection{Total capital gains}
-Determining total capital gains from tax stats suffers from a flaw. Only the \emph{Total capital gains} $K_T$ and the \emph{Net capital gains} $K_n$ are recorded. Net capital gains is the component of an individual's income upon which the marginal tax rate is applied -- it includes both capital losses and the capital gains discount. Total capital gains is the sum of all capital gains for the year, without capital losses or the capital gains discount.
-
-It follows that our best estimate of the total capital gains to which the discount would apply is double the \emph{Net capital gains} amount. So the assessable income under a new regime ($I_A'$) with a discount on capital gains of $d$ will be 
-
-\[I_A' = I_A - K_n + 2K_n(1 - d).\]
-
-\begin{smallbox}{Tax stats}{box:TaxStatsCapitalGains}
-John purchases and sells (13 months later) two houses, making capital gains of \$10,000 and \$25,000. He also experienced a capital loss of $-$\$5,000 last year which has not yet been applied against later year capital gains. His total capital gains is \$35,000 and his net capital gains is \$15,000.
-
-In our calculations, we only see that John had a total capital gain of \$35,000 and a net capital gain of \$15,000. We infer that his total capital gains was $2\times \$15,000 = \$30,000$. 
-\end{smallbox}
-
-
-
-<<Reduce_capital_gains_discount, results = "hide">>=
-new_discount <- 0.30  #old is 0.50
-
-fread(sample_file_of(2013)) %>%
-  mutate(
-    current_tax = income_tax(Taxable_Income),
-    current_assessable_income = Taxable_Income,
-    #proposed_non_cap_assessable_income = Taxable_Income,
-    proposal_capital_tax = income_tax(Taxable_Income - Net_CG_amt + (1 - new_discount) * (2 * Net_CG_amt))
-  ) %$% {50*(sum(proposal_capital_tax) - sum(current_tax))}
-@
-
-
-\subsection{Negative gearing}
-<<Limit_negative_gearing, results = "hide">>=
-fread(sample_file_of(2013)) %>% 
-  mutate(current_tax = income_tax(Taxable_Income),
-         Taxable_Income_No_NG = Taxable_Income - pmin(Net_rent_amt, 0),
-         proposal_tax_No_NG = income_tax(Taxable_Income_No_NG)
-  ) %$% 
-  {50*(sum(proposal_tax_No_NG) - sum(current_tax))}
-@
-
-\subsection{Eslake proposal: no negative gearing against salary}
-Current:
-\begin{align*}
-I_A &= \text{Salary} + \text{Other income} \\
-&\qquad{} - \text{deductions excl. rental losses} - \text{rental losses}
-\end{align*}
-Let:
-\begin{align*}
-I_S &= \text{Salary}\\
-I_{A\backslash S} &= \text{Other income} \\
-&\qquad{} - \text{deductions excl. rental losses} - \text{rental losses} \\
- &= I_A - I_S
-\end{align*}
-Then a person's assesable income under the new scenario, $I_A'$ is the person's salary where deductions are only permitted against the person's non-salary income. Deductions in excess of a person's non-salary income may not be further deducted against his salary:
-\begin{align*}
-I_A' &= I_S + \max\left(0, I_A - I_S \right)
-\end{align*}
-Note under this scenario, anyone who has a nonnegative salary \EMPH{cannot obtain a taxable loss}. Any costings using this scenario will overestimate the revenue colllectable under a scenario that violates this assumption.
-
-\subsection{Application to taxstats}
-<<Minimum_Tax_From_Salary, results = 'asis'>>=
-current_tax_receipts <- 50*sum(income_tax(fread(sample_file_of(2013))$Taxable_Income))
-
-isolate_salary_for_ng <- 
-  fread(sample_file_of(2013)) %>%
-  mutate(
-    current_tax = income_tax(Taxable_Income),
-    Taxable_Income_No_NG = Sw_amt + pmax(0, Taxable_Income - Sw_amt),
-    new_tax = income_tax(Taxable_Income_No_NG),
-    tax_diff = new_tax - current_tax
-  ) 
-
-isolate_salary_for_ng %$% 
-  {sum(new_tax)*50} ->
-  #
-  tax_receipts_no_NG__Salary_isolated
-
-isolate_salary_for_ng %>%
-  select(Net_rent_amt, Taxable_Income, Taxable_Income_No_NG, current_tax, new_tax) %>%
-  setnames(c("Net rental profit", "$I_A$", "$I_A'$", "Tax (status quo)", "Tax (new)")) %>% 
-  summary %>% 
-  xtable(caption = "Summary table for taxable income based on $I_A' = I_S + \\max(0, I_A - I_s)$.") %>%
-  print(floating.environment = "table*", caption.placement = "top",
-        include.rownames = FALSE, sanitize.colnames.function = function(x){x})
-@
-So under the current regime where \$\Sexpr{round(current_tax_receipts/1e9, 1)}~billion is payable in income tax, the above scenario renders \$\Sexpr{round(tax_receipts_no_NG__Salary_isolated/1e9, 1)}~billion payable.
-\clearpage
-
 
 \subsection{Time series}
 <<Get_time_series>>=
@@ -274,25 +157,6 @@ taxstats_ts <- taxstats_ts %>%
   mutate(fy.year = ifelse(fy.year == "1999-2000", "1999-00", fy.year))
 @
 
-
-
-
-<<Negative_gearing_nominal_over_time>>=
-taxstats_ts %>%
-  filter(grepl("Net rent.*loss", `Selected items`)) %>%
-  filter(!grepl("property", `Selected items`)) %>%
-  filter(!is.na(value)) %>%
-  group_by(unit) %>%
-  arrange(fy.year) %>%
-  mutate(value.rel = value/first(value)) %>%
-  #mutate(value.real = cpi_inflator(value, from_fy = fy.year)) # requires en dash matching
-  mutate(fy.year = factor(fy.year, ordered = TRUE)) %>%
-  
-  grplot(aes(x = fy.year, y = value.rel, color = unit, label = unit)) + 
-  geom_line(aes(group = unit)) + 
-  geom_dl(method = "last.qp")
-@
-\onecolumn
 \section{Henry-lite proposal}
 The proposal in the Henry review is to reduce both the capital gains discount and the amount one can deduct through negative gearing. In particular, the tax review proposes the discount be reduced to 30\%\ and a discount of 30\%\ be applied to both rental losses and rental income.\footnote{The income tax treatment of these household savings would be improved by applying a
 40 per cent discount to most interest income, net residential rental property income, capital
@@ -307,33 +171,19 @@ discount_only_to_negative_rent_income <- TRUE
 
 
 <<Henry_proposal_mutate, echo=T>>=
-if (!discount_only_to_negative_rent_income){
-  henry_taxstats <- 
-  fread(sample_file_of(2013)) %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    #new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
-    current_tax = income_tax(Taxable_Income),
-    new_tax = income_tax(new_Taxable_Income),
-    diff = new_tax - current_tax
-  )
-  henry_discount_remark <- "in which the discount is applied to both rental income and rental losses"
-} else {
-  henry_taxstats <- 
+henry_taxstats <- 
   fread(sample_file_of(2013)) %>%
   mutate(
     new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
     new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    #new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
+    new_invstment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount),
+    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
     current_tax = income_tax(Taxable_Income),
     new_tax = income_tax(new_Taxable_Income),
     diff = new_tax - current_tax
   )
-  henry_discount_remark <- "in which the discount is only applied to rental losses (not rental income, contra Henry)"
-}
+
+henry_discount_remark <- "in which the discount is only applied to negative rental income"
 @
 
 Under this proposal, \Sexpr{henry_discount_remark}, income tax would rise from \$\Sexpr{round(50*sum(henry_taxstats$current_tax)/1e9, 1)}~billion to \$\Sexpr{round(50*sum(henry_taxstats$new_tax)/1e9, 1)}~billion.
@@ -344,215 +194,6 @@ Under this proposal, \Sexpr{henry_discount_remark}, income tax would rise from \
 new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
-
-<<Daley_discount, echo=TRUE>>=
-theYear <- 2013
-
-daley_taxstats <- 
-  # fread(sample_file_of(2013)) %>%
-  fread(sample_file_of(year = theYear))
-# Year specific housekeeping
-# Before 2011-12, there is no variable Net_fincl_lss_amt
-if (!("Net_fincl_invstmt_lss_amt" %in% names(daley_taxstats)))
-  daley_taxstats$Net_fincl_invstmt_lss_amt <- 0
-
-daley_taxstats %<>%
-  #
-  # One silly entry has a CG of $25M!
-  filter(Net_CG_amt < 5e6) %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    Taxable_Income_Red_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
-    #
-    # dummy variable for following ifelse
-    discount_only_to_negative_rent_income = discount_only_to_negative_rent_income,
-    #
-    new_tot_inc = Tot_inc_amt - Net_CG_amt + new_capital_gains,
-    income_no_salary = new_tot_inc - Net_rent_amt - Sw_amt,  # component of income from neither salary nor rent
-    #
-    # This is not quite true: it doesn't include medical offsets.
-    # You can only deduct Net_rent down to zero.  
-    # Include financial losses in deductions
-    # Full tax on Sw_amt. Then deductions
-    new_Taxable_Income =  pmax(0, income_no_salary + Net_rent_amt - Net_fincl_invstmt_lss_amt) + Sw_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
-    old_Taxable_Income_no_offset = Tot_inc_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
-    loss_ignore_CG = -1 * pmin(0, pmax(0, income_no_salary - new_capital_gains) + Net_rent_amt),
-    #
-    loss_carry_fwd = -1 * pmin(0, income_no_salary + Net_rent_amt),  
-    loss_carry_fwd_not_CG = ifelse(new_capital_gains > abs(Net_rent_amt) & Net_rent_amt < 0, Net_rent_amt, 0),
-    #
-    # Ratio of (new?) capital gains to losses is the proportion of each taxpayer's 
-    # capital gains that may be deducted from the rental losses which, due
-    # to the abolition of negative gearing in this proposal, cannot be immediately
-    # deducted from one's income.  The sums represent the overall ratio in the population
-    # which we assume to be constant year-on-year.
-    #
-    # pmin sinces can't claim more than your losses
-    annualized_loss = pmin(1, abs(sum(new_capital_gains) / sum(loss_carry_fwd))) * loss_carry_fwd,  # nonnegative
-    #
-    # The consequence of the following calc is that some new_Taxable_Income_post_carryfwd will be NEGATIVE 
-    # -- i.e. unexhausted (especially if the Taxable_Income (originally) was zero).  This error will
-    # overestimate the amount of extra tax collected.  However
-    #
-    #   daley_taxstats %>% 
-    #     filter(new_Taxable_Income_post_carryfwd < 0) %$% sum(new_Taxable_Income) * 50 / 1e9
-    #   # [1] 0.224  # 224 million in losses
-    #
-    # i.e. There are at most 224 million dollars in losses carried forward that are unaccounted for
-    # in this model.  And so at most 224 * 0.485 = 109 million in taxable income AT MOST that is 
-    # possibly lost. My doona is comfy: I'm staying in bed for that.
-    new_Taxable_Income_post_carryfwd = new_Taxable_Income - annualized_loss,  # remembering ann.lss is nonnegative
-    current_tax = income_tax(old_Taxable_Income_no_offset),
-    tax_after_reduction_in_discount = income_tax(Taxable_Income_Red_CG_discount),
-    new_tax = income_tax(new_Taxable_Income),
-    diff = new_tax - current_tax,
-    diff_incl_carry_fwd = income_tax(new_Taxable_Income_post_carryfwd) - current_tax
-  )
-
-if (discount_only_to_negative_rent_income){
-  daley_discount_remark <- "in which the discount is only applied to rental losses (not rental income, contra Henry)"
-} else {
-  daley_discount_remark <- "in which the discount is applied to both rental income and rental losses"
-}
-@
-Under this proposal, income tax would rise from \$\Sexpr{round(50*sum(daley_taxstats$current_tax)/1e9, 1)}~billion to \$\Sexpr{round(50*sum(daley_taxstats$new_tax)/1e9, 1)}~billion. (2012-13 taxstats) But the extra revenue due to this policy will reduce: losses brought forward (that would have otherwise been used to reduce ordinary taxable income) will be offset against capital gains. This will reduce the increased revenue for \$\Sexpr{round(sum(daley_taxstats$diff)*50/1e9,1)}~bn to \$\Sexpr{round(sum(daley_taxstats$diff_incl_carry_fwd)*50/1e9,1)}~bn.
-%
-\subsection{Pushing forward the losses}
-\subsubsection{Infer by age}
-\paragraph{Age}
-<<Losses_and_transitions_by_age, echo=TRUE>>=
-daley_taxstats_with_age <- 
-  daley_taxstats %>%
-  # random
-  mutate(age_imp = floor(17.5 + 5 * (11 - age_range) + runif(nrow(.), -2.5, 2.5))) %>%
-  mutate(loss_carry_fwd_orig = loss_carry_fwd)
-
-prob_of_CG_event_by_age <- 
-  daley_taxstats_with_age %>%
-  group_by(age_imp) %>%
-  summarise(CG_event_prob = mean(new_capital_gains > 0))
-
-size_of_CG_event <- 
-  daley_taxstats_with_age %>% 
-  filter(new_capital_gains > 0) %>%
-  group_by(age_imp) %>%
-  summarise(size_of_hypoth_CG = mean(new_capital_gains))
-
-losses_by_age <- 
-  daley_taxstats_with_age %>%
-  group_by(age_imp) %>%
-  summarise(avg_loss_carried_fwd = mean(loss_ignore_CG))
-
-taxable_income_by_age <- 
-  daley_taxstats_with_age %>% 
-  group_by(age_imp) %>%
-  summarise(avg.taxable_income = mean(Taxable_Income))
-
-taxable_income_by_CG <-
-  daley_taxstats %>%
-  group_by(HasCG = new_capital_gains > 0) %>%
-  summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
-  mutate(mean.tx = income_tax(mean.tx.i),
-         marginal.tax.of.avg = income_tax(mean.tx.i) - income_tax(mean.tx.i - 1)) %>%
-  select(HasCG, marginal.tax.of.avg) %>%
-  data.table
-
-@
-
-<<Probabilistic_losses_against_CG4e, echo=TRUE>>=
-capital_gains_by_losses4 <-
-  daley_taxstats %>% 
-  group_by(IsInvestor = Gross_rent_amt > 0, 
-           HasLoss = loss_ignore_CG > 0, 
-           HasCG = new_capital_gains > 0) %>% 
-  tally %>% 
-  arrange(IsInvestor, HasLoss, HasCG) %>% 
-  #
-  # cosmetics:
-  ungroup %>% 
-  group_by(IsInvestor) %>% 
-  mutate(prop = round(n/sum(n),3))
-# Source: local data table [8 x 5]
-# 
-#   IsInvestor HasLoss HasCG      n  prop
-# 1      FALSE   FALSE FALSE 208423 0.968
-# 2      FALSE   FALSE  TRUE   6656 0.031
-# 3      FALSE    TRUE FALSE    256 0.001
-# 4      FALSE    TRUE  TRUE     23 0.000
-#--
-# 5       TRUE   FALSE FALSE  20753 0.533
-# 6       TRUE   FALSE  TRUE   2340 0.060
-# 7       TRUE    TRUE FALSE  14724 0.378
-# 8       TRUE    TRUE  TRUE   1143 0.029
-
-new_daley <- 
-  daley_taxstats %>%
-  # random
-  mutate(age_imp = floor(17.5 + 5 * (11-age_range) + runif(nrow(.), -2.5, 2.5))) %>%
-  merge(size_of_CG_event, by = "age_imp") %>%
-  mutate(loss_carry_fwd_orig = loss_ignore_CG) %>%
-  mutate(hasHadCG = FALSE,  #yet
-         whenCG.lastoccurred = 0,
-         prev_unexhausted_loss = loss_ignore_CG) 
-
-for (i in 1:20){
-gc()
-new_daley %<>% 
-  select(age_imp, loss_carry_fwd_orig, prev_unexhausted_loss,
-         whenCG.lastoccurred, size_of_hypoth_CG, 
-         hasHadCG,
-         new_Taxable_Income, current_tax) %>% 
-  mutate(rand = runif(nrow(.))) %>%
-  mutate(noCGevent = rand < 0.533 + 0.378) %>%  # approx 90% # v.s. table
-  mutate(HasCG = !noCGevent) %>%
-  mutate(
-    loss_carry_fwd = ifelse(noCGevent, 
-                            loss_carry_fwd_orig * i,  #unimportant
-                            #
-                            # if they do have a capital gains event, we
-                            # estimate the size of the CG event by the average 
-                            # for their age (in the groundhog year).  The losses have
-                            # accumulated over time: previously unexhuasted losses from
-                            # previous CG events where this hasn't been zero.  And the 
-                            # losses built up from the first year of the new policy. 
-                            pmax(0, prev_unexhausted_loss + 
-                                   loss_carry_fwd_orig * (i - 1 - whenCG.lastoccurred) - 
-                                   size_of_hypoth_CG)),
-    # 
-    wasCompleteLoss = !noCGevent & loss_carry_fwd_orig * (i - whenCG.lastoccurred) - size_of_hypoth_CG <= 0,
-    
-    now_Taxable_Income = ifelse(noCGevent, 
-                                new_Taxable_Income,
-                                pmax(0, new_Taxable_Income - loss_carry_fwd)),
-    # Here we assume CG in CG event year is zero to provide an upper bound of losses.
-    now_Taxable_Income2 = ifelse(noCGevent,
-                                 new_Taxable_Income,
-                                 pmax(0, new_Taxable_Income - 
-                                        loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
-    new_tax = income_tax(now_Taxable_Income),
-    new_tax2= income_tax(now_Taxable_Income2),
-    diff = new_tax - current_tax,
-    diff2 = new_tax2 - current_tax,
-    #
-    # retrospective variables
-    prev_unexhausted_loss = ifelse(noCGevent, 
-                                   prev_unexhausted_loss, 
-                                   pmax(0, loss_carry_fwd_orig * (i - whenCG.lastoccurred) - 
-                                          size_of_hypoth_CG)
-    ),
-    loss_still_available = pmax(0, loss_carry_fwd_orig * (i - whenCG.lastoccurred) - size_of_hypoth_CG),
-    whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred),
-    hasHadCG = as.logical(pmax(hasHadCG + !noCGevent, 1))  # unimportant
-  ) %>%
-  data.table
-  
-  if (i %% 5 == 0 || i == 1){
-    cat("Year", i, "New income:\n",  paste0("$", round(sum(new_daley$diff)*50/1e9, 1)), "bn\n",
-        "New income2:\n",  paste0("$", round(sum(new_daley$diff2)*50/1e9, 1)), "bn\n\n")
-  }
-}
-@
-Under these assumptions, the effect of the tax reduces from \$\Sexpr{round(50*sum(daley_taxstats$diff) / 1e9, 1)}~billion to \$\Sexpr{round(50*sum(new_daley$diff)/1e9, 1)}~billion after \Sexpr{i}~years.
 
 <<Functions_For_All_Years>>=
 # This is a functional version of the above. It's designed to be easier to read,
@@ -585,9 +226,9 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   if (!("ETP_txbl_amt" %in% names(daley_taxstats)))
     daley_taxstats[,ETP_txbl_amt := 0]
   
-  progress_bar <- txtProgressBar(min = 0, initial = i - 1, max = eventual, title = "Progress")
+  progress_bar <- txtProgressBar(min = 0, max = eventual, title = "Progress")
   
-  for (i in 1:eventual){
+
     daley_taxstats %<>%
       #
       # One silly entry has a CG of $25M!
@@ -678,9 +319,9 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
     # 8       TRUE    TRUE  TRUE   1143 0.029
     
     prob_of_noCG_if_investor <- capital_gains_by_losses4 %>%
-      filter(IsInvestor, HasCG) %$%
+      filter(IsInvestor, !HasCG) %$%
       sum(prop)
-    
+   for (i in 1:eventual){   
     if (i == 1){
       new_daley <- 
         daley_taxstats %>%
@@ -710,7 +351,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
         whenCG.lastoccurred.prev = whenCG.lastoccurred,
         # reset if applicable
         whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred),
-        hasHadCG = as.logical(pmax(hasHadCG + !noCGevent, 1)) 
+        hasHadCG = as.logical(pmin(hasHadCG + !noCGevent, 1)) 
       ) %>%
       select(-marginal.tax.of.avg) %>%
       data.table
@@ -730,11 +371,36 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
                Diff_due_CG = sum(daley_taxstats$tax_after_reduction_in_discount - daley_taxstats$current_tax)*weighting(year)/1e9
     )
   })
+    # new_daley
 }
+
+
 @
+
 
 <<Just_negative_gearing_cost>>=
 tax2013 <- fread(sample_file_of(2013))
+prob_of_noCG_if_investor201213 <- 
+  tax2013 %>%
+  group_by(
+    IsInvestor = Gross_rent_amt > 0,
+    HasCG = Net_CG_amt > 0
+  ) %>%
+  tally %>%
+  ungroup %>%
+  group_by(IsInvestor) %>%
+  mutate(prop = n/sum(n)) %>% 
+  filter(IsInvestor, !HasCG) %$% 
+  prop
+
+taxable_income_by_CG <- 
+  tax2013 %>%
+  group_by(HasCG = Net_CG_amt > 0) %>%
+    summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
+    mutate(mean.tx = income_tax(mean.tx.i, fy.year = fy.year),
+           marginal.tax.of.avg = income_tax(mean.tx.i, fy.year = fy.year) - income_tax(mean.tx.i - 1, fy.year = fy.year)) %>%
+    select(HasCG, marginal.tax.of.avg) %>%
+    data.table
 
 just_negative_gearing_taxstats <-
   tax2013 %>%
@@ -760,7 +426,7 @@ just_negative_gearing_taxstats_year0 <- just_negative_gearing_taxstats
     just_negative_gearing_taxstats %<>%
       mutate(rand = runif(nrow(.))) %>%
       mutate(loss_carry_fwd_orig = loss_ignore_CG) %>% 
-      mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
+      mutate(noCGevent = rand < prob_of_noCG_if_investor201213) %>%
       mutate(HasCG = !noCGevent) %>%
       merge(taxable_income_by_CG, by = "HasCG") %>%
       mutate(
@@ -773,92 +439,14 @@ just_negative_gearing_taxstats_year0 <- just_negative_gearing_taxstats
         whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred)
       ) %>%
       select(-marginal.tax.of.avg)
+    
+    if (i == 20)
+      just_negative_gearing_taxstats %<>% mutate(diff = new_tax - current_tax)
   }
 
 # 3 billion in savings upfront.
 @
-
-<<SQL_for_ATO>>=
-tax2013 <- fread(sample_file_of(2013))
-
-sqldf("SELECT tax, medicare_levy, LITO, MAX(0,tax + medicare_levy - LITO) as current_tax,
-              taxn, medicare_levyn, LITOn, MAX(0,taxn + medicare_levyn - LITOn) as new_tax,
-              Net_CG_amt
-        FROM (
-        SELECT Taxable_Income
-              ,Net_CG_amt
-                  ,CASE 
-                      WHEN Taxable_Income < 18200
-                            THEN 0
-                            ELSE CASE
-                                 WHEN Taxable_Income < 37000
-                                 THEN 0.19 * (Taxable_Income - 18200)
-                                 ELSE CASE 
-                                          WHEN Taxable_Income < 80000
-                                          THEN 3572 + 0.325 * (Taxable_Income - 37000)
-                                          ELSE CASE 
-                                               WHEN Taxable_Income < 180000
-                                               THEN 17547 + 0.37 * (Taxable_Income - 80000)
-                                               ELSE 54547 + 0.45 * (Taxable_Income - 180000)
-                                               END
-                                          END
-
-                                 END 
-                            END as tax 
-                  ,CASE 
-                       WHEN Taxable_Income < 20542
-                       THEN 0
-                       ELSE CASE 
-                                WHEN Taxable_Income < 24167
-                                THEN 0.010 * (Taxable_Income - 20542)
-                                ELSE 0.015 * (Taxable_Income)
-                                END
-                       END as medicare_levy
-                  ,CASE 
-                      WHEN Taxable_Income < 37000
-                      THEN 445
-                      ELSE MAX(0,445 - ((Taxable_Income - 37000)*0.015))
-                      END as LITO
-                  ,CASE 
-                      WHEN new_Taxable_Income < 18200
-                            THEN 0
-                            ELSE CASE
-                                 WHEN new_Taxable_Income < 37000
-                                 THEN 0.19 * (new_Taxable_Income - 18200)
-                                 ELSE CASE 
-                                          WHEN new_Taxable_Income < 80000
-                                          THEN 3572 + 0.325 * (new_Taxable_Income - 37000)
-                                          ELSE CASE 
-                                               WHEN new_Taxable_Income < 180000
-                                               THEN 17547 + 0.37 * (new_Taxable_Income - 80000)
-                                               ELSE 54547 + 0.45 * (new_Taxable_Income - 180000)
-                                               END
-                                          END
-
-                                 END 
-                            END as taxn 
-                  ,CASE 
-                       WHEN new_Taxable_Income < 20542
-                       THEN 0
-                       ELSE CASE 
-                                WHEN new_Taxable_Income < 24167
-                                THEN 0.010 * (new_Taxable_Income - 20542)
-                                ELSE 0.015 * (new_Taxable_Income)
-                                END
-                       END as medicare_levyn
-                  ,CASE 
-                      WHEN new_Taxable_Income < 37000
-                      THEN 445
-                      ELSE MAX(0,445 - ((new_Taxable_Income - 37000)*0.015))
-                      END as LITOn
-        FROM (SELECT Net_CG_amt
-                    ,Taxable_Income
-                    ,Taxable_Income - Net_CG_amt +  2 * Net_CG_Amt * (1 - 0.30) AS new_Taxable_Income 
-              FROM tax2013))") %>% head
-
-@
-
-
+\chapter{Checking}
 <<Compare_years_with_tax_expenditure, eval=FALSE>>=
 # Not run:
 # Slow
@@ -961,7 +549,7 @@ costs_years_CGT %>%
 @
 \begin{figure}
 \Caption{The relationship between the tax expenditure for a year is related to the calculated costings of the proposed policy}{Increased revenue due to poroposed change in CGT policy (contemporaneous dollars)}{fig:Costings_due_to_CG_vs_tax_expenditure-1}
-\includegraphics[width=\columnwidth]{figure/Costings_due_to_CG_vs_tax_expenditure}
+\includegraphics[width=\columnwidth]{figure/Costings_due_to_CG_vs_tax_expenditure-1}
 \notes{}
 \end{figure}
 
@@ -977,207 +565,47 @@ costs_years_CGT %>%
   mutate(Diff_due_notCG = Initial_revenue_diff - Diff_due_CG)
 @
 
-
-
-\begin{table*}
-\Caption{Costings for the two policies}{Using the 2012-13 sample file, contemporaneous dollars}{tbl:Costings}
-\begin{tabular}{lrrr}
- & & Initial change in revenue & Eventual change \\
- \hline
- Henry lite & & \$\Sexpr{round(sum(henry_taxstats$diff)*50/1e9, 1)}~bn & \$\Sexpr{round(sum(henry_taxstats$diff)*50/1e9, 1)}~bn\\[4pt]
- Quarantine losses from salary & Simple & \$\Sexpr{round(50*sum(daley_taxstats$diff) / 1e9, 1)}~bn & \$\Sexpr{round(50*(sum(income_tax(daley_taxstats$new_Taxable_Income_post_carryfwd) - daley_taxstats$current_tax))/1e9, 1)}~bn \\
-                            & Secondary & \$\Sexpr{round(50*sum(daley_taxstats$diff) / 1e9, 1)}~bn & \$\Sexpr{round(50*sum(new_daley$diff)/1e9, 1)}~bn
-\end{tabular}
-\end{table*}
-
-<<Probabilistic_losses_against_CG4>>=
-new_daley <- daley_taxstats %>%
-  mutate(loss_carry_fwd_orig = loss_ignore_CG) %>%
-  mutate(hasHadCG = FALSE,  #yet
-         whenCG.lastoccurred = 0,
-         prev_unexhausted_loss = loss_ignore_CG) 
-
-for (i in 1:30){
-new_daley %<>%
-  mutate(rand = runif(nrow(.))) %>%
-  mutate(noCGevent = rand < 0.533 + 0.378) %>%
-  mutate(HasCG = !noCGevent) %>%
-  merge(taxable_income_by_CG, by = "HasCG")  %>%
-  mutate(
-    new_tax = ifelse(noCGevent, 
-                     income_tax(new_Taxable_Income),
-                     # Should negative taxes be included? Answer not yet obvious.
-                     pmax(0, income_tax(new_Taxable_Income) - marginal.tax.of.avg * loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
-    diff = new_tax - current_tax,
-    # record for console printout
-    whenCG.lastoccurred.prev = whenCG.lastoccurred,
-    # reset if applicable
-    whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred),
-    hasHadCG = as.logical(pmax(hasHadCG + !noCGevent, 1)) 
-    ) %>%
-    select(-marginal.tax.of.avg)
-  
-  if (i %% 5 == 0 || i == 1){
-  new_daley %$%
-    cat("Year", i, "\n", 
-        "New tax", paste0("$", round(sum(diff)*50/1e9, 1)), "\n",
-        "Number -ve taxable income", sum(new_tax < 0), "\n")
-    
-  filter(new_daley, HasCG, HasLoss = loss_carry_fwd_orig > 0) %>%
-    group_by(quintile = ntile(loss_carry_fwd_orig * (i - whenCG.lastoccurred.prev), 5)) %>%
-    summarise(avg.loss = mean(loss_carry_fwd_orig * (i - whenCG.lastoccurred.prev)),
-              age.of.losses = mean(i - whenCG.lastoccurred.prev),
-              n = n()) %>%
-    arrange(quintile) %>%
-    print
-  
-  
-  }
-}
+<<Figure4_Probability_of_CG_by_Income_decile_by_age>>=
+# Average CG probability by age and income decile, then smoothed.
+fread(sample_file_of(2013)) %>% 
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", age)) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65-69", "70+"))) %>% 
+  group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
+  summarise(prop_cg = mean(Net_CG_amt > 0))  %>% 
+  grplot(aes(x = Income_decile, y = prop_cg, group=factor(age), color = factor(age), label = age)) +
+  annotate("segment",
+           x = -Inf, y = 0.10,
+           xend = 10, yend = 0.10,
+           color = '#DADADA') +
+  annotate("segment", 
+           x = -Inf, y = 0.20,
+           xend = 10, yend = 0.20,
+           color = '#DADADA') + 
+  annotate("segment", 
+           x = -Inf, y = 0.30,
+           xend = 10, yend = 0.30,
+           color = '#DADADA') + 
+  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.35)) + 
+  scale_x_continuous(expand = c(0,0), breaks = 1:10) + 
+  annotate("blank", x = 12, y = 0.1) + 
+  theme(axis.line.x = element_blank()) + 
+  annotate("segment", x = 1, xend = 10, y = 0, yend = 0) + 
+  scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.3), breaks = c(0:3)/10 ) + 
+  stat_smooth(size = 2, se = FALSE) + 
+  scale_color_manual(values = rev(gpal(7))) + 
+  theme(axis.title.x = element_text(hjust = 0.28), # requires segment
+        panel.grid.major = element_blank()) + xlab("Income decile") 
 @
-
-
-\chapter{Dani's presentation numbers}
-\onecolumn
-\section{Reduce CGT discount and limit negative gearing}
-<<Reduce_CGT_discount_and_limit_negative_gearing, echo=T, tidy=T>>=
-new.discount <- 0.3
-
-fread(sample_file_of(2013)) %>%
-  # Reduce CGT discount to 30%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    Taxable_Income_No_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
-    ## is this right? -- BC: Glanced and corrected Net_rent_amt sign.
-    Taxable_Income_new_proposal = ifelse(Net_rent_amt < 0, 
-                                         pmax(0, Taxable_Income_No_CG_discount - Sw_amt + Net_rent_amt) + Sw_amt,
-                                         Taxable_Income_No_CG_discount),
-    loss_carry_fwd = pmin(0,Taxable_Income_No_CG_discount - Sw_amt + Net_rent_amt),
-    current_tax = income_tax(Taxable_Income),
-    new_tax = income_tax(Taxable_Income_new_proposal),
-    new_tax_with_carry_fwd = income_tax(Taxable_Income_new_proposal + loss_carry_fwd),
-    diff = new_tax - current_tax
-  ) %$% 
-  sum(diff) * 50 / 1e9 ->
-  reduce_cgt_limit_negative_gearing_costing
-
-print(reduce_cgt_limit_negative_gearing_costing)
-@
-
-
-<<Reduce_CGT_discount_and_limit_negative_gearing_201112, echo=T, tidy=T>>=
-new.discount <- 0.3
-
-fread("2012 2% individuals sample file.csv") %>%
-  # Reduce CGT discount to 30%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    Taxable_Income_No_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
-    ## is this right? -- BC: Glanced and corrected Net_rent_amt sign.
-    Taxable_Income_new_proposal = ifelse(Net_rent_amt < 0, 
-                                         pmax(0, Taxable_Income_No_CG_discount - Sw_amt + Net_rent_amt) + Sw_amt,
-                                         Taxable_Income_No_CG_discount),
-    loss_carry_fwd = pmin(0,Taxable_Income_No_CG_discount - Sw_amt + Net_rent_amt),
-    current_tax = income_tax(Taxable_Income, fy.year = "2011-12"),
-    new_tax = income_tax(Taxable_Income_new_proposal, fy.year = "2011-12"),
-    diff = new_tax - current_tax
-  ) %$% 
-  sum(diff) * 50 / 1e9 ->
-  reduce_cgt_limit_negative_gearing_costing_1112
-
-print(reduce_cgt_limit_negative_gearing_costing_1112)
-@
-\section{Daley discount}
-
-\section{Daley (30\%\ symmetrical discount)}
-<<Daley_discount_echoed, echo=T, tidy = T>>=
-new.discount <- 0.3
-
-discount_only_to_negative_rent_income <- FALSE
-
-if (discount_only_to_negative_rent_income){
-  daley_taxstats <- 
-  fread(sample_file_of(2013)) %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    #new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
-    current_tax = income_tax(Taxable_Income),
-    new_tax = income_tax(new_Taxable_Income),
-    diff = new_tax - current_tax
-  )
-  daley_discount_remark <- "in which the discount is only applied to rental losses (not rental income, contra Henry)"
-} else {
-  daley_taxstats <- 
-  fread(sample_file_of(2013)) %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    #new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
-    current_tax = income_tax(Taxable_Income),
-    new_tax = income_tax(new_Taxable_Income),
-    diff = new_tax - current_tax
-  )
-  daley_discount_remark <- "in which the discount is applied to both rental income and rental losses"
-} 
-@
-
-<<Daley_discount_echoed_2011, echo=T, tidy = T>>=
-new.discount <- 0.3
-
-discount_only_to_negative_rent_income <- FALSE
-
-if (discount_only_to_negative_rent_income){
-  daley_taxstats_1112 <- 
-  fread("2012 2% individuals sample file.csv") %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    #new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
-    current_tax = income_tax(Taxable_Income, fy.year = "2011-12"),
-    new_tax = income_tax(new_Taxable_Income, fy.year = "2011-12"),
-    diff = new_tax - current_tax
-  )
-  daley_discount_remark_1112 <- "in which the discount is only applied to rental losses (not rental income, contra Henry)"
-} else {
-  daley_taxstats_1112 <- 
-  fread("2012 2% individuals sample file.csv") %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    #new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    new_net_rent = Net_rent_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent,
-    current_tax = income_tax(Taxable_Income, fy.year = "2011-12"),
-    new_tax = income_tax(new_Taxable_Income, fy.year = "2011-12"),
-    diff = new_tax - current_tax
-  )
-  daley_discount_remark_1112 <- "in which the discount is applied to both rental income and rental losses"
-} 
-@
-Under this proposal, income tax would rise from \$\Sexpr{round(50*sum(daley_taxstats$current_tax)/1e9, 1)}~billion to \$\Sexpr{round(50*sum(daley_taxstats$new_tax)/1e9, 1)}~billion. 
-
-\section{Summary}
-\begin{table*}
-\centering
-\caption{Summary of costings}
-\begin{tabular}{lrrp{5.1cm}}
- & 2011-12 & 2012-13 & \\
-Reduce CGT and limit negative gearing & \$\Sexpr{round(reduce_cgt_limit_negative_gearing_costing_1112)}~billion & \$\Sexpr{round(reduce_cgt_limit_negative_gearing_costing,1)}~billion&\\
-Daley symmetric 30\%\ discount & \$\Sexpr{round(50*sum(daley_taxstats_1112$diff)/1e9, 1)}~billion & \$\Sexpr{round(50*sum(daley_taxstats$diff)/1e9, 1)}~billion&\emph{\Sexpr{daley_discount_remark}}
-\end{tabular}
-
-\notes{Contemporaneous dollars and tax statistics.}
-
-\source{\gao\ contemporaneous tax statistics}
-\end{table*}
+\begin{figure}
+\Caption{Every age group over 45 is more likely than the previous to realize capital gains}{Probability of a capital gains event (2012-13 taxstats)}{fig:Figure4_Probability_of_CG_by_Income_decile_by_age}
+\includegraphics[width=\columnwidth]{figure/Figure4_Probability_of_CG_by_Income_decile_by_age-1}
+\source{ATO 2012-13 2\%\ sample file}
+\notes{Smoothed between deciles.}
+\end{figure}
 
 <<sessionInfo>>=
 sessionInfo()
 @
-\twocolumn
 
 \printbibliography
 \end{document}
