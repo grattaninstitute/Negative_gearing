@@ -139,7 +139,7 @@ fread(sample_file_of(2013)) %>%
   apparent_CG_tax_expenditure_201213_billions
 @
 
-This differs from the amount implicit in taxstats of \$\Sexpr{apparent_CG_tax_expenditure_201213_billions}~billion. The discrepancy may be the absence of benenfits to trusts in this statistic. 
+This differs from the amount implicit in taxstats of \$\Sexpr{apparent_CG_tax_expenditure_201213_billions}~billion. The discrepancy may be due to the absence of trusts in this calculation. 
 
 \subsection{Time series}
 <<Get_time_series>>=
@@ -170,7 +170,7 @@ discount_only_to_negative_rent_income <- TRUE
 @
 
 
-<<Henry_proposal_mutate, echo=T>>=
+<<Henry_proposal_mutate>>=
 henry_taxstats <- 
   fread(sample_file_of(2013)) %>%
   mutate(
@@ -448,6 +448,37 @@ taxable_income_by_CG <-
 
 # 3 billion in savings upfront.
 @
+
+<<Summary-chunk>>=
+policy <- cost_of_daley_policy(2015) 
+policy %>%
+  mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
+  round(sum(diff_due_CG)*50/1e9, 1) ->
+  cost_of_red_CGT_discount
+
+just_negative_gearing_taxstats_year0 %>%
+  mutate(diff = new_tax - current_tax) %$%
+  round(sum(diff) * 50 / 1e9, 1) ->
+  diff_just_due_NG_year0
+
+just_negative_gearing_taxstats %$%
+  round(sum(diff) * 50 / 1e9, 1) ->
+  diff_just_due_NG
+
+policy %$%
+  round(sum(diff)*50/1e9, 1) ->
+  cost_of_policy_2015
+@
+
+\begin{smallbox}{Costings}{box:Costings}
+Reducing the CGT discount to 30\%\ could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion. \\
+
+Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0} billion a year in the short-term. This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income.
+
+The total cost would be \$\Sexpr{cost_of_policy_2015}~billion.
+\end{smallbox}
+
+
 \chapter{Checking}
 <<Compare_years_with_tax_expenditure, eval=FALSE>>=
 # Not run:

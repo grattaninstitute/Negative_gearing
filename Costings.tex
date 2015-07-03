@@ -90,14 +90,14 @@
 The tax expenditure for the capital gains tax discount (E17) is \$4,180~billion.\footcite{TaxExpenditures201213} 
 
 
-This differs from the amount implicit in taxstats of \$3.7~billion. The discrepancy may be the absence of benenfits to trusts in this statistic. 
+This differs from the amount implicit in taxstats of \$3.7~billion. The discrepancy may be due to the absence of trusts in this calculation. 
 
 \subsection{Time series}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## Response [https://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download/taxstats2013individual01selecteditemsbyyear.xlsx]
-##   Date: 2015-07-03 14:58
+##   Date: 2015-07-03 15:47
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 270 kB
@@ -123,25 +123,7 @@ provide a means of adjusting for the effect of inflation. \textcite{Treasury2010
 \end{knitrout}
 
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{henry_taxstats} \hlkwb{<-}
-  \hlkwd{fread}\hlstd{(}\hlkwd{sample_file_of}\hlstd{(}\hlnum{2013}\hlstd{))} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{new_net_rent} \hlstd{= Net_rent_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount} \hlopt{*} \hlstd{(Net_rent_amt} \hlopt{<} \hlnum{0}\hlstd{)),}  \hlcom{# discount only to negative income}
-    \hlkwc{new_invstment_lss} \hlstd{= Net_fincl_invstmt_lss_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent} \hlopt{-} \hlstd{Net_fincl_invstmt_lss_amt} \hlopt{+} \hlstd{new_invstment_lss,}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)}
 
-\hlstd{henry_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is only applied to negative rental income"}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 Under this proposal, in which the discount is only applied to negative rental income, income tax would rise from \$159.2~billion to \$161.8~billion.
 
@@ -160,6 +142,25 @@ Under this proposal, in which the discount is only applied to negative rental in
 
 
 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## ====
+## =======================================================================
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\begin{smallbox}{Costings}{box:Costings}
+Reducing the CGT discount to 30\%\ could raise around \$1.3~billion. \\
+
+Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$3 billion a year in the short-term. This would decline to around \$2~billion over time as those losses are offset against investment income.
+
+The total cost would be \$3.4~billion.
+\end{smallbox}
+
+
 \chapter{Checking}
 
 
@@ -167,7 +168,7 @@ Under this proposal, in which the discount is only applied to negative rental in
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## Response [http://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/79aeec03-7596-47f8-86db-b02ca6496699/download/taxstats2013trust1selecteditemsbyyear.xlsx]
-##   Date: 2015-07-03 14:59
+##   Date: 2015-07-03 15:48
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 189 kB
