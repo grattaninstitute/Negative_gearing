@@ -86,109 +86,18 @@
 
 \chapter{Costings}
 \section{Introduction}
-\subsection{Technical assumptions}
-The key assumptions that apply to each of the proposal costings are:
-\begin{enumerate}
-\item The 2012-13 2\%\ sample file obtained through \textsc{taxstats} is accurate and representative of that year.
-\item The \verb=grattan::income_tax= function in the grattan R package is accurate and complete for the 2012-13 financial year.
-\item The 2012-13 financial year is sufficiently representative of future years.
-\end{enumerate}
-
 \subsection{Overview of tax expenditure sanity checking}
 The tax expenditure for the capital gains tax discount (E17) is \$4,180~billion.\footcite{TaxExpenditures201213} 
 
 
 This differs from the amount implicit in taxstats of \$3.7~billion. The discrepancy may be the absence of benenfits to trusts in this statistic. 
 
-\section{30\%\ CGT discount and negative gearing only for the non-salary component of taxable income}
-Instead of a 50\%\ discount on the amount of capital gains that may be taxed, we propose a 30\%\ discount on the component of capital gains forming one's assessable income. Further, we propose that individuals be no longer permitted to deduct losses arising from their investments against any income other than investments and capital gains; in particular, negative gearing against salaries and wages will cease.
-\subsection{Status quo}
-Currently, assessable income ($I_A$) is encoded directly into tax stats
-\[I_A = \verb=Taxable_Income=\]
-An individual's capital gains amount is recorded in Income item 18 labels A (Net capital gains) and H (Total capital gains). Item A includes the 50\%\ discount and capital losses, but item H does not.\footnote{See \url{https://www.ato.gov.au/Individuals/Tax-Return/2013/Supplementary-tax-return/Income-questions-13-24/18---Capital-gains/}} This corresponds to items \verb=Net_CG_amt= and \verb=Tot_CY_CG_amt= respectively. We thus ignore \verb=Tot_CY_CG_amt=.
-
-Capital gains tax for individuals is not a separate tax; it is simply a component of an individual's income tax. Once the appropriate deductions and discounts have been made, it is simply added on to a person's assessable income:
-\[I_A = \text{Capital gains (after discounts, deductions)} + \text{Other income}\]
-and
-\[\text{tax payable} = T(I_A)\]
-where $T$ is not a function of capital gains, $\frac{\partial T(\cdot)}{\partial \text{Capital gain}} = 0$.
-%
-\subsection{Our proposal}
-We need to determine:
-\begin{enumerate}
-\item Total capital gains (pre-discount) for each taxpayer
-\item The amount they could deduct, but can no longer
-\end{enumerate}
-\subsubsection{Total capital gains}
-Determining total capital gains from tax stats suffers from a flaw. Only the \emph{Total capital gains} $K_T$ and the \emph{Net capital gains} $K_n$ are recorded. Net capital gains is the component of an individual's income upon which the marginal tax rate is applied -- it includes both capital losses and the capital gains discount. Total capital gains is the sum of all capital gains for the year, without capital losses or the capital gains discount.
-
-It follows that our best estimate of the total capital gains to which the discount would apply is double the \emph{Net capital gains} amount. So the assessable income under a new regime ($I_A'$) with a discount on capital gains of $d$ will be 
-
-\[I_A' = I_A - K_n + 2K_n(1 - d).\]
-
-\begin{smallbox}{Tax stats}{box:TaxStatsCapitalGains}
-John purchases and sells (13 months later) two houses, making capital gains of \$10,000 and \$25,000. He also experienced a capital loss of $-$\$5,000 last year which has not yet been applied against later year capital gains. His total capital gains is \$35,000 and his net capital gains is \$15,000.
-
-In our calculations, we only see that John had a total capital gain of \$35,000 and a net capital gain of \$15,000. We infer that his total capital gains was $2\times \$15,000 = \$30,000$. 
-\end{smallbox}
-
-
-
-
-
-
-\subsection{Negative gearing}
-
-
-\subsection{Eslake proposal: no negative gearing against salary}
-Current:
-\begin{align*}
-I_A &= \text{Salary} + \text{Other income} \\
-&\qquad{} - \text{deductions excl. rental losses} - \text{rental losses}
-\end{align*}
-Let:
-\begin{align*}
-I_S &= \text{Salary}\\
-I_{A\backslash S} &= \text{Other income} \\
-&\qquad{} - \text{deductions excl. rental losses} - \text{rental losses} \\
- &= I_A - I_S
-\end{align*}
-Then a person's assesable income under the new scenario, $I_A'$ is the person's salary where deductions are only permitted against the person's non-salary income. Deductions in excess of a person's non-salary income may not be further deducted against his salary:
-\begin{align*}
-I_A' &= I_S + \max\left(0, I_A - I_S \right)
-\end{align*}
-Note under this scenario, anyone who has a nonnegative salary \EMPH{cannot obtain a taxable loss}. Any costings using this scenario will overestimate the revenue colllectable under a scenario that violates this assumption.
-
-\subsection{Application to taxstats}
-% latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Fri Jul 03 10:12:22 2015
-\begin{table*}[ht]
-\centering
-\caption{Summary table for taxable income based on $I_A' = I_S + \max(0, I_A - I_s)$.} 
-\begin{tabular}{lllll}
-  \hline
-Net rental profit &     $I_A$ &     $I_A'$ & Tax (status quo) &   Tax (new) \\ 
-  \hline
-Min.   :-474901.0   & Min.   :       0   & Min.   :       0   & Min.   :      0   & Min.   :      0   \\ 
-  1st Qu.:      0.0   & 1st Qu.:   21785   & 1st Qu.:   22464   & 1st Qu.:    361   & 1st Qu.:    557   \\ 
-  Median :      0.0   & Median :   41561   & Median :   43178   & Median :   5301   & Median :   5875   \\ 
-  Mean   :   -423.9   & Mean   :   55565   & Mean   :   57447   & Mean   :  12523   & Mean   :  13163   \\ 
-  3rd Qu.:      0.0   & 3rd Qu.:   69150   & 3rd Qu.:   72111   & 3rd Qu.:  15058   & 3rd Qu.:  16065   \\ 
-  Max.   : 474433.0   & Max.   :12584567   & Max.   :12584567   & Max.   :5825371   & Max.   :5825371   \\ 
-   \hline
-\end{tabular}
-\end{table*}
-
-So under the current regime where \$159.2~billion is payable in income tax, the above scenario renders \$167.4~billion payable.
-\clearpage
-
-
 \subsection{Time series}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## Response [https://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download/taxstats2013individual01selecteditemsbyyear.xlsx]
-##   Date: 2015-07-03 10:12
+##   Date: 2015-07-03 14:25
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 270 kB
@@ -197,11 +106,6 @@ So under the current regime where \$159.2~billion is payable in income tax, the 
 \end{kframe}
 \end{knitrout}
 
-
-
-
-
-\onecolumn
 \section{Henry-lite proposal}
 The proposal in the Henry review is to reduce both the capital gains discount and the amount one can deduct through negative gearing. In particular, the tax review proposes the discount be reduced to 30\%\ and a discount of 30\%\ be applied to both rental losses and rental income.\footnote{The income tax treatment of these household savings would be improved by applying a
 40 per cent discount to most interest income, net residential rental property income, capital
@@ -252,251 +156,6 @@ Under this proposal, in which the discount is only applied to negative rental in
 \end{kframe}
 \end{knitrout}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{theYear} \hlkwb{<-} \hlnum{2013}
-
-\hlstd{daley_taxstats} \hlkwb{<-}
-  \hlcom{# fread(sample_file_of(2013)) %>%}
-  \hlkwd{fread}\hlstd{(}\hlkwd{sample_file_of}\hlstd{(}\hlkwc{year} \hlstd{= theYear))}
-\hlcom{# Year specific housekeeping}
-\hlcom{# Before 2011-12, there is no variable Net_fincl_lss_amt}
-\hlkwa{if} \hlstd{(}\hlopt{!}\hlstd{(}\hlstr{"Net_fincl_invstmt_lss_amt"} \hlopt{%in%} \hlkwd{names}\hlstd{(daley_taxstats)))}
-  \hlstd{daley_taxstats}\hlopt{$}\hlstd{Net_fincl_invstmt_lss_amt} \hlkwb{<-} \hlnum{0}
-
-\hlstd{daley_taxstats} \hlopt{%<>%}
-  \hlcom{#}
-  \hlcom{# One silly entry has a CG of $25M!}
-  \hlkwd{filter}\hlstd{(Net_CG_amt} \hlopt{<} \hlnum{5e6}\hlstd{)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{Taxable_Income_Red_CG_discount} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{+} \hlstd{new_capital_gains,}
-    \hlcom{#}
-    \hlcom{# dummy variable for following ifelse}
-    \hlkwc{discount_only_to_negative_rent_income} \hlstd{= discount_only_to_negative_rent_income,}
-    \hlcom{#}
-    \hlkwc{new_tot_inc} \hlstd{= Tot_inc_amt} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{+} \hlstd{new_capital_gains,}
-    \hlkwc{income_no_salary} \hlstd{= new_tot_inc} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{-} \hlstd{Sw_amt,}  \hlcom{# component of income from neither salary nor rent}
-    \hlcom{#}
-    \hlcom{# This is not quite true: it doesn't include medical offsets.}
-    \hlcom{# You can only deduct Net_rent down to zero.  }
-    \hlcom{# Include financial losses in deductions}
-    \hlcom{# Full tax on Sw_amt. Then deductions}
-    \hlkwc{new_Taxable_Income} \hlstd{=}  \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, income_no_salary} \hlopt{+} \hlstd{Net_rent_amt} \hlopt{-} \hlstd{Net_fincl_invstmt_lss_amt)} \hlopt{+} \hlstd{Sw_amt} \hlopt{-} \hlstd{Tot_ded_amt} \hlopt{-} \hlstd{PP_loss_claimed} \hlopt{-} \hlstd{NPP_loss_claimed,}
-    \hlkwc{old_Taxable_Income_no_offset} \hlstd{= Tot_inc_amt} \hlopt{-} \hlstd{Tot_ded_amt} \hlopt{-} \hlstd{PP_loss_claimed} \hlopt{-} \hlstd{NPP_loss_claimed,}
-    \hlkwc{loss_ignore_CG} \hlstd{=} \hlopt{-}\hlnum{1} \hlopt{*} \hlkwd{pmin}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, income_no_salary} \hlopt{-} \hlstd{new_capital_gains)} \hlopt{+} \hlstd{Net_rent_amt),}
-    \hlcom{#}
-    \hlkwc{loss_carry_fwd} \hlstd{=} \hlopt{-}\hlnum{1} \hlopt{*} \hlkwd{pmin}\hlstd{(}\hlnum{0}\hlstd{, income_no_salary} \hlopt{+} \hlstd{Net_rent_amt),}
-    \hlkwc{loss_carry_fwd_not_CG} \hlstd{=} \hlkwd{ifelse}\hlstd{(new_capital_gains} \hlopt{>} \hlkwd{abs}\hlstd{(Net_rent_amt)} \hlopt{&} \hlstd{Net_rent_amt} \hlopt{<} \hlnum{0}\hlstd{, Net_rent_amt,} \hlnum{0}\hlstd{),}
-    \hlcom{#}
-    \hlcom{# Ratio of (new?) capital gains to losses is the proportion of each taxpayer's }
-    \hlcom{# capital gains that may be deducted from the rental losses which, due}
-    \hlcom{# to the abolition of negative gearing in this proposal, cannot be immediately}
-    \hlcom{# deducted from one's income.  The sums represent the overall ratio in the population}
-    \hlcom{# which we assume to be constant year-on-year.}
-    \hlcom{#}
-    \hlcom{# pmin sinces can't claim more than your losses}
-    \hlkwc{annualized_loss} \hlstd{=} \hlkwd{pmin}\hlstd{(}\hlnum{1}\hlstd{,} \hlkwd{abs}\hlstd{(}\hlkwd{sum}\hlstd{(new_capital_gains)} \hlopt{/} \hlkwd{sum}\hlstd{(loss_carry_fwd)))} \hlopt{*} \hlstd{loss_carry_fwd,}  \hlcom{# nonnegative}
-    \hlcom{#}
-    \hlcom{# The consequence of the following calc is that some new_Taxable_Income_post_carryfwd will be NEGATIVE }
-    \hlcom{# -- i.e. unexhausted (especially if the Taxable_Income (originally) was zero).  This error will}
-    \hlcom{# overestimate the amount of extra tax collected.  However}
-    \hlcom{#}
-    \hlcom{#   daley_taxstats %>% }
-    \hlcom{#     filter(new_Taxable_Income_post_carryfwd < 0) %$% sum(new_Taxable_Income) * 50 / 1e9}
-    \hlcom{#   # [1] 0.224  # 224 million in losses}
-    \hlcom{#}
-    \hlcom{# i.e. There are at most 224 million dollars in losses carried forward that are unaccounted for}
-    \hlcom{# in this model.  And so at most 224 * 0.485 = 109 million in taxable income AT MOST that is }
-    \hlcom{# possibly lost. My doona is comfy: I'm staying in bed for that.}
-    \hlkwc{new_Taxable_Income_post_carryfwd} \hlstd{= new_Taxable_Income} \hlopt{-} \hlstd{annualized_loss,}  \hlcom{# remembering ann.lss is nonnegative}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(old_Taxable_Income_no_offset),}
-    \hlkwc{tax_after_reduction_in_discount} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income_Red_CG_discount),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax,}
-    \hlkwc{diff_incl_carry_fwd} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income_post_carryfwd)} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)}
-
-\hlkwa{if} \hlstd{(discount_only_to_negative_rent_income)\{}
-  \hlstd{daley_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is only applied to rental losses (not rental income, contra Henry)"}
-\hlstd{\}} \hlkwa{else} \hlstd{\{}
-  \hlstd{daley_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is applied to both rental income and rental losses"}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-Under this proposal, income tax would rise from \$159~billion to \$162.9~billion. (2012-13 taxstats) But the extra revenue due to this policy will reduce: losses brought forward (that would have otherwise been used to reduce ordinary taxable income) will be offset against capital gains. This will reduce the increased revenue for \$4~bn to \$1.2~bn.
-%
-\subsection{Pushing forward the losses}
-\subsubsection{Infer by age}
-\paragraph{Age}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{daley_taxstats_with_age} \hlkwb{<-}
-  \hlstd{daley_taxstats} \hlopt{%>%}
-  \hlcom{# random}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{age_imp} \hlstd{=} \hlkwd{floor}\hlstd{(}\hlnum{17.5} \hlopt{+} \hlnum{5} \hlopt{*} \hlstd{(}\hlnum{11} \hlopt{-} \hlstd{age_range)} \hlopt{+} \hlkwd{runif}\hlstd{(}\hlkwd{nrow}\hlstd{(.),} \hlopt{-}\hlnum{2.5}\hlstd{,} \hlnum{2.5}\hlstd{)))} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{loss_carry_fwd_orig} \hlstd{= loss_carry_fwd)}
-
-\hlstd{prob_of_CG_event_by_age} \hlkwb{<-}
-  \hlstd{daley_taxstats_with_age} \hlopt{%>%}
-  \hlkwd{group_by}\hlstd{(age_imp)} \hlopt{%>%}
-  \hlkwd{summarise}\hlstd{(}\hlkwc{CG_event_prob} \hlstd{=} \hlkwd{mean}\hlstd{(new_capital_gains} \hlopt{>} \hlnum{0}\hlstd{))}
-
-\hlstd{size_of_CG_event} \hlkwb{<-}
-  \hlstd{daley_taxstats_with_age} \hlopt{%>%}
-  \hlkwd{filter}\hlstd{(new_capital_gains} \hlopt{>} \hlnum{0}\hlstd{)} \hlopt{%>%}
-  \hlkwd{group_by}\hlstd{(age_imp)} \hlopt{%>%}
-  \hlkwd{summarise}\hlstd{(}\hlkwc{size_of_hypoth_CG} \hlstd{=} \hlkwd{mean}\hlstd{(new_capital_gains))}
-
-\hlstd{losses_by_age} \hlkwb{<-}
-  \hlstd{daley_taxstats_with_age} \hlopt{%>%}
-  \hlkwd{group_by}\hlstd{(age_imp)} \hlopt{%>%}
-  \hlkwd{summarise}\hlstd{(}\hlkwc{avg_loss_carried_fwd} \hlstd{=} \hlkwd{mean}\hlstd{(loss_ignore_CG))}
-
-\hlstd{taxable_income_by_age} \hlkwb{<-}
-  \hlstd{daley_taxstats_with_age} \hlopt{%>%}
-  \hlkwd{group_by}\hlstd{(age_imp)} \hlopt{%>%}
-  \hlkwd{summarise}\hlstd{(}\hlkwc{avg.taxable_income} \hlstd{=} \hlkwd{mean}\hlstd{(Taxable_Income))}
-
-\hlstd{taxable_income_by_CG} \hlkwb{<-}
-  \hlstd{daley_taxstats} \hlopt{%>%}
-  \hlkwd{group_by}\hlstd{(}\hlkwc{HasCG} \hlstd{= new_capital_gains} \hlopt{>} \hlnum{0}\hlstd{)} \hlopt{%>%}
-  \hlkwd{summarise}\hlstd{(}\hlkwc{mean.tx.i} \hlstd{=} \hlkwd{mean}\hlstd{(new_Taxable_Income))} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{mean.tx} \hlstd{=} \hlkwd{income_tax}\hlstd{(mean.tx.i),}
-         \hlkwc{marginal.tax.of.avg} \hlstd{=} \hlkwd{income_tax}\hlstd{(mean.tx.i)} \hlopt{-} \hlkwd{income_tax}\hlstd{(mean.tx.i} \hlopt{-} \hlnum{1}\hlstd{))} \hlopt{%>%}
-  \hlkwd{select}\hlstd{(HasCG, marginal.tax.of.avg)} \hlopt{%>%}
-  \hlstd{data.table}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{capital_gains_by_losses4} \hlkwb{<-}
-  \hlstd{daley_taxstats} \hlopt{%>%}
-  \hlkwd{group_by}\hlstd{(}\hlkwc{IsInvestor} \hlstd{= Gross_rent_amt} \hlopt{>} \hlnum{0}\hlstd{,}
-           \hlkwc{HasLoss} \hlstd{= loss_ignore_CG} \hlopt{>} \hlnum{0}\hlstd{,}
-           \hlkwc{HasCG} \hlstd{= new_capital_gains} \hlopt{>} \hlnum{0}\hlstd{)} \hlopt{%>%}
-  \hlstd{tally} \hlopt{%>%}
-  \hlkwd{arrange}\hlstd{(IsInvestor, HasLoss, HasCG)} \hlopt{%>%}
-  \hlcom{#}
-  \hlcom{# cosmetics:}
-  \hlstd{ungroup} \hlopt{%>%}
-  \hlkwd{group_by}\hlstd{(IsInvestor)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{prop} \hlstd{=} \hlkwd{round}\hlstd{(n}\hlopt{/}\hlkwd{sum}\hlstd{(n),}\hlnum{3}\hlstd{))}
-\hlcom{# Source: local data table [8 x 5]}
-\hlcom{# }
-\hlcom{#   IsInvestor HasLoss HasCG      n  prop}
-\hlcom{# 1      FALSE   FALSE FALSE 208423 0.968}
-\hlcom{# 2      FALSE   FALSE  TRUE   6656 0.031}
-\hlcom{# 3      FALSE    TRUE FALSE    256 0.001}
-\hlcom{# 4      FALSE    TRUE  TRUE     23 0.000}
-\hlcom{#--}
-\hlcom{# 5       TRUE   FALSE FALSE  20753 0.533}
-\hlcom{# 6       TRUE   FALSE  TRUE   2340 0.060}
-\hlcom{# 7       TRUE    TRUE FALSE  14724 0.378}
-\hlcom{# 8       TRUE    TRUE  TRUE   1143 0.029}
-
-\hlstd{new_daley} \hlkwb{<-}
-  \hlstd{daley_taxstats} \hlopt{%>%}
-  \hlcom{# random}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{age_imp} \hlstd{=} \hlkwd{floor}\hlstd{(}\hlnum{17.5} \hlopt{+} \hlnum{5} \hlopt{*} \hlstd{(}\hlnum{11}\hlopt{-}\hlstd{age_range)} \hlopt{+} \hlkwd{runif}\hlstd{(}\hlkwd{nrow}\hlstd{(.),} \hlopt{-}\hlnum{2.5}\hlstd{,} \hlnum{2.5}\hlstd{)))} \hlopt{%>%}
-  \hlkwd{merge}\hlstd{(size_of_CG_event,} \hlkwc{by} \hlstd{=} \hlstr{"age_imp"}\hlstd{)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{loss_carry_fwd_orig} \hlstd{= loss_ignore_CG)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{hasHadCG} \hlstd{=} \hlnum{FALSE}\hlstd{,}  \hlcom{#yet}
-         \hlkwc{whenCG.lastoccurred} \hlstd{=} \hlnum{0}\hlstd{,}
-         \hlkwc{prev_unexhausted_loss} \hlstd{= loss_ignore_CG)}
-
-\hlkwa{for} \hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{20}\hlstd{)\{}
-\hlkwd{gc}\hlstd{()}
-\hlstd{new_daley} \hlopt{%<>%}
-  \hlkwd{select}\hlstd{(age_imp, loss_carry_fwd_orig, prev_unexhausted_loss,}
-         \hlstd{whenCG.lastoccurred, size_of_hypoth_CG,}
-         \hlstd{hasHadCG,}
-         \hlstd{new_Taxable_Income, current_tax)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{rand} \hlstd{=} \hlkwd{runif}\hlstd{(}\hlkwd{nrow}\hlstd{(.)))} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{noCGevent} \hlstd{= rand} \hlopt{<} \hlnum{0.533} \hlopt{+} \hlnum{0.378}\hlstd{)} \hlopt{%>%}  \hlcom{# approx 90% # v.s. table}
-  \hlkwd{mutate}\hlstd{(}\hlkwc{HasCG} \hlstd{=} \hlopt{!}\hlstd{noCGevent)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{loss_carry_fwd} \hlstd{=} \hlkwd{ifelse}\hlstd{(noCGevent,}
-                            \hlstd{loss_carry_fwd_orig} \hlopt{*} \hlstd{i,}  \hlcom{#unimportant}
-                            \hlcom{#}
-                            \hlcom{# if they do have a capital gains event, we}
-                            \hlcom{# estimate the size of the CG event by the average }
-                            \hlcom{# for their age (in the groundhog year).  The losses have}
-                            \hlcom{# accumulated over time: previously unexhuasted losses from}
-                            \hlcom{# previous CG events where this hasn't been zero.  And the }
-                            \hlcom{# losses built up from the first year of the new policy. }
-                            \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, prev_unexhausted_loss} \hlopt{+}
-                                   \hlstd{loss_carry_fwd_orig} \hlopt{*} \hlstd{(i} \hlopt{-} \hlnum{1} \hlopt{-} \hlstd{whenCG.lastoccurred)} \hlopt{-}
-                                   \hlstd{size_of_hypoth_CG)),}
-    \hlcom{# }
-    \hlkwc{wasCompleteLoss} \hlstd{=} \hlopt{!}\hlstd{noCGevent} \hlopt{&} \hlstd{loss_carry_fwd_orig} \hlopt{*} \hlstd{(i} \hlopt{-} \hlstd{whenCG.lastoccurred)} \hlopt{-} \hlstd{size_of_hypoth_CG} \hlopt{<=} \hlnum{0}\hlstd{,}
-
-    \hlkwc{now_Taxable_Income} \hlstd{=} \hlkwd{ifelse}\hlstd{(noCGevent,}
-                                \hlstd{new_Taxable_Income,}
-                                \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, new_Taxable_Income} \hlopt{-} \hlstd{loss_carry_fwd)),}
-    \hlcom{# Here we assume CG in CG event year is zero to provide an upper bound of losses.}
-    \hlkwc{now_Taxable_Income2} \hlstd{=} \hlkwd{ifelse}\hlstd{(noCGevent,}
-                                 \hlstd{new_Taxable_Income,}
-                                 \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, new_Taxable_Income} \hlopt{-}
-                                        \hlstd{loss_carry_fwd_orig} \hlopt{*} \hlstd{(i} \hlopt{-} \hlstd{whenCG.lastoccurred))),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(now_Taxable_Income),}
-    \hlkwc{new_tax2}\hlstd{=} \hlkwd{income_tax}\hlstd{(now_Taxable_Income2),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax,}
-    \hlkwc{diff2} \hlstd{= new_tax2} \hlopt{-} \hlstd{current_tax,}
-    \hlcom{#}
-    \hlcom{# retrospective variables}
-    \hlkwc{prev_unexhausted_loss} \hlstd{=} \hlkwd{ifelse}\hlstd{(noCGevent,}
-                                   \hlstd{prev_unexhausted_loss,}
-                                   \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, loss_carry_fwd_orig} \hlopt{*} \hlstd{(i} \hlopt{-} \hlstd{whenCG.lastoccurred)} \hlopt{-}
-                                          \hlstd{size_of_hypoth_CG)}
-    \hlstd{),}
-    \hlkwc{loss_still_available} \hlstd{=} \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, loss_carry_fwd_orig} \hlopt{*} \hlstd{(i} \hlopt{-} \hlstd{whenCG.lastoccurred)} \hlopt{-} \hlstd{size_of_hypoth_CG),}
-    \hlkwc{whenCG.lastoccurred} \hlstd{=} \hlkwd{ifelse}\hlstd{(}\hlopt{!}\hlstd{noCGevent, i, whenCG.lastoccurred),}
-    \hlkwc{hasHadCG} \hlstd{=} \hlkwd{as.logical}\hlstd{(}\hlkwd{pmax}\hlstd{(hasHadCG} \hlopt{+ !}\hlstd{noCGevent,} \hlnum{1}\hlstd{))}  \hlcom{# unimportant}
-  \hlstd{)} \hlopt{%>%}
-  \hlstd{data.table}
-
-  \hlkwa{if} \hlstd{(i} \hlopt{%%} \hlnum{5} \hlopt{==} \hlnum{0} \hlopt{||} \hlstd{i} \hlopt{==} \hlnum{1}\hlstd{)\{}
-    \hlkwd{cat}\hlstd{(}\hlstr{"Year"}\hlstd{, i,} \hlstr{"New income:\textbackslash{}n"}\hlstd{,}  \hlkwd{paste0}\hlstd{(}\hlstr{"$"}\hlstd{,} \hlkwd{round}\hlstd{(}\hlkwd{sum}\hlstd{(new_daley}\hlopt{$}\hlstd{diff)}\hlopt{*}\hlnum{50}\hlopt{/}\hlnum{1e9}\hlstd{,} \hlnum{1}\hlstd{)),} \hlstr{"bn\textbackslash{}n"}\hlstd{,}
-        \hlstr{"New income2:\textbackslash{}n"}\hlstd{,}  \hlkwd{paste0}\hlstd{(}\hlstr{"$"}\hlstd{,} \hlkwd{round}\hlstd{(}\hlkwd{sum}\hlstd{(new_daley}\hlopt{$}\hlstd{diff2)}\hlopt{*}\hlnum{50}\hlopt{/}\hlnum{1e9}\hlstd{,} \hlnum{1}\hlstd{)),} \hlstr{"bn\textbackslash{}n\textbackslash{}n"}\hlstd{)}
-  \hlstd{\}}
-\hlstd{\}}
-\end{alltt}
-\begin{verbatim}
-## Year 1 New income:
-##  $4 bn
-##  New income2:
-##  $3.8 bn
-## 
-## Year 5 New income:
-##  $3.6 bn
-##  New income2:
-##  $3.4 bn
-## 
-## Year 10 New income:
-##  $3.3 bn
-##  New income2:
-##  $3.2 bn
-## 
-## Year 15 New income:
-##  $3.1 bn
-##  New income2:
-##  $3.1 bn
-## 
-## Year 20 New income:
-##  $3.2 bn
-##  New income2:
-##  $3.2 bn
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.2~billion after 20~years.
 
 
 
@@ -504,38 +163,18 @@ Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.2
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'prob\_of\_noCG\_if\_investor' not found}}\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in `[.data.table`(`\_dt`, , list(mean.tx.i = mean(new\_Taxable\_Income)), : object 'new\_Taxable\_Income' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in merge.data.table(., taxable\_income\_by\_CG, by = "{}HasCG"{}): object 'taxable\_income\_by\_CG' not found}}\end{kframe}
 \end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-##         tax medicare_levy    LITO current_tax      taxn medicare_levyn
-## 1 12550.450       969.390  30.610   13489.230 12550.450        969.390
-## 2  7490.525       735.855 264.145    7962.235  7490.525        735.855
-## 3     0.000         0.000 445.000       0.000     0.000          0.000
-## 4  4266.525       587.055 412.945    4440.635  4266.525        587.055
-## 5   556.130         5.850 445.000     116.980   556.130          5.850
-## 6  6361.475       683.745 316.255    6728.965  6361.475        683.745
-##     LITOn   new_tax Net_CG_amt
-## 1  30.610 13489.230          0
-## 2 264.145  7962.235          0
-## 3 445.000     0.000          0
-## 4 412.945  4440.635          0
-## 5 445.000   116.980          0
-## 6 316.255  6728.965          0
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
+\chapter{Checking}
 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## Response [http://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/79aeec03-7596-47f8-86db-b02ca6496699/download/taxstats2013trust1selecteditemsbyyear.xlsx]
-##   Date: 2015-07-03 10:13
+##   Date: 2015-07-03 14:25
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 189 kB
@@ -553,286 +192,71 @@ Under these assumptions, the effect of the tax reduces from \$4~billion to \$3.2
 \source{ATO taxstats time series on trusts}
 \end{figure}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fread("{}Costings\_by\_year\_with\_tax\_expenditures.csv"{}): File is empty: C:\textbackslash{}Users\textbackslash{}HPARSO\textasciitilde{}1\textbackslash{}AppData\textbackslash{}Local\textbackslash{}Temp\textbackslash{}Rtmpqu5xIY\textbackslash{}file3234692c559a}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'costs\_years\_CGT' not found}}\end{kframe}
-\end{knitrout}
 \begin{figure}
 \Caption{The relationship between the tax expenditure for a year is related to the calculated costings of the proposed policy}{Increased revenue due to poroposed change in CGT policy (contemporaneous dollars)}{fig:Costings_due_to_CG_vs_tax_expenditure-1}
-\includegraphics[width=\columnwidth]{figure/Costings_due_to_CG_vs_tax_expenditure}
+\includegraphics[width=\columnwidth]{figure/Costings_due_to_CG_vs_tax_expenditure-1}
 \notes{}
 \end{figure}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in as.data.frame(y): object 'costs\_years\_CGT' not found}}\end{kframe}
-\end{knitrout}
-
-
-
-\begin{table*}
-\Caption{Costings for the two policies}{Using the 2012-13 sample file, contemporaneous dollars}{tbl:Costings}
-\begin{tabular}{lrrr}
- & & Initial change in revenue & Eventual change \\
- \hline
- Henry lite & & \$2.5~bn & \$2.5~bn\\[4pt]
- Quarantine losses from salary & Simple & \$4~bn & \$1.2~bn \\
-                            & Secondary & \$4~bn & \$3.2~bn
-\end{tabular}
-\end{table*}
-
-
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## Year 1 
-##  New tax $3.8 
-##  Number -ve taxable income 0 
-## Source: local data table [5 x 4]
-## 
-##   quintile   avg.loss age.of.losses   n
-## 1        1   762.4212             1 292
-## 2        2  2900.2234             1 291
-## 3        3  5841.5052             1 291
-## 4        4 10260.6460             1 291
-## 5        5 24135.1649             1 291
-## Year 5 
-##  New tax $3.4 
-##  Number -ve taxable income 0 
-## Source: local data table [5 x 4]
-## 
-##   quintile  avg.loss age.of.losses   n
-## 1        1  2583.482      3.364964 274
-## 2        2 10135.099      3.543796 274
-## 3        3 20880.412      4.291971 274
-## 4        4 38269.296      4.594891 274
-## 5        5 97563.524      4.769231 273
-## Year 10 
-##  New tax $3.2 
-##  Number -ve taxable income 0 
-## Source: local data table [5 x 4]
-## 
-##   quintile   avg.loss age.of.losses   n
-## 1        1   3257.701      4.548043 281
-## 2        2  13959.032      5.678571 280
-## 3        3  30315.004      6.671429 280
-## 4        4  62682.596      8.253571 280
-## 5        5 182978.804      9.042857 280
-## Year 15 
-##  New tax $3.1 
-##  Number -ve taxable income 0 
-## Source: local data table [5 x 4]
-## 
-##   quintile   avg.loss age.of.losses   n
-## 1        1   3550.421      5.082192 292
-## 2        2  15228.565      6.667808 292
-## 3        3  37668.704      8.463918 291
-## 4        4  83501.719     10.445205 292
-## 5        5 261967.292     12.924399 291
-## Year 20 
-##  New tax $3.2 
-##  Number -ve taxable income 0 
-## Source: local data table [5 x 4]
-## 
-##   quintile  avg.loss age.of.losses   n
-## 1        1   3489.27      4.940351 285
-## 2        2  14635.23      5.947368 285
-## 3        3  37105.45      8.676056 284
-## 4        4  81486.31     12.070175 285
-## 5        5 261538.74     15.193662 284
-## Year 25 
-##  New tax $3.2 
-##  Number -ve taxable income 0 
-## Source: local data table [5 x 4]
-## 
-##   quintile   avg.loss age.of.losses   n
-## 1        1   3573.004      5.775439 285
-## 2        2  15375.161      6.575439 285
-## 3        3  36302.456      8.589474 285
-## 4        4  81293.923     11.915789 285
-## 5        5 300548.744     17.066667 285
-## Year 30 
-##  New tax $3.1 
-##  Number -ve taxable income 0 
-## Source: local data table [5 x 4]
-## 
-##   quintile   avg.loss age.of.losses   n
-## 1        1   3580.153      4.880952 294
-## 2        2  15517.963      6.619048 294
-## 3        3  37280.986      9.717687 294
-## 4        4  80948.724     12.098639 294
-## 5        5 327866.720     18.498294 293
+##    Year Selected items unit fy.year       value value.real
+## 1  2004      Net rent2    $ 2003-04 -3055643933  -3.996707
+## 2  2005      Net rent2    $ 2004-05 -4459172398  -5.672408
+## 3  2006      Net rent2    $ 2005-06 -5528457309  -6.805237
+## 4  2007      Net rent2    $ 2006-07 -6973404963  -8.343041
+## 5  2008      Net rent2    $ 2007-08 -9064668850 -10.457724
+## 6  2009      Net rent2    $ 2008-09 -7044894299  -7.963794
+## 7  2010      Net rent2    $ 2009-10 -5250216278  -5.775780
+## 8  2011      Net rent2    $ 2010-11 -8360359603  -8.930003
+## 9  2012      Net rent2    $ 2011-12 -8251182161  -8.623294
+## 10 2013      Net rent2    $ 2012-13 -5394063978  -5.486710
+##    Initial_revenue_diff Eventual_revenue_diff eventual_means...
+## 1               3.41490               2.52109    After 20 years
+## 2               4.25048               3.23566    After 20 years
+## 3               4.86593               3.69320    After 20 years
+## 4               6.64907               5.25528    After 20 years
+## 5               6.41985               5.01011    After 20 years
+## 6               4.20241               3.28769    After 20 years
+## 7               3.81968               3.03166    After 20 years
+## 8               4.67682               3.70301    After 20 years
+## 9               4.60977               3.67198    After 20 years
+## 10              4.24824               3.31782    After 20 years
+##    Diff_due_CG CGT_discount_for_individuals_and_trusts_millions
+## 1      1.70437                                             2920
+## 2      2.07313                                             4260
+## 3      2.56198                                             4960
+## 4      4.19600                                             6150
+## 5      3.54154                                             9740
+## 6      1.55629                                             9170
+## 7      1.43281                                             4320
+## 8      1.67475                                             4410
+## 9      1.33249                                             4930
+## 10     1.31582                                             4080
+##    Diff_due_notCG
+## 1         1.71053
+## 2         2.17735
+## 3         2.30395
+## 4         2.45307
+## 5         2.87831
+## 6         2.64612
+## 7         2.38687
+## 8         3.00207
+## 9         3.27728
+## 10        2.93242
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
 
-\chapter{Dani's presentation numbers}
-\onecolumn
-\section{Reduce CGT discount and limit negative gearing}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{new.discount} \hlkwb{<-} \hlnum{0.3}
-
-\hlkwd{fread}\hlstd{(}\hlkwd{sample_file_of}\hlstd{(}\hlnum{2013}\hlstd{))} \hlopt{%>%}
-  \hlcom{# Reduce CGT discount to 30%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{Taxable_Income_No_CG_discount} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{+} \hlstd{new_capital_gains,}
-    \hlcom{## is this right? -- BC: Glanced and corrected Net_rent_amt sign.}
-    \hlkwc{Taxable_Income_new_proposal} \hlstd{=} \hlkwd{ifelse}\hlstd{(Net_rent_amt} \hlopt{<} \hlnum{0}\hlstd{,}
-                                         \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, Taxable_Income_No_CG_discount} \hlopt{-} \hlstd{Sw_amt} \hlopt{+} \hlstd{Net_rent_amt)} \hlopt{+} \hlstd{Sw_amt,}
-                                         \hlstd{Taxable_Income_No_CG_discount),}
-    \hlkwc{loss_carry_fwd} \hlstd{=} \hlkwd{pmin}\hlstd{(}\hlnum{0}\hlstd{,Taxable_Income_No_CG_discount} \hlopt{-} \hlstd{Sw_amt} \hlopt{+} \hlstd{Net_rent_amt),}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income_new_proposal),}
-    \hlkwc{new_tax_with_carry_fwd} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income_new_proposal} \hlopt{+} \hlstd{loss_carry_fwd),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)} \hlopt{%$%}
-  \hlkwd{sum}\hlstd{(diff)} \hlopt{*} \hlnum{50} \hlopt{/} \hlnum{1e9} \hlkwb{->}
-  \hlstd{reduce_cgt_limit_negative_gearing_costing}
-
-\hlkwd{print}\hlstd{(reduce_cgt_limit_negative_gearing_costing)}
-\end{alltt}
-\begin{verbatim}
-## [1] 3.991519
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{new.discount} \hlkwb{<-} \hlnum{0.3}
-
-\hlkwd{fread}\hlstd{(}\hlstr{"2012 2% individuals sample file.csv"}\hlstd{)} \hlopt{%>%}
-  \hlcom{# Reduce CGT discount to 30%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{Taxable_Income_No_CG_discount} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{+} \hlstd{new_capital_gains,}
-    \hlcom{## is this right? -- BC: Glanced and corrected Net_rent_amt sign.}
-    \hlkwc{Taxable_Income_new_proposal} \hlstd{=} \hlkwd{ifelse}\hlstd{(Net_rent_amt} \hlopt{<} \hlnum{0}\hlstd{,}
-                                         \hlkwd{pmax}\hlstd{(}\hlnum{0}\hlstd{, Taxable_Income_No_CG_discount} \hlopt{-} \hlstd{Sw_amt} \hlopt{+} \hlstd{Net_rent_amt)} \hlopt{+} \hlstd{Sw_amt,}
-                                         \hlstd{Taxable_Income_No_CG_discount),}
-    \hlkwc{loss_carry_fwd} \hlstd{=} \hlkwd{pmin}\hlstd{(}\hlnum{0}\hlstd{,Taxable_Income_No_CG_discount} \hlopt{-} \hlstd{Sw_amt} \hlopt{+} \hlstd{Net_rent_amt),}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income,} \hlkwc{fy.year} \hlstd{=} \hlstr{"2011-12"}\hlstd{),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income_new_proposal,} \hlkwc{fy.year} \hlstd{=} \hlstr{"2011-12"}\hlstd{),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)} \hlopt{%$%}
-  \hlkwd{sum}\hlstd{(diff)} \hlopt{*} \hlnum{50} \hlopt{/} \hlnum{1e9} \hlkwb{->}
-  \hlstd{reduce_cgt_limit_negative_gearing_costing_1112}
-
-\hlkwd{print}\hlstd{(reduce_cgt_limit_negative_gearing_costing_1112)}
-\end{alltt}
-\begin{verbatim}
-## [1] 4.233905
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\section{Daley discount}
-
-\section{Daley (30\%\ symmetrical discount)}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{new.discount} \hlkwb{<-} \hlnum{0.3}
-
-\hlstd{discount_only_to_negative_rent_income} \hlkwb{<-} \hlnum{FALSE}
-
-\hlkwa{if} \hlstd{(discount_only_to_negative_rent_income)\{}
-  \hlstd{daley_taxstats} \hlkwb{<-}
-  \hlkwd{fread}\hlstd{(}\hlkwd{sample_file_of}\hlstd{(}\hlnum{2013}\hlstd{))} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{new_net_rent} \hlstd{= Net_rent_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount} \hlopt{*} \hlstd{(Net_rent_amt} \hlopt{<} \hlnum{0}\hlstd{)),}  \hlcom{# discount only to negative income}
-    \hlcom{#new_net_rent = Net_rent_amt * (1 - new.discount),}
-    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent,}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)}
-  \hlstd{daley_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is only applied to rental losses (not rental income, contra Henry)"}
-\hlstd{\}} \hlkwa{else} \hlstd{\{}
-  \hlstd{daley_taxstats} \hlkwb{<-}
-  \hlkwd{fread}\hlstd{(}\hlkwd{sample_file_of}\hlstd{(}\hlnum{2013}\hlstd{))} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlcom{#new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income}
-    \hlkwc{new_net_rent} \hlstd{= Net_rent_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent,}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)}
-  \hlstd{daley_discount_remark} \hlkwb{<-} \hlstr{"in which the discount is applied to both rental income and rental losses"}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{new.discount} \hlkwb{<-} \hlnum{0.3}
-
-\hlstd{discount_only_to_negative_rent_income} \hlkwb{<-} \hlnum{FALSE}
-
-\hlkwa{if} \hlstd{(discount_only_to_negative_rent_income)\{}
-  \hlstd{daley_taxstats_1112} \hlkwb{<-}
-  \hlkwd{fread}\hlstd{(}\hlstr{"2012 2% individuals sample file.csv"}\hlstd{)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{new_net_rent} \hlstd{= Net_rent_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount} \hlopt{*} \hlstd{(Net_rent_amt} \hlopt{<} \hlnum{0}\hlstd{)),}  \hlcom{# discount only to negative income}
-    \hlcom{#new_net_rent = Net_rent_amt * (1 - new.discount),}
-    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent,}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income,} \hlkwc{fy.year} \hlstd{=} \hlstr{"2011-12"}\hlstd{),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income,} \hlkwc{fy.year} \hlstd{=} \hlstr{"2011-12"}\hlstd{),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)}
-  \hlstd{daley_discount_remark_1112} \hlkwb{<-} \hlstr{"in which the discount is only applied to rental losses (not rental income, contra Henry)"}
-\hlstd{\}} \hlkwa{else} \hlstd{\{}
-  \hlstd{daley_taxstats_1112} \hlkwb{<-}
-  \hlkwd{fread}\hlstd{(}\hlstr{"2012 2% individuals sample file.csv"}\hlstd{)} \hlopt{%>%}
-  \hlkwd{mutate}\hlstd{(}
-    \hlkwc{new_capital_gains} \hlstd{=} \hlnum{2} \hlopt{*} \hlstd{Net_CG_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlcom{#new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income}
-    \hlkwc{new_net_rent} \hlstd{= Net_rent_amt} \hlopt{*} \hlstd{(}\hlnum{1} \hlopt{-} \hlstd{new.discount),}
-    \hlkwc{new_Taxable_Income} \hlstd{= Taxable_Income} \hlopt{-} \hlstd{Net_CG_amt} \hlopt{-} \hlstd{Net_rent_amt} \hlopt{+} \hlstd{new_capital_gains} \hlopt{+} \hlstd{new_net_rent,}
-    \hlkwc{current_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(Taxable_Income,} \hlkwc{fy.year} \hlstd{=} \hlstr{"2011-12"}\hlstd{),}
-    \hlkwc{new_tax} \hlstd{=} \hlkwd{income_tax}\hlstd{(new_Taxable_Income,} \hlkwc{fy.year} \hlstd{=} \hlstr{"2011-12"}\hlstd{),}
-    \hlkwc{diff} \hlstd{= new_tax} \hlopt{-} \hlstd{current_tax}
-  \hlstd{)}
-  \hlstd{daley_discount_remark_1112} \hlkwb{<-} \hlstr{"in which the discount is applied to both rental income and rental losses"}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-Under this proposal, income tax would rise from \$159.2~billion to \$161.3~billion. 
-
-\section{Summary}
-\begin{table*}
-\centering
-\caption{Summary of costings}
-\begin{tabular}{lrrp{5.1cm}}
- & 2011-12 & 2012-13 & \\
-Reduce CGT and limit negative gearing & \$4~billion & \$4~billion&\\
-Daley symmetric 30\%\ discount & \$2.1~billion & \$2~billion&\emph{in which the discount is applied to both rental income and rental losses}
-\end{tabular}
-
-\notes{Contemporaneous dollars and tax statistics.}
-
-\source{\gao\ contemporaneous tax statistics}
-\end{table*}
+\begin{figure}
+\Caption{Every age group over 45 is more likely than the previous to realize capital gains}{Probability of a capital gains event (2012-13 taxstats)}{fig:Figure4_Probability_of_CG_by_Income_decile_by_age}
+\includegraphics[width=\columnwidth]{figure/Figure4_Probability_of_CG_by_Income_decile_by_age-1}
+\source{ATO 2012-13 2\%\ sample file}
+\notes{Smoothed between deciles.}
+\end{figure}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -847,8 +271,8 @@ Daley symmetric 30\%\ discount & \$2.1~billion & \$2~billion&\emph{in which the 
 ## [5] LC_TIME=English_Australia.1252    
 ## 
 ## attached base packages:
-## [1] tcltk     grid      stats     graphics  grDevices utils     datasets 
-## [8] methods   base     
+## [1] grid      stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
 ## 
 ## other attached packages:
 ##  [1] sqldf_0.4-10                RSQLite_1.0.0              
@@ -867,19 +291,18 @@ Daley symmetric 30\%\ discount & \$2.1~billion & \$2~billion&\emph{in which the 
 ## [27] knitr_1.10.9               
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] reshape2_1.4.1   splines_3.2.0    lattice_0.20-31  colorspace_1.2-4
-##  [5] mgcv_1.8-6       chron_2.3-45     XML_3.98-1.1     nloptr_1.0.4    
-##  [9] plyr_1.8.3       stringr_0.6.2    munsell_0.4.2    gtable_0.1.2    
-## [13] codetools_0.2-11 evaluate_0.7     labeling_0.3     SparseM_1.6     
-## [17] quantreg_5.05    pbkrtest_0.4-2   parallel_3.2.0   highr_0.4       
-## [21] Rcpp_0.11.5      formatR_1.0      lme4_1.1-7       digest_0.6.8    
-## [25] tools_3.2.0      bitops_1.0-6     lazyeval_0.1.10  RCurl_1.95-4.5  
-## [29] MASS_7.3-40      Matrix_1.2-0     assertthat_0.1   minqa_1.2.4     
-## [33] iterators_1.0.7  nnet_7.3-9       nlme_3.1-120
+##  [1] reshape2_1.4.1   splines_3.2.0    lattice_0.20-31  tcltk_3.2.0     
+##  [5] colorspace_1.2-4 mgcv_1.8-6       chron_2.3-45     XML_3.98-1.1    
+##  [9] nloptr_1.0.4     plyr_1.8.3       stringr_0.6.2    munsell_0.4.2   
+## [13] gtable_0.1.2     codetools_0.2-11 evaluate_0.7     labeling_0.3    
+## [17] SparseM_1.6      quantreg_5.05    pbkrtest_0.4-2   parallel_3.2.0  
+## [21] highr_0.4        Rcpp_0.11.5      formatR_1.0      lme4_1.1-7      
+## [25] digest_0.6.8     tools_3.2.0      bitops_1.0-6     lazyeval_0.1.10 
+## [29] RCurl_1.95-4.5   MASS_7.3-40      Matrix_1.2-0     assertthat_0.1  
+## [33] minqa_1.2.4      iterators_1.0.7  nnet_7.3-9       nlme_3.1-120
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-\twocolumn
 
 \printbibliography
 \end{document}
