@@ -139,7 +139,7 @@ fread(sample_file_of(2013)) %>%
   apparent_CG_tax_expenditure_201213_billions
 @
 
-This differs from the amount implicit in taxstats of \$\Sexpr{apparent_CG_tax_expenditure_201213_billions}~billion. The discrepancy may be the absence of benenfits to trusts in this statistic. 
+This differs from the amount implicit in taxstats of \$\Sexpr{apparent_CG_tax_expenditure_201213_billions}~billion. The discrepancy may be due to the absence of trusts in this calculation. 
 
 \subsection{Time series}
 <<Get_time_series>>=
@@ -170,7 +170,7 @@ discount_only_to_negative_rent_income <- TRUE
 @
 
 
-<<Henry_proposal_mutate, echo=T>>=
+<<Henry_proposal_mutate>>=
 henry_taxstats <- 
   fread(sample_file_of(2013)) %>%
   mutate(
@@ -363,15 +363,15 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
       cat("\n")
     }
   }
-  return({
-    data.table(Year = year,
-               Initial_revenue_diff = sum(daley_taxstats$diff)*weighting(year)/1e9,
-               Eventual_revenue_diff = sum(new_daley$diff)*weighting(year)/1e9,
-               eventual_means... = paste("After", eventual, "years"),
-               Diff_due_CG = sum(daley_taxstats$tax_after_reduction_in_discount - daley_taxstats$current_tax)*weighting(year)/1e9
-    )
-  })
-    # new_daley
+#   return({
+#     data.table(Year = year,
+#                Initial_revenue_diff = sum(daley_taxstats$diff)*weighting(year)/1e9,
+#                Eventual_revenue_diff = sum(new_daley$diff)*weighting(year)/1e9,
+#                eventual_means... = paste("After", eventual, "years"),
+#                Diff_due_CG = sum(daley_taxstats$tax_after_reduction_in_discount - daley_taxstats$current_tax)*weighting(year)/1e9
+#     )
+#   })
+    new_daley
 }
 
 
@@ -380,6 +380,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
 
 <<Just_negative_gearing_cost>>=
 tax2013 <- fread(sample_file_of(2013))
+
 prob_of_noCG_if_investor201213 <- 
   tax2013 %>%
   group_by(
@@ -392,15 +393,6 @@ prob_of_noCG_if_investor201213 <-
   mutate(prop = n/sum(n)) %>% 
   filter(IsInvestor, !HasCG) %$% 
   prop
-
-taxable_income_by_CG <- 
-  tax2013 %>%
-  group_by(HasCG = Net_CG_amt > 0) %>%
-    summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
-    mutate(mean.tx = income_tax(mean.tx.i, fy.year = fy.year),
-           marginal.tax.of.avg = income_tax(mean.tx.i, fy.year = fy.year) - income_tax(mean.tx.i - 1, fy.year = fy.year)) %>%
-    select(HasCG, marginal.tax.of.avg) %>%
-    data.table
 
 just_negative_gearing_taxstats <-
   tax2013 %>%
@@ -422,6 +414,16 @@ just_negative_gearing_taxstats <-
 
 just_negative_gearing_taxstats_year0 <- just_negative_gearing_taxstats
 
+taxable_income_by_CG <- 
+  just_negative_gearing_taxstats_year0 %>%
+  group_by(HasCG = Net_CG_amt > 0) %>%
+    summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
+    mutate(mean.tx = income_tax(mean.tx.i, fy.year = "2012-13"),
+           marginal.tax.of.avg = income_tax(mean.tx.i, fy.year = "2012-13") - income_tax(mean.tx.i - 1, fy.year = "2012-13")) %>%
+    select(HasCG, marginal.tax.of.avg) %>%
+    data.table
+
+
   for (i in 1:20){
     just_negative_gearing_taxstats %<>%
       mutate(rand = runif(nrow(.))) %>%
@@ -431,9 +433,9 @@ just_negative_gearing_taxstats_year0 <- just_negative_gearing_taxstats
       merge(taxable_income_by_CG, by = "HasCG") %>%
       mutate(
         new_tax = ifelse(noCGevent, 
-                         income_tax(new_Taxable_Income, fy.year = fy.year),
+                         income_tax(new_Taxable_Income, fy.year = "2012-13"),
                          # Should negative taxes be included? Answer not yet obvious.
-                         pmax(0, income_tax(new_Taxable_Income, fy.year = fy.year) - marginal.tax.of.avg * loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
+                         pmax(0, income_tax(new_Taxable_Income, fy.year = "2012-13") - marginal.tax.of.avg * loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
         whenCG.lastoccurred.prev = whenCG.lastoccurred,
         # reset if applicable
         whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred)
@@ -446,6 +448,37 @@ just_negative_gearing_taxstats_year0 <- just_negative_gearing_taxstats
 
 # 3 billion in savings upfront.
 @
+
+<<Summary-chunk>>=
+policy <- cost_of_daley_policy(2015) 
+policy %>%
+  mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
+  round(sum(diff_due_CG)*50/1e9, 1) ->
+  cost_of_red_CGT_discount
+
+just_negative_gearing_taxstats_year0 %>%
+  mutate(diff = new_tax - current_tax) %$%
+  round(sum(diff) * 50 / 1e9, 1) ->
+  diff_just_due_NG_year0
+
+just_negative_gearing_taxstats %$%
+  round(sum(diff) * 50 / 1e9, 1) ->
+  diff_just_due_NG
+
+policy %$%
+  round(sum(diff)*50/1e9, 1) ->
+  cost_of_policy_2015
+@
+
+\begin{smallbox}{Costings}{box:Costings}
+Reducing the CGT discount to 30\%\ could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion. \\
+
+Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0} billion a year in the short-term. This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income.
+
+The total cost would be \$\Sexpr{cost_of_policy_2015}~billion.
+\end{smallbox}
+
+
 \chapter{Checking}
 <<Compare_years_with_tax_expenditure, eval=FALSE>>=
 # Not run:
