@@ -382,6 +382,22 @@ taxable_income_by_CG <-
 # 3 billion in savings upfront.
 @
 
+<<Henry_proposal_mutate>>=
+henry_taxstats <- 
+  fread(sample_file_of(2013)) %>%
+  mutate(
+    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
+    new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
+    new_invstment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount),
+    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
+    current_tax = income_tax(Taxable_Income),
+    new_tax = income_tax(new_Taxable_Income),
+    diff = new_tax - current_tax
+  )
+
+henry_discount_remark <- "in which the discount is only applied to negative rental income"
+@
+
 <<Summary-chunk>>=
 policy <- cost_of_daley_policy(2015) 
 policy %>%
@@ -401,6 +417,10 @@ just_negative_gearing_taxstats %$%
 policy %$%
   round(sum(diff)*50/1e9, 1) ->
   cost_of_policy_2015
+
+cost_align_gains_and_losses <- 
+  henry_taxstats %$%
+  round(sum(diff)*50/1e9, 1)
 @
 %%%
 
@@ -411,11 +431,13 @@ These tax concessions create incentives for investors to favour debt financed an
 
 The 50 per cent \highlight{CGT discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.4-21]{Treasury2015a}. This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts. THat is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment. But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings. And entrepreneurs already receive a range of other capital gains tax concessions. Reducing the CGT discount to 30 per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
 
-Negative gearing should also be limited. The tax deductibility of costs, including interest costs, prevents a tax bias against debt funding and more risky investments. But this does not mean that losses should be able to be written off against wage and salary income. Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term. This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income.  
+Negative gearing should also be limited. The tax deductibility of costs, including interest costs, prevents a tax bias against debt funding and more risky investments. But this does not mean that losses should be able to be written off against wage and salary income. The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
 
-The best way to transition to these new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump. 
+Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term. This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income.  
 
-Alternatively, all assets bought before a specified date could be ``grandfathered'' so that the current tax concessions apply to them whenever they are sold, but not to newly purchased assets. Although grandfathering minimises the disappointment for existing investors, it encourages investors to ``hoard'' assets inefficiently. It also treats generations unfairly because it gives additional benefits to those with enough wealth to have bought already.
+An alternative option would align the tax rates for capital gains and losses.  For example, the capital gains discount could be reduced so that people paid tax on 70 per cent of their capital gains, but could claim only 70 per cent of any investment losses against wage and salary income. Treating capital gains and recurrent losses consistently would reduce the tax-driven incentive for borrowing to invest. It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
+
+The best way to transition to these new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump. This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
 
 \section{Capital gains enjoy preferential tax treatment relative to income from working}
 Capital gains are taxed as part of the income of individuals, companies and superannuation funds. In 2013-14, capital gains tax raised around \$7.5 billion, around three per cent of total income tax revenue.\footcite{Treasury2014a} 
@@ -1306,27 +1328,11 @@ Nevertheless, given the competing considerations, phase-in would be a better tra
 
 \onecolumn
 %% Costings data
-<<Henry_proposal_parameters, echo=TRUE>>=
+<<Henry_proposal_parameters, echo=TRUE, eval=FALSE>>=
 new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
 
-
-<<Henry_proposal_mutate>>=
-henry_taxstats <- 
-  fread(sample_file_of(2013)) %>%
-  mutate(
-    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
-    new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
-    new_invstment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount),
-    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
-    current_tax = income_tax(Taxable_Income),
-    new_tax = income_tax(new_Taxable_Income),
-    diff = new_tax - current_tax
-  )
-
-henry_discount_remark <- "in which the discount is only applied to negative rental income"
-@
 
 Under this proposal, \Sexpr{henry_discount_remark}, income tax would rise from \$\Sexpr{round(50*sum(henry_taxstats$current_tax)/1e9, 1)}~billion to \$\Sexpr{round(50*sum(henry_taxstats$new_tax)/1e9, 1)}~billion.
 
