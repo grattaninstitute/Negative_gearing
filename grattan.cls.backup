@@ -195,11 +195,11 @@ singlelinecheck=false}
 \newcommand{\source}[1]{\footnotesize\textit{Source:~#1}}
 \newcommand{\notes}[1]{\footnotesize\textit{Notes:~#1}}
 
-\setkomafont{disposition}{\color{Orange}}
-\addtokomafont{chapter}{\bfseries\Large}
-\addtokomafont{section}{\bfseries\normalsize}
-\addtokomafont{subsection}{\bfseries\normalsize}
-\addtokomafont{subsubsection}{\normalsize}
+\setkomafont{disposition}{\bfseries\color{Orange}}
+\addtokomafont{chapter}{\Large}
+\addtokomafont{section}{\normalsize}
+\addtokomafont{subsection}{\normalsize}
+\addtokomafont{subsubsection}{\sffamily\normalsize}
 
 % Spacing
 \RedeclareSectionCommand[

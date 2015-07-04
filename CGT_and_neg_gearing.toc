@@ -8,11 +8,11 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.2}Should capital gains be taxed consistently with other forms of income?}{9}{section.1.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.2.1}Tax concessions for capital gains generate revenue leakage and favour the wealthy}{9}{subsection.1.2.1}
+\contentsline {subsubsection}{\nonumberline Tax concessions for capital gains generate revenue leakage and favour the wealthy}{9}{section*.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.2.2}Adjusting for inflation is not consistent with treatment of other forms of income}{10}{subsection.1.2.2}
+\contentsline {subsubsection}{\nonumberline Adjusting for inflation is not consistent with treatment of other forms of income}{10}{section*.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.2.3}Taxing capital gains without a discount will not substantially distort economic decisions}{11}{subsection.1.2.3}
+\contentsline {subsubsection}{\nonumberline Taxing capital gains without a discount will not substantially distort economic decisions}{11}{section*.7}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.3}Negative gearing benefit provides generous tax treatment for investors}{14}{section.1.3}
 \defcounter {refsection}{0}\relax 
@@ -20,7 +20,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.3.2}Interaction with capital gains tax discount encourages leveraged and speculative investment activity}{15}{subsection.1.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.3.3}Reducing tax on wage income is particularly attractive}{16}{subsection.1.3.3}
+\contentsline {subsection}{\numberline {1.3.3}Reducing tax on wage income is particularly attractive}{17}{subsection.1.3.3}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.3.4}Negative gearing mainly benefits middle and high income earners}{18}{subsection.1.3.4}
 \defcounter {refsection}{0}\relax 
@@ -30,11 +30,11 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.5}Options for reform}{21}{section.1.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.5.1}Reducing the capital gains tax discount}{22}{subsection.1.5.1}
+\contentsline {subsection}{\numberline {1.5.1}Reducing the capital gains tax discount}{21}{subsection.1.5.1}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.5.2}Limiting negative gearing}{22}{subsection.1.5.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.5.3}Matched discount and claimable losses}{23}{subsection.1.5.3}
+\contentsline {subsection}{\numberline {1.5.3}Matched discount and claimable losses}{22}{subsection.1.5.3}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.5.4}Improve tax treatment of depreciation}{23}{subsection.1.5.4}
 \defcounter {refsection}{0}\relax 
