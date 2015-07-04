@@ -398,7 +398,7 @@ henry_taxstats <-
 henry_discount_remark <- "in which the discount is only applied to negative rental income"
 @
 
-<<Summary-chunk>>=
+<<Summary-chunk, results='hide'>>=
 policy <- cost_of_daley_policy(2015) 
 policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
@@ -466,7 +466,7 @@ Funds	7340	507	4842
                  color = gpal(3),
                  fontface = "bold",
                  label = c("Shares", "Real estate", "Other")) + 
-        annotate("blank", x = 3.9, y = 0) + 
+        annotate("blank", x = 4.6, y = 0) + 
         theme(axis.title = element_blank()) 
 @
 \begin{figure}[h]
