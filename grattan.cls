@@ -204,7 +204,7 @@ singlelinecheck=false}
 % Spacing
 \RedeclareSectionCommand[
   beforeskip=1.5\baselineskip,
-  afterskip=2\baselineskip]{chapter}
+  afterskip=1.5\baselineskip]{chapter}
 \RedeclareSectionCommand[
   beforeskip=0.5\baselineskip,
   afterskip=1sp]{section}
@@ -239,7 +239,7 @@ singlelinecheck=false}
 left=2.75cm,right=2.75cm
 ]{geometry}
   %\addtolength{\columnwidth}{50pt}
-  \setlength{\columnsep}{10mm}  
+  \setlength{\columnsep}{20mm}  
   %\addtolength{\columnwidth}{0.2\columnwidth}
 
 % Ensures hyperlinked chapter headings refer to their referent headings
