@@ -59,6 +59,7 @@ library(parallelRandomForest)
                             out.width="11.000in", out.height="7.00in", 
                             fig.show='hide',echo=FALSE,
                             message=FALSE, warning=FALSE
+                            ,cache=TRUE
                             ,dev=c('pdf', 'my_emf')
                             ,fig.ext = c("pdf", "emf")
       )
