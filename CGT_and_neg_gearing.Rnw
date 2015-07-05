@@ -63,7 +63,17 @@ library(parallelRandomForest)
                             ,dev=c('pdf', 'my_emf')
                             ,fig.ext = c("pdf", "emf")
       )
-
+      # for asymmetric expansion of limits
+      scale_dimension.custom_expand <- function(scale, expand = ggplot2:::scale_expand(scale)) {
+        expand_range(ggplot2:::scale_limits(scale), expand[[1]], expand[[2]])
+      }
+      
+      scale_y_continuous <- function(...) {
+        s <- ggplot2::scale_y_continuous(...)
+        class(s) <- c('custom_expand', class(s))
+        s
+      }
+      
 # Select packages to cite:
 citPkgs <- names(sessionInfo()$otherPkgs)
 # Write the bibtex file:
@@ -516,25 +526,36 @@ Tax concessions for capital gains favour wealthy taxpayers who receive most of t
 <<Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_>>=
 taxstats201213 <- fread(sample_file_of(2013))
 
-taxstats201213 %>%
-  mutate(tax_payable = income_tax(Taxable_Income),
-         disposable_income = Taxable_Income - tax_payable) %>%
-  group_by(Income_decile = ntile(Taxable_Income, 10)) %>%
-  summarise(avg.net.capital.gains = mean(Net_CG_amt),
-            avg.tot.capital.gains = mean(Tot_CY_CG_amt),
-            min_income = min(Taxable_Income),
-            max_income = max(Taxable_Income)) %>%
+no_cg <- 
+  taxstats201213 %>%
+  group_by(Income_decile = ntile(Taxable_Income - Net_CG_amt, 10)) %>%
+  summarise(tot.CG = sum(Net_CG_amt)) %>%
   ungroup %>%
-  mutate(prop.net.capital.gains = avg.net.capital.gains/sum(avg.net.capital.gains)) %>%
-  arrange(Income_decile) %T>%
+  mutate(tot.CG = tot.CG/sum(tot.CG),
+         decile_of = "Taxable Income deciles\nwithout capital gains")
+
+incl_cg <- 
+  taxstats201213 %>%
+  group_by(Income_decile = ntile(Taxable_Income, 10)) %>%
+  summarise(tot.CG = sum(Net_CG_amt)) %>%
+  ungroup %>%
+  mutate(tot.CG = tot.CG/sum(tot.CG),
+         decile_of = "Taxable Income deciles\nwith capital gains")
+
+both <- bind_rows(no_cg, incl_cg)
+
+both %T>%
   chart_data %>%
-  grplot(aes(x = factor(Income_decile), y = avg.net.capital.gains)) + 
+  grplot(aes(x = factor(Income_decile), y = tot.CG, fill = decile_of)) + 
   geom_bar(stat = "identity") + 
-  scale_y_continuous(expand = c(0,0), limits = c(0,5000), label = grattan_dollar) + 
+  facet_grid(~decile_of) + 
+  scale_y_continuous(expand = list(c(0,0.1), c(0,0)), label = percent) + 
+  theme(strip.background = element_rect(fill = theGrey),
+        strip.text = element_text(color = "white", face = "bold")) + 
   xlab("Taxable income decile") 
 @
 \begin{figure}
-\Caption{Nearly eighty per cent of capital gains are earned by those in the highest income quintile}{Amount of net capital gains by income decile}{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}
+\Caption{Most capital gains are earned by those in the highest income decile although less when capital gains income is excluded}{Amount of net capital gains by income decile}{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}
 \includegraphics[width=\columnwidth]{figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1}
 \source{\gao\ \textcite{ATO2013i}}
 \end{figure}

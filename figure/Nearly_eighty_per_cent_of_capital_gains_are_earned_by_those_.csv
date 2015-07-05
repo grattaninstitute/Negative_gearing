@@ -1,11 +1,41 @@
-"Income_decile","avg.net.capital.gains","avg.tot.capital.gains","min_income","max_income","prop.net.capital.gains"
-1,239.445,889.852,0,9325,0.034397
-2,108.295,370.403,9325,18276,0.0155569
-3,128.327,468.979,18276,25648,0.0184346
-4,181.042,644.247,25649,33676,0.0260072
-5,171.864,566.57,33676,41561,0.0246887
-6,194.473,612.777,41561,50664,0.0279365
-7,286.151,822.101,50664,62018,0.0411063
-8,326.684,905.79,62018,77443,0.046929
-9,708.466,1846.22,77443,105406,0.101773
-10,4616.49,10747.5,105406,12584567,0.663171
+"Income_decile","tot.CG","decile_of"
+8,0.0602617,"Taxable Income deciles
+without capital gains"
+6,0.044938,"Taxable Income deciles
+without capital gains"
+2,0.0573197,"Taxable Income deciles
+without capital gains"
+5,0.0437126,"Taxable Income deciles
+without capital gains"
+3,0.0507131,"Taxable Income deciles
+without capital gains"
+4,0.0516643,"Taxable Income deciles
+without capital gains"
+1,0.264518,"Taxable Income deciles
+without capital gains"
+9,0.0732293,"Taxable Income deciles
+without capital gains"
+10,0.309024,"Taxable Income deciles
+without capital gains"
+7,0.0446192,"Taxable Income deciles
+without capital gains"
+8,0.0469303,"Taxable Income deciles
+with capital gains"
+6,0.0279373,"Taxable Income deciles
+with capital gains"
+2,0.0155574,"Taxable Income deciles
+with capital gains"
+5,0.0246884,"Taxable Income deciles
+with capital gains"
+3,0.0184351,"Taxable Income deciles
+with capital gains"
+4,0.0260079,"Taxable Income deciles
+with capital gains"
+1,0.0343979,"Taxable Income deciles
+with capital gains"
+9,0.101776,"Taxable Income deciles
+with capital gains"
+10,0.663163,"Taxable Income deciles
+with capital gains"
+7,0.0411074,"Taxable Income deciles
+with capital gains"
