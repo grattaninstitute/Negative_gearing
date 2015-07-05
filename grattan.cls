@@ -206,7 +206,7 @@ singlelinecheck=false}
   beforeskip=1.5\baselineskip,
   afterskip=2\baselineskip]{chapter}
 \RedeclareSectionCommand[
-  beforeskip=4pt,
+  beforeskip=0.5\baselineskip,
   afterskip=1sp]{section}
 \RedeclareSectionCommand[
   beforeskip=-.75\baselineskip,

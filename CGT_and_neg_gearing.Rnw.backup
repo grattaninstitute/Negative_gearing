@@ -506,7 +506,7 @@ Most OECD countries offer some type of discount or concession for capital gains 
 \subsubsection{Tax concessions for capital gains generate revenue leakage and favour the wealthy}
 A lower tax rate for capital gains results in `revenue leakage' as taxpayers find ways to convert income into capital gains.\footcites{Evans2005}{Minas2013}  Protecting the income tax base is a key reason capital gains are taxed in most OECD countries\footcite{OECD2006b} and motivated the introduction of capital gains in Australia (see \Vref{box:short_history_CGT})
 
-Traditionally this type of tax shelter has been the preserve of the wealthy. Executives paid via shares or stock options\footcite{Ingles2009}[pp.8-9] or corporate reorganisations of private corporations to convert dividend income into capital gain, for example.\footcite{Minas2013} But borrowing to finance investments with negative income flow but positive capital gains is another way in which wage income is effectively converted into capital gain for tax purposes. This comes about via the interaction of negative gearing with the capital gains tax provisions (\Cref{sec:negative_gearing_provides}). With more widespread availability of credit, and lower taxes on capital gains, this has become a far more popular tax minimisation strategy, increasing the cost of revenue leakage to the budget.
+Traditionally this type of tax shelter has been the preserve of the wealthy. Executives paid via shares or stock options\footcite[pp. 8-9]{Ingles2009} or corporate reorganisations of private corporations to convert dividend income into capital gain, for example.\footcite{Minas2013} But borrowing to finance investments with negative income flow but positive capital gains is another way in which wage income is effectively converted into capital gain for tax purposes. This comes about via the interaction of negative gearing with the capital gains tax provisions (\Cref{sec:negative_gearing_provides}). With more widespread availability of credit, and lower taxes on capital gains, this has become a far more popular tax minimisation strategy, increasing the cost of revenue leakage to the budget.
 
 Lower taxes on capital gains also distort investment choices. They create an incentive for investors to choose assets more likely to generate income through capital gains rather than operating income.
 
@@ -539,8 +539,6 @@ taxstats201213 %>%
 \source{\gao\ \textcite{ATO2013i}}
 \end{figure}
 Some of this is accounted for by the `lumpy' nature of gains. This means that realising gains can push investors up the taxable income scale. When we control for this by removing gains from income, we see that more than 30 per cent of gains are still earned by those in the top ten per cent of (non-capital gains) income. 
-
-A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (Figure 2). As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
 
 
 \subsubsection{Adjusting for inflation is not consistent with treatment of other forms of income}
