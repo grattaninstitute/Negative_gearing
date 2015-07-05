@@ -36,10 +36,10 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.5.3}Matched discount and claimable losses}{22}{subsection.1.5.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.5.4}Improve tax treatment of depreciation}{23}{subsection.1.5.4}
+\contentsline {subsection}{\numberline {1.5.4}Improve tax treatment of depreciation}{22}{subsection.1.5.4}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.6}Transitional arrangements}{23}{section.1.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.7}Daley (quarantining salary from losses), 30\%\ discount}{26}{section.1.7}
+\contentsline {section}{\numberline {1.7}Daley (quarantining salary from losses), 30\%\ discount}{25}{section.1.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.7.1}Parameters}{26}{subsection.1.7.1}
+\contentsline {subsection}{\numberline {1.7.1}Parameters}{25}{subsection.1.7.1}
