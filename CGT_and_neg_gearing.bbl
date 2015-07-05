@@ -40,29 +40,6 @@
       \field{type}{Generic}
       \field{year}{2015}
     \endentry
-    \entry{R-foreach}{manual}{}
-      \name{labelname}{2}{}{%
-        {{uniquename=0,hash=98af271d1ab31cb91a5161dafa188ca1}{Analytics}{A\bibinitperiod}{Revolution}{R\bibinitperiod}{}{}{}{}}%
-        {{uniquename=0,hash=71558f6c95c26f241f839821c70baae9}{Weston}{W\bibinitperiod}{Steve}{S\bibinitperiod}{}{}{}{}}%
-      }
-      \name{author}{2}{}{%
-        {{uniquename=0,hash=98af271d1ab31cb91a5161dafa188ca1}{Analytics}{A\bibinitperiod}{Revolution}{R\bibinitperiod}{}{}{}{}}%
-        {{uniquename=0,hash=71558f6c95c26f241f839821c70baae9}{Weston}{W\bibinitperiod}{Steve}{S\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{9f56b3d5e1eb03e812f4ccf86d127035}
-      \strng{fullhash}{9f56b3d5e1eb03e812f4ccf86d127035}
-      \field{sortinit}{A}
-      \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
-      \field{labelyear}{2014}
-      \field{datelabelsource}{}
-      \field{labeltitle}{foreach: Foreach looping construct for R}
-      \field{note}{R package version 1.4.2}
-      \field{title}{foreach: Foreach looping construct for R}
-      \field{year}{2014}
-      \verb{url}
-      \verb http://CRAN.R-project.org/package=foreach
-      \endverb
-    \endentry
     \entry{Antolin}{inproceedings}{}
       \name{labelname}{2}{}{%
         {{uniquename=0,hash=c3c917e9a77b5b89492af30ca43cf786}{Antolin}{A\bibinitperiod}{Pablo}{P\bibinitperiod}{}{}{}{}}%
@@ -318,12 +295,15 @@
       \strng{fullhash}{008df3a6391ece8078d50cb8e3ed3aa1}
       \field{sortinit}{B}
       \field{sortinithash}{1a3a21dbed09540af12d49a0b14f4751}
-      \field{labelyear}{2015}
+      \field{labelyear}{2014}
       \field{datelabelsource}{}
       \field{labeltitle}{magrittr: A Forward-Pipe Operator for R}
       \field{note}{R package version 1.5}
       \field{title}{magrittr: A Forward-Pipe Operator for R}
-      \field{year}{2015}
+      \field{year}{2014}
+      \verb{url}
+      \verb http://CRAN.R-project.org/package=magrittr
+      \endverb
     \endentry
     \entry{R-rsdmx}{manual}{}
       \name{labelname}{1}{}{%
@@ -343,7 +323,7 @@
       \field{title}{rsdmx: Tools for Reading SDMX Data and Metadata}
       \field{year}{2015}
       \verb{url}
-      \verb http://CRAN.R-project.org/package=rsdmx
+      \verb https://github.com/opensdmx/rsdmx,%20http://www.sdmx.org
       \endverb
     \endentry
     \entry{R-randomForest}{manual}{}
@@ -1219,6 +1199,23 @@
       \verb http://www.rba.gov.au/statistics/tables/
       \endverb
     \endentry
+    \entry{R-foreach}{manual}{}
+      \name{labelname}{2}{}{%
+        {{uniquename=0,hash=cad9ccaa066e9cce9d0f4fcdd4c4dd45}{{Revolution\bibnamedelimb Analytics}}{R\bibinitperiod}{}{}{}{}{}{}}%
+        {{uniquename=0,hash=71558f6c95c26f241f839821c70baae9}{Weston}{W\bibinitperiod}{Steve}{S\bibinitperiod}{}{}{}{}}%
+      }
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=cad9ccaa066e9cce9d0f4fcdd4c4dd45}{{Revolution\bibnamedelimb Analytics}}{R\bibinitperiod}{}{}{}{}{}{}}%
+        {{uniquename=0,hash=71558f6c95c26f241f839821c70baae9}{Weston}{W\bibinitperiod}{Steve}{S\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{edcfc4ee775babfb78d584bc1df0fa00}
+      \strng{fullhash}{edcfc4ee775babfb78d584bc1df0fa00}
+      \field{sortinit}{R}
+      \field{sortinithash}{ff5a3533ecf9d5a03ff60b1e1389b63d}
+      \field{labelyear}{nodate}
+      \field{labeltitle}{foreach: Foreach looping construct for R}
+      \field{title}{foreach: Foreach looping construct for R}
+    \endentry
     \entry{Rider2004}{misc}{}
       \name{labelname}{2}{}{%
         {{uniquename=0,hash=62254fb5ea6b77aef63ceb92944c34a8}{Rider}{R\bibinitperiod}{Carmen}{C\bibinitperiod}{}{}{}{}}%
@@ -1438,9 +1435,12 @@
       \field{labelyear}{2015}
       \field{datelabelsource}{}
       \field{labeltitle}{readxl: Read Excel Files}
-      \field{note}{R package version 0.1.0.9000}
+      \field{note}{R package version 0.1.0}
       \field{title}{readxl: Read Excel Files}
       \field{year}{2015}
+      \verb{url}
+      \verb http://CRAN.R-project.org/package=readxl
+      \endverb
     \endentry
     \entry{R-ggplot2}{manual}{}
       \name{labelname}{2}{}{%
@@ -1482,7 +1482,7 @@
       \field{labelyear}{2015}
       \field{datelabelsource}{}
       \field{labeltitle}{dplyr: A Grammar of Data Manipulation}
-      \field{note}{R package version 0.4.1}
+      \field{note}{R package version 0.4.2}
       \field{title}{dplyr: A Grammar of Data Manipulation}
       \field{year}{2015}
       \verb{url}
@@ -1506,7 +1506,7 @@
       \field{labelyear}{2015}
       \field{datelabelsource}{}
       \field{labeltitle}{readr: Read Tabular Data}
-      \field{note}{R package version 0.1.0}
+      \field{note}{R package version 0.1.1}
       \field{title}{readr: Read Tabular Data}
       \field{year}{2015}
       \verb{url}
@@ -1554,11 +1554,11 @@
       \field{labelyear}{2015}
       \field{datelabelsource}{}
       \field{labeltitle}{knitr: A General-Purpose Package for Dynamic Report Generation in R}
-      \field{note}{R package version 1.9}
+      \field{note}{R package version 1.10.9}
       \field{title}{knitr: A General-Purpose Package for Dynamic Report Generation in R}
       \field{year}{2015}
       \verb{url}
-      \verb http://CRAN.R-project.org/package=knitr
+      \verb http://yihui.name/knitr/
       \endverb
     \endentry
     \entry{R-zoo}{manual}{}
@@ -1587,10 +1587,10 @@
       \endverb
     \endentry
   \endsortlist
+  \missing{ACOSS}
   \missing{ODonnell2005}
   \missing{Stewart2015}
   \missing{Brown2012}
-  \missing{ACOSS}
 \endrefsection
 \endinput
 
