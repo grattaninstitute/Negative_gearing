@@ -564,14 +564,12 @@ Some of this is accounted for by the `lumpy' nature of gains. This means that re
 A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (Figure 2). As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
 
 
-\subsubsection{Adjusting for inflation is not consistent with treatment of other forms of income}
+\subsubsection{The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}
 A lower tax rate for capital gains is sometimes justified on the basis that the effective tax rates on real returns can be high if nominal gains are taxed at marginal income tax rates.\footcite{Treasury2010} This is particularly true of investments with low real returns that are held for an extended period (\Vref{box:short_history_CGT}).
 
-In our system, labour and investment income are taxed in nominal terms.\footcite{Treasury2010}  And income tax deductions, such as interest payments for investment property are also deducted on a nominal basis (section 
+The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. In the current low inflation environment, the 50 per cent discount overcompensates most investors.\footnote{}
 
-Periodic adjustments are made to the income tax thresholds to compensate for inflation and wages growth. While imperfect, these adjustments help mitigate the effects of inflation on effective tax rates for income, including capital gains.
-
-Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. Ironically Australia's current system provides no adjustments for the least protection to bank deposits -- disproportionately held by the least well off -- and much more protection for other investments.
+Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. Ironically Australia's current system provides no adjustments for the least protection to bank deposits -- disproportionately held by the least well off -- and much more protection for other investments.\footnote{Over 90\%\ of those in the bottom decile have deposits, but less than 30\%\ have superannuation assets; and less than 20\%\ have equities or life insurance.}
 
 Unlike other investment income, gains are taxed when an asset is sold, not when they accrue, which provides investors with an implicit interest-free loan on tax liabilities (\Vref{box:Tax_deferral_and_effective_tax_rates}).\footcites[See also:][p.~2]{Fane2004}[p.~12]{Ingles2009} Investors are also able to choose the time of the asset's disposal to minimise tax. 
 
