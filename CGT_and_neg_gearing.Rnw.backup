@@ -517,8 +517,6 @@ Tax concessions for capital gains favour wealthy taxpayers who receive most of t
 taxstats201213 <- fread(sample_file_of(2013))
 
 taxstats201213 %>%
-  mutate(tax_payable = income_tax(Taxable_Income),
-         disposable_income = Taxable_Income - tax_payable) %>%
   group_by(Income_decile = ntile(Taxable_Income, 10)) %>%
   summarise(avg.net.capital.gains = mean(Net_CG_amt),
             avg.tot.capital.gains = mean(Tot_CY_CG_amt),
@@ -540,7 +538,7 @@ taxstats201213 %>%
 \end{figure}
 Some of this is accounted for by the `lumpy' nature of gains. This means that realising gains can push investors up the taxable income scale. When we control for this by removing gains from income, we see that more than 30 per cent of gains are still earned by those in the top ten per cent of (non-capital gains) income. 
 
-A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (Figure 2). As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
+A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (\Vref{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_). As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
 
 
 \subsubsection{Adjusting for inflation is not consistent with treatment of other forms of income}
