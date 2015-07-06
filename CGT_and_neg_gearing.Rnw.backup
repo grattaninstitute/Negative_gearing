@@ -98,6 +98,10 @@ sample_file_of <- function(year = 2013){
   return(list.of.files[grepl(fy.year, list.of.files)])
 }
 
+get_sample_file <- function(year = 2013){
+  fread(sample_file_of(year))
+}
+
 weighting <- function(year = 2013){
   # From Budget Table 1 from BP 1
   # http://budget.gov.au/2015-16/content/bp1/html/bp1_bs2.htm
@@ -628,10 +632,13 @@ This suggests that larger distortions arise from the different tax treatment of 
 \subsubsection{People may hold assets longer, but many already wait until retirement}
 The other economic cost of higher taxes on capital gains is greater asset lock-in. 
 
-Because taxes are only paid when gains are realised, investors are encouraged to hold on to assets with large accumulated gains.\footcite[p.~69]{Burman2009} In effect, the investor seeks to maintain the implicit interest free loan on accrued gains. Crystallising a capital gain is only worthwhile if an investor can achieve a materially higher return (Box 3).\footcite[p.~12]{Ingles2009}
+Because taxes are only paid when gains are realised, investors are encouraged to hold on to assets with large accumulated gains.\footcite[p.~69]{Burman2009} In effect, the investor seeks to maintain the implicit interest free loan on accrued gains. Crystallising a capital gain is only worthwhile if an investor can achieve a materially higher return (\Vref{box:CGT_asset_lockin}).\footcite[p.~12]{Ingles2009}
 
 Lock-in can discourage investors from moving their money to the investments with the highest pre-tax returns, so assets do not always go to their highest value use.\footcite{Lindsey1987} Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.\footcites{OECD2006b}{Johnson2008}  Australia's open capital markets and generous capital gains tax regime for non-residents, reduce the danger that worthwhile projects will not get access to capital because of lock-in.\footnote{Non-resident investors in Australian shares are generally not subject to Australia capital gains tax (see: \emph{Income Tax Assessment Act 1936, s. 136-25}} 
 
+The more fundamental cause of lock-in is the ``retirement realisation effect'' -- the tendency for investors to wait until retirement when their taxable incomes are low before realising gains.
+ \textcite{Wood2010a} found that after adjusting for other factors, the probability of a landlord selling a property increases by over 20 percentage points once they retire.
+ 
 \begin{smallbox}{Capital gains tax and asset lock in}{box:CGT_asset_lockin}
 Suppose Hayley, an investor in the top tax bracket purchases a house for \$700,000 and holds it for 10 years. During that time the market price of the house increases to \$1 million. She makes a net rental return of 5 per cent a year, giving her a \$50,000 income stream. 
 
@@ -639,6 +646,43 @@ If she were to sell the house she would crystallise the \$300,000 in gains, payi
 
 If capital gains were taxed in full, rather than at the current 50 per cent discount, her hurdle rate for the new investment would be 5.9 per cent. 
 \end{smallbox}
+
+We can see the retirement realisation effect in the patterns of capital gains realisation by age. Those over 50 have much higher average realisation of gains, regardless of income level.
+
+<<Prob_of_CGevent_by_age_income>>=
+get_sample_file(2013) %>% 
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", age)) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65-69", "70+"))) %>% 
+  group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
+  summarise(prop_cg = mean(Net_CG_amt > 0))  %>% 
+  grplot(aes(x = Income_decile, y = prop_cg, group=factor(age), color = factor(age), label = age)) +
+  annotate("segment",
+           x = -Inf, y = 0.10,
+           xend = 10, yend = 0.10,
+           color = '#DADADA') +
+  annotate("segment", 
+           x = -Inf, y = 0.20,
+           xend = 10, yend = 0.20,
+           color = '#DADADA') + 
+  annotate("segment", 
+           x = -Inf, y = 0.30,
+           xend = 10, yend = 0.30,
+           color = '#DADADA') + 
+  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.35)) + 
+  scale_x_continuous(expand = c(0,0), breaks = 1:10) + 
+  annotate("blank", x = 12, y = 0.1) + 
+  theme(axis.line.x = element_blank()) + 
+  annotate("segment", x = 1, xend = 10, y = 0, yend = 0) + 
+  scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.3), breaks = c(0:3)/10 ) + 
+  stat_smooth(size = 2, se = FALSE) + 
+  scale_color_manual(values = rev(gpal(7))) + 
+  theme(axis.title.x = element_text(hjust = 0.28), # requires segment
+        panel.grid.major = element_blank()) + xlab("Income decile")
+@
+\begin{figure}
+\Caption{Retirement is the main driver of asset lock-in}{Probability of a capital gain, by age and income}{fig:Prob_of_CGevent_by_age_income}
+\includegraphics[width=\columnwidth]{figure/Prob_of_CGevent_by_age_income-1}
+\end{figure}
 
 Lock-in is a problem because it discourages investors from moving their money to the investments with the highest pre-tax returns, and it discourages sale of assets to those who can increase the returns achieved by the current owner.\footcite{Lindsey1987}  Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.\footcites{OECD2006b}{Johnson2008}  Australia's open capital markets and generous capital gains tax regime for non-residents reduce the danger that worthwhile projects will not get access to capital because of lock-in.\footnote{Non-resident investors in Australian shares are generally not subject to Australian capital gains tax. See \Act{Income Tax Assessment Act 1936}{Cth}~s.136-25.}  
 
