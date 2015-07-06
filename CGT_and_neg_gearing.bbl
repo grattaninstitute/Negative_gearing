@@ -830,6 +830,26 @@
       \verb http://fsi.gov.au/files/2014/12/FSI_Final_Report_Consolidated20141210.pdf
       \endverb
     \endentry
+    \entry{IRS2015}{misc}{}
+      \name{labelname}{1}{}{%
+        {{uniquename=0,hash=367a1976bb29592e0a5570f9e0bdc15b}{IRS}{I\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=367a1976bb29592e0a5570f9e0bdc15b}{IRS}{I\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \strng{namehash}{367a1976bb29592e0a5570f9e0bdc15b}
+      \strng{fullhash}{367a1976bb29592e0a5570f9e0bdc15b}
+      \field{sortinit}{I}
+      \field{sortinithash}{b2e302e575c74beffcc96ef7059003aa}
+      \field{labelyear}{2015}
+      \field{datelabelsource}{}
+      \field{labeltitle}{Passive Activity Loss ATG -- Chapter 3, Passive Income}
+      \field{title}{Passive Activity Loss ATG -- Chapter 3, Passive Income}
+      \field{year}{2015}
+      \verb{url}
+      \verb http://www.irs.gov/Businesses/Small-Businesses-&-Self-Employed/Passive-Activity-Loss-ATG-Chapter-3-Passive-Income
+      \endverb
+    \endentry
     \entry{Johnson2008}{article}{}
       \name{labelname}{1}{}{%
         {{uniquename=1,hash=3ab34db904b7dbbd29c0c325a354a5ab}{Johnson}{J\bibinitperiod}{C}{C\bibinitperiod}{}{}{}{}}%
@@ -1020,6 +1040,27 @@
       \field{volume}{11}
       \field{year}{2013}
       \field{pages}{191\bibrangedash 215}
+    \endentry
+    \entry{ODonnell2005}{article}{}
+      \name{labelname}{1}{}{%
+        {{uniquename=0,hash=31ecb88ab5a185f442bd3266be58e6b0}{O'Donnell}{O\bibinitperiod}{Jim}{J\bibinitperiod}{}{}{}{}}%
+      }
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=31ecb88ab5a185f442bd3266be58e6b0}{O'Donnell}{O\bibinitperiod}{Jim}{J\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{31ecb88ab5a185f442bd3266be58e6b0}
+      \strng{fullhash}{31ecb88ab5a185f442bd3266be58e6b0}
+      \field{sortinit}{O}
+      \field{sortinithash}{59512cfd31be1dcef4def024230bdc1d}
+      \field{labelyear}{2005}
+      \field{datelabelsource}{}
+      \field{labeltitle}{Quarantining interest deductions for negatively geared rental property investments}
+      \field{journaltitle}{eJournal of Tax Research}
+      \field{number}{1}
+      \field{title}{Quarantining interest deductions for negatively geared rental property investments}
+      \field{volume}{3}
+      \field{year}{2005}
+      \field{pages}{63\bibrangedash 113}
     \endentry
     \entry{OECD2006a}{article}{}
       \name{labelname}{1}{}{%
@@ -1609,9 +1650,8 @@
     \endentry
   \endsortlist
   \missing{ACOSS}
-  \missing{Stewart2015}
   \missing{Brown2012}
-  \missing{ODonnell2005}
+  \missing{Stewart2015}
 \endrefsection
 \endinput
 
