@@ -830,6 +830,27 @@
       \verb http://fsi.gov.au/files/2014/12/FSI_Final_Report_Consolidated20141210.pdf
       \endverb
     \endentry
+    \entry{Inquiry2015}{report}{}
+      \name{labelname}{1}{}{%
+        {{uniquename=0,hash=a404f19b8401b42039ebe2516df5f3e9}{Inquiry}{I\bibinitperiod}{Financial\bibnamedelima Systems}{F\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
+      }
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=a404f19b8401b42039ebe2516df5f3e9}{Inquiry}{I\bibinitperiod}{Financial\bibnamedelima Systems}{F\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{a404f19b8401b42039ebe2516df5f3e9}
+      \strng{fullhash}{a404f19b8401b42039ebe2516df5f3e9}
+      \field{sortinit}{I}
+      \field{sortinithash}{b2e302e575c74beffcc96ef7059003aa}
+      \field{labelyear}{2015}
+      \field{datelabelsource}{}
+      \field{labeltitle}{Financial Systems Inquiry, Final Report}
+      \field{title}{Financial Systems Inquiry, Final Report}
+      \field{type}{Report}
+      \field{year}{2015}
+      \verb{url}
+      \verb http://fsi.gov.au/files/2014/12/FSI_Final_Report_Consolidated20141210.pdf
+      \endverb
+    \endentry
     \entry{IRS2015}{misc}{}
       \name{labelname}{1}{}{%
         {{uniquename=0,hash=367a1976bb29592e0a5570f9e0bdc15b}{IRS}{I\bibinitperiod}{}{}{}{}{}{}}%
@@ -890,6 +911,32 @@
       \verb{url}
       \verb http://CRAN.R-project.org/package=devEMF
       \endverb
+    \endentry
+    \entry{Kelly2015}{book}{}
+      \name{labelname}{2}{}{%
+        {{uniquename=0,hash=97417c0819887d7ba90e468833f32da8}{Kelly}{K\bibinitperiod}{Jane-Frances}{J\bibinithyphendelim F\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=12788420a61ed8164363ba605a320cb7}{Donegan}{D\bibinitperiod}{Paul}{P\bibinitperiod}{}{}{}{}}%
+      }
+      \name{author}{2}{}{%
+        {{uniquename=0,hash=97417c0819887d7ba90e468833f32da8}{Kelly}{K\bibinitperiod}{Jane-Frances}{J\bibinithyphendelim F\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=12788420a61ed8164363ba605a320cb7}{Donegan}{D\bibinitperiod}{Paul}{P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{location}{1}{%
+        {Melbourne}%
+      }
+      \list{publisher}{1}{%
+        {Melbourne University Press}%
+      }
+      \strng{namehash}{413f1bb601db3386f29eab8a2d2ef6d7}
+      \strng{fullhash}{413f1bb601db3386f29eab8a2d2ef6d7}
+      \field{sortinit}{K}
+      \field{sortinithash}{33bf4c961fa093ee6a297ccbd88eacc0}
+      \field{labelyear}{2015}
+      \field{datelabelsource}{}
+      \field{labeltitle}{City Limits: Why {Australia}'s cities are broken and how we can fix them}
+      \field{title}{City Limits: Why {Australia}'s cities are broken and how we can fix them}
+      \field{type}{Book}
+      \field{year}{2015}
     \endentry
     \entry{Kelly2013}{report}{}
       \name{labelname}{4}{uniquelist=2}{%
@@ -1680,8 +1727,9 @@
       \endverb
     \endentry
   \endsortlist
-  \missing{ACOSS}
   \missing{Brown2012}
+  \missing{Treasury2010b}
+  \missing{ACOSS}
   \missing{Stewart2015}
 \endrefsection
 \endinput
