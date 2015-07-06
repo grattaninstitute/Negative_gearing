@@ -656,6 +656,7 @@ get_sample_file(2013) %>%
   group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
   summarise(prop_cg = mean(Net_CG_amt > 0))  %>% 
   grplot(aes(x = Income_decile, y = prop_cg, group=factor(age), color = factor(age), label = age)) +
+  theme_hugh(base_size = 24) + 
   annotate("segment",
            x = -Inf, y = 0.10,
            xend = 10, yend = 0.10,
@@ -668,7 +669,7 @@ get_sample_file(2013) %>%
            x = -Inf, y = 0.30,
            xend = 10, yend = 0.30,
            color = '#DADADA') + 
-  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.35)) + 
+  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.6)) + 
   scale_x_continuous(expand = c(0,0), breaks = 1:10) + 
   annotate("blank", x = 12, y = 0.1) + 
   theme(axis.line.x = element_blank()) + 
@@ -680,15 +681,17 @@ get_sample_file(2013) %>%
         panel.grid.major = element_blank()) + xlab("Income decile")
 @
 \begin{figure}
-\Caption{Retirement is the main driver of asset lock-in}{Probability of a capital gain, by age and income}{fig:Prob_of_CGevent_by_age_income}
+\Caption{Taxpayers wait till retirement to realize capital gains.}{Incidence of capital gain events in 2012-13, by age and income}{fig:Prob_of_CGevent_by_age_income}
 \includegraphics[width=\columnwidth]{figure/Prob_of_CGevent_by_age_income-1}
+\source{\gao\ \textcite{ATO2013i}}
 \end{figure}
+And many of those 50 to 64 -- the peak retirement years\footnote{The average age at retirement from the labour force for people aged 45 years and over in 2012-13 was 53.8 years (58.5 years for men and 50.0 years for women). \textcite{ABS2013}} -- realise sizeable gains when their other taxable income is low, suggesting they are waiting until retirement. Indeed, almost 60 per cent of the capital gains in this age group are earned by the 24 per cent of people without wage and salary income. 
 
-Lock-in is a problem because it discourages investors from moving their money to the investments with the highest pre-tax returns, and it discourages sale of assets to those who can increase the returns achieved by the current owner.\footcite{Lindsey1987}  Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.\footcites{OECD2006b}{Johnson2008}  Australia's open capital markets and generous capital gains tax regime for non-residents reduce the danger that worthwhile projects will not get access to capital because of lock-in.\footnote{Non-resident investors in Australian shares are generally not subject to Australian capital gains tax. See \Act{Income Tax Assessment Act 1936}{Cth}~s.136-25.}  
+The other group that realise a lot of capital gains are high income older people. Many of these will be people moving assets inside their Self Managed Super Fund in anticipation of retirement.\footnote{}
 
-Ultimately, the best way to reduce asset lock-in is to tax gains on an accruals basis, with interest charges on the deferred tax.\footcite[pp.~11-14]{Burman2009} This would remove the incentive to hold on to gains to reduce the tax burden. 
+The other important cause of lock-in is the fact that capital gains are disregarded on death. Passing assets to a beneficiary is not regarded as an ``event'' that triggers a capital gains tax liability. So by passing on assets to heirs, capital gains taxes can de deferred indefinitely. 
 
-To date, annual asset revaluations have been considered impractical and beset with administrative difficulties.\footcites{OECD2006a}{Commission2004} But such valuations can be done easily for shares and to a lesser extent property (which is already revalued in most states every one or two years for the purposes of levying council rates (chapter 5)).\footcites{Burman2009}[p.~12]{Ingles2009} The Henry review flagged that such an accruals approach to capital gains becomes more feasible as technology improves.\footcite[p.~64]{Treasury2010} 
+Ultimately, the best way to reduce asset lock-in is to tax gains on an accruals basis, with interest charges on the deferred tax.\footcite[pp.~11-14]{Burman2009} This would remove the incentive to hold on to gains to reduce the tax burden. To date, annual asset revaluations have been considered impractical and beset with administrative difficulties.\footcites{OECD2006a}{Commission2004} But such valuations can be done easily for shares and to a lesser extent property (which is already revalued in most states every one or two years for the purposes of levying council rates (chapter 5)).\footcites{Burman2009}[p.~12]{Ingles2009} The Henry review flagged that such an accruals approach to capital gains becomes more feasible as technology improves.\footcite[p.~64]{Treasury2010} 
 
 
 \section{Negative gearing benefit provides generous tax treatment for investors}\label{sec:negative_gearing_provides}
@@ -696,6 +699,26 @@ Negative gearing allows taxpayers to subtract the losses they make on investment
 
 The ability to offset losses against other income is part of the normal operation of the Australian tax system, and applies to a wide range of investments and business activities. If losses were not deductible, they would be treated asymmetrically to gains (which are taxed) and investments in risky assets would be less attractive. Deductibility of interest payments in theory maintains tax neutrality for investors choosing between lending and equity financing.\footcite{Fane2004}  
 
+But in practice, the way in which negative gearing and capital gains tax interact allow investors to reduce and defer taxes on their wage income. Investors favour debt finance and investments that generate more of their returns via capital gains in order to maximise these tax advantages. 
+
+This comes at both a cost to the budget and negative impacts in investment markets, particularly housing markets, where the tax treatment has encouraged speculative activity. 
+
+Most other advanced economies provide a less generous treatment for rental losses. The Unites States only allows losses to be written off against other forms of ``passive'' income.\footnote{Passive income is defined as income from rental properties or businesses in which the taxpayer does not materially participate. It is distinct from active income (wage, salary and income from business in which the person is actively involved) and portfolio income (income from interest, dividends etc). \textcite{IRS2015}.}  The UK and many European countries only allow deductions against the same class of income, so for example, losses on investment property can only be used to reduce tax on income or capital gains from other investment properties. Others such as the Netherlands do not allow deductibility of losses from investment housing.\footnote{See \textcite[p.~43]{RBA2014}, \textcite[p.~86]{Commission2004}, \textcite[pp.~92-95]{ODonnell2005}.}
+
+\subsubsection{Interaction with capital gains tax allows investors to defer and reduce their tax}
+Taxes on capital gains are discounted by 50 per cent and only paid when the asset is sold. But negative gearing arrangements allow investors to deduct losses -- investment expenses (including interest costs) in excess of rental income from wage income that would otherwise be taxed at the full marginal rate.
+
+With the right investment strategy, an investor can use this asymmetry in the tax treatment of gains and losses to defer and reduce taxes on their wage income (Box 4).
+
+\begin{smallbox}{Using negative gearing to reduce taxes on wage income}{box:Use_NG_to_red_tax}
+High income investors can maximise the tax shelter on their wage income by borrowing to invest in assets that generate less in recurrent income and more through capital gains. 
+
+Suppose Dan, a lawyer earning \$250,000 a year, borrows \$750,000 to purchase an investment property. Interest on the loan is 6 per cent a year and the property generates a rental return of 2.5 per cent each year.  Most of the return is via capital appreciation of 7 per cent each year.
+
+In the first year, Dan makes a loss of \$26,000 on the property and reduces the tax he pays on his \$250,000 salary by \$12,000. His rental losses decline over time as the property appreciates. After five years, Dan has reduced taxes on his wage income by a total of \$55,000. If he sells the property after five years he will realise a capital gain of \$233,000 and pay tax on the gain of just under \$55,000. 
+
+Because of the asymmetry of tax treatment of gains and losses, Dan pays \$294 \emph{less} tax in total over five years than he if he had not purchased the house. So despite his profit of more than \$115,000 on the investment, in effect he pays no tax on this profit, in fact he receives a small tax reduction.
+\end{smallbox}
 
 But the issue for negatively geared property or shares is that the loss being deducted is illusory. Investors are only willing to make an income loss over a number of years because the value of the asset is growing. But the gains in property value are not counted as income until the asset is sold (section 1.2). It is the combination of unlimited deductions of "losses" against wage income while only being taxed on half the gains upon realisation that makes negative gearing an attractive strategy.\footcite[pages~5,13]{ACOSS} 
 

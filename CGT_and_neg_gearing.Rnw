@@ -691,9 +691,7 @@ The other group that realise a lot of capital gains are high income older people
 
 The other important cause of lock-in is the fact that capital gains are disregarded on death. Passing assets to a beneficiary is not regarded as an ``event'' that triggers a capital gains tax liability. So by passing on assets to heirs, capital gains taxes can de deferred indefinitely. 
 
-Ultimately, the best way to reduce asset lock-in is to tax gains on an accruals basis, with interest charges on the deferred tax.\footcite[pp.~11-14]{Burman2009} This would remove the incentive to hold on to gains to reduce the tax burden. 
-
-To date, annual asset revaluations have been considered impractical and beset with administrative difficulties.\footcites{OECD2006a}{Commission2004} But such valuations can be done easily for shares and to a lesser extent property (which is already revalued in most states every one or two years for the purposes of levying council rates (chapter 5)).\footcites{Burman2009}[p.~12]{Ingles2009} The Henry review flagged that such an accruals approach to capital gains becomes more feasible as technology improves.\footcite[p.~64]{Treasury2010} 
+Ultimately, the best way to reduce asset lock-in is to tax gains on an accruals basis, with interest charges on the deferred tax.\footcite[pp.~11-14]{Burman2009} This would remove the incentive to hold on to gains to reduce the tax burden. To date, annual asset revaluations have been considered impractical and beset with administrative difficulties.\footcites{OECD2006a}{Commission2004} But such valuations can be done easily for shares and to a lesser extent property (which is already revalued in most states every one or two years for the purposes of levying council rates (chapter 5)).\footcites{Burman2009}[p.~12]{Ingles2009} The Henry review flagged that such an accruals approach to capital gains becomes more feasible as technology improves.\footcite[p.~64]{Treasury2010} 
 
 
 \section{Negative gearing benefit provides generous tax treatment for investors}\label{sec:negative_gearing_provides}
@@ -701,6 +699,102 @@ Negative gearing allows taxpayers to subtract the losses they make on investment
 
 The ability to offset losses against other income is part of the normal operation of the Australian tax system, and applies to a wide range of investments and business activities. If losses were not deductible, they would be treated asymmetrically to gains (which are taxed) and investments in risky assets would be less attractive. Deductibility of interest payments in theory maintains tax neutrality for investors choosing between lending and equity financing.\footcite{Fane2004}  
 
+But in practice, the way in which negative gearing and capital gains tax interact allow investors to reduce and defer taxes on their wage income. Investors favour debt finance and investments that generate more of their returns via capital gains in order to maximise these tax advantages. 
+
+This comes at both a cost to the budget and negative impacts in investment markets, particularly housing markets, where the tax treatment has encouraged speculative activity. 
+
+Most other advanced economies provide a less generous treatment for rental losses. The Unites States only allows losses to be written off against other forms of ``passive'' income.\footnote{Passive income is defined as income from rental properties or businesses in which the taxpayer does not materially participate. It is distinct from active income (wage, salary and income from business in which the person is actively involved) and portfolio income (income from interest, dividends etc). \textcite{IRS2015}.}  The UK and many European countries only allow deductions against the same class of income, so for example, losses on investment property can only be used to reduce tax on income or capital gains from other investment properties. Others such as the Netherlands do not allow deductibility of losses from investment housing.\footnote{See \textcite[p.~43]{RBA2014}, \textcite[p.~86]{Commission2004}, \textcite[pp.~92-95]{ODonnell2005}.}
+
+\subsubsection{Interaction with capital gains tax allows investors to defer and reduce their tax}
+Taxes on capital gains are discounted by 50 per cent and only paid when the asset is sold. But negative gearing arrangements allow investors to deduct losses -- investment expenses (including interest costs) in excess of rental income from wage income that would otherwise be taxed at the full marginal rate.
+
+With the right investment strategy, an investor can use this asymmetry in the tax treatment of gains and losses to defer and reduce taxes on their wage income (\Vref{box:Use_NG_to_red_tax}).
+
+\begin{smallbox}{Using negative gearing to reduce taxes on wage income}{box:Use_NG_to_red_tax}
+High income investors can maximise the tax shelter on their wage income by borrowing to invest in assets that generate less in recurrent income and more through capital gains. 
+
+Suppose Dan, a lawyer earning \$250,000 a year, borrows \$750,000 to purchase an investment property. Interest on the loan is 6 per cent a year and the property generates a rental return of 2.5 per cent each year.  Most of the return is via capital appreciation of 7 per cent each year.
+
+In the first year, Dan makes a loss of \$26,000 on the property and reduces the tax he pays on his \$250,000 salary by \$12,000. His rental losses decline over time as the property appreciates. After five years, Dan has reduced taxes on his wage income by a total of \$55,000. If he sells the property after five years he will realise a capital gain of \$233,000 and pay tax on the gain of just under \$55,000. 
+
+Because of the asymmetry of tax treatment of gains and losses, Dan pays \$294 \emph{less} tax in total over five years than he if he had not purchased the house. So despite his profit of more than \$115,000 on the investment, in effect he pays no tax on this profit, in fact he receives a small tax reduction.
+\end{smallbox}
+
+The attractiveness of using investment losses to reduce taxes on wage income is evident in the age profile of those negatively gearing property. Investing in loss making properties is popular amongst those of working age, but far less prevalent amongst over 60s who are unlikely to benefit from the tax write-offs. Over 60 per cent of those under 60 with investment properties make rental losses compared to less than 40 per cent over 60.
+
+<<Age_negative_gearing_investments>>=
+get_sample_file(2013) %>%
+    mutate(Age = car::recode(age_range, "0 = '70 and over';
+                            1 = '65 to 69';
+                            2 = '60 to 64';
+                            3 = '55 to 59';
+                            4 = '50 to 54';
+                            5 = '45 to 49';
+                            6 = '40 to 44';
+                            7 = '35 to 39';
+                            8 = '30 to 34';
+                            9 = '25 to 29';
+                            10 = '20 to 24';
+                            11 = 'under 20'")) %>%
+    mutate(Age =  factor(Age,
+                       levels = c("under 20",
+                                  '20 to 24',
+                                  '25 to 29',
+                                  '30 to 34',
+                                  '35 to 39',
+                                  '40 to 44',
+                                  '45 to 49',
+                                  '50 to 54',
+                                  '55 to 59',
+                                  '60 to 64',
+                                  '65 to 69',
+                                  '70 and over'),
+                       labels = gsub("\\s", "\n",
+                                     c("under 20",
+                                       '20 to 24',
+                                       '25 to 29',
+                                       '30 to 34',
+                                       '35 to 39',
+                                       '40 to 44',
+                                       '45 to 49',
+                                       '50 to 54',
+                                       '55 to 59',
+                                       '60 to 64',
+                                       '65 to 69',
+                                       '70 and over')),
+                       ordered = T)) %>% 
+  group_by(Age) %>%
+  summarise(number_negatively_gearing = sum(Net_rent_amt < 0) * 50,
+            prop_NG_investors = sum(Gross_rent_amt > 0 & Net_rent_amt < 0) / sum(Gross_rent_amt > 0),
+            number_negatively_gearing_with_investment_property = sum(Net_rent_amt < 0 & Gross_rent_amt > 0)*50,
+            number_not_negatively_gearing_but_have_investment_property = sum(Net_rent_amt >= 0 & Gross_rent_amt > 0)*50,
+            neither = sum(Gross_rent_amt == 0)*50) %>% 
+  gather(gearing, number, 
+         number_negatively_gearing_with_investment_property, 
+         number_not_negatively_gearing_but_have_investment_property,
+         neither) %>%
+  mutate(gearing = ifelse(gearing == "neither", "neither",
+                          ifelse(grepl("not", gearing), "Not negative gearing", "Negative gearing"))) %>%
+  mutate(gearing = factor(gearing, 
+                          levels = c("Negative gearing", "Not negative gearing", "neither"),
+                          labels = c("Negative gearing", "Not negative gearing", "No investment properties"))) %T>%
+  chart_data %>%
+  grplot(aes(Age, number, fill = gearing)) + 
+  geom_bar(stat = "identity", 
+           position = "fill",
+           width = 1) + 
+  scale_fill_manual("", values = c(gpal(2), theGrey)) + 
+  coord_cartesian(ylim = c(0,0.5)) + 
+  theme(legend.position = 'bottom', axis.title.x = element_text(hjust = 0.5)) + 
+  scale_y_continuous(label=percent, expand = c(0,0))
+@
+\begin{figure}
+\Caption{More people negatively gear investments in their peak earning years}{Negative gearing status, percentage within each age group.}{fig:Age_negative_gearing_investments}
+\includegraphics[width=\columnwidth]{figure/Age_negative_gearing_investments-1}
+\notes{The top 50\%\ of the chart is not shown -- it would be grey all the way to 100\%. ``No investment properties'' means gross rental income is zero.}
+
+\source{\gao\ \textcite{ATO2013i}}
+\end{figure}
 
 But the issue for negatively geared property or shares is that the loss being deducted is illusory. Investors are only willing to make an income loss over a number of years because the value of the asset is growing. But the gains in property value are not counted as income until the asset is sold (section 1.2). It is the combination of unlimited deductions of "losses" against wage income while only being taxed on half the gains upon realisation that makes negative gearing an attractive strategy.\footcite[pages~5,13]{ACOSS} 
 
@@ -904,79 +998,7 @@ Using negative gearing to reduce and defer tax is a particularly attractive stra
 
 The attractiveness of using investment losses to reduce taxes on wage income is evident in the age profile of those negatively gearing property. (\Vref{fig:Age_negative_gearing_investments}) Investing in loss making properties is popular amongst those of working age, but far less prevalent amongst over 60s who are unlikely to benefit from the tax write-offs. Over 60 per cent of those under 60 with investment properties make rental losses compared to less than 40 per cent over 60. 
 
-<<Age_negative_gearing_investments>>=
-fread("2013_sample_file.csv") %>%
-    mutate(Age = car::recode(age_range, "0 = '70 and over';
-                            1 = '65 to 69';
-                            2 = '60 to 64';
-                            3 = '55 to 59';
-                            4 = '50 to 54';
-                            5 = '45 to 49';
-                            6 = '40 to 44';
-                            7 = '35 to 39';
-                            8 = '30 to 34';
-                            9 = '25 to 29';
-                            10 = '20 to 24';
-                            11 = 'under 20'")) %>%
-    mutate(Age =  factor(Age,
-                       levels = c("under 20",
-                                  '20 to 24',
-                                  '25 to 29',
-                                  '30 to 34',
-                                  '35 to 39',
-                                  '40 to 44',
-                                  '45 to 49',
-                                  '50 to 54',
-                                  '55 to 59',
-                                  '60 to 64',
-                                  '65 to 69',
-                                  '70 and over'),
-                       labels = gsub("\\s", "\n",
-                                     c("under 20",
-                                       '20 to 24',
-                                       '25 to 29',
-                                       '30 to 34',
-                                       '35 to 39',
-                                       '40 to 44',
-                                       '45 to 49',
-                                       '50 to 54',
-                                       '55 to 59',
-                                       '60 to 64',
-                                       '65 to 69',
-                                       '70 and over')),
-                       ordered = T)) %>% 
-  group_by(Age) %>%
-  summarise(number_negatively_gearing = sum(Net_rent_amt < 0) * 50,
-            prop_NG_investors = sum(Gross_rent_amt > 0 & Net_rent_amt < 0) / sum(Gross_rent_amt > 0),
-            number_negatively_gearing_with_investment_property = sum(Net_rent_amt < 0 & Gross_rent_amt > 0)*50,
-            number_not_negatively_gearing_but_have_investment_property = sum(Net_rent_amt >= 0 & Gross_rent_amt > 0)*50,
-            neither = sum(Gross_rent_amt == 0)*50) %>% 
-  gather(gearing, number, 
-         number_negatively_gearing_with_investment_property, 
-         number_not_negatively_gearing_but_have_investment_property,
-         neither) %>%
-  mutate(gearing = ifelse(gearing == "neither", "neither",
-                          ifelse(grepl("not", gearing), "Not negative gearing", "Negative gearing"))) %>%
-  mutate(gearing = factor(gearing, 
-                          levels = c("Negative gearing", "Not negative gearing", "neither"),
-                          labels = c("Negative gearing", "Not negative gearing", "No investment properties"))) %T>%
-  chart_data %>%
-  grplot(aes(Age, number, fill = gearing)) + 
-  geom_bar(stat = "identity", 
-           position = "fill",
-           width = 1) + 
-  scale_fill_manual("", values = c(gpal(2), theGrey)) + 
-  coord_cartesian(ylim = c(0,0.5)) + 
-  theme(legend.position = 'bottom', axis.title.x = element_text(hjust = 0.5)) + 
-  scale_y_continuous(label=percent, expand = c(0,0))
-@
-\begin{figure}
-\Caption{More people negatively gear investments in their peak earning years}{Negative gearing status, percentage within each age group.}{fig:Age_negative_gearing_investments}
-\includegraphics[width=\columnwidth]{figure/Age_negative_gearing_investments-1}
-\notes{The top 50\%\ of the chart is not shown -- it would be grey all the way to 100\%. ``No investment properties'' means gross rental income is zero.}
 
-\source{\gao\ \textcite{ATO2013i}}
-\end{figure}
 
 Most other advanced economies provide a less generous treatment for rental losses. The Unites States only allows losses to be written off against other forms of ``passive'' income. The UK and many European countries only allow deductions against the same class of income, so for example, losses on investment property can only be used to reduce tax on income or capital gains from other investment properties. Others such as the Netherlands do not allow deductibility of losses from investment housing.\footnote{Summaries of international regimes can be found in \textcite[p.~43]{RBA2014} \textcite[p.~86]{Commission2004}, \textcite[pp.~92-95]{ODonnell2005}}% #820}. } 
 
