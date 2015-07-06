@@ -363,27 +363,6 @@
       \field{type}{Book Section}
       \field{year}{2009}
     \endentry
-    \entry{BusinessTaxation1999}{report}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=99f9be6c1d061dd1e7c2b7f487a2a99a}{Business\bibnamedelima Taxation}{B\bibinitperiod\bibinitdelim T\bibinitperiod}{Review}{R\bibinitperiod}{of}{o\bibinitperiod}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=99f9be6c1d061dd1e7c2b7f487a2a99a}{Business\bibnamedelima Taxation}{B\bibinitperiod\bibinitdelim T\bibinitperiod}{Review}{R\bibinitperiod}{of}{o\bibinitperiod}{}{}}%
-      }
-      \strng{namehash}{99f9be6c1d061dd1e7c2b7f487a2a99a}
-      \strng{fullhash}{99f9be6c1d061dd1e7c2b7f487a2a99a}
-      \field{sortinit}{B}
-      \field{sortinithash}{1a3a21dbed09540af12d49a0b14f4751}
-      \field{labelyear}{1999}
-      \field{datelabelsource}{}
-      \field{labeltitle}{A Tax System Redesigned}
-      \field{title}{A Tax System Redesigned}
-      \field{type}{Report}
-      \field{year}{1999}
-      \verb{url}
-      \verb http://www.rbt.treasury.gov.au/
-      \endverb
-    \endentry
     \entry{chetty2013subsidies}{article}{}
       \name{labelname}{5}{}{%
         {{uniquename=0,hash=7a853740afbc544905334cf607b3cd51}{Chetty}{C\bibinitperiod}{Raj}{R\bibinitperiod}{}{}{}{}}%
@@ -1158,6 +1137,27 @@
       \field{type}{Report}
       \field{year}{2004}
     \endentry
+    \entry{BusinessTaxation1999}{report}{}
+      \name{labelname}{1}{}{%
+        {{uniquename=0,hash=24c2b8dae4f231dc2bd99a7cf0f78bab}{{Ralph\bibnamedelimb Review\bibnamedelimb Of\bibnamedelimb Business\bibnamedelimb Taxation}}{R\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=24c2b8dae4f231dc2bd99a7cf0f78bab}{{Ralph\bibnamedelimb Review\bibnamedelimb Of\bibnamedelimb Business\bibnamedelimb Taxation}}{R\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \strng{namehash}{24c2b8dae4f231dc2bd99a7cf0f78bab}
+      \strng{fullhash}{24c2b8dae4f231dc2bd99a7cf0f78bab}
+      \field{sortinit}{R}
+      \field{sortinithash}{ff5a3533ecf9d5a03ff60b1e1389b63d}
+      \field{labelyear}{1999}
+      \field{datelabelsource}{}
+      \field{labeltitle}{A Tax System Redesigned}
+      \field{title}{A Tax System Redesigned}
+      \field{type}{Report}
+      \field{year}{1999}
+      \verb{url}
+      \verb http://www.rbt.treasury.gov.au/
+      \endverb
+    \endentry
     \entry{RBA2014}{misc}{}
       \name{labelname}{1}{}{%
         {{uniquename=0,hash=e61529beccb044b2aa77e59d7b897bea}{RBA}{R\bibinitperiod}{}{}{}{}{}{}}%
@@ -1553,9 +1553,9 @@
       \endverb
     \endentry
   \endsortlist
+  \missing{Stewart2015}
   \missing{Treasury2010b}
   \missing{McKell}
-  \missing{Stewart2015}
 \endrefsection
 \endinput
 
