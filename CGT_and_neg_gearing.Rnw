@@ -816,7 +816,7 @@ The tax advantages conferred by the interaction of negative gearing and capital 
 \end{quote}
 Consistent with this, \textcite{seelig2009understanding} found that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.\footnote{A clear majority considered capital gains as more important than rental income over a five and ten year time horizon.}
 
-The asymmetry between the tax treatment of gains and losses also makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (Figure 6). 
+The asymmetry between the tax treatment of gains and losses also makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (\Vref{fig:Effective_tax_rates_depend_on_borrowing}). 
 
 <<Effective_tax_rates_depend_on_borrowing>>=
 data.frame(
@@ -837,7 +837,14 @@ data.frame(
 
 \source{Grattan analysis}
 \end{figure}
+Indeed, the distortions created are so large that it is possible that even investments with negative pre-tax returns can provide a positive profit to investors once the tax benefits are taken into account.\footcite[p.~78]{Burman1999}  \textcite{seelig2009understanding} estimate that around half of investors indicated that they would not have invested in property if negative gearing had not been available.
 
+\subsubsection{And investors have responded to these incentives}
+There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, the number of taxpayers making losses on residential property has increased steadily. Average losses for those negative gearing have grown to more than \$9,000 per year. And the total losses since the introduction of the CGT discount leave us in no doubt: investors are happy to disregard rental losses in anticipation of future gains. (\Vref{fig:Net_rent_over_time}.)
+
+Both have contributed to Australian landlords moving from being collectively profitable, to accruing billions in net rental losses each year. This coincided with the introduction of the capital gains tax discount in 1999. In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m. By 2012-13, the two~billion landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
+
+And the average level of gearing for property investors is increasing. Even though interest rates are falling, interest deductions as a proportion of rents increased from 45.6 per cent of gross rental payments in 1997-98 to 71.1 per cent in 2011-12.\footcite[p.~65]{Treasury2015a}
 \subsection{Negative gearing is growing in popularity, mainly for housing investment}
 There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
 
@@ -901,7 +908,7 @@ taxstats_ts %>%
 \source{ATO taxstats 1979-2013 (data not available pre-1989)}
 \end{figure}
 
-<<taxstats_companies_ts>>=
+<<taxstats_companies_ts, results='hide'>>=
 companies_url <- "http://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/5bfb5001-2d3c-46cb-a76d-1b86b6913ac3/download/taxstats2013company1selecteditemsforincomeyears197980to201213.xlsx"
 GET(companies_url, write_disk("taxcompanies_time_series1979-2013.xlsx", overwrite = TRUE))
 
