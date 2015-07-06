@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  6 JUL 2015 15:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  6 JUL 2015 17:30
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -2409,14 +2409,21 @@ Package biblatex Info: ... file 'CGT_and_neg_gearing.bbl' found.
 
 Package biblatex Warning: The following entry could not be found
 (biblatex)                in the database:
-(biblatex)                ACOSS
+(biblatex)                Brown2012
 (biblatex)                Please verify the spelling and rerun
 (biblatex)                LaTeX afterwards.
 
 
 Package biblatex Warning: The following entry could not be found
 (biblatex)                in the database:
-(biblatex)                Brown2012
+(biblatex)                Treasury2010b
+(biblatex)                Please verify the spelling and rerun
+(biblatex)                LaTeX afterwards.
+
+
+Package biblatex Warning: The following entry could not be found
+(biblatex)                in the database:
+(biblatex)                ACOSS
 (biblatex)                Please verify the spelling and rerun
 (biblatex)                LaTeX afterwards.
 
@@ -2483,7 +2490,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
 (Font)              Font shape `T1/ua1/b/n' tried instead on input line 128.
 
-<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=132, 794.
+<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=126, 794.
 97pt x 505.89pt>
 File: figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf Graphic 
 file (type pdf)
@@ -2500,7 +2507,7 @@ Package hyperref Info: bookmark level for unknown smallboxfloat defaults to 0 o
 n input line 134.
 [8] [9 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
 <figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf, id=
-200, 794.97pt x 505.89pt>
+194, 794.97pt x 505.89pt>
 File: figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
  Graphic file (type pdf)
 
@@ -2510,7 +2517,7 @@ ned_by_those_-1.pdf used on input line 173.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
 [10 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pd
 f>] [11]
-<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=273, 794.97pt x 5
+<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=267, 794.97pt x 5
 05.89pt>
 File: figure/Real_effective_marginal_tax_rates_are_lower-1.pdf Graphic file (ty
 pe pdf)
@@ -2519,7 +2526,7 @@ Package pdftex.def Info: figure/Real_effective_marginal_tax_rates_are_lower-1.p
 df used on input line 211.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
 
-<figure/Prob_of_CGevent_by_age_income-1.pdf, id=289, 794.97pt x 505.89pt>
+<figure/Prob_of_CGevent_by_age_income-1.pdf, id=283, 794.97pt x 505.89pt>
 File: figure/Prob_of_CGevent_by_age_income-1.pdf Graphic file (type pdf)
 
 <use figure/Prob_of_CGevent_by_age_income-1.pdf>
@@ -2528,7 +2535,7 @@ ut line 237.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
  [12] [13 <./figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>] [14 <./
 figure/Prob_of_CGevent_by_age_income-1.pdf>] [15]
-<figure/Age_negative_gearing_investments-1.pdf, id=374, 794.97pt x 722.7pt>
+<figure/Age_negative_gearing_investments-1.pdf, id=368, 794.97pt x 722.7pt>
 File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
@@ -2536,7 +2543,7 @@ Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on
 input line 280.
 (pdftex.def)             Requested size: 315.82564pt x 287.123pt.
  [16]
-<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=389, 794.97pt x 505.8
+<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=383, 794.97pt x 505.8
 9pt>
 File: figure/Effective_tax_rates_depend_on_borrowing-1.pdf Graphic file (type p
 df)
@@ -2544,9 +2551,21 @@ df)
 Package pdftex.def Info: figure/Effective_tax_rates_depend_on_borrowing-1.pdf u
 sed on input line 302.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
- [17 <./figure/Age_negative_gearing_investments-1.pdf>] [18 <./figure/Effective
-_tax_rates_depend_on_borrowing-1.pdf>]
-<figure/Net_rent_over_time-1.pdf, id=430, 794.97pt x 505.89pt>
+ [17 <./figure/Age_negative_gearing_investments-1.pdf>]
+
+LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
+ned on input line 316.
+
+
+LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
+ned on input line 316.
+
+
+Package hyperref Warning: Suppressing link with empty target on input line 316.
+
+
+[18 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
+<figure/Net_rent_over_time-1.pdf, id=422, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
@@ -2554,233 +2573,70 @@ Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 323
 .
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
 
-<figure/Net_rent_over_time_companies-1.pdf, id=431, 794.97pt x 505.89pt>
-File: figure/Net_rent_over_time_companies-1.pdf Graphic file (type pdf)
-
-<use figure/Net_rent_over_time_companies-1.pdf>
-Package pdftex.def Info: figure/Net_rent_over_time_companies-1.pdf used on inpu
-t line 334.
-(pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 334--336
-\T1/ua1/m/it/9/-4ls (+14) Sou\T1/ua1/m/it/9/-4ls (+20) r\T1/ua1/m/it/9/-4ls (+1
-4) ce\T1/ua1/m/it/9/-4ls (+20) : \T1/ua1/m/it/9/-4ls (+14) S\T1/ua1/m/it/9/-4ls
- (+20) i\T1/ua1/m/it/9/-4ls (+14) mp\T1/ua1/m/it/9/-4ls (+20) l\T1/ua1/m/it/9/-
-4ls (+14) e ca\T1/ua1/m/it/9/-4ls (+20) l-\T1/ua1/m/it/9/-4ls (+14) cu\T1/ua1/m
-/it/9/-4ls (+20) -l\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) -ti\T1/
-ua1/m/it/9/-4ls (+14) on o\T1/ua1/m/it/9/-4ls (+20) f [][]$\T1/ua1/m/it/9/-4ls 
-(+14) h\T1/ua1/m/it/9/-4ls (+20) tt\T1/ua1/m/it/9/-4ls (+14) p \T1/ua1/m/it/9/-
-4ls (+20) : / / \T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/
-m/it/9/-4ls (+14) a \T1/ua1/m/it/9/-4ls (+20) . \T1/ua1/m/it/9/-4ls (+14) go\T1
-/ua1/m/it/9/-4ls (+20) v . \T1/ua1/m/it/9/-4ls (+14) au \T1/ua1/m/it/9/-4ls (+2
-0) / \T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/m/it/9/-4ls
- (+14) ase\T1/ua1/m/it/9/-4ls (+20) t /$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 334--336
-$\T1/ua1/m/it/9/-4ls (+14) e29e\T1/ua1/m/it/9/-4ls (+20) f\T1/ua1/m/it/9/-4ls (
-+14) 9ca\T1/ua1/m/it/9/-4ls (+20) -[]0\T1/ua1/m/it/9/-4ls (+14) d\T1/ua1/m/it/9
-/-4ls (+20) 1\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) -[]47\T1/ua1/
-m/it/9/-4ls (+14) ec\T1/ua1/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) 9e9b
-\T1/ua1/m/it/9/-4ls (+20) -[]14\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (
-+20) 7\T1/ua1/m/it/9/-4ls (+14) 9a9\T1/ua1/m/it/9/-4ls (+20) 41511 / r\T1/ua1/m
-/it/9/-4ls (+14) esou\T1/ua1/m/it/9/-4ls (+20) r\T1/ua1/m/it/9/-4ls (+14) ce \T
-1/ua1/m/it/9/-4ls (+20) /$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 334--336
-$\T1/ua1/m/it/9/-4ls (+20) 5\T1/ua1/m/it/9/-4ls (+14) b\T1/ua1/m/it/9/-4ls (+20
-) f\T1/ua1/m/it/9/-4ls (+14) b\T1/ua1/m/it/9/-4ls (+20) 5001-[]\T1/ua1/m/it/9/-
-4ls (+14) 2d3c\T1/ua1/m/it/9/-4ls (+20) -[]4\T1/ua1/m/it/9/-4ls (+14) 6cb\T1/ua
-1/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) 7\T
-1/ua1/m/it/9/-4ls (+14) 6d\T1/ua1/m/it/9/-4ls (+20) -[]1\T1/ua1/m/it/9/-4ls (+1
-4) b86b69\T1/ua1/m/it/9/-4ls (+20) 1\T1/ua1/m/it/9/-4ls (+14) 3ac3 \T1/ua1/m/it
-/9/-4ls (+20) / \T1/ua1/m/it/9/-4ls (+14) down\T1/ua1/m/it/9/-4ls (+20) l\T1/ua
-1/m/it/9/-4ls (+14) oad \T1/ua1/m/it/9/-4ls (+20) /$
- []
-
-<figure/Negative_gearing_real_over_time-1.pdf, id=433, 794.97pt x 505.89pt>
-File: figure/Negative_gearing_real_over_time-1.pdf Graphic file (type pdf)
-
-<use figure/Negative_gearing_real_over_time-1.pdf>
-Package pdftex.def Info: figure/Negative_gearing_real_over_time-1.pdf used on i
-nput line 342.
-(pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 345--346
-[]\T1/ua1/m/it/9/-4ls (+14) Sou\T1/ua1/m/it/9/-4ls (+20) r\T1/ua1/m/it/9/-4ls (
-+14) ce\T1/ua1/m/it/9/-4ls (+20) : \T1/ua1/m/it/9/-4ls (+10) G\T1/ua1/m/it/9/-4
-ls (+20) r\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) t-t\T1/ua1/m/it/
-9/-4ls (+14) an ana\T1/ua1/m/it/9/-4ls (+20) -ly\T1/ua1/m/it/9/-4ls (+14) s\T1/
-ua1/m/it/9/-4ls (+20) i\T1/ua1/m/it/9/-4ls (+14) s o\T1/ua1/m/it/9/-4ls (+20) f
- [][]$\T1/ua1/m/it/9/-4ls (+14) h\T1/ua1/m/it/9/-4ls (+20) tt\T1/ua1/m/it/9/-4l
-s (+14) ps \T1/ua1/m/it/9/-4ls (+20) : / / \T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/
-m/it/9/-4ls (+20) t\T1/ua1/m/it/9/-4ls (+14) a \T1/ua1/m/it/9/-4ls (+20) . \T1/
-ua1/m/it/9/-4ls (+14) go\T1/ua1/m/it/9/-4ls (+20) v . \T1/ua1/m/it/9/-4ls (+14)
- au \T1/ua1/m/it/9/-4ls (+20) / \T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/m/it/9/-4ls
- (+20) t\T1/ua1/m/it/9/-4ls (+14) ase\T1/ua1/m/it/9/-4ls (+20) t /$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 345--346
-$\T1/ua1/m/it/9/-4ls (+14) e29e\T1/ua1/m/it/9/-4ls (+20) f\T1/ua1/m/it/9/-4ls (
-+14) 9ca\T1/ua1/m/it/9/-4ls (+20) -[]0\T1/ua1/m/it/9/-4ls (+14) d\T1/ua1/m/it/9
-/-4ls (+20) 1\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (+20) -[]47\T1/ua1/
-m/it/9/-4ls (+14) ec\T1/ua1/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) 9e9b
-\T1/ua1/m/it/9/-4ls (+20) -[]14\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls (
-+20) 7\T1/ua1/m/it/9/-4ls (+14) 9a9\T1/ua1/m/it/9/-4ls (+20) 41511 / r\T1/ua1/m
-/it/9/-4ls (+14) esou\T1/ua1/m/it/9/-4ls (+20) r\T1/ua1/m/it/9/-4ls (+14) ce \T
-1/ua1/m/it/9/-4ls (+20) /$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 345--346
-$\T1/ua1/m/it/9/-4ls (+14) 233cb\T1/ua1/m/it/9/-4ls (+20) f\T1/ua1/m/it/9/-4ls 
-(+14) 28\T1/ua1/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) 6\T1/ua1/m/it/9/
--4ls (+20) f\T1/ua1/m/it/9/-4ls (+14) da\T1/ua1/m/it/9/-4ls (+20) -[]4\T1/ua1/m
-/it/9/-4ls (+14) e\T1/ua1/m/it/9/-4ls (+20) 5\T1/ua1/m/it/9/-4ls (+14) 3\T1/ua1
-/m/it/9/-4ls (+20) -[]\T1/ua1/m/it/9/-4ls (+14) bbe9\T1/ua1/m/it/9/-4ls (+20) -
-[]\T1/ua1/m/it/9/-4ls (+14) 3a3\T1/ua1/m/it/9/-4ls (+20) 7\T1/ua1/m/it/9/-4ls (
-+14) a6\T1/ua1/m/it/9/-4ls (+20) 5f\T1/ua1/m/it/9/-4ls (+14) b\T1/ua1/m/it/9/-4
-ls (+20) 74\T1/ua1/m/it/9/-4ls (+14) 2 \T1/ua1/m/it/9/-4ls (+20) / \T1/ua1/m/it
-/9/-4ls (+14) down\T1/ua1/m/it/9/-4ls (+20) l\T1/ua1/m/it/9/-4ls (+14) oad \T1/
-ua1/m/it/9/-4ls (+20) /$
- []
-
-
-<figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf, id=437, 794.97pt
- x 505.89pt>
-File: figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf Graphic file
- (type pdf)
-
-<use figure/Interest_makes_up_the_bulk_of_rental_deductions-1.pdf>
-Package pdftex.def Info: figure/Interest_makes_up_the_bulk_of_rental_deductions
--1.pdf used on input line 352.
-(pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
-LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 360.
- [19 <./figure/Net_rent_over_time-1.pdf>] [20 <./figure/Net_rent_over_time_comp
-anies-1.pdf>] [21 <./figure/Negative_gearing_real_over_time-1.pdf> <./figure/In
-terest_makes_up_the_bulk_of_rental_deductions-1.pdf>]
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 396.
-
-Underfull \hbox (badness 10000) in paragraph at lines 396--397
-[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in fread("2013_sample_file.csv"): File is
- []
-
-
-Overfull \hbox (94.88687pt too wide) in paragraph at lines 396--397
-\T1/lmtt/bx/n/10.95/-4ls empty: C:\Users\HPARSO~1\AppData\Local\Temp\Rtmpq8HsgE
-\file3fec4c10111e[] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 398--398
-[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in fread("2013_sample_file.csv"): File is
- []
-
-
-Overfull \hbox (89.18413pt too wide) in paragraph at lines 398--398
-\T1/lmtt/bx/n/10.95/-4ls empty: C:\Users\HPARSO~1\AppData\Local\Temp\Rtmpq8HsgE
-\file3fec2c46b5a[] 
- []
-
-
-Overfull \hbox (40.6878pt too wide) in paragraph at lines 406--406
-[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in rbind(benefits_by_taxable_income_before
-_deductions,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 406--406
-\T1/lmtt/bx/n/10.95/-4ls be-ne-fits_by_taxable_income): ob-ject 'be-ne-
- []
-
-
-Overfull \hbox (40.6878pt too wide) in paragraph at lines 420--420
-[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in rbind(benefits_by_taxable_income_before
-_deductions,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 420--420
-\T1/lmtt/bx/n/10.95/-4ls be-ne-fits_by_taxable_income): ob-ject 'be-ne-
- []
-
-[22]
-Underfull \hbox (badness 10000) in paragraph at lines 439--440
-[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror: 'Cap-ital_city_rents_1980s.xlsx'
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 439--440
-\T1/lmtt/bx/n/10.95/-4ls does not ex-ist in cur-rent work-ing dir-ect-ory
- []
-
-
-Overfull \hbox (10.38048pt too wide) in paragraph at lines 439--440
-\T1/lmtt/bx/n/10.95/-4ls ('C:/Users/hparsonage/Negative_gearing/Negative_gearin
-g').[] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 441--441
-[]\T1/lmtt/bx/n/10.95/-4ls ## Er-ror in eval(expr, en-vir, en-clos): ob-ject
- []
-
-<figure/Capital_city_rents-1.pdf, id=544, 794.97pt x 794.97pt>
+<figure/Capital_city_rents-1.pdf, id=434, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
-Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 445
+Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 342
 .
 (pdftex.def)             Requested size: 315.82564pt x 315.83531pt.
- [23] [24 <./figure/Capital_city_rents-1.pdf>] [25] [26] [27] [28] [29
+ [19 <./figure/Net_rent_over_time-1.pdf>]
+[20 <./figure/Capital_city_rents-1.pdf>]
+LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 358.
 
-] [30
+<figure/Effect_of_Deductions-1.pdf, id=480, 794.97pt x 505.89pt>
+File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
-] [31] [32
+<use figure/Effect_of_Deductions-1.pdf>
+Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 3
+73.
+(pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
+ [21 <./figure/Effect_of_Deductions-1.pdf>] [22] [23] [24] [25] [26
+
+] [27] [28
 
 
-] [33] [34]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 607.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 607.
- [35
+] [29] [30] [31]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 514.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 514.
+ (CGT_and_neg_gearing.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 514.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 514.
 
-]
-(CGT_and_neg_gearing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 607.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 607.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 607.
+LaTeX Warning: There were undefined references.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 514.
+
+Package biblatex Warning: Please rerun LaTeX.
+(biblatex)                Page breaks have changed.
+
 Package logreq Info: Writing requests to 'CGT_and_neg_gearing.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 45359 strings out of 493698
- 910963 string characters out of 3141998
- 1434276 words of memory out of 3000000
- 46816 multiletter control sequences out of 15000+200000
- 357155 words of font info for 651 fonts, out of 3000000 for 9000
+ 45264 strings out of 493698
+ 908916 string characters out of 3141998
+ 1432532 words of memory out of 3000000
+ 46759 multiletter control sequences out of 15000+200000
+ 356288 words of font info for 649 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  71i,21n,102p,10500b,1848s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Progr
 am Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files (x86)/
 MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files (x86)/MiKTeX 2.9/
-fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips
-/fontname/8r.enc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
+fonts/enc/dvips/fontname/8r.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dv
+ips/lm/lm-ec.enc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
 /cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
 /cmr17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi9.pfb><
 C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Program Fi
 les (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy9.pfb><C:/Program Files (x86)/Mi
-KTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
-nts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/u
-rw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua
-1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (35 pages, 714064 bytes).
+KTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/u
+rw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua
+1ri8a.pfb>
+Output written on CGT_and_neg_gearing.pdf (31 pages, 633477 bytes).
 PDF statistics:
- 906 PDF objects out of 1000 (max. 8388607)
- 234 named destinations out of 1000 (max. 500000)
- 85118 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 806 PDF objects out of 1000 (max. 8388607)
+ 211 named destinations out of 1000 (max. 500000)
+ 84596 words of extra memory for PDF output out of 89155 (max. 10000000)
 
