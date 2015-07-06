@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  6 JUL 2015 21:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  6 JUL 2015 22:42
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -2404,6 +2404,13 @@ Package biblatex Info: ... file 'CGT_and_neg_gearing.bbl' found.
 
 Package biblatex Warning: The following entry could not be found
 (biblatex)                in the database:
+(biblatex)                Stewart2015
+(biblatex)                Please verify the spelling and rerun
+(biblatex)                LaTeX afterwards.
+
+
+Package biblatex Warning: The following entry could not be found
+(biblatex)                in the database:
 (biblatex)                Treasury2010b
 (biblatex)                Please verify the spelling and rerun
 (biblatex)                LaTeX afterwards.
@@ -2412,13 +2419,6 @@ Package biblatex Warning: The following entry could not be found
 Package biblatex Warning: The following entry could not be found
 (biblatex)                in the database:
 (biblatex)                McKell
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                Stewart2015
 (biblatex)                Please verify the spelling and rerun
 (biblatex)                LaTeX afterwards.
 
@@ -2474,7 +2474,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
 (Font)              Font shape `T1/ua1/b/n' tried instead on input line 127.
 
-<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=163, 794.
+<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=125, 794.
 97pt x 505.89pt>
 File: figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf Graphic 
 file (type pdf)
@@ -2491,7 +2491,7 @@ Package hyperref Info: bookmark level for unknown boxe defaults to 0 on input l
 ine 133.
 [7] [8 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
 <figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf, id=
-230, 794.97pt x 505.89pt>
+193, 794.97pt x 505.89pt>
 File: figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
  Graphic file (type pdf)
 
@@ -2501,7 +2501,7 @@ ned_by_those_-1.pdf used on input line 172.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
 [9 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
 >] [10]
-<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=302, 794.97pt x 5
+<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=267, 794.97pt x 5
 05.89pt>
 File: figure/Real_effective_marginal_tax_rates_are_lower-1.pdf Graphic file (ty
 pe pdf)
@@ -2510,7 +2510,7 @@ Package pdftex.def Info: figure/Real_effective_marginal_tax_rates_are_lower-1.p
 df used on input line 210.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
 
-<figure/Prob_of_CGevent_by_age_income-1.pdf, id=318, 794.97pt x 505.89pt>
+<figure/Prob_of_CGevent_by_age_income-1.pdf, id=283, 794.97pt x 505.89pt>
 File: figure/Prob_of_CGevent_by_age_income-1.pdf Graphic file (type pdf)
 
 <use figure/Prob_of_CGevent_by_age_income-1.pdf>
@@ -2519,7 +2519,7 @@ ut line 236.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
  [11] [12 <./figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>] [13 <./
 figure/Prob_of_CGevent_by_age_income-1.pdf>] [14]
-<figure/Age_negative_gearing_investments-1.pdf, id=402, 794.97pt x 722.7pt>
+<figure/Age_negative_gearing_investments-1.pdf, id=369, 794.97pt x 722.7pt>
 File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
@@ -2527,7 +2527,7 @@ Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on
 input line 279.
 (pdftex.def)             Requested size: 315.82564pt x 287.123pt.
  [15]
-<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=416, 794.97pt x 505.8
+<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=384, 794.97pt x 505.8
 9pt>
 File: figure/Effective_tax_rates_depend_on_borrowing-1.pdf Graphic file (type p
 df)
@@ -2549,7 +2549,7 @@ Package hyperref Warning: Suppressing link with empty target on input line 317.
 
 
 [17 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
-<figure/Net_rent_over_time-1.pdf, id=454, 794.97pt x 505.89pt>
+<figure/Net_rent_over_time-1.pdf, id=425, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
@@ -2557,7 +2557,7 @@ Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 324
 .
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
 
-<figure/Capital_city_rents-1.pdf, id=466, 794.97pt x 794.97pt>
+<figure/Capital_city_rents-1.pdf, id=437, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
@@ -2569,7 +2569,7 @@ Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 343
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
 (Font)              Font shape `T1/ua1/b/n' tried instead on input line 359.
 
-<figure/Effect_of_Deductions-1.pdf, id=511, 794.97pt x 505.89pt>
+<figure/Effect_of_Deductions-1.pdf, id=483, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
@@ -2583,52 +2583,21 @@ Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 3
 ] [27] [28
 
 
-] [29] [30]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 529.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 529.
- [31
+] [29
+! pdfTeX error (ext4): \pdfendlink ended up in different nesting level than \pd
+fstartlink.
+\@EveryShipout@Output ...@Org@Shipout \box \@cclv 
+                                                  
+l.529 \end
+          {document}
 
-]
-(CGT_and_neg_gearing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 529.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 529.
-Package rerunfilecheck Info: File `CGT_and_neg_gearing.out' has not changed.
-(rerunfilecheck)             Checksum: CAE40BEC3343C0FBFE39D73C127BB0B0;738.
-
-
-LaTeX Warning: There were undefined references.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 529.
-
-Package biblatex Warning: Please rerun LaTeX.
-(biblatex)                Page breaks have changed.
-
-Package logreq Info: Writing requests to 'CGT_and_neg_gearing.run.xml'.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 44978 strings out of 493698
- 904063 string characters out of 3141998
- 1427153 words of memory out of 3000000
- 46489 multiletter control sequences out of 15000+200000
- 355904 words of font info for 644 fonts, out of 3000000 for 9000
+ 44729 strings out of 493698
+ 900503 string characters out of 3141998
+ 1423909 words of memory out of 3000000
+ 46372 multiletter control sequences out of 15000+200000
+ 337942 words of font info for 552 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  71i,21n,102p,10500b,1848s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Progr
-am Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files (x86)/
-MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files (x86)/MiKTeX 2.9/
-fonts/enc/dvips/fontname/8r.enc}{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dv
-ips/lm/lm-ec.enc}<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
-/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-/cmr17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmmi9.pfb><
-C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy9.pfb><C:/Program Files (x86)/Mi
-KTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
-nts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/u
-rw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua
-1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (31 pages, 636382 bytes).
-PDF statistics:
- 813 PDF objects out of 1000 (max. 8388607)
- 204 named destinations out of 1000 (max. 500000)
- 84644 words of extra memory for PDF output out of 89155 (max. 10000000)
-
+!  ==> Fatal error occurred, no output PDF file produced!
