@@ -561,7 +561,7 @@ both %T>%
 \end{figure}
 Some of this is accounted for by the `lumpy' nature of gains. This means that realising gains can push investors up the taxable income scale. When we control for this by removing gains from income, we see that more than 30 per cent of gains are still earned by those in the top ten per cent of (non-capital gains) income. 
 
-A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (Figure 2). As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
+A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (\Vref{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}). As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
 
 
 \subsubsection{The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}
@@ -574,229 +574,67 @@ Making additional inflation adjustments for capital gains magnifies the tax adva
 Unlike other investment income, gains are taxed when an asset is sold, not when they accrue, which provides investors with an implicit interest-free loan on tax liabilities (\Vref{box:Tax_deferral_and_effective_tax_rates}).\footcites[See also:][p.~2]{Fane2004}[p.~12]{Ingles2009} Investors are also able to choose the time of the asset's disposal to minimise tax. 
 
 \afterpage{%
-\begin{bigbox*}{Tax deferral and effective tax rates}{box:Tax_deferral_and_effective_tax_rates}
-Even without a discount, capital gains are taxed at a lower effective rate than other forms of investment income such as interest or dividends because the tax can be deferred until the asset is sold. 
+\begin{bigbox*}{Capital gains enjoy tax-advantaged status over other forms of income}{box:Tax_deferral_and_effective_tax_rates}
+Even without a discount, capital gains are taxed at a lower effective rate than other forms of investment income such as interest or dividends because the tax can be deferred until the asset is sold. This tax deferral is akin to an implicit interest free loan from the government. The tax benefits from this implicit loan increase the longer the asset is held. 
 
-Suppose a person has \$100,000 to invest over ten years. They can choose either a bank term deposit that earns 6 per cent interest a year or a property that does not generate any recurrent income (rental payments just cover the annual expenses) but is expected to appreciate in value at 6 per cent a year. The investor is in the second top tax bracket and pays 37 per cent tax on income. For simplicity, we assume no adjustments are made to the tax rates or thresholds to correct for the effects of inflation.
+For example, consider a property that does not generate any recurrent income (rental payments just cover the annual expenses) but is expected to appreciate in value at 7 per cent a year. With no CGT discount, an investor in the top (47 per cent) marginal tax bracket is taxed at 23.5 per cent on the gains if they hold the property for a year. If the asset is held for 5 years the effective tax rate falls to 21.2 per cent. After 20 years it reduces to 14.6 per cent. 
 
-If the investor chooses the term deposit, they reinvest the after-tax income each year.  After ten years, the amount in the term deposit would be \$145,000. Real after-tax returns are 1.2 per cent per annum.  In contrast, after ten years the property would be worth \$179,000. If the property was sold at this point, there would be a taxable gain of \$79,000. If capital gains were taxed at the investor's full marginal rate of 37 per cent, the investment would be worth \$150,000, a real after tax return of 1.6 per cent per annum. (With the 50 per cent capital gains tax discount the real after tax return is 2.5 per cent). 
+In contrast, if the investor chooses a term deposit paying 7 per cent a year and they reinvest the after-tax income each year, their effective tax rate is 47 cents a year, regardless of the holding period for the asset. (See \Vref{fig:Real_effective_marginal_tax_rates_are_lower})
 
-The higher post-tax return on the property is because tax is deferred for ten years rather than paying it as it accrues. The real effective tax rate on the term deposit is 63 per cent compared to 54 per cent for the property with no capital gains tax discount.
+The capital gains tax discount magnifies the tax advantaged status of capital gains. 
 \eject
 <<Real_effective_marginal_tax_rates_are_lower>>=
-nominal.return <- 0.04
-inflation <- 0.025
-marginal.tax.rate <- 0.37
-investment.principal <- 10^5
-age.at.maturity <- 10
-nominal.returns <- c(0.04, 0.06, 0.08)
-
-real.effective.tax.rates <- data.frame(investment.type = "Income only asset",
-                                       nominal.return = nominal.return,
-                                       inflation = inflation,
-                                       marginal.tax.rate = marginal.tax.rate,
-                                       investment.principal = investment.principal,
-                                       effective.tax.rate = NA_real_)
-
-# Income (term deposit)
-for (nominal.return in nominal.returns){
-  for (Year in 0:age.at.maturity){
-    nominal.value <- investment.principal * (1 + nominal.return)^Year
-    if (Year == 0){
-      nominal.value.post.tax <- nominal.value
-      real.value.pre.tax <- nominal.value
-      next
+effective_marginal <- function(asset.type = "term_deposit", years.maturity, nominal.return, inflation = NULL, marginal.rate = 0.465, cgt.discount = 0.50){
+  if(asset.type == "term_deposit"){
+    function(years.maturity, nominal.return, inflation = inflation, marginal.rate = marginal.rate, cgt.discount = cgt.discount){
+      for (year in 1:years.maturity){
+        if (year == 1){
+          nominal.value <- (1 + nominal.return)
+          carry.forward.balance <- nominal.value
+          tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
+          return.residual <- carry.forward.balance - tax.on.interest - 1
+          nominal.value.post.tax <- nominal.value - tax.on.interest
+        } else {
+          nominal.value <- (1 + nominal.return)^year
+          previous.nominal.value.post.tax <- nominal.value.post.tax
+          carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
+          tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
+          return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
+          nominal.value.post.tax <- carry.forward.balance - tax.on.interest
+          annual.pretax.return <- nominal.value ^ (1 / year) - 1
+          annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
+          if (year == years.maturity){
+            return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
+          }
+        }
+      }
     }
-    carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
-    tax.on.interest <- marginal.tax.rate * (carry.forward.balance - nominal.value.post.tax)
-    return.reinvested <- carry.forward.balance - nominal.value.post.tax - tax.on.interest
-    nominal.value.post.tax <- carry.forward.balance - tax.on.interest
-    real.value.pre.tax <- ((1 + nominal.return)/(1 + inflation) - 1) * real.value.pre.tax + real.value.pre.tax
-    real.value.post.tax <- nominal.value.post.tax/(1 + inflation)^Year
   }
-  annualized.pretax.returns.real <- (real.value.pre.tax/investment.principal) ^ (1/10) - 1
-  annualized.postax.returns.real <- (real.value.post.tax/investment.principal)^ (1/10) - 1
-  effective.tax.rate <- (annualized.pretax.returns.real - annualized.postax.returns.real)/annualized.pretax.returns.real
-  
-  real.effective.tax.rates <- 
-    rbind(real.effective.tax.rates,
-          data.frame(investment.type = "Income only asset",
-                     nominal.return = nominal.return,
-                     inflation = inflation,
-                     marginal.tax.rate = marginal.tax.rate,
-                     investment.principal = investment.principal,
-                     effective.tax.rate = effective.tax.rate, stringsAsFactors = FALSE))
 }
-
-for (discount in c(FALSE, TRUE))
-for (nominal.return in nominal.returns){
-  nominal.investment.value <- investment.principal * (1 + nominal.return) ^ age.at.maturity
-  if (discount){
-    tax.on.capital.gain <- marginal.tax.rate * (nominal.investment.value - investment.principal) * 0.5
-    investment.type <- "CGT with discount"
-  } else {
-    tax.on.capital.gain <- marginal.tax.rate * (nominal.investment.value - investment.principal)
-    investment.type <- "CGT without discount"
-  }
-  nominal.investment.value.after.tax <- nominal.investment.value - tax.on.capital.gain
-  real.investment.value.after.tax <- nominal.investment.value.after.tax / (1 + inflation)^age.at.maturity
-  real.investment.value.befor.tax <- nominal.investment.value / (1 + inflation)^age.at.maturity
-  real.return.annualized.befor.tax <- (real.investment.value.befor.tax / investment.principal) ^ (1/age.at.maturity) - 1 
-  real.return.annualized.after.tax <- (real.investment.value.after.tax / investment.principal) ^ (1/age.at.maturity) - 1
-  effective.tax.rate <- (real.return.annualized.befor.tax - real.return.annualized.after.tax)/real.return.annualized.befor.tax
-  
-  real.effective.tax.rates <- 
-    rbind(real.effective.tax.rates,
-          data.frame(investment.type = investment.type,
-                     nominal.return = nominal.return,
-                     inflation = inflation,
-                     marginal.tax.rate = marginal.tax.rate,
-                     investment.principal = investment.principal,
-                     effective.tax.rate = effective.tax.rate, stringsAsFactors = FALSE))
-}
-real.effective.tax.rates <- real.effective.tax.rates[complete.cases(real.effective.tax.rates), ]
-
-# ====
-real.effective.tax.rates %>%
-  mutate(nominal.return = factor(nominal.return, labels = paste0(100*nominal.returns, "%"))) %>%
-  grplot(aes(x = factor(nominal.return), y = effective.tax.rate,
-             fill = investment.type)) + 
-  geom_bar(stat = "identity",
-           position = "dodge") +
-  scale_y_continuous(label = percent, expand = c(0,0), limits = c(0,1.01)) +
-  annotate("rect",
-           xmax = 3.5, 
-           xmin = 2.5,
-           ymin = c(0.7, 0.8, 0.9)-0.05,
-           ymax = c(0.7, 0.8, 0.9)+0.05,
-           fill = gpal(3)) + 
-  annotate("text",
-           x = 3,
-           y = c(0.7, 0.8, 0.9),
-           label = unique(real.effective.tax.rates$investment.type),
-           fontface = "bold",
-           size = 7.14,
-           color = rev(c("black", "black", "white"))) +
-  xlab("Nominal return") 
-
 @
 \captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Real effective marginal tax rate}\label{fig:Real_effective_marginal_tax_rates_are_lower}
 \includegraphics[width=\columnwidth]{figure/Real_effective_marginal_tax_rates_are_lower-1}
-\notes{Income only asset is a bank account or bond that generates income but has no capital growth. Growth asset is asset that generates all returns through capital gain. Assumptions: inflation is 2.5 per cent, the person pays all tax on investment income at the marginal tax rate of 37 per cent and assets are held for ten years.}
-
 \source{Grattan analysis}
 \end{bigbox*}
 }
 
-<<Real_effective_on_rental_properties_with_gearing>>=
-nominal.return <- 0.06
-inflation <- 0.025
-marginal.tax.rate <- 0.37
-investment.principal <- 10^5
-age.at.maturity <- 10
-nominal.returns <- c(0.04, 0.06, 0.08)
-
-real.effective.tax.rates <- data.frame(investment.type = "Income only asset",
-                                       nominal.return = nominal.return,
-                                       inflation = inflation,
-                                       marginal.tax.rate = marginal.tax.rate,
-                                       investment.principal = investment.principal,
-                                       effective.tax.rate = NA_real_)
-
-# Income (term deposit)
-for (nominal.return in nominal.returns){
-  for (Year in 0:age.at.maturity){
-    nominal.value <- investment.principal * (1 + nominal.return)^Year
-    if (Year == 0){
-      nominal.value.post.tax <- nominal.value
-      real.value.pre.tax <- nominal.value
-      next
-    }
-    carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
-    tax.on.interest <- marginal.tax.rate * (carry.forward.balance - nominal.value.post.tax)
-    return.reinvested <- carry.forward.balance - nominal.value.post.tax - tax.on.interest
-    nominal.value.post.tax <- carry.forward.balance - tax.on.interest
-    real.value.pre.tax <- ((1 + nominal.return)/(1 + inflation) - 1) * real.value.pre.tax + real.value.pre.tax
-    real.value.post.tax <- nominal.value.post.tax/(1 + inflation)^Year
-  }
-  annualized.pretax.returns.real <- (real.value.pre.tax/investment.principal) ^ (1/10) - 1
-  annualized.postax.returns.real <- (real.value.post.tax/investment.principal)^ (1/10) - 1
-  effective.tax.rate <- (annualized.pretax.returns.real - annualized.postax.returns.real)/annualized.pretax.returns.real
-  
-  real.effective.tax.rates <- 
-    rbind(real.effective.tax.rates,
-          data.frame(investment.type = "Income only asset",
-                     nominal.return = nominal.return,
-                     inflation = inflation,
-                     marginal.tax.rate = marginal.tax.rate,
-                     investment.principal = investment.principal,
-                     effective.tax.rate = effective.tax.rate, stringsAsFactors = FALSE))
-}
-
-for (discount in c(FALSE, TRUE))
-for (nominal.return in nominal.returns){
-  nominal.investment.value <- investment.principal * (1 + nominal.return) ^ age.at.maturity
-  if (discount){
-    tax.on.capital.gain <- marginal.tax.rate * (nominal.investment.value - investment.principal) * 0.5
-    investment.type <- "CGT with discount"
-  } else {
-    tax.on.capital.gain <- marginal.tax.rate * (nominal.investment.value - investment.principal)
-    investment.type <- "CGT without discount"
-  }
-  nominal.investment.value.after.tax <- nominal.investment.value - tax.on.capital.gain
-  real.investment.value.after.tax <- nominal.investment.value.after.tax / (1 + inflation)^age.at.maturity
-  real.investment.value.befor.tax <- nominal.investment.value / (1 + inflation)^age.at.maturity
-  real.return.annualized.befor.tax <- (real.investment.value.befor.tax / investment.principal) ^ (1/age.at.maturity) - 1 
-  real.return.annualized.after.tax <- (real.investment.value.after.tax / investment.principal) ^ (1/age.at.maturity) - 1
-  effective.tax.rate <- (real.return.annualized.befor.tax - real.return.annualized.after.tax)/real.return.annualized.befor.tax
-  
-  real.effective.tax.rates <- 
-    rbind(real.effective.tax.rates,
-          data.frame(investment.type = investment.type,
-                     nominal.return = nominal.return,
-                     inflation = inflation,
-                     marginal.tax.rate = marginal.tax.rate,
-                     investment.principal = investment.principal,
-                     effective.tax.rate = effective.tax.rate, stringsAsFactors = FALSE))
-}
-real.effective.tax.rates <- real.effective.tax.rates[complete.cases(real.effective.tax.rates), ]
-
-# ====
-real.effective.tax.rates %>%
-  mutate(nominal.return = factor(nominal.return, labels = paste0(100*nominal.returns, "%"))) %>%
-  grplot(aes(x = factor(nominal.return), y = effective.tax.rate,
-             fill = investment.type)) + 
-  geom_bar(stat = "identity",
-           position = "dodge") +
-  scale_y_continuous(label = percent, expand = c(0,0), limits = c(0,1.01)) +
-  annotate("rect",
-           xmax = 3.5, 
-           xmin = 2.5,
-           ymin = c(0.7, 0.8, 0.9)-0.05,
-           ymax = c(0.7, 0.8, 0.9)+0.05,
-           fill = gpal(3)) + 
-  annotate("text",
-           x = 3,
-           y = c(0.7, 0.8, 0.9),
-           label = unique(real.effective.tax.rates$investment.type),
-           fontface = "bold",
-           size = 7.14,
-           color = rev(c("black", "black", "white"))) +
-  xlab("Nominal return") 
-
-@
-
 \subsubsection{Taxing capital gains without a discount will not substantially distort economic decisions}
-Taxing capital gains at the full marginal rate could deter entrepreneurship and risk taking by reducing the returns to selling a successful business.\footnote{If capital gains were taxed on an accrual basis and capital losses were fully deductible against all assets, then taxing gains in full would be neutral with respect to risk. However, since losses are only deductible against gains this increases the risk that investors will make a loss they are not able to deduct. It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (section x.1), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect may not be large. There are other factors that drive entrepreneurship and risk taking behaviour that are far more significant than the tax on any gains ultimately made.\footcite[p.~75]{Burman1999}   Further, other exceptions already in place limit the effects of capital gains tax when assets or businesses are sold.\footnote{Capital gains tax exemptions are available for the sale of active assets by small business up to a lifetime limit of \$500,000 provided the gains are paid into a complying super fund. There are also exemptions for people over 55 that are retiring and selling business asset held for more than 15 years. Small business also receive rollover relief allowing them to defer all or part of a capital gain for two years or longer on the sale of active assets, provided they acquire a replacement asset or you incur expenditure on making capital improvements to an existing asset. \textcite{ATO2014e}}
+Taxing capital gains at the full marginal rate could deter entrepreneurship and risk taking by reducing the returns to selling a successful business.\footnote{If capital gains were taxed on an accrual basis and capital losses were fully deductible against all assets, then taxing gains in full would be neutral with respect to risk. However, since losses are only deductible against gains this increases the risk that investors will make a loss they are not able to deduct. It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (section x.1), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect may not be large. There are other factors that drive entrepreneurship and risk taking behaviour that are far more significant than the tax on any gains ultimately made.\footcite[p.~75]{Burman1999}   Further, other exceptions already in place limit the effects of capital gains tax when assets or businesses are sold.\footnote{Capital gains tax exemptions are available for the sale of active assets by small business up to a lifetime limit of \$500,000 provided the gains are paid into a complying super fund. There are also exemptions for people over 55 that are retiring and selling business asset held for more than 15 years. Small business also receive rollover relief allowing them to defer all or part of a capital gain for two years or longer on the sale of active assets, provided they acquire a replacement asset or you incur expenditure on making capital improvements to an existing asset. \textcite{ATO2014e}} In any case, gains received from the sale of business are a small proportion of total gains from individuals: most are from property and share-market investments (\Vref{fig:Majority_of_taxable_gains_are_earned_by_individuals})
 
-In any case, capital gains tax concessions \emph{for individuals} are a very inefficient way to stimulate investments in new enterprises. While individuals provide almost all of the human capital for new ventures, much of the financial capital invested in new firms comes from institutional investors, foreigners or corporations that do not receive the capital gains tax discount.\footcite{Burman1999}  Meanwhile, individuals that get the discount mainly claim it for investments in shares and real estate (\Vref{fig:Majority_of_taxable_gains_are_earned_by_individuals}). 
+While mixed, empirical evidence suggests that aggregate savings may not be particularly responsive to tax rates, particularly for high income earners. For example, \textcite{Engen1996} finds that tax breaks for saving influence the choice of savings vehicle but do not increase overall household savings much. And the OECD finds that tax breaks for saving are generally ineffective for high income earners because this group are likely to save anyway.\footcite{OECD2007}  \textcite{chetty2013subsidies} show that reduced subsidies for retirement savings for high income earners lead to almost no reduction in overall savings efforts.\footnote{\textcite{chetty2013subsidies} ) is a particularly compelling study because of the strength of the data (41 million observations on savings for people from Denmark). But it is also consistent with the thrust of the literature on the effect of tax incentives for retirement savings. While findings vary across studies, a summary by \textcite{Antolin} suggests tax incentives increase savings mostly by reallocation from other savings vehicles. }
 
-Taxing capital gains at the full marginal rate might also reduce savings but the effects are unlikely to be large. Taxes on capital gains, as for other taxes on savings income, create a bias against savings towards current consumption (chapter 2).  But empirical evidence suggests that savings may not be particularly responsive to tax rates, particularly for high income earners. For example, \textcite{Engen1996} finds that tax breaks for saving influence the choice of savings vehicle but do not increase overall household savings much. And the OECD finds that tax breaks for saving are generally ineffective for high income earners because this group are likely to save anyway.\footcite{OECD2007}  \textcite{chetty2013subsidies} show that reduced subsidies for retirement savings for high income earners lead to almost no reduction in overall savings efforts.\footnote{\textcite{chetty2013subsidies} ) is a particularly compelling study because of the strength of the data (41 million observations on savings for people from Denmark). But it is also consistent with the thrust of the literature on the effect of tax incentives for retirement savings. While findings vary across studies, a summary by \textcite{Antolin} suggests tax incentives increase savings mostly by reallocation from other savings vehicles. }
+This suggests that larger distortions arise from the different tax treatment of different forms of savings than from the weight of taxes on capital in general.\footcite[p.~16]{Ingles2009} 
 
-The other economic cost of higher taxes on capital gains is greater asset lock in. 
+\subsubsection{People may hold assets longer, but many already wait until retirement}
+The other economic cost of higher taxes on capital gains is greater asset lock-in. 
 
-Because taxes are only paid when gains are realised, investors are encouraged to hold on to assets with large accumulated gains.\footcite[p.~69]{Burman2009} In effect, the investor seeks to maintain the implicit interest free loan on accrued gains. Crystallising a capital gain is only worthwhile if an investor can achieve a materially higher return (\Cref{box:CGT_asset_lockin}).\footcite[p.~12]{Ingles2009} 
+Because taxes are only paid when gains are realised, investors are encouraged to hold on to assets with large accumulated gains.\footcite[p.~69]{Burman2009} In effect, the investor seeks to maintain the implicit interest free loan on accrued gains. Crystallising a capital gain is only worthwhile if an investor can achieve a materially higher return (\Vref{box:CGT_asset_lockin}).\footcite[p.~12]{Ingles2009}
 
+Lock-in can discourage investors from moving their money to the investments with the highest pre-tax returns, so assets do not always go to their highest value use.\footcite{Lindsey1987} Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.\footcites{OECD2006b}{Johnson2008}  Australia's open capital markets and generous capital gains tax regime for non-residents, reduce the danger that worthwhile projects will not get access to capital because of lock-in.\footnote{Non-resident investors in Australian shares are generally not subject to Australia capital gains tax (see: \emph{Income Tax Assessment Act 1936, s. 136-25}} 
+
+The more fundamental cause of lock-in is the ``retirement realisation effect'' -- the tendency for investors to wait until retirement when their taxable incomes are low before realising gains.
+ \textcite{Wood2010a} found that after adjusting for other factors, the probability of a landlord selling a property increases by over 20 percentage points once they retire.
+ 
 \begin{smallbox}{Capital gains tax and asset lock in}{box:CGT_asset_lockin}
 Suppose Hayley, an investor in the top tax bracket purchases a house for \$700,000 and holds it for 10 years. During that time the market price of the house increases to \$1 million. She makes a net rental return of 5 per cent a year, giving her a \$50,000 income stream. 
 
