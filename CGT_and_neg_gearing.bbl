@@ -61,6 +61,26 @@
       \field{type}{Generic}
       \field{year}{2015}
     \endentry
+    \entry{ACIL2015}{misc}{}
+      \name{labelname}{1}{}{%
+        {{uniquename=0,hash=f4f9dda1576bf0884061e2b276bd7c25}{{ACIL\bibnamedelimb Allen\bibnamedelimb Consulting}}{A\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=f4f9dda1576bf0884061e2b276bd7c25}{{ACIL\bibnamedelimb Allen\bibnamedelimb Consulting}}{A\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \strng{namehash}{f4f9dda1576bf0884061e2b276bd7c25}
+      \strng{fullhash}{f4f9dda1576bf0884061e2b276bd7c25}
+      \field{sortinit}{A}
+      \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
+      \field{labelyear}{2015}
+      \field{datelabelsource}{}
+      \field{labeltitle}{Australian Housing Investment: Analaysis of Negative Gearing and CGT Discount for Residential Property}
+      \field{title}{Australian Housing Investment: Analaysis of Negative Gearing and CGT Discount for Residential Property}
+      \field{year}{2015}
+      \verb{url}
+      \verb http://www.propertyoz.com.au/library/Australian%20Housing%20Investment%20-%20Analysis%20of%20negative%20gearing%20and%20CGT%20discount%20for%20residential%20property%20-%20ACIL%20Allen%20Consulting.pdf
+      \endverb
+    \endentry
     \entry{R-foreach}{manual}{}
       \name{labelname}{2}{}{%
         {{uniquename=0,hash=98af271d1ab31cb91a5161dafa188ca1}{Analytics}{A\bibinitperiod}{Revolution}{R\bibinitperiod}{}{}{}{}}%
@@ -156,81 +176,6 @@
       \verb https://www.ato.gov.au/general/capital-gains-tax/in-detail/shares,-units-and-similar-investments/claiming-losses-from-the-disposal-of-investments/?page=2
       \endverb
     \endentry
-    \entry{ATO2014b}{misc}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Australian Tax Office, Australian Government}%
-      }
-      \strng{namehash}{9b27761c46b7dcd902103e8a46e61492}
-      \strng{fullhash}{9b27761c46b7dcd902103e8a46e61492}
-      \field{sortinit}{A}
-      \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
-      \field{extrayear}{2}
-      \field{labelyear}{2014}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Capital works deductions}
-      \field{title}{Capital works deductions}
-      \field{type}{Government Document}
-      \field{year}{2014}
-      \verb{url}
-      \verb https://www.ato.gov.au/individuals/income-and-deductions/in-detail/investments,-including-rental-properties/rental-property-expenses/?page=4
-      \endverb
-    \endentry
-    \entry{ATO2014c}{misc}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Australian Tax Office, Australian Government}%
-      }
-      \strng{namehash}{9b27761c46b7dcd902103e8a46e61492}
-      \strng{fullhash}{9b27761c46b7dcd902103e8a46e61492}
-      \field{sortinit}{A}
-      \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
-      \field{extrayear}{3}
-      \field{labelyear}{2014}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Deduction for decline in value of depreciating assets}
-      \field{title}{Deduction for decline in value of depreciating assets}
-      \field{type}{Government Document}
-      \field{year}{2014}
-      \verb{url}
-      \verb https://www.ato.gov.au/individuals/income-and-deductions/in-detail/investments,-including-rental-properties/rental-property-expenses/?page=#Deduction_for_decline_in_value_of_depreciating_assets
-      \endverb
-    \endentry
-    \entry{ATO2014d}{misc}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Australian Tax Office, Australian Government}%
-      }
-      \strng{namehash}{9b27761c46b7dcd902103e8a46e61492}
-      \strng{fullhash}{9b27761c46b7dcd902103e8a46e61492}
-      \field{sortinit}{A}
-      \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
-      \field{extrayear}{4}
-      \field{labelyear}{2014}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Rental Properties 2014}
-      \field{title}{Rental Properties 2014}
-      \field{type}{Government Document}
-      \field{year}{2014}
-      \verb{url}
-      \verb https://www.ato.gov.au/Individuals/Tax-return/2014/In-detail/Publications/Rental-properties-2013-14/
-      \endverb
-    \endentry
     \entry{ATO2014e}{misc}{}
       \name{labelname}{1}{}{%
         {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
@@ -245,7 +190,7 @@
       \strng{fullhash}{9b27761c46b7dcd902103e8a46e61492}
       \field{sortinit}{A}
       \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
-      \field{extrayear}{5}
+      \field{extrayear}{2}
       \field{labelyear}{2014}
       \field{datelabelsource}{}
       \field{labeltitle}{Small business CGT concessions}
@@ -267,7 +212,6 @@
       \strng{fullhash}{9b27761c46b7dcd902103e8a46e61492}
       \field{sortinit}{A}
       \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
-      \field{extrayear}{1}
       \field{labelyear}{2015}
       \field{labelmonth}{05}
       \field{datelabelsource}{}
@@ -278,31 +222,6 @@
       \field{year}{2015}
       \verb{url}
       \verb https://www.ato.gov.au/About-ATO/Research-and-statistics/In-detail/Tax-statistics/Taxation-statistics-2012-13/?page=11
-      \endverb
-    \endentry
-    \entry{ATO2015}{misc}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=9b27761c46b7dcd902103e8a46e61492}{ATO}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Australian Tax Office, Australian Government}%
-      }
-      \strng{namehash}{9b27761c46b7dcd902103e8a46e61492}
-      \strng{fullhash}{9b27761c46b7dcd902103e8a46e61492}
-      \field{sortinit}{A}
-      \field{sortinithash}{c8a29dea43e9d2645817723335a4dbe8}
-      \field{extrayear}{2}
-      \field{labelyear}{2015}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Concessional contributions cap}
-      \field{title}{Concessional contributions cap}
-      \field{type}{Government Document}
-      \field{year}{2015}
-      \verb{url}
-      \verb https://www.ato.gov.au/rates/key-superannuation-rates-and-thresholds/?page=3
       \endverb
     \endentry
     \entry{R-gridExtra}{manual}{}
@@ -512,24 +431,6 @@
       \verb{url}
       \verb http://CRAN.R-project.org/package=xtable
       \endverb
-    \endentry
-    \entry{Daley2007}{misc}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=c066536e9842423e2d78d979ebeba9a7}{Daley}{D\bibinitperiod}{John}{J\bibinitperiod}{}{}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=c066536e9842423e2d78d979ebeba9a7}{Daley}{D\bibinitperiod}{John}{J\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{c066536e9842423e2d78d979ebeba9a7}
-      \strng{fullhash}{c066536e9842423e2d78d979ebeba9a7}
-      \field{sortinit}{D}
-      \field{sortinithash}{a01c54d1737685bc6dbf0ea0673fa44c}
-      \field{labelyear}{2007}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Why do {Australia}n investors borrow so little?}
-      \field{title}{Why do {Australia}n investors borrow so little?}
-      \field{type}{Unused 2}
-      \field{year}{2007}
     \endentry
     \entry{Daley2013}{misc}{}
       \name{labelname}{1}{}{%
@@ -1295,7 +1196,6 @@
       \strng{fullhash}{e61529beccb044b2aa77e59d7b897bea}
       \field{sortinit}{R}
       \field{sortinithash}{ff5a3533ecf9d5a03ff60b1e1389b63d}
-      \field{extrayear}{1}
       \field{labelyear}{2015}
       \field{datelabelsource}{}
       \field{labeltitle}{Statistical Tables Household Debt Distribution - Table E7}
@@ -1304,54 +1204,6 @@
       \field{year}{2015}
       \verb{url}
       \verb http://www.rba.gov.au/statistics/tables/
-      \endverb
-    \endentry
-    \entry{RBA2015a}{misc}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=e61529beccb044b2aa77e59d7b897bea}{RBA}{R\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=e61529beccb044b2aa77e59d7b897bea}{RBA}{R\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \strng{namehash}{e61529beccb044b2aa77e59d7b897bea}
-      \strng{fullhash}{e61529beccb044b2aa77e59d7b897bea}
-      \field{sortinit}{R}
-      \field{sortinithash}{ff5a3533ecf9d5a03ff60b1e1389b63d}
-      \field{extrayear}{2}
-      \field{labelyear}{2015}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Statistical Tables: Margin Lending - D10}
-      \field{title}{Statistical Tables: Margin Lending - D10}
-      \field{type}{Dataset}
-      \field{year}{2015}
-      \verb{url}
-      \verb http://www.rba.gov.au/statistics/tables/
-      \endverb
-    \endentry
-    \entry{Rider2004}{misc}{}
-      \name{labelname}{2}{}{%
-        {{uniquename=0,hash=62254fb5ea6b77aef63ceb92944c34a8}{Rider}{R\bibinitperiod}{Carmen}{C\bibinitperiod}{}{}{}{}}%
-        {{uniquename=0,hash=d20013b102240286f0a4ba575927ad8e}{Stewart}{S\bibinitperiod}{Miranda}{M\bibinitperiod}{}{}{}{}}%
-      }
-      \name{author}{2}{}{%
-        {{uniquename=0,hash=62254fb5ea6b77aef63ceb92944c34a8}{Rider}{R\bibinitperiod}{Carmen}{C\bibinitperiod}{}{}{}{}}%
-        {{uniquename=0,hash=d20013b102240286f0a4ba575927ad8e}{Stewart}{S\bibinitperiod}{Miranda}{M\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Melbourne Law School}%
-      }
-      \strng{namehash}{4c4fc5624724161deb41982e6b9e9645}
-      \strng{fullhash}{4c4fc5624724161deb41982e6b9e9645}
-      \field{sortinit}{R}
-      \field{sortinithash}{ff5a3533ecf9d5a03ff60b1e1389b63d}
-      \field{labelyear}{2004}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Submission to the Productivity Commission Inquity into First Home Ownership}
-      \field{title}{Submission to the Productivity Commission Inquity into First Home Ownership}
-      \field{type}{Generic}
-      \field{year}{2004}
-      \verb{url}
-      \verb http://www.pc.gov.au/inquiries/completed/first-home-ownership/submissions?result_8995_result_page=3
       \endverb
     \endentry
     \entry{seelig2009understanding}{book}{}
@@ -1427,31 +1279,6 @@
       \verb http://www.budget.gov.au/2014-15/index.htm
       \endverb
     \endentry
-    \entry{Treasury2015}{misc}{}
-      \name{labelname}{1}{}{%
-        {{uniquename=0,hash=20e968a2ef4cbdc5bea5e34d0b1e7333}{Treasury}{T\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \name{author}{1}{}{%
-        {{uniquename=0,hash=20e968a2ef4cbdc5bea5e34d0b1e7333}{Treasury}{T\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {The Treaury, Australian Government}%
-      }
-      \strng{namehash}{20e968a2ef4cbdc5bea5e34d0b1e7333}
-      \strng{fullhash}{20e968a2ef4cbdc5bea5e34d0b1e7333}
-      \field{sortinit}{T}
-      \field{sortinithash}{9378dd666f3c24d81538df53aa99e23d}
-      \field{extrayear}{1}
-      \field{labelyear}{2015}
-      \field{datelabelsource}{}
-      \field{labeltitle}{Re:think Tax discussion paper}
-      \field{title}{Re:think Tax discussion paper}
-      \field{type}{Government Document}
-      \field{year}{2015}
-      \verb{url}
-      \verb http://bettertax.gov.au/publications/discussion-paper/
-      \endverb
-    \endentry
     \entry{Treasury2015a}{misc}{}
       \name{labelname}{1}{}{%
         {{uniquename=0,hash=20e968a2ef4cbdc5bea5e34d0b1e7333}{Treasury}{T\bibinitperiod}{}{}{}{}{}{}}%
@@ -1463,7 +1290,6 @@
       \strng{fullhash}{20e968a2ef4cbdc5bea5e34d0b1e7333}
       \field{sortinit}{T}
       \field{sortinithash}{9378dd666f3c24d81538df53aa99e23d}
-      \field{extrayear}{2}
       \field{labelyear}{2015}
       \field{datelabelsource}{}
       \field{labeltitle}{Tax expenditures 2014}
@@ -1727,9 +1553,8 @@
       \endverb
     \endentry
   \endsortlist
-  \missing{Brown2012}
   \missing{Treasury2010b}
-  \missing{ACOSS}
+  \missing{McKell}
   \missing{Stewart2015}
 \endrefsection
 \endinput

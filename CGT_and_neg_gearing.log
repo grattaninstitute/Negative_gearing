@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  6 JUL 2015 18:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  6 JUL 2015 21:54
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -1422,26 +1422,18 @@ LaTeX Info: Redefining \Vref on input line 2453.
 LaTeX Info: Redefining \vrefrange on input line 2453.
 LaTeX Info: Redefining \fullref on input line 2453.
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\bookmark.sty"
-Package: bookmark 2011/12/02 v1.24 PDF bookmarks (HO)
-
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\bkm-pdftex.def"
-File: bkm-pdftex.def 2011/12/02 v1.24 bookmark driver for pdfTeX (HO)
-\BKM@id=\count183
-))
-Package newfloat Info: New float `smallboxfloat' with options `fileext=frm,name
-=Box' on input line 89.
-\c@smallboxfloat=\count184
-Package newfloat Info: float type `smallboxfloat'=4 on input line 89.
-Package tocbasic Info: setting babel extension for `frm' on input line 89.
+Package newfloat Info: New float `boxe' with options `' on input line 88.
+\c@boxe=\count183
+Package newfloat Info: float type `boxe'=4 on input line 88.
+Package tocbasic Info: setting babel extension for `loboxe' on input line 88.
 Class scrreprt Info: not defining `\csnamechapter\endcsname ' due to
-(scrreprt)           empty section style on input line 207.
+(scrreprt)           empty section style on input line 206.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
 Package: geometry 2010/09/12 v5.6 Page Geometry
-\Gm@cnth=\count185
-\Gm@cntv=\count186
-\c@Gm@tempcnt=\count187
+\Gm@cnth=\count184
+\Gm@cntv=\count185
+\c@Gm@tempcnt=\count186
 \Gm@bindingoffset=\dimen279
 \Gm@wd@mp=\dimen280
 \Gm@odd@mp=\dimen281
@@ -1494,7 +1486,7 @@ Package scrlayer-scrpage Warning: Command deprecated!
 (scrlayer-scrpage)                `<line thickness>:<line length>' to setup
 (scrlayer-scrpage)                the line length and thickness, and
 (scrlayer-scrpage)                `\setkomafont' or `\addtokomafont' to
-(scrlayer-scrpage)                setup the colour on input line 298.
+(scrlayer-scrpage)                setup the colour on input line 297.
 
 
 Package scrlayer-scrpage Warning: Command deprecated!
@@ -1508,7 +1500,7 @@ Package scrlayer-scrpage Warning: Command deprecated!
 (scrlayer-scrpage)                `<line thickness>:<line length>' to setup
 (scrlayer-scrpage)                the line length and thickness, and
 (scrlayer-scrpage)                `\setkomafont' or `\addtokomafont' to
-(scrlayer-scrpage)                setup the colour on input line 299.
+(scrlayer-scrpage)                setup the colour on input line 298.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\eso-pic\eso-pic.sty"
 Package: eso-pic 2013/10/06 v2.0d eso-pic (RN)
@@ -1529,14 +1521,14 @@ G,.JBIG2,.JB2,.eps]
 ))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\multicol.sty"
 Package: multicol 2014/10/28 v1.8i multicolumn formatting (FMi)
-\c@tracingmulticols=\count188
+\c@tracingmulticols=\count187
 \mult@box=\box69
 \multicol@leftmargin=\dimen287
-\c@unbalance=\count189
-\c@collectmore=\count190
-\doublecol@number=\count191
-\multicoltolerance=\count192
-\multicolpretolerance=\count193
+\c@unbalance=\count188
+\c@collectmore=\count189
+\doublecol@number=\count190
+\multicoltolerance=\count191
+\multicolpretolerance=\count192
 \full@width=\dimen288
 \page@free=\dimen289
 \premulticols=\dimen290
@@ -1567,14 +1559,14 @@ Package: multicol 2014/10/28 v1.8i multicolumn formatting (FMi)
 \@tempa=\box90
 \@tempa=\box91
 \@tempa=\box92
-\c@columnbadness=\count194
-\c@finalcolumnbadness=\count195
+\c@columnbadness=\count193
+\c@finalcolumnbadness=\count194
 \last@try=\dimen293
 \multicolovershoot=\dimen294
 \multicolundershoot=\dimen295
 \mult@nat@firstbox=\box93
 \colbreak@box=\box94
-\mc@col@check@num=\count196
+\mc@col@check@num=\count195
 )
 \currentparskip=\skip134
 
@@ -1592,7 +1584,7 @@ Language: english 2012/08/20 v3.3p English support from the babel system
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\babel\babel.def"
 File: babel.def 2014/09/25 3.9l Babel common definitions
-\babel@savecnt=\count197
+\babel@savecnt=\count196
 \U@D=\dimen296
 )
 \l@canadian = a dialect from \language\l@american 
@@ -1601,13 +1593,13 @@ File: babel.def 2014/09/25 3.9l Babel common definitions
 ))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\csquotes\csquotes.sty"
 Package: csquotes 2011/10/22 v5.1d context-sensitive quotations
-\csq@reset=\count198
-\csq@gtype=\count199
-\csq@glevel=\count200
-\csq@qlevel=\count201
+\csq@reset=\count197
+\csq@gtype=\count198
+\csq@glevel=\count199
+\csq@qlevel=\count200
+\csq@maxlvl=\count201
 Normal \count register pool exhausted, switching to extended pool.
-\csq@maxlvl=\count277
-\csq@tshold=\count278
+\csq@tshold=\count277
 \csq@ltx@everypar=\toks44
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\csquotes\csquotes.def"
@@ -1628,49 +1620,49 @@ AB)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\logreq\logreq.sty"
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count279
+\lrq@indent=\count278
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\logreq\logreq.def"
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 ))
-\c@tabx@nest=\count280
-\c@listtotal=\count281
-\c@listcount=\count282
-\c@liststart=\count283
-\c@liststop=\count284
-\c@citecount=\count285
-\c@citetotal=\count286
-\c@multicitecount=\count287
-\c@multicitetotal=\count288
-\c@instcount=\count289
-\c@maxnames=\count290
-\c@minnames=\count291
-\c@maxitems=\count292
-\c@minitems=\count293
-\c@citecounter=\count294
-\c@savedcitecounter=\count295
-\c@uniquelist=\count296
-\c@uniquename=\count297
-\c@refsection=\count298
-\c@refsegment=\count299
-\c@maxextratitle=\count300
-\c@maxextratitleyear=\count301
-\c@maxextrayear=\count302
-\c@maxextraalpha=\count303
-\c@abbrvpenalty=\count304
-\c@highnamepenalty=\count305
-\c@lownamepenalty=\count306
-\c@maxparens=\count307
-\c@parenlevel=\count308
-\blx@tempcnta=\count309
-\blx@tempcntb=\count310
-\blx@tempcntc=\count311
-\blx@maxsection=\count312
-\blx@maxsegment@0=\count313
-\blx@notetype=\count314
-\blx@parenlevel@text=\count315
-\blx@parenlevel@foot=\count316
-\blx@sectionciteorder@0=\count317
+\c@tabx@nest=\count279
+\c@listtotal=\count280
+\c@listcount=\count281
+\c@liststart=\count282
+\c@liststop=\count283
+\c@citecount=\count284
+\c@citetotal=\count285
+\c@multicitecount=\count286
+\c@multicitetotal=\count287
+\c@instcount=\count288
+\c@maxnames=\count289
+\c@minnames=\count290
+\c@maxitems=\count291
+\c@minitems=\count292
+\c@citecounter=\count293
+\c@savedcitecounter=\count294
+\c@uniquelist=\count295
+\c@uniquename=\count296
+\c@refsection=\count297
+\c@refsegment=\count298
+\c@maxextratitle=\count299
+\c@maxextratitleyear=\count300
+\c@maxextrayear=\count301
+\c@maxextraalpha=\count302
+\c@abbrvpenalty=\count303
+\c@highnamepenalty=\count304
+\c@lownamepenalty=\count305
+\c@maxparens=\count306
+\c@parenlevel=\count307
+\blx@tempcnta=\count308
+\blx@tempcntb=\count309
+\blx@tempcntc=\count310
+\blx@maxsection=\count311
+\blx@maxsegment@0=\count312
+\blx@notetype=\count313
+\blx@parenlevel@text=\count314
+\blx@parenlevel@foot=\count315
+\blx@sectionciteorder@0=\count316
 \labelnumberwidth=\skip135
 \labelalphawidth=\skip136
 \biblabelsep=\skip137
@@ -1681,9 +1673,9 @@ File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 \bibhang=\skip142
 \blx@bcfin=\read2
 \blx@bcfout=\write6
-\c@mincomprange=\count318
-\c@maxcomprange=\count319
-\c@mincompwidth=\count320
+\c@mincomprange=\count317
+\c@maxcomprange=\count318
+\c@mincompwidth=\count319
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -1692,72 +1684,72 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'authoryear-ibid.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count321
-\c@savedafterword=\count322
-\c@annotator=\count323
-\c@savedannotator=\count324
-\c@author=\count325
-\c@savedauthor=\count326
-\c@bookauthor=\count327
-\c@savedbookauthor=\count328
-\c@commentator=\count329
-\c@savedcommentator=\count330
-\c@editor=\count331
-\c@savededitor=\count332
-\c@editora=\count333
-\c@savededitora=\count334
-\c@editorb=\count335
-\c@savededitorb=\count336
-\c@editorc=\count337
-\c@savededitorc=\count338
-\c@foreword=\count339
-\c@savedforeword=\count340
-\c@holder=\count341
-\c@savedholder=\count342
-\c@introduction=\count343
-\c@savedintroduction=\count344
-\c@namea=\count345
-\c@savednamea=\count346
-\c@nameb=\count347
-\c@savednameb=\count348
-\c@namec=\count349
-\c@savednamec=\count350
-\c@translator=\count351
-\c@savedtranslator=\count352
-\c@shortauthor=\count353
-\c@savedshortauthor=\count354
-\c@shorteditor=\count355
-\c@savedshorteditor=\count356
-\c@labelname=\count357
-\c@savedlabelname=\count358
-\c@institution=\count359
-\c@savedinstitution=\count360
-\c@lista=\count361
-\c@savedlista=\count362
-\c@listb=\count363
-\c@savedlistb=\count364
-\c@listc=\count365
-\c@savedlistc=\count366
-\c@listd=\count367
-\c@savedlistd=\count368
-\c@liste=\count369
-\c@savedliste=\count370
-\c@listf=\count371
-\c@savedlistf=\count372
-\c@location=\count373
-\c@savedlocation=\count374
-\c@organization=\count375
-\c@savedorganization=\count376
-\c@origlocation=\count377
-\c@savedoriglocation=\count378
-\c@origpublisher=\count379
-\c@savedorigpublisher=\count380
-\c@publisher=\count381
-\c@savedpublisher=\count382
-\c@language=\count383
-\c@savedlanguage=\count384
-\c@pageref=\count385
-\c@savedpageref=\count386
+\c@afterword=\count320
+\c@savedafterword=\count321
+\c@annotator=\count322
+\c@savedannotator=\count323
+\c@author=\count324
+\c@savedauthor=\count325
+\c@bookauthor=\count326
+\c@savedbookauthor=\count327
+\c@commentator=\count328
+\c@savedcommentator=\count329
+\c@editor=\count330
+\c@savededitor=\count331
+\c@editora=\count332
+\c@savededitora=\count333
+\c@editorb=\count334
+\c@savededitorb=\count335
+\c@editorc=\count336
+\c@savededitorc=\count337
+\c@foreword=\count338
+\c@savedforeword=\count339
+\c@holder=\count340
+\c@savedholder=\count341
+\c@introduction=\count342
+\c@savedintroduction=\count343
+\c@namea=\count344
+\c@savednamea=\count345
+\c@nameb=\count346
+\c@savednameb=\count347
+\c@namec=\count348
+\c@savednamec=\count349
+\c@translator=\count350
+\c@savedtranslator=\count351
+\c@shortauthor=\count352
+\c@savedshortauthor=\count353
+\c@shorteditor=\count354
+\c@savedshorteditor=\count355
+\c@labelname=\count356
+\c@savedlabelname=\count357
+\c@institution=\count358
+\c@savedinstitution=\count359
+\c@lista=\count360
+\c@savedlista=\count361
+\c@listb=\count362
+\c@savedlistb=\count363
+\c@listc=\count364
+\c@savedlistc=\count365
+\c@listd=\count366
+\c@savedlistd=\count367
+\c@liste=\count368
+\c@savedliste=\count369
+\c@listf=\count370
+\c@savedlistf=\count371
+\c@location=\count372
+\c@savedlocation=\count373
+\c@organization=\count374
+\c@savedorganization=\count375
+\c@origlocation=\count376
+\c@savedoriglocation=\count377
+\c@origpublisher=\count378
+\c@savedorigpublisher=\count379
+\c@publisher=\count380
+\c@savedpublisher=\count381
+\c@language=\count382
+\c@savedlanguage=\count383
+\c@pageref=\count384
+\c@savedpageref=\count385
 \shorthandwidth=\skip143
 \shortjournalwidth=\skip144
 \shortserieswidth=\skip145
@@ -1775,13 +1767,13 @@ Package biblatex Info: ... file 'biblatex.def' found.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\biblatex\biblatex.def"
 File: biblatex.def 
-\c@textcitecount=\count387
-\c@textcitetotal=\count388
-\c@textcitemaxnames=\count389
-\c@biburlnumpenalty=\count390
-\c@biburlucpenalty=\count391
-\c@biburllcpenalty=\count392
-\c@smartand=\count393
+\c@textcitecount=\count386
+\c@textcitetotal=\count387
+\c@textcitemaxnames=\count388
+\c@biburlnumpenalty=\count389
+\c@biburlucpenalty=\count390
+\c@biburllcpenalty=\count391
+\c@smartand=\count392
 )
 Package biblatex Info: Trying to load bibliography style 'authoryear-ibid'...
 Package biblatex Info: ... file 'authoryear-ibid.bbx' found.
@@ -1798,8 +1790,8 @@ Package biblatex Info: ... file 'standard.bbx' found.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\biblatex\bbx\standard.bbx"
 File: standard.bbx 2014/06/25 v2.9a biblatex bibliography style (PK/JW/AB)
-\c@bbx:relatedcount=\count394
-\c@bbx:relatedtotal=\count395
+\c@bbx:relatedcount=\count393
+\c@bbx:relatedtotal=\count394
 )))
 Package biblatex Info: Trying to load citation style 'authoryear-ibid'...
 Package biblatex Info: ... file 'authoryear-ibid.cbx' found.
@@ -1819,7 +1811,7 @@ Package biblatex Info: ... file 'biblatex.cfg' found.
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\biblatex\biblatex.cfg"
 File: biblatex.cfg 
 )))
-Package biblatex Info: Redefining '\footcite' on input line 464.
+Package biblatex Info: Redefining '\footcite' on input line 463.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tocloft\tocloft.sty"
 Package: tocloft 2013/05/02 v2.3f parameterised ToC, etc., typesetting
@@ -1853,8 +1845,8 @@ Package tocloft Info: The document has chapter divisions on input line 44.
 \cftbeforefigskip=\skip175
 \cftfigindent=\skip176
 \cftfignumwidth=\skip177
-\c@lofdepth=\count396
-\c@lotdepth=\count397
+\c@lofdepth=\count395
+\c@lotdepth=\count396
 \cftbeforelottitleskip=\skip178
 \cftafterlottitleskip=\skip179
 \cftbeforetabskip=\skip180
@@ -2161,16 +2153,16 @@ File: t1ua1.fd 2006/03/21 Fontinst v1.928 font definitions for T1/ua1.
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count398
+\scratchcounter=\count397
 \scratchdimen=\dimen301
 \scratchbox=\box115
-\nofMPsegments=\count399
-\nofMParguments=\count400
+\nofMPsegments=\count398
+\nofMParguments=\count399
 \everyMPshowfont=\toks45
-\MPscratchCnt=\count401
+\MPscratchCnt=\count400
 \MPscratchDim=\dimen302
-\MPnumerator=\count402
-\makeMPintoPDFobject=\count403
+\MPnumerator=\count401
+\makeMPintoPDFobject=\count402
 \everyMPtoPDFconversion=\toks46
 ) ABD: EveryShipout initializing macros
 LaTeX Info: Redefining \microtypecontext on input line 73.
@@ -2201,12 +2193,15 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count404
+\c@section@level=\count403
 LaTeX Info: Redefining \Ref on input line 513.
 )
 LaTeX Info: Redefining \ref on input line 73.
 LaTeX Info: Redefining \pageref on input line 73.
 LaTeX Info: Redefining \nameref on input line 73.
+
+(CGT_and_neg_gearing.out) (CGT_and_neg_gearing.out)
+\@outlinefile=\write7
 LaTeX Info: Redefining \Ref on input line 73.
 
 *geometry* driver: auto-detecting
@@ -2291,7 +2286,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\microtype\mt-msb.cfg"
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-<./FrontPage/FrontPagePicture.pdf, id=11, 794.97pt x 614.295pt>
+<./FrontPage/FrontPagePicture.pdf, id=39, 794.97pt x 614.295pt>
 File: ./FrontPage/FrontPagePicture.pdf Graphic file (type pdf)
 
 <use ./FrontPage/FrontPagePicture.pdf>
@@ -2321,7 +2316,7 @@ d-black-eps-converted-to.pdf ./logos/aus-gov-logo-stacked-black.eps>
 (epstopdf)             \includegraphics on input line 73.
 Package epstopdf Info: Output file is already uptodate.
 
-<./logos/aus-gov-logo-stacked-black-eps-converted-to.pdf, id=24, 112.42pt x 58.
+<./logos/aus-gov-logo-stacked-black-eps-converted-to.pdf, id=52, 112.42pt x 58.
 2175pt>
 File: ./logos/aus-gov-logo-stacked-black-eps-converted-to.pdf Graphic file (typ
 e pdf)
@@ -2341,7 +2336,7 @@ nverted-to.pdf ./logos/Vic_Gov_Logo.eps>
 (epstopdf)             \includegraphics on input line 73.
 Package epstopdf Info: Output file is already uptodate.
 
-<./logos/Vic_Gov_Logo-eps-converted-to.pdf, id=25, 52.195pt x 30.1125pt>
+<./logos/Vic_Gov_Logo-eps-converted-to.pdf, id=53, 52.195pt x 30.1125pt>
 File: ./logos/Vic_Gov_Logo-eps-converted-to.pdf Graphic file (type pdf)
 
 <use ./logos/Vic_Gov_Logo-eps-converted-to.pdf>
@@ -2360,7 +2355,7 @@ onverted-to.pdf ./logos/UOM-Pos_S_PMS.eps>
 (epstopdf)             \includegraphics on input line 73.
 Package epstopdf Info: Output file is already uptodate.
 
-<./logos/UOM-Pos_S_PMS-eps-converted-to.pdf, id=26, 422.57875pt x 425.59pt>
+<./logos/UOM-Pos_S_PMS-eps-converted-to.pdf, id=54, 422.57875pt x 425.59pt>
 File: ./logos/UOM-Pos_S_PMS-eps-converted-to.pdf Graphic file (type pdf)
 
 <use ./logos/UOM-Pos_S_PMS-eps-converted-to.pdf>
@@ -2368,7 +2363,7 @@ Package pdftex.def Info: ./logos/UOM-Pos_S_PMS-eps-converted-to.pdf used on inp
 ut line 73.
 (pdftex.def)             Requested size: 99.58464pt x 100.2929pt.
 
-<./logos/Bhp.pdf, id=27, 845.0471pt x 597.50829pt>
+<./logos/Bhp.pdf, id=55, 845.0471pt x 597.50829pt>
 File: ./logos/Bhp.pdf Graphic file (type pdf)
  <use ./logos/Bhp.pdf>
 Package pdftex.def Info: ./logos/Bhp.pdf used on input line 73.
@@ -2385,7 +2380,7 @@ converted-to.pdf ./logos/TMF_logo_green.eps>
 (epstopdf)             \includegraphics on input line 73.
 Package epstopdf Info: Output file is already uptodate.
 
-<./logos/TMF_logo_green-eps-converted-to.pdf, id=28, 146.5475pt x 118.4425pt>
+<./logos/TMF_logo_green-eps-converted-to.pdf, id=56, 146.5475pt x 118.4425pt>
 File: ./logos/TMF_logo_green-eps-converted-to.pdf Graphic file (type pdf)
 
 <use ./logos/TMF_logo_green-eps-converted-to.pdf>
@@ -2409,13 +2404,6 @@ Package biblatex Info: ... file 'CGT_and_neg_gearing.bbl' found.
 
 Package biblatex Warning: The following entry could not be found
 (biblatex)                in the database:
-(biblatex)                Brown2012
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
 (biblatex)                Treasury2010b
 (biblatex)                Please verify the spelling and rerun
 (biblatex)                LaTeX afterwards.
@@ -2423,7 +2411,7 @@ Package biblatex Warning: The following entry could not be found
 
 Package biblatex Warning: The following entry could not be found
 (biblatex)                in the database:
-(biblatex)                ACOSS
+(biblatex)                McKell
 (biblatex)                Please verify the spelling and rerun
 (biblatex)                LaTeX afterwards.
 
@@ -2447,26 +2435,22 @@ o-eps-converted-to.pdf> <./logos/UOM-Pos_S_PMS-eps-converted-to.pdf> <./logos/B
 hp.pdf> <./logos/TMF_logo_green-eps-converted-to.pdf>]
 (package_cite_input.tex)
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <20.74> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 80.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 81.
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 80.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 81.
  (CGT_and_neg_gearing.toc)
-\tf@toc=\write7
+\tf@toc=\write8
  [3
 
 
 ] (CGT_and_neg_gearing.lof)
-\tf@lof=\write8
+\tf@lof=\write9
+ (CGT_and_neg_gearing.loboxe)
+\tf@loboxe=\write10
  [4
 
-
-] (CGT_and_neg_gearing.lot)
-\tf@lot=\write9
- [5
-
-
 ]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 89.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 88.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -2475,138 +2459,146 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [6
+ [5
 
 
 ]
 Chapter 1.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 107.
+(Font)              <9> on input line 106.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 107.
-[7
+(Font)              <5> on input line 106.
+[6
 
 ]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 128.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 127.
 
-<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=126, 794.
+<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=163, 794.
 97pt x 505.89pt>
 File: figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf Graphic 
 file (type pdf)
 
 <use figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>
 Package pdftex.def Info: figure/Majority_of_taxable_gains_are_earned_by_individ
-uals-1.pdf used on input line 129.
+uals-1.pdf used on input line 128.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-Package hyperref Info: bookmark level for unknown smallboxfloat defaults to 0 o
-n input line 134.
-[8] [9 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
+Package hyperref Info: bookmark level for unknown boxe defaults to 0 on input l
+ine 133.
+[7] [8 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
 <figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf, id=
-194, 794.97pt x 505.89pt>
+230, 794.97pt x 505.89pt>
 File: figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
  Graphic file (type pdf)
 
 <use figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf>
 Package pdftex.def Info: figure/Nearly_eighty_per_cent_of_capital_gains_are_ear
-ned_by_those_-1.pdf used on input line 173.
+ned_by_those_-1.pdf used on input line 172.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
-[10 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pd
-f>] [11]
-<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=267, 794.97pt x 5
+[9 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
+>] [10]
+<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=302, 794.97pt x 5
 05.89pt>
 File: figure/Real_effective_marginal_tax_rates_are_lower-1.pdf Graphic file (ty
 pe pdf)
  <use figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>
 Package pdftex.def Info: figure/Real_effective_marginal_tax_rates_are_lower-1.p
-df used on input line 211.
+df used on input line 210.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
 
-<figure/Prob_of_CGevent_by_age_income-1.pdf, id=283, 794.97pt x 505.89pt>
+<figure/Prob_of_CGevent_by_age_income-1.pdf, id=318, 794.97pt x 505.89pt>
 File: figure/Prob_of_CGevent_by_age_income-1.pdf Graphic file (type pdf)
 
 <use figure/Prob_of_CGevent_by_age_income-1.pdf>
 Package pdftex.def Info: figure/Prob_of_CGevent_by_age_income-1.pdf used on inp
-ut line 237.
+ut line 236.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
- [12] [13 <./figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>] [14 <./
-figure/Prob_of_CGevent_by_age_income-1.pdf>] [15]
-<figure/Age_negative_gearing_investments-1.pdf, id=368, 794.97pt x 722.7pt>
+ [11] [12 <./figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>] [13 <./
+figure/Prob_of_CGevent_by_age_income-1.pdf>] [14]
+<figure/Age_negative_gearing_investments-1.pdf, id=402, 794.97pt x 722.7pt>
 File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
 Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on 
-input line 280.
+input line 279.
 (pdftex.def)             Requested size: 315.82564pt x 287.123pt.
- [16]
-<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=383, 794.97pt x 505.8
+ [15]
+<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=416, 794.97pt x 505.8
 9pt>
 File: figure/Effective_tax_rates_depend_on_borrowing-1.pdf Graphic file (type p
 df)
  <use figure/Effective_tax_rates_depend_on_borrowing-1.pdf>
 Package pdftex.def Info: figure/Effective_tax_rates_depend_on_borrowing-1.pdf u
-sed on input line 302.
+sed on input line 303.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
- [17 <./figure/Age_negative_gearing_investments-1.pdf>]
+ [16 <./figure/Age_negative_gearing_investments-1.pdf>]
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 316.
+ned on input line 317.
 
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 316.
+ned on input line 317.
 
 
-Package hyperref Warning: Suppressing link with empty target on input line 316.
+Package hyperref Warning: Suppressing link with empty target on input line 317.
 
 
-[18 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
-<figure/Net_rent_over_time-1.pdf, id=422, 794.97pt x 505.89pt>
+[17 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
+<figure/Net_rent_over_time-1.pdf, id=454, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
-Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 323
+Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 324
 .
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
 
-<figure/Capital_city_rents-1.pdf, id=434, 794.97pt x 794.97pt>
+<figure/Capital_city_rents-1.pdf, id=466, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
-Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 342
+Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 343
 .
 (pdftex.def)             Requested size: 315.82564pt x 315.83531pt.
- [19 <./figure/Net_rent_over_time-1.pdf>]
-[20 <./figure/Capital_city_rents-1.pdf>]
+ [18 <./figure/Net_rent_over_time-1.pdf>]
+[19 <./figure/Capital_city_rents-1.pdf>]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 358.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 359.
 
-<figure/Effect_of_Deductions-1.pdf, id=480, 794.97pt x 505.89pt>
+<figure/Effect_of_Deductions-1.pdf, id=511, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
 Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 3
-73.
+74.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
- [21 <./figure/Effect_of_Deductions-1.pdf>] [22] [23] [24] [25] [26
+ [20 <./figure/Effect_of_Deductions-1.pdf>] [21] [22] [23] [24] [25
+
+] [26
 
 ] [27] [28
 
 
-] [29] [30] [31]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 514.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 514.
- (CGT_and_neg_gearing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 514.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 514.
+] [29] [30]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 529.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 529.
+ [31
+
+]
+(CGT_and_neg_gearing.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 529.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 529.
+Package rerunfilecheck Info: File `CGT_and_neg_gearing.out' has not changed.
+(rerunfilecheck)             Checksum: CAE40BEC3343C0FBFE39D73C127BB0B0;738.
+
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 514.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 529.
 
 Package biblatex Warning: Please rerun LaTeX.
 (biblatex)                Page breaks have changed.
@@ -2614,11 +2606,11 @@ Package biblatex Warning: Please rerun LaTeX.
 Package logreq Info: Writing requests to 'CGT_and_neg_gearing.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 45264 strings out of 493698
- 908916 string characters out of 3141998
- 1432532 words of memory out of 3000000
- 46759 multiletter control sequences out of 15000+200000
- 356288 words of font info for 649 fonts, out of 3000000 for 9000
+ 44978 strings out of 493698
+ 904063 string characters out of 3141998
+ 1427153 words of memory out of 3000000
+ 46489 multiletter control sequences out of 15000+200000
+ 355904 words of font info for 644 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  71i,21n,102p,10500b,1848s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Progr
@@ -2634,9 +2626,9 @@ KTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
 nts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/u
 rw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua
 1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (31 pages, 633477 bytes).
+Output written on CGT_and_neg_gearing.pdf (31 pages, 636382 bytes).
 PDF statistics:
- 806 PDF objects out of 1000 (max. 8388607)
- 211 named destinations out of 1000 (max. 500000)
- 84596 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 813 PDF objects out of 1000 (max. 8388607)
+ 204 named destinations out of 1000 (max. 500000)
+ 84644 words of extra memory for PDF output out of 89155 (max. 10000000)
 
