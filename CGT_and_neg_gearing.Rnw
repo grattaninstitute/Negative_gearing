@@ -84,9 +84,8 @@ write(package_cite_input, file = "package_cite_input.tex")
 % citations
 \input{package_cite_input}
 \raggedbottom
+\setcounter{tocdepth}{1}
 \contentspage
-\listoffigures
-\listoftables
 
 %%% Costings analysis
 <<paths_to_sample_files>>=
@@ -793,7 +792,7 @@ get_sample_file(2013) %>%
            fontface = "bold",
            size = 7.14) + 
   scale_fill_manual("", values = c(gpal(2), theGrey)) + 
-  coord_cartesian(ylim = c(0,0.5)) + 
+  coord_cartesian(ylim = c(0,0.55)) + 
   theme(legend.position = 'none', axis.title.x = element_text(hjust = 0.5)) + 
   scale_y_continuous(label=percent, expand = c(0,0))
 @
@@ -811,9 +810,11 @@ We see evidence of higher property turnover amongst negatively geared investors.
 
 \subsubsection{These tax advantages are distorting investment choices}
 The tax advantages conferred by the interaction of negative gearing and capital gains tax biases the choice of investments. For a given overall return, an investor will prefer an asset that pays less in the way of recurrent income and more in the way of capital gain. As \textcite[p.~42]{RBA2014} notes:
+
 \begin{quote}
-\dots in most countries the earning of rental income is seen as the most important reason for investing in rental properties. \dots\ This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
+\!\dots in most countries the earning of rental income is seen as the most important reason for investing in rental properties. \dots\ This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
 \end{quote}
+
 Consistent with this, \textcite{seelig2009understanding} found that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.\footnote{A clear majority considered capital gains as more important than rental income over a five and ten year time horizon.}
 
 The asymmetry between the tax treatment of gains and losses also makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (\Vref{fig:Effective_tax_rates_depend_on_borrowing}). 
@@ -828,6 +829,7 @@ data.frame(
   geom_bar(stat = "identity",
            width = 0.7) + 
   theme(axis.title = element_blank()) + 
+  geom_hline(yintercept = 0) + 
   scale_y_continuous(expand = c(0,0), limits = c(-0.05, 0.35), label=percent)
 @
 \begin{figure}
@@ -1059,7 +1061,8 @@ There is also a strong case for \highlight{limiting the tax deductibility of los
 
 While the deductibility of investment expenses including income expenses, has a strong grounding, there is no reason that these expenses should be deducted against wage and salary income. Indeed, allowing these deductions provides significant tax advantages to investors driving up house prices at the expense of would be home buyers. 
 
-Governments already limit the scope for people to reduce their taxable income through investment losses to qualify for income support payments. Income tests for Family Tax Benefit Part A and Part B, Child Care Benefit are based on ``adjusted taxable income'' which adds back investment losses.\footnote{Department of Human Services \url{http://www.humanservices.gov.au/customer/enablers/adjusted-taxable-income#a6} }
+Governments already limit the scope for people to reduce their taxable income through investment losses to qualify for income support payments. Income tests for Family Tax Benefit Part A and Part B, Child Care Benefit are based on ``adjusted taxable income'' which adds back investment losses.\footnote{Department of Human Services% \url{http://www.humanservices.gov.au/customer/enablers/adjusted-taxable-income#a6} 
+}
 
 There are different degrees of quarantining. The most generous approach is to allow losses to be written off against all non-wage and salary income.  This would include all forms of investment income, including interest and rental income. An alternative would be to restrict deductions to investment income from the same asset class -- for example, property or shares. The most restrictive is to only allow write-off against the capital gain from the same asset. 
 

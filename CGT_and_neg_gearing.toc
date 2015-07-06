@@ -2,47 +2,47 @@
 \defcounter {refsection}{0}\relax 
 \select@language {british}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {1}Other tax concessions for savings: capital gains tax discount and negative gearing}{7}{chapter..1}
+\contentsline {chapter}{\numberline {1}Other tax concessions for savings: capital gains tax discount and negative gearing}{6}{chapter..1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.1}Capital gains enjoy preferential tax treatment relative to income from working}{7}{section.1.1}
+\contentsline {section}{\numberline {1.1}Capital gains enjoy preferential tax treatment relative to income from working}{6}{section.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.2}Should capital gains be taxed consistently with other forms of income?}{9}{section.1.2}
+\contentsline {section}{\numberline {1.2}Should capital gains be taxed consistently with other forms of income?}{8}{section.1.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline Tax concessions for capital gains generate revenue leakage and favour the wealthy}{10}{section*.4}
+\contentsline {subsubsection}{\nonumberline Tax concessions for capital gains generate revenue leakage and favour the wealthy}{9}{section*.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline Tax concessions on gains favour the wealthy}{10}{section*.5}
+\contentsline {subsubsection}{\nonumberline Tax concessions on gains favour the wealthy}{9}{section*.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}{11}{section*.7}
+\contentsline {subsubsection}{\nonumberline The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}{10}{section*.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline Taxing capital gains without a discount will not substantially distort economic decisions}{11}{section*.8}
+\contentsline {subsubsection}{\nonumberline Taxing capital gains without a discount will not substantially distort economic decisions}{10}{section*.8}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline People may hold assets longer, but many already wait until retirement}{12}{section*.10}
+\contentsline {subsubsection}{\nonumberline People may hold assets longer, but many already wait until retirement}{11}{section*.10}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.3}Negative gearing benefit provides generous tax treatment for investors}{15}{section.1.3}
+\contentsline {section}{\numberline {1.3}Negative gearing reduces tax on investment returns and distorts investment choices}{14}{section.1.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline Interaction with capital gains tax allows investors to defer and reduce their tax}{16}{section*.13}
+\contentsline {subsubsection}{\nonumberline Interaction with capital gains tax allows investors to defer and reduce their tax}{15}{section*.13}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline These tax advantages are distorting investment choices}{17}{section*.16}
+\contentsline {subsubsection}{\nonumberline These tax advantages are distorting investment choices}{16}{section*.16}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline And investors have responded to these incentives}{18}{section*.18}
+\contentsline {subsubsection}{\nonumberline And investors have responded to these incentives}{17}{section*.18}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.3.1}Negative gearing is growing in popularity, mainly for housing investment}{18}{subsection.1.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline Impact on housing markets}{19}{section*.20}
+\contentsline {subsubsection}{\nonumberline Impact on housing markets}{18}{section*.20}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline Negative gearing benefits middle and high income earners}{21}{section*.22}
+\contentsline {subsubsection}{\nonumberline Negative gearing benefits middle and high income earners}{20}{section*.22}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.4}Options for reform}{22}{section.1.4}
+\contentsline {section}{\numberline {1.4}Options for reform}{21}{section.1.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.4.1}Reducing the capital gains tax discount}{22}{subsection.1.4.1}
+\contentsline {subsubsection}{\nonumberline Reducing the capital gains tax discount}{21}{section*.24}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.4.2}Limiting negative gearing}{23}{subsection.1.4.2}
+\contentsline {subsubsection}{\nonumberline Limiting negative gearing}{22}{section*.25}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.4.3}Matched discount and claimable losses}{23}{subsection.1.4.3}
+\contentsline {subsubsection}{\nonumberline Limiting negative gearing only to new properties}{23}{section*.26}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.4.4}Improve tax treatment of depreciation}{23}{subsection.1.4.4}
+\contentsline {subsubsection}{\nonumberline Symmetrical tax treatment of losses and capital gains}{23}{section*.27}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.5}Transitional arrangements}{24}{section.1.5}
+\contentsline {section}{\numberline {1.5}Transitional arrangements}{23}{section.1.5}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.6}Daley (quarantining salary from losses), 30\%\ discount}{26}{section.1.6}
 \defcounter {refsection}{0}\relax 
