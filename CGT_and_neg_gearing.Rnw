@@ -98,6 +98,10 @@ sample_file_of <- function(year = 2013){
   return(list.of.files[grepl(fy.year, list.of.files)])
 }
 
+get_sample_file <- function(year = 2013){
+  fread(sample_file_of(year))
+}
+
 weighting <- function(year = 2013){
   # From Budget Table 1 from BP 1
   # http://budget.gov.au/2015-16/content/bp1/html/bp1_bs2.htm
@@ -643,7 +647,45 @@ If she were to sell the house she would crystallise the \$300,000 in gains, payi
 If capital gains were taxed in full, rather than at the current 50 per cent discount, her hurdle rate for the new investment would be 5.9 per cent. 
 \end{smallbox}
 
-Lock-in is a problem because it discourages investors from moving their money to the investments with the highest pre-tax returns, and it discourages sale of assets to those who can increase the returns achieved by the current owner.\footcite{Lindsey1987}  Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.\footcites{OECD2006b}{Johnson2008}  Australia's open capital markets and generous capital gains tax regime for non-residents reduce the danger that worthwhile projects will not get access to capital because of lock-in.\footnote{Non-resident investors in Australian shares are generally not subject to Australian capital gains tax. See \Act{Income Tax Assessment Act 1936}{Cth}~s.136-25.}  
+We can see the retirement realisation effect in the patterns of capital gains realisation by age. Those over 50 have much higher average realisation of gains, regardless of income level.
+
+<<Prob_of_CGevent_by_age_income>>=
+get_sample_file(2013) %>% 
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", age)) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65-69", "70+"))) %>% 
+  group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
+  summarise(prop_cg = mean(Net_CG_amt > 0))  %>% 
+  grplot(aes(x = Income_decile, y = prop_cg, group=factor(age), color = factor(age), label = age)) +
+  theme_hugh(base_size = 24) + 
+  annotate("segment",
+           x = -Inf, y = 0.10,
+           xend = 10, yend = 0.10,
+           color = '#DADADA') +
+  annotate("segment", 
+           x = -Inf, y = 0.20,
+           xend = 10, yend = 0.20,
+           color = '#DADADA') + 
+  annotate("segment", 
+           x = -Inf, y = 0.30,
+           xend = 10, yend = 0.30,
+           color = '#DADADA') + 
+  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.6)) + 
+  scale_x_continuous(expand = c(0,0), breaks = 1:10) + 
+  annotate("blank", x = 12, y = 0.1) + 
+  theme(axis.line.x = element_blank()) + 
+  annotate("segment", x = 1, xend = 10, y = 0, yend = 0) + 
+  scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.3), breaks = c(0:3)/10 ) + 
+  stat_smooth(size = 2, se = FALSE) + 
+  scale_color_manual(values = rev(gpal(7))) + 
+  theme(axis.title.x = element_text(hjust = 0.28), # requires segment
+        panel.grid.major = element_blank()) + xlab("Income decile")
+@
+\begin{figure}
+\Caption{Taxpayers wait till retirement to realize capital gains.}{Incidence of capital gain events in 2012-13, by age and income}{fig:Prob_of_CGevent_by_age_income}
+\includegraphics[width=\columnwidth]{figure/Prob_of_CGevent_by_age_income-1}
+\source{\gao\ \textcite{ATO2013i}}
+\end{figure}
+And many of those 50 to 64 -- the peak retirement years\footnote{The average age at retirement from the labour force for people aged 45 years and over in 2012-13 was 53.8 years (58.5 years for men and 50.0 years for women). \textcite{ABS2013}} -- realise sizeable gains when their other taxable income is low, suggesting they are waiting until retirement. Indeed, almost 60 per cent of the capital gains in this age group are earned by the 24 per cent of people without wage and salary income. 
 
 Ultimately, the best way to reduce asset lock-in is to tax gains on an accruals basis, with interest charges on the deferred tax.\footcite[pp.~11-14]{Burman2009} This would remove the incentive to hold on to gains to reduce the tax burden. 
 
