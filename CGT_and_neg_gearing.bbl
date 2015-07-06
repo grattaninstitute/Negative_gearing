@@ -1307,6 +1307,37 @@
       \verb http://www.pc.gov.au/inquiries/completed/first-home-ownership/submissions?result_8995_result_page=3
       \endverb
     \endentry
+    \entry{seelig2009understanding}{book}{}
+      \name{labelname}{6}{}{%
+        {{uniquename=0,hash=f7b8ddd31e19eb1047d638b202db1463}{Seelig}{S\bibinitperiod}{Tim}{T\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=87bcb0f89e71dc923d409fdca65214ea}{Thompson}{T\bibinitperiod}{Alice}{A\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=989eb3eb33a9ee4512780536b84b0d00}{Burke}{B\bibinitperiod}{Terry}{T\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=c4da724808c5290aa4901352c11e3fe5}{Penningar}{P\bibinitperiod}{S}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=a23ca07f5f8ea3904bdb96f7c2d130bf}{McNelis}{M\bibinitperiod}{Sean}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=94e4699594ecd807d5bc496279a881e7}{Morris}{M\bibinitperiod}{Alan}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \name{author}{6}{}{%
+        {{uniquename=0,hash=f7b8ddd31e19eb1047d638b202db1463}{Seelig}{S\bibinitperiod}{Tim}{T\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=87bcb0f89e71dc923d409fdca65214ea}{Thompson}{T\bibinitperiod}{Alice}{A\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=989eb3eb33a9ee4512780536b84b0d00}{Burke}{B\bibinitperiod}{Terry}{T\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=c4da724808c5290aa4901352c11e3fe5}{Penningar}{P\bibinitperiod}{S}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=a23ca07f5f8ea3904bdb96f7c2d130bf}{McNelis}{M\bibinitperiod}{Sean}{S\bibinitperiod}{}{}{}{}}%
+        {{uniquename=0,hash=94e4699594ecd807d5bc496279a881e7}{Morris}{M\bibinitperiod}{Alan}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{2}{%
+        {Australian Housing}%
+        {Urban Research Institute}%
+      }
+      \strng{namehash}{53619bd393da858ed79d9e718dd19739}
+      \strng{fullhash}{b8afdb50ddd0670b51cf2071656fec32}
+      \field{sortinit}{S}
+      \field{sortinithash}{4125bb4c3a0eb3eaee3ea6da32eb70c8}
+      \field{labelyear}{2009}
+      \field{datelabelsource}{}
+      \field{labeltitle}{Understanding what motivates households to become and remain investors in the private rental market}
+      \field{title}{Understanding what motivates households to become and remain investors in the private rental market}
+      \field{year}{2009}
+    \endentry
     \entry{Treasury2010}{misc}{}
       \name{labelname}{1}{}{%
         {{uniquename=0,hash=20e968a2ef4cbdc5bea5e34d0b1e7333}{Treasury}{T\bibinitperiod}{}{}{}{}{}{}}%

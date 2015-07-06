@@ -722,7 +722,7 @@ Because of the asymmetry of tax treatment of gains and losses, Dan pays \$294 \e
 
 The attractiveness of using investment losses to reduce taxes on wage income is evident in the age profile of those negatively gearing property. Investing in loss making properties is popular amongst those of working age, but far less prevalent amongst over 60s who are unlikely to benefit from the tax write-offs. Over 60 per cent of those under 60 with investment properties make rental losses compared to less than 40 per cent over 60.
 
-<<Age_negative_gearing_investments>>=
+<<Age_negative_gearing_investments, fig.width=11.000, fig.height=10.00, out.width="11.000in", out.height="10.00in",>>=
 get_sample_file(2013) %>%
     mutate(Age = car::recode(age_range, "0 = '70 and over';
                             1 = '65 to 69';
@@ -782,10 +782,19 @@ get_sample_file(2013) %>%
   grplot(aes(Age, number, fill = gearing)) + 
   geom_bar(stat = "identity", 
            position = "fill",
-           width = 1) + 
+           color = NA,
+           width = 1.01) + 
+  annotate("text", 
+           x = c(9,9,9),
+           y = c(0.07, 0.17, 0.3),
+           label = c("Negative gearing", 
+                     "Not negative gearing",
+                     "(No investment property)"),
+           fontface = "bold",
+           size = 7.14) + 
   scale_fill_manual("", values = c(gpal(2), theGrey)) + 
   coord_cartesian(ylim = c(0,0.5)) + 
-  theme(legend.position = 'bottom', axis.title.x = element_text(hjust = 0.5)) + 
+  theme(legend.position = 'none', axis.title.x = element_text(hjust = 0.5)) + 
   scale_y_continuous(label=percent, expand = c(0,0))
 @
 \begin{figure}
@@ -796,9 +805,38 @@ get_sample_file(2013) %>%
 \source{\gao\ \textcite{ATO2013i}}
 \end{figure}
 
-But the issue for negatively geared property or shares is that the loss being deducted is illusory. Investors are only willing to make an income loss over a number of years because the value of the asset is growing. But the gains in property value are not counted as income until the asset is sold (section 1.2). It is the combination of unlimited deductions of "losses" against wage income while only being taxed on half the gains upon realisation that makes negative gearing an attractive strategy.\footcite[pages~5,13]{ACOSS} 
+The tax advantages are also evident in the greater propensity of those with negatively geared properties to ``churn'' their investments. Properties do not stay negatively geared forever. Rents rise over time with increases in the value of the housing stock while interest payments only vary with the interest rate, as the loan value is unchanged.\footnote{This assumes an investor uses an interest only loan. If the investor also repays some principal the investment will flip to being positively geared even faster.}  So if investors want to stay negatively geared they need to turnover their investments.
 
-This comes at both a cost to the budget and potentially negative impacts in investment markets, particularly housing markets, where the tax treatment has encouraged speculative activity. 
+We see evidence of higher property turnover amongst negatively geared investors. Studying a sample of investors with rental properties, \textcite{Wood2010a} show that only 40 per cent still retained their properties at the end of a 5 year period.  Amongst those that were negatively geared, only 20 per cent still retained the investment. And the proportion of landlords that purchased another property after selling was moderately higher for negatively geared investors than other investors.
+
+\subsubsection{These tax advantages are distorting investment choices}
+The tax advantages conferred by the interaction of negative gearing and capital gains tax biases the choice of investments. For a given overall return, an investor will prefer an asset that pays less in the way of recurrent income and more in the way of capital gain. As \textcite[p.~42]{RBA2014} notes:
+\begin{quote}
+\dots in most countries the earning of rental income is seen as the most important reason for investing in rental properties. \dots\ This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
+\end{quote}
+Consistent with this, \textcite{seelig2009understanding} found that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.\footnote{A clear majority considered capital gains as more important than rental income over a five and ten year time horizon.}
+
+The asymmetry between the tax treatment of gains and losses also makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (Figure 6). 
+
+<<Effective_tax_rates_depend_on_borrowing>>=
+data.frame(
+  Type = factor(c("No borrowing", "Borrowing 50%\ninvestment value", "Borrowing 80%\ninvestment value"),
+                levels = c("No borrowing", "Borrowing 50%\ninvestment value", "Borrowing 80%\ninvestment value")),
+  real_emtr = c(0.32, 0.155, -0.008)
+) %>% 
+  grplot(aes(x = Type, y = real_emtr)) + 
+  geom_bar(stat = "identity",
+           width = 0.7) + 
+  theme(axis.title = element_blank()) + 
+  scale_y_continuous(expand = c(0,0), limits = c(-0.05, 0.35), label=percent)
+@
+\begin{figure}
+\Caption{Effective tax rates depend on amount of borrowing}{Real effective marginal tax rate}{fig:Effective_tax_rates_depend_on_borrowing}
+\includegraphics[width=\columnwidth]{figure/Effective_tax_rates_depend_on_borrowing-1}
+\notes{Assumes a 6 per cent nominal return, 2.5 per cent inflation, 50 per cent of the return is attributed to capital gain and 50 per cent to rental income. All investment income is taxed at the 45\%\ marginal rate. The property is held for seven years and then sold.}
+
+\source{Grattan analysis}
+\end{figure}
 
 \subsection{Negative gearing is growing in popularity, mainly for housing investment}
 There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
