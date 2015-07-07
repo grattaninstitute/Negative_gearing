@@ -43,10 +43,12 @@ Temporary Items
 .apdisk
 
 IndividualSampleFile/
+HILDA/
 
 # figures
 *.pdf
 *.emf
+*.dta
 2012 2% individuals sample file.csv
 2013_sample_file.csv
 
