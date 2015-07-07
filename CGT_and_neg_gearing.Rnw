@@ -59,7 +59,7 @@ library(parallelRandomForest)
                             out.width="11.000in", out.height="7.00in", 
                             fig.show='hide',echo=FALSE,
                             message=FALSE, warning=FALSE
-                            ,cache=TRUE
+                            ,cache=FALSE
                             ,dev=c('pdf', 'my_emf')
                             ,fig.ext = c("pdf", "emf")
       )
@@ -97,8 +97,10 @@ sample_file_of <- function(year = 2013){
   return(list.of.files[grepl(fy.year, list.of.files)])
 }
 
+
 get_sample_file <- function(year = 2013){
-  fread(sample_file_of(year))
+  colClasses = sapply(fread(sample_file_of(year), nrows=50), class)
+  fread(sample_file_of(year), colClasses = colClasses, na.strings = "?")
 }
 
 weighting <- function(year = 2013){
@@ -137,7 +139,7 @@ weighting <- function(year = 2013){
 }
 @
 
-<<Daley_parameters, echo=TRUE>>=
+<<Daley_parameters, echo=FALSE>>=
 new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
@@ -507,8 +509,10 @@ Under the current rules, net capital gains are included as part of assessable in
 Capital gains have other less explicit tax advantages compared to recurrent income. Investors control when they realise gains. Consequently, they can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  Indeed, the probability of a landlord selling a property increases by over 20 percentage points once they retire.\footnote{The Age Pension asset test also encourages those moving into retirement to sell their assets. \textcite{Wood2010a}.}
 Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan. (See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
 
-\section{Should capital gains be taxed consistently with other forms of income?}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
-Capital gains and other forms of savings income increase a person's spending power. It is arguable that all increases in spending power should be taxed consistently regardless of how they are earned (chapter 2)  or as the Canadian Carter report puts it ``a buck is a buck is a buck.''  Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy. Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
+\section{The preferential tax treatment of capital gains should be reined in}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
+There are several arguments for why capital gains tax ought to receive the preferential treatment it does. Taxes on capital gains might reduce speculative investment. Other countries offer similar preferential treatment. Investors may hold on to uneconomic assets for too long if taxes are too burdensome. Capital assets are typically held for a long time and, without discounts, investors pay taxes on the inflation component of their return, which does not represent any real gain. 
+
+Capital gains and other forms of savings income increase a person's spending power. It is arguable that all increases in spending power should be taxed consistently regardless of how they are earned (chapter 2) or as the Canadian Carter report puts it ``a buck is a buck is a buck.''  Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy. Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
 
 On the other hand, increasing taxes on capital gains might reduce incentives to save and start new businesses. But personal income tax rates are not the most important determinants of these decisions. If nominal gains are taxed at the full marginal rate, we tax the inflation component of gains.  But with inflation rates low relative to investment returns, the 50 per cent discount overcompensates most investors. The discount also magnifies the tax advantages of capital gains over other investment income, such as bank deposits.
 
@@ -563,6 +567,23 @@ both %T>%
 \source{\gao\ \textcite{ATO2013i}}
 \end{figure}
 Some of this is accounted for by the `lumpy' nature of gains. This means that realising gains can push investors up the taxable income scale. When we control for this by removing gains from income, we see that more than 30 per cent of gains are still earned by those in the top ten per cent of (non-capital gains) income. 
+
+<<Capital_gains_deciles_by_age>>=
+get_sample_file(2013) %>% 
+  filter(Net_CG_amt < 5e6,
+         Net_CG_amt > 0) %>%
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under",
+                                                       ifelse(age < 60, "45-59", "60+"))) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-59", "60+"))) %>%
+  group_by(age, Income_decile = factor(ntile(Taxable_Income - Net_CG_amt, 10))) %>%
+  summarise(mean.cg = mean(Net_CG_amt),
+            mean.spous = mean(Spouse_adjusted_taxable_inc)) %>%
+  gather(amounts, means, mean.cg:mean.spous) %>% 
+  grplot(aes(x = Income_decile, fill = amounts, y = means)) + 
+  geom_bar(stat = "identity") + 
+  facet_grid(~age) + 
+  theme(legend.position = "top")
+@
 
 A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (\Vref{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}). As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
 
