@@ -2,23 +2,23 @@
 [0] Config.pm:323> INFO - Logfile is 'CGT_and_neg_gearing.blg'
 [24] biber-MSWIN:274> INFO - === %a %b %e, %Y, %H:%M:%S
 [25] Biber.pm:333> INFO - Reading 'CGT_and_neg_gearing.bcf'
-[80] Biber.pm:632> INFO - Using all citekeys in bib section 0
-[104] Biber.pm:3051> INFO - Processing section 0
-[123] Biber.pm:3189> INFO - Looking for bibtex format file 'bibliography.bib' for section 0
-[169] bibtex.pm:990> INFO - Decoding LaTeX character macros into UTF-8
-[212] bibtex.pm:864> INFO - Found BibTeX data source 'bibliography.bib'
-[302] Utils.pm:144> WARN - Name "Vos, T., Carter, R., Barendregt, J., Mihalopoulos, C., Veerman, J.L., Magnus, A., Cobiac, L., Bertram, M.Y., Wallace, A.L.," has too many commas: skipping name
-[407] Utils.pm:144> WARN - Name "Cuxson, G., Temple, J., Fry, J." has too many commas: skipping name
-[649] Biber.pm:3189> INFO - Looking for bibtex format file 'bibliography2.bib' for section 0
-[653] bibtex.pm:990> INFO - Decoding LaTeX character macros into UTF-8
-[654] bibtex.pm:864> INFO - Found BibTeX data source 'bibliography2.bib'
-[731] Utils.pm:144> WARN - The field 'publisher' in entry 'AIHW2014' cannot be null, deleting it
-[749] Utils.pm:144> WARN - The field 'author' in entry 'Vos2010' cannot be null, deleting it
-[749] Utils.pm:144> WARN - The field 'publisher' in entry 'WA2011' cannot be null, deleting it
-[6511] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[6511] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'variable = shifted' with 'variable = non-ignorable'
-[6511] Biber.pm:2928> INFO - Sorting list 'nyt' of type 'entry' with scheme 'nyt' and locale 'en-GB'
-[6512] Biber.pm:2932> INFO - No sort tailoring available for locale 'en-GB'
-[8339] bbl.pm:517> INFO - Writing 'CGT_and_neg_gearing.bbl' with encoding 'UTF-8'
-[8419] bbl.pm:606> INFO - Output to CGT_and_neg_gearing.bbl
-[8421] Biber.pm:106> INFO - WARNINGS: 5
+[82] Biber.pm:632> INFO - Using all citekeys in bib section 0
+[105] Biber.pm:3051> INFO - Processing section 0
+[124] Biber.pm:3189> INFO - Looking for bibtex format file 'bibliography.bib' for section 0
+[170] bibtex.pm:990> INFO - Decoding LaTeX character macros into UTF-8
+[215] bibtex.pm:864> INFO - Found BibTeX data source 'bibliography.bib'
+[330] Utils.pm:144> WARN - Name "Cuxson, G., Temple, J., Fry, J." has too many commas: skipping name
+[547] Utils.pm:144> WARN - Name "Vos, T., Carter, R., Barendregt, J., Mihalopoulos, C., Veerman, J.L., Magnus, A., Cobiac, L., Bertram, M.Y., Wallace, A.L.," has too many commas: skipping name
+[658] Biber.pm:3189> INFO - Looking for bibtex format file 'bibliography2.bib' for section 0
+[662] bibtex.pm:990> INFO - Decoding LaTeX character macros into UTF-8
+[663] bibtex.pm:864> INFO - Found BibTeX data source 'bibliography2.bib'
+[744] Utils.pm:144> WARN - The field 'publisher' in entry 'AIHW2014' cannot be null, deleting it
+[763] Utils.pm:144> WARN - The field 'author' in entry 'Vos2010' cannot be null, deleting it
+[763] Utils.pm:144> WARN - The field 'publisher' in entry 'WA2011' cannot be null, deleting it
+[6614] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[6614] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'variable = shifted' with 'variable = non-ignorable'
+[6615] Biber.pm:2928> INFO - Sorting list 'nyt' of type 'entry' with scheme 'nyt' and locale 'en-GB'
+[6615] Biber.pm:2932> INFO - No sort tailoring available for locale 'en-GB'
+[8456] bbl.pm:517> INFO - Writing 'CGT_and_neg_gearing.bbl' with encoding 'UTF-8'
+[8534] bbl.pm:606> INFO - Output to CGT_and_neg_gearing.bbl
+[8536] Biber.pm:106> INFO - WARNINGS: 5
