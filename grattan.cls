@@ -307,7 +307,7 @@ left=2.75cm,right=2.75cm
 \vfill
 \centering
 \includegraphics[width=\paperwidth,height=\paperheight,%
-keepaspectratio]{./FrontPage/FrontPagePicture.pdf}%
+keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 \vfill
 }}}
 
@@ -325,12 +325,31 @@ keepaspectratio]{./FrontPage/FrontPagePicture.pdf}%
   {}% <success>
   {}% <failure>
 
+
+\newcommand*{\titleTH}{\begingroup % Create the command for including the title page in the document
+\raggedleft % Right-align all text
+\phantom{.}%\vspace*{\baselineskip}
+\vfill % Whitespace at the top of the page
+
+{\bfseries\textcolor{Orange}{\fontsize{32}{32}\selectfont \mytitle}}\\[\baselineskip] % Title page font size
+%% This is a working paper.
+{\Large {Grattan Insitute Working Paper}}\\[2\baselineskip] % Tagline or further description
+
+{\LARGE \myauthor}
+
+\vfill% Whitespace at the bottom of the page
+\endgroup}
+  
 \AtBeginDocument{%
+\let\mytitle\@title
+\let\myauthor\@author
 % TitlePage
+\onecolumn
 \AddToShipoutPicture*{\BackgroundPic}
-  \maketitle
-  \let\mytitle\@title
+\titleTH
 \ClearShipoutPicture
+\clearpage
+\twocolumn
 \lsstyle
 %
 % Following page.
@@ -380,6 +399,7 @@ keepaspectratio]{./FrontPage/FrontPagePicture.pdf}%
   \end{multicols}
   \end{minipage} 
   \input{Acknowledgements}
+  \twocolumn
 }
 
 % Table of contentss
