@@ -65,7 +65,7 @@
 
 \newcommand{\Act}[2]{\emph{#1} (#2)}
 \newcommand{\EMPH}[1]{\textbf{#1}}
-\newcommand{\highlight}[1]{\textbf{#1}}
+\newcommand{\highlight}[1]{\emph{#1}}
 
 \usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
 \AtBeginEnvironment{quote}{\smaller}
@@ -179,7 +179,7 @@ A large fraction of gains are also earned by those would be in the bottom ten pe
 \subsubsection{The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}
 A lower tax rate for capital gains is sometimes justified on the basis that the effective tax rates on real returns can be high if nominal gains are taxed at marginal income tax rates.\footcite{Treasury2010} This is particularly true of investments with low real returns that are held for an extended period (\Vref{box:short_history_CGT}).
 
-The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. In the current low inflation environment, the 50 per cent discount overcompensates most investors.
+The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. In the current low inflation environment, the 50 per cent discount overcompensates most investors.\footnote{}
 
 % We don't include this chunk
 
@@ -232,7 +232,7 @@ If she were to sell the house she would crystallise the \$300,000 in gains, payi
 If capital gains were taxed in full, rather than at the current 50 per cent discount, her hurdle rate for the new investment would be 5.9 per cent. 
 \end{smallbox}
 
-We can see the retirement realisation effect in the patterns of capital gains realisation by age. Those over 50 have much higher average realisation of gains, regardless of income level. The preponderance of retirees among those realizing capital gains is independent of income level as clearly seen in the incidence of capital gains events by age and income in \Vref{fig:Prob_of_CGevent_by_age_income}.
+We can see the retirement realisation effect in the patterns of capital gains realisation by age. Those over 50 have much higher average realisation of gains, regardless of income level. The preponderance of retirees occurs regardless of income level as clearly shown in the incidence of capital gains realizations in \Vref{fig:Prob_of_CGevent_by_age_income}.
 
 
 \begin{figure}[t]
@@ -302,7 +302,7 @@ Consistent with this, \textcite{seelig2009understanding} found that the majority
 The asymmetry between the tax treatment of gains and losses also makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (\Vref{fig:Effective_tax_rates_depend_on_borrowing}). 
 
 
-\begin{figure}[t]
+\begin{figure}
 \Caption{Effective tax rates depend on amount of borrowing}{Real effective marginal tax rate}{fig:Effective_tax_rates_depend_on_borrowing}
 \includegraphics[width=\columnwidth]{figure/Effective_tax_rates_depend_on_borrowing-1}
 \notes{Assumes a 6 per cent nominal return, 2.5 per cent inflation, 50 per cent of the return is attributed to capital gain and 50 per cent to rental income. All investment income is taxed at the 45\%\ marginal rate. The property is held for seven years and then sold.}
@@ -471,22 +471,8 @@ Nevertheless, given the competing considerations, phase-in would be a better tra
 
 
 \onecolumn
-%% Costings data
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{new.discount} \hlkwb{<-} \hlnum{0.30}
-\hlstd{discount_only_to_negative_rent_income} \hlkwb{<-} \hlnum{TRUE}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
-
-Under this proposal, in which the discount is only applied to negative rental income, income tax would rise from \$159.2~billion to \$161.8~billion.
-
-\section{Daley (quarantining salary from losses), 30\%\ discount}
-\subsection{Parameters}
-\nocite{*}
+%\nocite{*}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
