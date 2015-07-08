@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  8 JUL 2015 08:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  8 JUL 2015 10:44
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -2536,37 +2536,37 @@ Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 326
 .
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
  [17 <./figure/Net_rent_over_time-1.pdf>]
-<figure/Capital_city_rents-1.pdf, id=476, 794.97pt x 794.97pt>
+<figure/Capital_city_rents-1.pdf, id=477, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
-Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 345
+Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 351
 .
 (pdftex.def)             Requested size: 315.82564pt x 315.83531pt.
  [18 <./figure/Capital_city_rents-1.pdf>]
 
-LaTeX Warning: Citation 'Treasury2010b' on page 19 undefined on input line 361.
+LaTeX Warning: Citation 'Treasury2010b' on page 19 undefined on input line 367.
 
 
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 361.
-<figure/Effect_of_Deductions-1.pdf, id=508, 794.97pt x 505.89pt>
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 367.
+<figure/Effect_of_Deductions-1.pdf, id=510, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
 Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 3
-76.
+82.
 (pdftex.def)             Requested size: 315.82564pt x 200.9861pt.
  [19] [20 <./figure/Effect_of_Deductions-1.pdf>]
 
-LaTeX Warning: Citation 'Stewart2015' on page 21 undefined on input line 400.
+LaTeX Warning: Citation 'Stewart2015' on page 21 undefined on input line 406.
 
 [21]
 
-LaTeX Warning: Citation 'McKell' on page 22 undefined on input line 427.
+LaTeX Warning: Citation 'McKell' on page 22 undefined on input line 433.
 
 [22] [23] [24]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 471.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 477.
 
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -2579,7 +2579,7 @@ Package microtype Info: Loading generic settings for font family
 [25
 
 ] [26]
-LaTeX Font Info:    Try loading font information for TS1+ua1 on input line 530.
+LaTeX Font Info:    Try loading font information for TS1+ua1 on input line 536.
 
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\arial\ts1ua1.fd"
 File: ts1ua1.fd 2006/03/21 Fontinst v1.928 font definitions for TS1/ua1.
@@ -2593,7 +2593,7 @@ Package microtype Info: Loading generic settings for font family
 
 
 ] [28] [29]
-Underfull \hbox (badness 1033) in paragraph at lines 531--531
+Underfull \hbox (badness 1033) in paragraph at lines 537--537
 [][]$\T1/ua1/m/n/10/-4ls (+14) h\T1/ua1/m/n/10/-4ls (+20) tt\T1/ua1/m/n/10/-4ls
  (+14) p \T1/ua1/m/n/10/-4ls (+20) : / / \T1/ua1/m/n/10/-4ls (+14) www \T1/ua1/
 m/n/10/-4ls (+20) . \T1/ua1/m/n/10/-4ls (+14) ap\T1/ua1/m/n/10/-4ls (+20) r\T1/
@@ -2606,7 +2606,7 @@ ua1/m/n/10/-4ls (+20) ti\T1/ua1/m/n/10/-4ls (+14) ons \T1/ua1/m/n/10/-4ls (+20)
  []
 
 [30] [31]
-Underfull \hbox (badness 3039) in paragraph at lines 531--531
+Underfull \hbox (badness 3039) in paragraph at lines 537--537
 [][][]\T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1/ua1/m/n/10/-4ls
  (+20) 01\T1/ua1/m/n/10/-4ls (+14) 3b\T1/ua1/m/n/10/-4ls (+20) ). \T1/ua1/m/it/
 10/-4ls (+14) Sub\T1/ua1/m/it/10/-4ls (+20) -\T1/ua1/m/it/10/-4ls (+14) m\T1/ua
@@ -2624,7 +2624,7 @@ s (+14) n
  []
 
 
-Underfull \hbox (badness 3919) in paragraph at lines 531--531
+Underfull \hbox (badness 3919) in paragraph at lines 537--537
 \T1/ua1/m/it/10/-4ls (+20) t\T1/ua1/m/it/10/-4ls (+14) he \T1/ua1/m/it/10/-4ls 
 (+20) tr\T1/ua1/m/it/10/-4ls (+14) ans\T1/ua1/m/it/10/-4ls (+20) -\T1/ua1/m/it/
 10/-4ls (+14) po\T1/ua1/m/it/10/-4ls (+20) rt \T1/ua1/m/it/10/-4ls (+14) sec\T1
@@ -2637,7 +2637,7 @@ Underfull \hbox (badness 3919) in paragraph at lines 531--531
  []
 
 [32] [33]
-Underfull \hbox (badness 1152) in paragraph at lines 531--531
+Underfull \hbox (badness 1152) in paragraph at lines 537--537
 [][]$\T1/ua1/m/n/10/-4ls (+14) h\T1/ua1/m/n/10/-4ls (+20) tt\T1/ua1/m/n/10/-4ls
  (+14) p \T1/ua1/m/n/10/-4ls (+20) : / / \T1/ua1/m/n/10/-4ls (+14) ac\T1/ua1/m/
 n/10/-4ls (+20) t\T1/ua1/m/n/10/-4ls (+14) ua\T1/ua1/m/n/10/-4ls (+20) ri\T1/ua
@@ -2652,7 +2652,7 @@ n \T1/ua1/m/n/10/-4ls (+20) . \T1/ua1/m/n/10/-4ls (+14) au \T1/ua1/m/n/10/-4ls
  []
 
 [34]
-Underfull \hbox (badness 1092) in paragraph at lines 531--531
+Underfull \hbox (badness 1092) in paragraph at lines 537--537
 [][]\T1/ua1/m/n/10/-4ls (+14) Causa\T1/ua1/m/n/10/-4ls (+20) , \T1/ua1/m/n/10/-
 4ls (+10) O\T1/ua1/m/n/10/-4ls (+20) r-\T1/ua1/m/n/10/-4ls (+14) se\T1/ua1/m/n/
 10/-4ls (+20) tt\T1/ua1/m/n/10/-4ls (+14) a e\T1/ua1/m/n/10/-4ls (+20) t \T1/ua
@@ -2666,7 +2666,7 @@ ls (+20) t\T1/ua1/m/it/10/-4ls (+14) he House\T1/ua1/m/it/10/-4ls (+20) -
  []
 
 [35] [36] [37] [38] [39] [40]
-Underfull \hbox (badness 1087) in paragraph at lines 531--531
+Underfull \hbox (badness 1087) in paragraph at lines 537--537
 [][][]\T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1/ua1/m/n/10/-4ls
  (+20) 01\T1/ua1/m/n/10/-4ls (+14) 3b\T1/ua1/m/n/10/-4ls (+20) ). \T1/ua1/m/it/
 10/-4ls (+14) S\T1/ua1/m/it/10/-4ls (+20) t\T1/ua1/m/it/10/-4ls (+14) a\T1/ua1/
@@ -2683,7 +2683,7 @@ s (+20) r\T1/ua1/m/it/10/-4ls (+14) ges\T1/ua1/m/n/10/-4ls (+20) . \T1/ua1/m/n/
  []
 
 
-Underfull \hbox (badness 1400) in paragraph at lines 531--531
+Underfull \hbox (badness 1400) in paragraph at lines 537--537
 \T1/ua1/m/n/10/-4ls (+10) D\T1/ua1/m/n/10/-4ls (+14) oc\T1/ua1/m/n/10/-4ls (+20
 ) -\T1/ua1/m/n/10/-4ls (+14) u\T1/ua1/m/n/10/-4ls (+20) -\T1/ua1/m/n/10/-4ls (+
 14) men\T1/ua1/m/n/10/-4ls (+20) t. \T1/ua1/m/n/10/-4ls (+14) UR\T1/ua1/m/n/10/
@@ -2697,7 +2697,7 @@ u\T1/ua1/m/n/10/-4ls (+20) r\T1/ua1/m/n/10/-4ls (+14) ces \T1/ua1/m/n/10/-4ls (
  []
 
 [41] [42] [43] [44] [45] [46] [47]
-Underfull \hbox (badness 3547) in paragraph at lines 531--531
+Underfull \hbox (badness 3547) in paragraph at lines 537--537
 [][]\T1/ua1/m/n/10/-4ls (+14) Ka\T1/ua1/m/n/10/-4ls (+20) li\T1/ua1/m/n/10/-4ls
  (+14) no\T1/ua1/m/n/10/-4ls (+20) v\T1/ua1/m/n/10/-4ls (+14) a\T1/ua1/m/n/10/-
 4ls (+20) , \T1/ua1/m/n/10/-4ls (+14) B\T1/ua1/m/n/10/-4ls (+20) l\T1/ua1/m/n/1
@@ -2712,7 +2712,7 @@ m/n/10/-4ls (+14) sen \T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1
  []
 
 
-Underfull \hbox (badness 1331) in paragraph at lines 531--531
+Underfull \hbox (badness 1331) in paragraph at lines 537--537
 \T1/ua1/m/it/10/-4ls (+20) tr\T1/ua1/m/it/10/-4ls (+14) o\T1/ua1/m/it/10/-4ls (
 +20) y\T1/ua1/m/it/10/-4ls (+14) e\T1/ua1/m/it/10/-4ls (+20) r\T1/ua1/m/n/10/-4
 ls (+20) . \T1/ua1/m/n/10/-4ls (+14) News\T1/ua1/m/n/10/-4ls (+20) -\T1/ua1/m/n
@@ -2727,7 +2727,7 @@ T1/ua1/m/n/10/-4ls (+20) . \T1/ua1/m/n/10/-4ls (+14) a\T1/ua1/m/n/10/-4ls (+20)
  []
 
 
-Underfull \hbox (badness 2293) in paragraph at lines 531--531
+Underfull \hbox (badness 2293) in paragraph at lines 537--537
 \T1/ua1/m/it/10/-4ls (+14) e\T1/ua1/m/it/10/-4ls (+20) li-\T1/ua1/m/it/10/-4ls 
 (+14) g\T1/ua1/m/it/10/-4ls (+20) i\T1/ua1/m/it/10/-4ls (+14) b\T1/ua1/m/it/10/
 -4ls (+20) -il-ity f\T1/ua1/m/it/10/-4ls (+14) o\T1/ua1/m/it/10/-4ls (+20) r \T
@@ -2744,7 +2744,7 @@ ua1/m/n/10/-4ls (+20) rt. \T1/ua1/m/n/10/-4ls (+14) Pa\T1/ua1/m/n/10/-4ls (+20)
  []
 
 
-Underfull \hbox (badness 1859) in paragraph at lines 531--531
+Underfull \hbox (badness 1859) in paragraph at lines 537--537
 \T1/ua1/m/n/10/-4ls (+14) UR\T1/ua1/m/n/10/-4ls (+20) L: [][]$\T1/ua1/m/n/10/-4
 ls (+14) h\T1/ua1/m/n/10/-4ls (+20) tt\T1/ua1/m/n/10/-4ls (+14) p \T1/ua1/m/n/1
 0/-4ls (+20) : / / \T1/ua1/m/n/10/-4ls (+14) www \T1/ua1/m/n/10/-4ls (+20) . \T
@@ -2756,7 +2756,7 @@ n/10/-4ls (+20) t _ \T1/ua1/m/n/10/-4ls (+14) Pa\T1/ua1/m/n/10/-4ls (+20) rli\T
  []
 
 [48] [49]
-Underfull \hbox (badness 2213) in paragraph at lines 531--531
+Underfull \hbox (badness 2213) in paragraph at lines 537--537
 \T1/ua1/m/it/10/-4ls (+10) Q\T1/ua1/m/it/10/-4ls (+20) l\T1/ua1/m/it/10/-4ls (+
 14) d\T1/ua1/m/n/10/-4ls (+20) . \T1/ua1/m/n/10/-4ls (+14) News\T1/ua1/m/n/10/-
 4ls (+20) -\T1/ua1/m/n/10/-4ls (+14) pa\T1/ua1/m/n/10/-4ls (+20) -\T1/ua1/m/n/1
@@ -2771,7 +2771,7 @@ s (+20) tt\T1/ua1/m/n/10/-4ls (+14) p \T1/ua1/m/n/10/-4ls (+20) : / / \T1/ua1/m
  []
 
 
-Underfull \hbox (badness 1831) in paragraph at lines 531--531
+Underfull \hbox (badness 1831) in paragraph at lines 537--537
 $\T1/ua1/m/n/10/-4ls (+14) p \T1/ua1/m/n/10/-4ls (+20) / \T1/ua1/m/n/10/-4ls (+
 14) na\T1/ua1/m/n/10/-4ls (+20) ti\T1/ua1/m/n/10/-4ls (+14) ona\T1/ua1/m/n/10/-
 4ls (+20) l / i\T1/ua1/m/n/10/-4ls (+14) n\T1/ua1/m/n/10/-4ls (+20) fr\T1/ua1/m
@@ -2788,7 +2788,7 @@ $
  []
 
 [50]
-Underfull \hbox (badness 1442) in paragraph at lines 531--531
+Underfull \hbox (badness 1442) in paragraph at lines 537--537
 [][]\T1/ua1/m/n/10/-4ls (+14) N\T1/ua1/m/n/10/-4ls (+20) I\T1/ua1/m/n/10/-4ls (
 +14) CE \T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1/ua1/m/n/10/-4
 ls (+20) 01\T1/ua1/m/n/10/-4ls (+14) 3a\T1/ua1/m/n/10/-4ls (+20) ). \T1/ua1/m/i
@@ -2802,7 +2802,7 @@ s (+20) i\T1/ua1/m/it/10/-4ls (+14) d\T1/ua1/m/it/10/-4ls (+20) -\T1/ua1/m/it/1
  []
 
 
-Underfull \hbox (badness 1838) in paragraph at lines 531--531
+Underfull \hbox (badness 1838) in paragraph at lines 537--537
 [][][]\T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1/ua1/m/n/10/-4ls
  (+20) 01\T1/ua1/m/n/10/-4ls (+14) 3b\T1/ua1/m/n/10/-4ls (+20) ). \T1/ua1/m/it/
 10/-4ls (+14) N\T1/ua1/m/it/10/-4ls (+20) I\T1/ua1/m/it/10/-4ls (+14) CE \T1/ua
@@ -2816,7 +2816,7 @@ T1/ua1/m/it/10/-4ls (+14) a\T1/ua1/m/it/10/-4ls (+20) -ti\T1/ua1/m/it/10/-4ls (
  []
 
 
-Underfull \hbox (badness 4913) in paragraph at lines 531--531
+Underfull \hbox (badness 4913) in paragraph at lines 537--537
 \T1/ua1/m/n/10/-4ls (+14) UR\T1/ua1/m/n/10/-4ls (+20) L: [][]$\T1/ua1/m/n/10/-4
 ls (+14) h\T1/ua1/m/n/10/-4ls (+20) tt\T1/ua1/m/n/10/-4ls (+14) p \T1/ua1/m/n/1
 0/-4ls (+20) : / / \T1/ua1/m/n/10/-4ls (+14) www \T1/ua1/m/n/10/-4ls (+20) . \T
@@ -2829,7 +2829,7 @@ s (+14) uk \T1/ua1/m/n/10/-4ls (+20) / \T1/ua1/m/n/10/-4ls (+14) us\T1/ua1/m/n/
  []
 
 [51]
-Underfull \hbox (badness 1112) in paragraph at lines 531--531
+Underfull \hbox (badness 1112) in paragraph at lines 537--537
 [][][]\T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1/ua1/m/n/10/-4ls
  (+20) 010\T1/ua1/m/n/10/-4ls (+14) d\T1/ua1/m/n/10/-4ls (+20) ). \T1/ua1/m/it/
 10/-4ls (+14) P\T1/ua1/m/it/10/-4ls (+20) r\T1/ua1/m/it/10/-4ls (+14) o\T1/ua1/
@@ -2847,7 +2847,7 @@ s\T1/ua1/m/it/10/-4ls (+20) -\T1/ua1/m/it/10/-4ls (+14) men\T1/ua1/m/it/10/-4ls
  []
 
 
-Underfull \hbox (badness 1112) in paragraph at lines 531--531
+Underfull \hbox (badness 1112) in paragraph at lines 537--537
 [][][]\T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1/ua1/m/n/10/-4ls
  (+20) 010\T1/ua1/m/n/10/-4ls (+14) e\T1/ua1/m/n/10/-4ls (+20) ). \T1/ua1/m/it/
 10/-4ls (+14) P\T1/ua1/m/it/10/-4ls (+20) r\T1/ua1/m/it/10/-4ls (+14) o\T1/ua1/
@@ -2865,7 +2865,7 @@ s\T1/ua1/m/it/10/-4ls (+20) -\T1/ua1/m/it/10/-4ls (+14) men\T1/ua1/m/it/10/-4ls
  []
 
 
-Overfull \hbox (177.77815pt too wide) in paragraph at lines 531--531
+Overfull \hbox (177.77815pt too wide) in paragraph at lines 537--537
 $\T1/ua1/m/n/10/-4ls (-14) p\T1/ua1/m/n/10/-4ls (-20) i\T1/ua1/m/n/10/-4ls (-14
 ) sa2\T1/ua1/m/n/10/-4ls (-20) 00\T1/ua1/m/n/10/-4ls (-14) 9\T1/ua1/m/n/10/-4ls
  (-20) r\T1/ua1/m/n/10/-4ls (-14) esu\T1/ua1/m/n/10/-4ls (-20) lt\T1/ua1/m/n/10
@@ -2884,7 +2884,7 @@ me\T1/ua1/m/n/10/-4ls (-20) i .$
  []
 
 [52]
-Underfull \hbox (badness 1043) in paragraph at lines 531--531
+Underfull \hbox (badness 1043) in paragraph at lines 537--537
 [][][]\T1/ua1/m/n/10/-4ls (+20) (\T1/ua1/m/n/10/-4ls (+14) 2\T1/ua1/m/n/10/-4ls
  (+20) 01\T1/ua1/m/n/10/-4ls (+14) 2a\T1/ua1/m/n/10/-4ls (+20) ). \T1/ua1/m/it/
 10/-4ls (+14) F\T1/ua1/m/it/10/-4ls (+10) D\T1/ua1/m/it/10/-4ls (+20) I \T1/ua1
@@ -2901,7 +2901,7 @@ T1/ua1/m/n/10/-4ls (+14) Re\T1/ua1/m/n/10/-4ls (+20) -\T1/ua1/m/n/10/-4ls (+14)
  []
 
 [53] [54]
-Underfull \hbox (badness 4981) in paragraph at lines 531--531
+Underfull \hbox (badness 4981) in paragraph at lines 537--537
 [][]\T1/ua1/m/n/10/-4ls (+14) P\T1/ua1/m/n/10/-4ls (+20) ri\T1/ua1/m/n/10/-4ls 
 (+14) cewa\T1/ua1/m/n/10/-4ls (+20) t\T1/ua1/m/n/10/-4ls (+14) e\T1/ua1/m/n/10/
 -4ls (+20) r\T1/ua1/m/n/10/-4ls (+14) houseCoope\T1/ua1/m/n/10/-4ls (+20) r\T1/
@@ -2915,7 +2915,7 @@ wa\T1/ua1/m/it/10/-4ls (+20) -t\T1/ua1/m/it/10/-4ls (+14) e\T1/ua1/m/it/10/-4ls
  []
 
 
-Underfull \hbox (badness 1975) in paragraph at lines 531--531
+Underfull \hbox (badness 1975) in paragraph at lines 537--537
 \T1/ua1/m/it/10/-4ls (+20) ity \T1/ua1/m/it/10/-4ls (+14) s\T1/ua1/m/it/10/-4ls
  (+20) tr\T1/ua1/m/it/10/-4ls (+14) a\T1/ua1/m/it/10/-4ls (+20) t\T1/ua1/m/it/1
 0/-4ls (+14) eg\T1/ua1/m/it/10/-4ls (+20) i\T1/ua1/m/it/10/-4ls (+14) es\T1/ua1
@@ -2933,7 +2933,7 @@ ls (+14) h\T1/ua1/m/n/10/-4ls (+20) tt\T1/ua1/m/n/10/-4ls (+14) p \T1/ua1/m/n/1
  []
 
 
-Underfull \hbox (badness 3579) in paragraph at lines 531--531
+Underfull \hbox (badness 3579) in paragraph at lines 537--537
 $\T1/ua1/m/n/10/-4ls (+20) / / \T1/ua1/m/n/10/-4ls (+14) www \T1/ua1/m/n/10/-4l
 s (+20) . i\T1/ua1/m/n/10/-4ls (+14) n\T1/ua1/m/n/10/-4ls (+20) fr\T1/ua1/m/n/1
 0/-4ls (+14) as\T1/ua1/m/n/10/-4ls (+20) tr\T1/ua1/m/n/10/-4ls (+14) uc\T1/ua1/
@@ -2947,7 +2947,7 @@ n/10/-4ls (+20) t\T1/ua1/m/n/10/-4ls (+14) e\T1/ua1/m/n/10/-4ls (+20) r / fil\T
  []
 
 [55] [56] [57] [58] [59] [60] [61]
-Underfull \hbox (badness 2088) in paragraph at lines 531--531
+Underfull \hbox (badness 2088) in paragraph at lines 537--537
 $\T1/ua1/m/n/10/-4ls (+14) Pa\T1/ua1/m/n/10/-4ls (+20) rli\T1/ua1/m/n/10/-4ls (
 +14) amen\T1/ua1/m/n/10/-4ls (+20) t\T1/ua1/m/n/10/-4ls (+14) a\T1/ua1/m/n/10/-
 4ls (+20) ry _ Li\T1/ua1/m/n/10/-4ls (+14) b\T1/ua1/m/n/10/-4ls (+20) r\T1/ua1/
@@ -2960,7 +2960,7 @@ s \T1/ua1/m/n/10/-4ls (+20) / r\T1/ua1/m/n/10/-4ls (+14) p \T1/ua1/m/n/10/-4ls
  []
 
 [62]
-Underfull \hbox (badness 1460) in paragraph at lines 531--531
+Underfull \hbox (badness 1460) in paragraph at lines 537--537
 $\T1/ua1/m/n/10/-4ls (+14) p \T1/ua1/m/n/10/-4ls (+20) / \T1/ua1/m/n/10/-4ls (+
 14) aus\T1/ua1/m/n/10/-4ls (+20) tr\T1/ua1/m/n/10/-4ls (+14) a\T1/ua1/m/n/10/-4
 ls (+20) li\T1/ua1/m/n/10/-4ls (+14) a2 \T1/ua1/m/n/10/-4ls (+20) -[] 0 / \T1/u
@@ -2975,7 +2975,7 @@ r\T1/ua1/m/n/10/-4ls (+14) e \T1/ua1/m/n/10/-4ls (+20) _$
  []
 
 
-Underfull \hbox (badness 2753) in paragraph at lines 531--531
+Underfull \hbox (badness 2753) in paragraph at lines 537--537
 $\T1/ua1/m/n/10/-4ls (+14) compan\T1/ua1/m/n/10/-4ls (+20) i\T1/ua1/m/n/10/-4ls
  (+14) es \T1/ua1/m/n/10/-4ls (+20) / \T1/ua1/m/n/10/-4ls (+14) nsw \T1/ua1/m/n
 /10/-4ls (+20) _ \T1/ua1/m/n/10/-4ls (+14) needs \T1/ua1/m/n/10/-4ls (+20) _ \T
@@ -2988,13 +2988,13 @@ e \T1/ua1/m/n/10/-4ls (+20) _ i\T1/ua1/m/n/10/-4ls (+14) n\T1/ua1/m/n/10/-4ls (
  []
 
 [63]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 531.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 531.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 537.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 537.
  [64
 
 ] (CGT_and_neg_gearing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 531.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 531.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 537.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 537.
 Package rerunfilecheck Info: File `CGT_and_neg_gearing.out' has not changed.
 (rerunfilecheck)             Checksum: F662E064E6EDEB2D8175095F2CAA47B7;735.
 
@@ -3004,7 +3004,7 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 531.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 537.
 
 Package biblatex Warning: Please (re)run Biber on the file:
 (biblatex)                CGT_and_neg_gearing
@@ -3013,11 +3013,11 @@ Package biblatex Warning: Please (re)run Biber on the file:
 Package logreq Info: Writing requests to 'CGT_and_neg_gearing.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 47350 strings out of 493698
- 944702 string characters out of 3141998
+ 47361 strings out of 493698
+ 944814 string characters out of 3141998
  1902656 words of memory out of 3000000
  48023 multiletter control sequences out of 15000+200000
- 364405 words of font info for 684 fonts, out of 3000000 for 9000
+ 366244 words of font info for 693 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  71i,21n,102p,10500b,2385s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
@@ -3033,9 +3033,9 @@ KTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
 nts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/u
 rw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial/ua
 1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (64 pages, 1448112 bytes).
+Output written on CGT_and_neg_gearing.pdf (64 pages, 1450662 bytes).
 PDF statistics:
- 2767 PDF objects out of 2984 (max. 8388607)
- 985 named destinations out of 1000 (max. 500000)
+ 2769 PDF objects out of 2984 (max. 8388607)
+ 986 named destinations out of 1000 (max. 500000)
  85668 words of extra memory for PDF output out of 89155 (max. 10000000)
 
