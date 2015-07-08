@@ -2083,7 +2083,6 @@
     <bcf:citekey order="112">Treasury2010</bcf:citekey>
     <bcf:citekey order="113">Daley2014</bcf:citekey>
     <bcf:citekey order="114">Daley2014</bcf:citekey>
-    <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nyt" type="entry" sortscheme="nyt">
   <bcf:sorting>

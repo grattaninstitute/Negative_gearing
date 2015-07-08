@@ -12,9 +12,9 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\nonumberline Tax concessions on gains favour the wealthy}{8}{section*.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}{8}{section*.8}
+\contentsline {subsubsection}{\nonumberline The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}{9}{section*.8}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\nonumberline Taxing capital gains without a discount will not substantially distort economic decisions}{9}{section*.9}
+\contentsline {subsubsection}{\nonumberline Taxing capital gains without a discount will not substantially distort economic decisions}{10}{section*.9}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\nonumberline People may hold assets longer, but many already wait until retirement}{10}{section*.11}
 \defcounter {refsection}{0}\relax 
@@ -42,7 +42,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\nonumberline Symmetrical tax treatment of losses and capital gains}{22}{section*.28}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.5}Transitional arrangements}{23}{section.1.5}
+\contentsline {section}{\numberline {1.5}Transitional arrangements}{22}{section.1.5}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.6}Daley (quarantining salary from losses), 30\%\ discount}{25}{section.1.6}
 \defcounter {refsection}{0}\relax 
