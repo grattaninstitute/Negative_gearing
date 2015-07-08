@@ -16,7 +16,7 @@
 
 \newcommand{\Act}[2]{\emph{#1} (#2)}
 \newcommand{\EMPH}[1]{\textbf{#1}}
-\newcommand{\highlight}[1]{\emph{#1}}
+\newcommand{\highlight}[1]{\textbf{#1}}
 
 \usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
 \AtBeginEnvironment{quote}{\smaller}
