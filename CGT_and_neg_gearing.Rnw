@@ -1091,7 +1091,13 @@ These tax incentives also contribute to volatility in housing markets. Negative 
 
 Concerns persist that limiting negative gearing will reduce the supply of rental properties and push up rents. Some of this seems to reflect folk memory from when the Hawke Government temporarily restricted negative gearing in the 1980s.\footnote{Negative gearing was quarantined so that rental losses could not be used to reduce the tax bill on other income streams.}
 
-Rents rose rapidly in Sydney and Perth. But adjusted for inflation, rents were stable in Melbourne and fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}). In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.186]{badcock1991responsiveness}[pp.47-48]{Daley2013}
+Rents rose rapidly in Sydney and Perth. But adjusted for inflation, rents were stable in Melbourne and fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}). In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.186]{badcock1991responsiveness}[pp.47-48]{Daley2013} As Badcock and Browett remark in their 1991 post-mortem of the policy, 
+
+\begin{quote}
+While it was clearly in the interests of the real estate industry to exaggerate the effects of the tax reforms, the federal government was misguided in its acceptance of the pervasiveness of the `rent crisis' in mid-1987.
+\end{quote}
+
+Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them. 
 
 <<Capital_city_rents, fig.height = 11, out.height = "11in">>=
 read_excel("Capital_city_rents_1980s.xlsx") %>%
@@ -1124,9 +1130,7 @@ chart.dat %>%
 \includegraphics[width=\columnwidth]{figure/Capital_city_rents-1}
 \source{ABS various years}
 \end{figure}
-Economic theory predicts that removing negative gearing should not change rents much. 
-
-Investors may want to increase rents to maintain their post-tax returns but the competitive dynamic in rental markets will limit any material rent increases. 
+Economic theory predicts that removing negative gearing should not change rents much. Investors may want to increase rents to maintain their post-tax returns but the competitive dynamic in rental markets will limit any material rent increases. 
 
 Rents are ultimately a consequence of the marginal renter deciding whether they are prepared to pay rent and move out of housing they share with others -- often their parents. If rents go up, fewer people move out of home, and demand falls. 
 
