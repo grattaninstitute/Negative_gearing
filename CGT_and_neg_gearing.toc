@@ -32,7 +32,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\nonumberline Negative gearing benefits middle and high income earners}{19}{section*.22}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.4}Options for reform}{20}{section.1.4}
+\contentsline {section}{\numberline {1.4}Options for reform}{19}{section.1.4}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\nonumberline Reducing the capital gains tax discount}{20}{section*.24}
 \defcounter {refsection}{0}\relax 
