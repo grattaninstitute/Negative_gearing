@@ -68,5 +68,7 @@ HILDA/
 *.toc
 *.run.xml
 *concordance.tex
+*.tex
+*.log
 
 
