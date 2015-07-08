@@ -42,9 +42,13 @@ library(readr)
 library(rsdmx)
 library(httr)
 library(zoo)
-library(randomForest)
-library(foreach)
-library(parallelRandomForest) 
+library(foreign)
+library(survey)
+library(foreign)
+library(Hmisc)
+library(devtools)
+library(grattan)
+library(XLConnect)
 #devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
 
 
@@ -59,7 +63,7 @@ library(parallelRandomForest)
                             out.width="11.000in", out.height="7.00in", 
                             fig.show='hide',echo=FALSE,
                             message=FALSE, warning=FALSE
-                            ,cache=FALSE
+                            ,cache=TRUE
                             ,dev=c('pdf', 'my_emf')
                             ,fig.ext = c("pdf", "emf")
       )
@@ -593,9 +597,151 @@ A lower tax rate for capital gains is sometimes justified on the basis that the 
 
 The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. In the current low inflation environment, the 50 per cent discount overcompensates most investors.\footnote{}
 
-<<HILDA-asset>>=
-library(foreign)
-read.dta("./HILDA/Household_i130c.dta") %>% head
+% We don't include this chunk
+<<Survey-Income-Housing-assets,eval=FALSE,include=FALSE>>=
+SIH11BH <- read.dta("sih11bh.dta")
+
+SIH11BH.df <- data.frame(debt.cc = SIH11BH$LIACCCH, # Amount of credit card debt - household level
+                         debt.hecs =SIH11BH$LIAHECCH, # Amount of HECS/HELP liability
+                         debt.sfs = SIH11BH$LIASFSCH, # Amount of Student Financial Supplement liability
+                         debt.house = SIH11BH$LIASDCH, # Principal outstanding on loans for selected dwelling
+                         debt.inv.loans = SIH11BH$LIAINVCH, # Principal outstanding on investment loans (excl business and rental property loans)
+                         debt.other.prop = SIH11BH$LIAOPCH, # Principal outstanding on loans for other property (excl business and investment loans)
+                         debt.other.purp = SIH11BH$LIAOTCH, # Principal outstanding on loans for other purposes (excl business and investment loans)
+                         debt.vhcles = SIH11BH$LIAVECH, # Principal outstanding on loans for vehicle purchases (excl business and investment loans)
+                         debt.rntl.prop = SIH11BH$LIARPCH, # Principal outstanding on rental property loans
+                         asset.gov.super = SIH11BH$VSUPGCH, # Balance of accounts with government superannuation funds - household level
+                         asset.ngov.super = SIH11BH$VSUPNCH, # Balance of accounts with non-government superannuation funds - household level
+                         asset.oo.res.prop = SIH11BH$HVALUECH, # Estimated sale price of dwelling - HH
+                         asset.otr.res.prop = SIH11BH$VRPRCH, # Value of residential property excl selected dwelling 
+                         asset.non.res.prop = SIH11BH$VNRPRCH, # Value of non-residential property
+                         asset.house.contents = SIH11BH$VCONTCH, # Value of contents of selected dwelling
+                         asset.fin.accnts = SIH11BH$VFINCH, # Value of accounts held with financial institutions (excl offset accounts) - household level
+                         asset.off.accnts = SIH11BH$VOFTCH, # Value of offset accounts - household level
+                         asset.bonds = SIH11BH$VDEBCH, # Value of debentures and bonds - household level
+                         asset.childrens = SIH11BH$VCHASSCH, # Value of children's assets
+                         asset.loans = SIH11BH$VPLNCH, # Value of loans to persons not in the same household - household level 
+                         asset.otr.fin.invest = SIH11BH$VINVOTCH, # Value of other financial investments - household level
+                         asset.inc.bus = SIH11BH$VIBUSCH, # Value of own incorporated business (net of liabilities) - household level
+                         asset.noninc.bus = SIH11BH$VUBUSCH, # Value of own unincorporated business (net of liabilities) - household level
+                         asset.pr.trusts = SIH11BH$VPRTCH, # Value of private trusts - household level
+                         asset.pub.trusts = SIH11BH$VPUTCH, # Value of public unit trusts - household level
+                         asset.shares = SIH11BH$VSHARCH, # Value of shares - household level
+                         asset.ptnshp = SIH11BH$VSIPCH, # Value of silent partnerships - household level
+                         asset.vhcles = SIH11BH$VVEHICH, # Value of vehicles
+                         wealth.hhold = SIH11BH$WEALTHH, # Net wealth of household
+                         hh.weight = SIH11BH$SIHHHWT, # # Weight - HH (SIH)
+                         age = SIH11BH$AGERHBC, # Age of HH reference person
+                         ABSHID = SIH11BH$ABSHID, # Household ID
+                         income.disp.an = SIH11BH$DISPSCH8 *52, # Current weekly HH disposable income
+                         income.total.an = SIH11BH$INCTSCH8 *52, # Total current weekly HH income from all sources
+                         equiv.factor = SIH11BH$EQUIVH) # HH equivalising factor
+
+# Setting up variables of interest ------------------------------------------------------------
+
+# New we build a few identities so that we can group assets and liabilities by broad types
+
+SIH11BH.df <- SIH11BH.df %>% mutate(Home = asset.oo.res.prop, 
+                                    Other.property = asset.otr.res.prop + asset.non.res.prop, 
+                                    Super = asset.gov.super + asset.ngov.super, 
+                                    Other.financial.assets = asset.fin.accnts + asset.off.accnts + asset.bonds + asset.otr.fin.invest + asset.shares, 
+                                    House.mortgage = debt.house,
+                                    Investment.property.loans = debt.rntl.prop + debt.other.prop, 
+                                    Other.liabilities = debt.cc + debt.hecs + debt.sfs + debt.inv.loans + debt.other.purp + debt.vhcles, 
+                                    All.liabilities = House.mortgage + Investment.property.loans + Other.liabilities, 
+                                    All.liabilities.ex.house = All.liabilities - House.mortgage, 
+                                    All.other.assets = wealth.hhold - Home- Other.property - Super - Other.financial.assets + All.liabilities)
+
+SIHHHI <- svydesign(id=~ABSHID, weights= ~hh.weight, fpc=NULL, data = SIH11BH.df)
+
+# Deciles for net wealth, total income and disposable income
+SIHHHI.wealth10 <- svyquantile(~wealth.hhold, SIHHHI,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+SIHHHI.total.income10 <- svyquantile(~income.total.an, SIHHHI,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+SIHHHI.disp.income10 <- svyquantile(~income.disp.an, SIHHHI,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+
+# So now we use cut to break up the dataset along the weighted quintiles specified in the survey object
+# These are assigned as a column in HSL.results.dist
+
+#For quintiles
+SIH11BH.df$HHW.quintiles <- cut(SIH11BH.df$wealth.hhold, breaks = SIHHHI.wealth5) %>% as.numeric()
+SIH11BH.df$HHTI.quintiles <- cut(SIH11BH.df$income.total.an, breaks = SIHHHI.total.income5) %>% as.numeric()
+SIH11BH.df$HHDI.quintiles <- cut(SIH11BH.df$income.disp.an, breaks = SIHHHI.disp.income5) %>% as.numeric()
+  
+# For deciles
+SIH11BH.df$HHW.deciles <- cut(SIH11BH.df$wealth.hhold, breaks = SIHHHI.wealth10) %>% as.numeric()
+SIH11BH.df$HHDI.deciles <- cut(SIH11BH.df$income.total.an, breaks = SIHHHI.total.income10) %>% as.numeric()
+SIH11BH.df$HHDI.deciles <- cut(SIH11BH.df$income.disp.an, breaks = SIHHHI.disp.income10) %>% as.numeric()
+
+# Splitting hhold wealth by major assets and liabilities, by wealth decile ------------------------------------------------------------
+
+# We create a summary chart breaking down net wealth into its main components, by net wealth decile
+# Later on we will restrict all of this only to those with total incomes of more than $150k
+
+Wealth.by.decile <- 
+  SIH11BH.df %>% 
+  group_by(HHW.deciles) %>% 
+  filter(!is.na(HHW.deciles)) %>%
+  summarise ("Home" = sum(Home * hh.weight) / sum(hh.weight) / 10^6,
+             "Other property" = sum(Other.property * hh.weight) / sum(hh.weight) / 10^6, 
+             "Super" = sum(Super * hh.weight) / sum(hh.weight) / 10^6,
+             "Other Financial Assets" = sum(Other.financial.assets * hh.weight) / sum(hh.weight) / 10^6,
+             "Other Assets" = sum(All.other.assets * hh.weight) / sum(hh.weight) / 10^6,
+             "Liabilities" = -sum(All.liabilities * hh.weight) / sum(hh.weight) / 10^6, 
+             "Net wealth" = sum(wealth.hhold * hh.weight) / sum(hh.weight) / 10^6) %>%
+  ungroup %>%
+  gather(Asset_class, wealth, -HHW.deciles) 
+
+Wealth.by.decile %>%
+  filter(!(Asset_class %in% c("Net wealth", "Liabilities"))) %>%
+  group_by(HHW.deciles) %>%
+  mutate(prop.wealth = wealth/sum(wealth)) %>%
+  grplot(aes(x = factor(HHW.deciles), y = prop.wealth, fill=Asset_class)) + 
+#   geom_line(aes(color = Asset_class, group = Asset_class, label=Asset_class)) + 
+#   annotate("blank", x = 12, y = 0) + 
+#   geom_dl(method = "last.points") + 
+  geom_bar(stat = "identity",
+           width = 1,
+           position = "stack") + 
+  theme(legend.position = "right")
+@
+
+<<HILDA-Wave10>>=
+hilda_names <- read.dta("./HILDA/Household_j130c.dta") %>% names
+
+HILDA_wave10 <- read.dta("./HILDA/Household_j130c.dta") %>%
+  data.table %>%
+  mutate(
+    # NA casting
+    jhifeftp = ifelse(jhifeftp < 0, NA, jhifeftp),
+    jhifeftn = ifelse(jhifeftn < 0, NA, jhifeftn),
+    fy_gross_tot_inc = jhifeftp - jhifeftn
+  )
+
+## Alternative see HILDA Figure 4.9 Wealth model (household-level)
+HILDA_wave10.svy <- svydesign(ids = ~0, data = HILDA_wave10, weights = ~jhhwth)
+HILDA10_income_deciles <- svyquantile(~fy_gross_tot_inc, HILDA_wave10.svy, quantiles = (0:10)/10 )
+# HILDA10_asset_deciles <- svyquantile(~jhwassei, HILDA_wave10.svy, quantiles = (0:10)/10)
+
+HILDA_wave10 %>%
+  data.table %>%
+  select(
+      jhwtbani # Bank accounts
+    , jhwassei # Total assets
+    , jhifeftp #  FY gross total income
+    , jhhwth  # household weight (Cross-section)
+  ) %>%
+  # All these negative numbers are various flavours of NA
+  mutate(jhifeftp = ifelse(jhifeftp %in% c(-10:-1), NA, jhifeftp),
+         jhwtbani = ifelse(jhwtbani %in% c(-10:-1), NA, jhwtbani),
+         jhwassei = ifelse(jhwassei %in% c(-10:-1), NA, jhwassei)) %>%
+  mutate(prop_bank = jhwtbani/(jhwassei + 1)) %>%
+  group_by(Income_decile = factor(as.numeric(cut(jhifeftp, breaks = HILDA10_income_deciles)))) %>%
+  filter(!is.na(Income_decile)) %>% 
+  summarise(mean_prop_bank = weighted.mean(prop_bank, jhhwth),
+            mean_asset = mean(jhwassei),
+            mean_inco = mean(jhifeftp)) %>%
+  grplot(aes(x = Income_decile, y = mean_prop_bank)) + 
+  geom_bar(stat = "identity")
 @
 
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. Ironically Australia's current system provides no adjustments for the least protection to bank deposits -- disproportionately held by the least well off -- and much more protection for other investments.\footnote{Over 90\%\ of those in the bottom decile have deposits, but less than 30\%\ have superannuation assets; and less than 20\%\ have equities or life insurance.}
@@ -679,7 +825,8 @@ get_sample_file(2013) %>%
   mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", age)) %>% 
   mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65-69", "70+"))) %>% 
   group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
-  summarise(prop_cg = mean(Net_CG_amt > 0))  %>% 
+  summarise(prop_cg = mean(Net_CG_amt > 0))  %T>% 
+  chart_data %>%
   grplot(aes(x = Income_decile, y = prop_cg, group=factor(age), color = factor(age), label = age)) +
   theme_hugh(base_size = 24) + 
   annotate("segment",
@@ -695,14 +842,14 @@ get_sample_file(2013) %>%
            xend = 10, yend = 0.30,
            color = '#DADADA') + 
   geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.6)) + 
-  scale_x_continuous(expand = c(0,0), breaks = 1:10) + 
-  annotate("blank", x = 12, y = 0.1) + 
+  scale_x_continuous(expand = c(0,0.2), breaks = 1:10, labels = c(1:4, "5\nIncome decile", 6:10)) + 
+  annotate("blank", x = 11.5, y = 0.1) + 
   theme(axis.line.x = element_blank()) + 
   annotate("segment", x = 1, xend = 10, y = 0, yend = 0) + 
   scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.3), breaks = c(0:3)/10 ) + 
-  stat_smooth(size = 2, se = FALSE) + 
+  stat_smooth(size = 2.5, se = FALSE) + 
   scale_color_manual(values = rev(gpal(7))) + 
-  theme(axis.title.x = element_text(hjust = 0.28), # requires segment
+  theme(axis.title.x = element_blank(), # requires segment
         panel.grid.major = element_blank()) + xlab("Income decile")
 @
 \begin{figure}
@@ -817,7 +964,7 @@ get_sample_file(2013) %>%
                      "(No investment property)"),
            fontface = "bold",
            size = 7.14) + 
-  scale_fill_manual("", values = c(gpal(2), theGrey)) + 
+  scale_fill_manual("", values = c(gpal(2), gray(0.75))) + 
   coord_cartesian(ylim = c(0,0.55)) + 
   theme(legend.position = 'none', axis.title.x = element_text(hjust = 0.5)) + 
   scale_y_continuous(label=percent, expand = c(0,0))
@@ -832,7 +979,7 @@ get_sample_file(2013) %>%
 
 The tax advantages are also evident in the greater propensity of those with negatively geared properties to ``churn'' their investments. Properties do not stay negatively geared forever. Rents rise over time with increases in the value of the housing stock while interest payments only vary with the interest rate, as the loan value is unchanged.\footnote{This assumes an investor uses an interest only loan. If the investor also repays some principal the investment will flip to being positively geared even faster.}  So if investors want to stay negatively geared they need to turnover their investments.
 
-We see evidence of higher property turnover amongst negatively geared investors. Studying a sample of investors with rental properties, \textcite{Wood2010a} show that only 40 per cent still retained their properties at the end of a 5 year period.  Amongst those that were negatively geared, only 20 per cent still retained the investment. And the proportion of landlords that purchased another property after selling was moderately higher for negatively geared investors than other investors.
+We see evidence of higher property turnover amongst negatively geared investors. Studying a sample of investors with rental properties, \textcite{Wood2010a} showed that 40 per cent of investors with rental properties retained their properties at the end of a 5 year period.  Amongst the investors that were negatively geared, however, only 20 per cent retained ownership.  And the proportion of landlords that purchased another property after selling was moderately higher for negatively geared investors than other investors.
 
 \subsubsection{These tax advantages are distorting investment choices}
 The tax advantages conferred by the interaction of negative gearing and capital gains tax biases the choice of investments. For a given overall return, an investor will prefer an asset that pays less in the way of recurrent income and more in the way of capital gain. As \textcite[p.~42]{RBA2014} notes:
@@ -944,7 +1091,7 @@ These tax incentives also contribute to volatility in housing markets. Negative 
 
 Concerns persist that limiting negative gearing will reduce the supply of rental properties and push up rents. Some of this seems to reflect folk memory from when the Hawke Government temporarily restricted negative gearing in the 1980s.\footnote{Negative gearing was quarantined so that rental losses could not be used to reduce the tax bill on other income streams.}
 
-Rents rose rapidly in Sydney and Perth. But adjusted for inflation, rents were stable in Melbourne and fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}). In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.
+Rents rose rapidly in Sydney and Perth. But adjusted for inflation, rents were stable in Melbourne and fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}). In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.186]{badcock1991responsiveness}[pp.47-48]{Daley2013}
 
 <<Capital_city_rents, fig.height = 11, out.height = "11in">>=
 read_excel("Capital_city_rents_1980s.xlsx") %>%
