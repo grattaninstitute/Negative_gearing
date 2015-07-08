@@ -1007,7 +1007,7 @@ data.frame(
   geom_hline(yintercept = 0) + 
   scale_y_continuous(expand = c(0,0), limits = c(-0.05, 0.35), label=percent)
 @
-\begin{figure}
+\begin{figure}[t]
 \Caption{Effective tax rates depend on amount of borrowing}{Real effective marginal tax rate}{fig:Effective_tax_rates_depend_on_borrowing}
 \includegraphics[width=\columnwidth]{figure/Effective_tax_rates_depend_on_borrowing-1}
 \notes{Assumes a 6 per cent nominal return, 2.5 per cent inflation, 50 per cent of the return is attributed to capital gain and 50 per cent to rental income. All investment income is taxed at the 45\%\ marginal rate. The property is held for seven years and then sold.}
