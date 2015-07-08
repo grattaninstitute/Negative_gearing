@@ -361,7 +361,7 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
   \begin{center}
   \includegraphics[width=4cm]{./logos/aus-gov-logo-stacked-black.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Vic_Gov_Logo.eps}\logoskip
-  \includegraphics[width=3.5cm]{./logos/UOM-Pos_S_PMS.eps}\logoskip\vfil
+  \includegraphics[width=3.5cm]{./logos/UOM-Pos_S_PMS.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Bhp.pdf}
   \end{center}
   \columnbreak
@@ -398,6 +398,10 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
   }
   \end{multicols}
   \end{minipage} 
+  \vfill
+  \phantom{.}
+  \eject
+  %\subsection*{Grattan Institute Support}
   \input{Acknowledgements}
   \twocolumn
 }

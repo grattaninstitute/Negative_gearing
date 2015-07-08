@@ -1,7 +1,7 @@
 \documentclass{grattan}
 
 \title{Negative gearing and the capital gains discount}
-\author{Danielle Wood \and Hugh Parsonage}
+\author{John Daley and Danielle Wood}
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
