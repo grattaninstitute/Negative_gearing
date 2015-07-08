@@ -22,3 +22,12 @@ randomForest
 foreach
 parallelRandomForest
 proto
+foreign
+survey
+lattice
+survival
+Formula
+Hmisc
+devtools
+XLConnectJars
+XLConnect
