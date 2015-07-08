@@ -331,7 +331,7 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 \phantom{.}%\vspace*{\baselineskip}
 \vfill % Whitespace at the top of the page
 
-{\bfseries\textcolor{Orange}{\fontsize{32}{32}\selectfont \mytitle}}\\[\baselineskip] % Title page font size
+{\bfseries\textcolor{Orange}{\fontsize{30}{30}\selectfont \mytitle}}\\[\baselineskip] % Title page font size
 %% This is a working paper.
 {\Large {Grattan Insitute Working Paper}}\\[2\baselineskip] % Tagline or further description
 
