@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  9 JUL 2015 10:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  9 JUL 2015 12:50
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -2485,25 +2485,38 @@ ned_by_those_-1.pdf used on input line 169.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 [8 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
 >] [9]
-<figure/Real_effective_marginal_tax_rates_are_lower-1.pdf, id=279, 794.97pt x 5
-05.89pt>
-File: figure/Real_effective_marginal_tax_rates_are_lower-1.pdf Graphic file (ty
-pe pdf)
- <use figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>
-Package pdftex.def Info: figure/Real_effective_marginal_tax_rates_are_lower-1.p
-df used on input line 213.
+
+LaTeX Warning: Reference `fig:Real_effective_marginal_tax_rates_are_lower' on p
+age 1 undefined on input line 213.
+
+
+LaTeX Warning: Reference `fig:Real_effective_marginal_tax_rates_are_lower' on p
+age 1 undefined on input line 213.
+
+
+Package hyperref Warning: Suppressing link with empty target on input line 213.
+
+
+
+<figure/Effective_marginal_tax_rates_are_lower-1.pdf, id=278, 794.97pt x 505.89
+pt>
+File: figure/Effective_marginal_tax_rates_are_lower-1.pdf Graphic file (type pd
+f)
+ <use figure/Effective_marginal_tax_rates_are_lower-1.pdf>
+Package pdftex.def Info: figure/Effective_marginal_tax_rates_are_lower-1.pdf us
+ed on input line 213.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
 
-<figure/Prob_of_CGevent_by_age_income-1.pdf, id=304, 794.97pt x 505.89pt>
+<figure/Prob_of_CGevent_by_age_income-1.pdf, id=303, 794.97pt x 505.89pt>
 File: figure/Prob_of_CGevent_by_age_income-1.pdf Graphic file (type pdf)
 
 <use figure/Prob_of_CGevent_by_age_income-1.pdf>
 Package pdftex.def Info: figure/Prob_of_CGevent_by_age_income-1.pdf used on inp
 ut line 240.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
- [10] [11 <./figure/Real_effective_marginal_tax_rates_are_lower-1.pdf>] [12 <./
-figure/Prob_of_CGevent_by_age_income-1.pdf>] [13]
-<figure/Age_negative_gearing_investments-1.pdf, id=391, 794.97pt x 722.7pt>
+ [10] [11 <./figure/Effective_marginal_tax_rates_are_lower-1.pdf>] [12 <./figur
+e/Prob_of_CGevent_by_age_income-1.pdf>] [13]
+<figure/Age_negative_gearing_investments-1.pdf, id=390, 794.97pt x 722.7pt>
 File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
@@ -2511,7 +2524,7 @@ Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on
 input line 283.
 (pdftex.def)             Requested size: 322.93883pt x 293.58511pt.
  [14]
-<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=404, 794.97pt x 505.8
+<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=403, 794.97pt x 505.8
 9pt>
 File: figure/Effective_tax_rates_depend_on_borrowing-1.pdf Graphic file (type p
 df)
@@ -2532,7 +2545,7 @@ ned on input line 321.
 Package hyperref Warning: Suppressing link with empty target on input line 321.
 
 
-<figure/Net_rent_over_time-1.pdf, id=429, 794.97pt x 505.89pt>
+<figure/Net_rent_over_time-1.pdf, id=428, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
@@ -2540,7 +2553,7 @@ Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 328
 .
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
  [16 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
-<figure/Capital_city_rents-1.pdf, id=459, 794.97pt x 794.97pt>
+<figure/Capital_city_rents-1.pdf, id=458, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
@@ -2552,7 +2565,7 @@ Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 353
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
 (Font)              Font shape `T1/ua1/b/n' tried instead on input line 367.
 
-<figure/Effect_of_Deductions-1.pdf, id=505, 794.97pt x 505.89pt>
+<figure/Effect_of_Deductions-1.pdf, id=504, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
@@ -2622,10 +2635,10 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 523.
 Package logreq Info: Writing requests to 'CGT_and_neg_gearing.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 45072 strings out of 493698
- 905077 string characters out of 3141998
+ 45074 strings out of 493698
+ 905135 string characters out of 3141998
  1426719 words of memory out of 3000000
- 46501 multiletter control sequences out of 15000+200000
+ 46503 multiletter control sequences out of 15000+200000
  373851 words of font info for 702 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  71i,21n,102p,10500b,1848s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -2641,9 +2654,9 @@ b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Program
 /fonts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type
 1/urw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial
 /ua1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (30 pages, 653606 bytes).
+Output written on CGT_and_neg_gearing.pdf (30 pages, 653839 bytes).
 PDF statistics:
- 817 PDF objects out of 1000 (max. 8388607)
+ 816 PDF objects out of 1000 (max. 8388607)
  211 named destinations out of 1000 (max. 500000)
  85660 words of extra memory for PDF output out of 89155 (max. 10000000)
 
