@@ -563,10 +563,8 @@ both %T>%
   geom_bar(stat = "identity") + 
   facet_grid(~decile_of) + 
   scale_y_continuous(expand = list(c(0,0.1), c(0,0)), label = percent) + 
-  scale_fill_manual(values = gpal(2, T)) + 
-  theme(strip.background = element_rect(color = theGrey, size = 12, fill = theGrey),
-        strip.text = element_text(size = 23, color = "white", face = "bold", vjust = 0.8),
-        panel.margin.x = grid::unit(1, "lines")) + 
+  theme(strip.background = element_rect(fill = theGrey),
+        strip.text = element_text(color = "white", face = "bold")) + 
   xlab("Taxable income decile") 
 @
 \begin{figure}
@@ -599,7 +597,7 @@ A large fraction of gains are also earned by those would be in the bottom ten pe
 \subsubsection{The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}
 A lower tax rate for capital gains is sometimes justified on the basis that the effective tax rates on real returns can be high if nominal gains are taxed at marginal income tax rates.\footcite{Treasury2010} This is particularly true of investments with low real returns that are held for an extended period (\Vref{box:short_history_CGT}).
 
-The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. In the current low inflation environment, the 50 per cent discount overcompensates most investors.\footnote{}
+The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. In the current low inflation environment, the 50 per cent discount overcompensates most investors.
 
 % We don't include this chunk
 <<Survey-Income-Housing-assets,eval=FALSE,include=FALSE>>=
@@ -758,89 +756,41 @@ Even without a discount, capital gains are taxed at a lower effective rate than 
 
 For example, consider a property that does not generate any recurrent income (rental payments just cover the annual expenses) but is expected to appreciate in value at 7 per cent a year. With no CGT discount, an investor in the top (47 per cent) marginal tax bracket is taxed at 23.5 per cent on the gains if they hold the property for a year. If the asset is held for 5 years the effective tax rate falls to 21.2 per cent. After 20 years it reduces to 14.6 per cent. 
 
-In contrast, if the investor chooses a term deposit paying 7 per cent a year and they reinvest the after-tax income each year, their effective tax rate is 47 cents a year, regardless of the holding period for the asset. (See \Vref{fig:Real_effective_marginal_tax_rates_are_lower})
+In contrast, if the investor chooses a term deposit paying 7 per cent a year and they reinvest the after-tax income each year, their effective tax rate is 47 cents a year, regardless of the holding period for the asset. (See \Vref{fig:Effective_marginal_tax_rates_are_lower})
 
 The capital gains tax discount magnifies the tax advantaged status of capital gains. 
 \eject
-<<Effective_marginal_tax_rates_are_lower>>=
+<<Real_effective_marginal_tax_rates_are_lower>>=
 effective_marginal <- function(asset.type = "term_deposit", years.maturity, nominal.return, inflation = NULL, marginal.rate = 0.465, cgt.discount = 0.50){
   if(asset.type == "term_deposit"){
-    for (year in 1:years.maturity){
-      if (year == years.maturity)
-        return(marginal.rate)
-      else
-      if (year == 1){
-        nominal.value <- (1 + nominal.return)
-        carry.forward.balance <- nominal.value
-        tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
-        return.residual <- carry.forward.balance - tax.on.interest - 1
-        nominal.value.post.tax <- nominal.value - tax.on.interest
-      } else {
-        nominal.value <- (1 + nominal.return)^year
-        previous.nominal.value.post.tax <- nominal.value.post.tax
-        carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
-        tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
-        return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
-        nominal.value.post.tax <- carry.forward.balance - tax.on.interest
-        annual.pretax.return <- nominal.value ^ (1 / year) - 1
-        annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
-        if (year == years.maturity){
-          return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
+    function(years.maturity, nominal.return, inflation = inflation, marginal.rate = marginal.rate, cgt.discount = cgt.discount){
+      for (year in 1:years.maturity){
+        if (year == 1){
+          nominal.value <- (1 + nominal.return)
+          carry.forward.balance <- nominal.value
+          tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
+          return.residual <- carry.forward.balance - tax.on.interest - 1
+          nominal.value.post.tax <- nominal.value - tax.on.interest
+        } else {
+          nominal.value <- (1 + nominal.return)^year
+          previous.nominal.value.post.tax <- nominal.value.post.tax
+          carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
+          tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
+          return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
+          nominal.value.post.tax <- carry.forward.balance - tax.on.interest
+          annual.pretax.return <- nominal.value ^ (1 / year) - 1
+          annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
+          if (year == years.maturity){
+            return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
+          }
         }
       }
     }
   }
-  #
-  if(asset.type == "property_noCGTdiscount"){
-    year = years.maturity
-    nominal.value.pretax <- (1+nominal.return)^year
-    tax.on.CG <- marginal.rate * (nominal.value.pretax - 1)
-    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
-    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
-    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
-    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
-  }
-  if(asset.type == "property_50CGTdiscount"){
-    year = years.maturity
-    nominal.value.pretax <- (1+nominal.return)^year
-    tax.on.CG <- marginal.rate * 0.5 * (nominal.value.pretax - 1)
-    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
-    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
-    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
-    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
-  }
 }
-
-data.frame(
-  year = 1:30
-) %>% 
-  tbl_df %>%
-  mutate(Term_deposit = effective_marginal(years.maturity = year, nominal.return = 0.07), 
-         Property_xxno_CGT_discountzz = effective_marginal(years.maturity = year, 
-                                                       nominal.return = 0.07, 
-                                                       asset.type = "property_noCGTdiscount"),
-         Property_xx50_CGT_discountzz = effective_marginal(years.maturity = year, 
-                                                       nominal.return = 0.07,
-                                                       asset.type = "property_50CGTdiscount")
-  ) %>%
-  gather(asset_type, returnz, -year) %>%
-  mutate(asset_type = gsub("xx", "(", asset_type),
-         asset_type = gsub("zz", ")", asset_type),
-         asset_type = gsub("_", " ", asset_type, fixed = TRUE)) ->
-  rates_data
-
-rates_data %T>%
-  chart_data %>%
-  mutate(asset_label = ifelse(year == 20, asset_type, NA)) %>%
-  #
-  grplot(aes(x = year, y = returnz, color = asset_type, group = asset_type, label = asset_label)) + 
-  geom_line() + 
-  geom_text(vjust = 1.3, hjust = 1, fontface = "bold", size = 7.14) + 
-  scale_y_continuous(label=percent, breaks = c(c(0:4)/10, 0.465)) +
-  xlab("Year of maturity")
 @
-\captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Effective marginal tax rate}\label{fig:Effective_marginal_tax_rates_are_lower}
-\includegraphics[width=\columnwidth]{figure/Effective_marginal_tax_rates_are_lower-1}
+\captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Real effective marginal tax rate}\label{fig:Real_effective_marginal_tax_rates_are_lower}
+\includegraphics[width=\columnwidth]{figure/Real_effective_marginal_tax_rates_are_lower-1}
 \source{Grattan analysis}
 \end{bigbox*}
 }
@@ -1248,8 +1198,7 @@ rbind(benefits_by_taxable_income_before_deductions, benefits_by_taxable_income) 
   scale_y_continuous(expand = c(0,0.00), limits = c(0,0.525), label=percent) + 
   #scale_y_continuous(expand = c(0,0), limits = c(0,3300), label = grattan_dollar) + 
   facet_grid(~Decile_of) + 
-  theme(strip.text = element_text(angle = 0, vjust = 0.7,
-                                  size = 23,
+  theme(strip.text = element_text(angle = 0,
                                   face = "bold", colour = "white"),
         strip.background = element_rect(fill = theGrey),
         panel.margin.x = unit(1, "lines"),
