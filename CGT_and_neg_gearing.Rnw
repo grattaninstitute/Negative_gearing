@@ -565,7 +565,8 @@ both %T>%
   scale_y_continuous(expand = list(c(0,0.1), c(0,0)), label = percent) + 
   scale_fill_manual(values = gpal(2, T)) + 
   theme(strip.background = element_rect(color = theGrey, size = 12, fill = theGrey),
-        strip.text = element_text(size = 23, color = "white", face = "bold", vjust = 0.8)) + 
+        strip.text = element_text(size = 23, color = "white", face = "bold", vjust = 0.8),
+        panel.margin.x = grid::unit(1, "lines")) + 
   xlab("Taxable income decile") 
 @
 \begin{figure}
@@ -761,37 +762,85 @@ In contrast, if the investor chooses a term deposit paying 7 per cent a year and
 
 The capital gains tax discount magnifies the tax advantaged status of capital gains. 
 \eject
-<<Real_effective_marginal_tax_rates_are_lower>>=
+<<Effective_marginal_tax_rates_are_lower>>=
 effective_marginal <- function(asset.type = "term_deposit", years.maturity, nominal.return, inflation = NULL, marginal.rate = 0.465, cgt.discount = 0.50){
   if(asset.type == "term_deposit"){
-    function(years.maturity, nominal.return, inflation = inflation, marginal.rate = marginal.rate, cgt.discount = cgt.discount){
-      for (year in 1:years.maturity){
-        if (year == 1){
-          nominal.value <- (1 + nominal.return)
-          carry.forward.balance <- nominal.value
-          tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
-          return.residual <- carry.forward.balance - tax.on.interest - 1
-          nominal.value.post.tax <- nominal.value - tax.on.interest
-        } else {
-          nominal.value <- (1 + nominal.return)^year
-          previous.nominal.value.post.tax <- nominal.value.post.tax
-          carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
-          tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
-          return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
-          nominal.value.post.tax <- carry.forward.balance - tax.on.interest
-          annual.pretax.return <- nominal.value ^ (1 / year) - 1
-          annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
-          if (year == years.maturity){
-            return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
-          }
+    for (year in 1:years.maturity){
+      if (year == years.maturity)
+        return(marginal.rate)
+      else
+      if (year == 1){
+        nominal.value <- (1 + nominal.return)
+        carry.forward.balance <- nominal.value
+        tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
+        return.residual <- carry.forward.balance - tax.on.interest - 1
+        nominal.value.post.tax <- nominal.value - tax.on.interest
+      } else {
+        nominal.value <- (1 + nominal.return)^year
+        previous.nominal.value.post.tax <- nominal.value.post.tax
+        carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
+        tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
+        return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
+        nominal.value.post.tax <- carry.forward.balance - tax.on.interest
+        annual.pretax.return <- nominal.value ^ (1 / year) - 1
+        annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
+        if (year == years.maturity){
+          return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
         }
       }
     }
   }
+  #
+  if(asset.type == "property_noCGTdiscount"){
+    year = years.maturity
+    nominal.value.pretax <- (1+nominal.return)^year
+    tax.on.CG <- marginal.rate * (nominal.value.pretax - 1)
+    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
+    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
+    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
+    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
+  }
+  if(asset.type == "property_50CGTdiscount"){
+    year = years.maturity
+    nominal.value.pretax <- (1+nominal.return)^year
+    tax.on.CG <- marginal.rate * 0.5 * (nominal.value.pretax - 1)
+    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
+    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
+    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
+    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
+  }
 }
+
+data.frame(
+  year = 1:30
+) %>% 
+  tbl_df %>%
+  mutate(Term_deposit = effective_marginal(years.maturity = year, nominal.return = 0.07), 
+         Property_xxno_CGT_discountzz = effective_marginal(years.maturity = year, 
+                                                       nominal.return = 0.07, 
+                                                       asset.type = "property_noCGTdiscount"),
+         Property_xx50_CGT_discountzz = effective_marginal(years.maturity = year, 
+                                                       nominal.return = 0.07,
+                                                       asset.type = "property_50CGTdiscount")
+  ) %>%
+  gather(asset_type, returnz, -year) %>%
+  mutate(asset_type = gsub("xx", "(", asset_type),
+         asset_type = gsub("zz", ")", asset_type),
+         asset_type = gsub("_", " ", asset_type, fixed = TRUE)) ->
+  rates_data
+
+rates_data %T>%
+  chart_data %>%
+  mutate(asset_label = ifelse(year == 20, asset_type, NA)) %>%
+  #
+  grplot(aes(x = year, y = returnz, color = asset_type, group = asset_type, label = asset_label)) + 
+  geom_line() + 
+  geom_text(vjust = 1.3, hjust = 1, fontface = "bold", size = 7.14) + 
+  scale_y_continuous(label=percent, breaks = c(c(0:4)/10, 0.465)) +
+  xlab("Year of maturity")
 @
-\captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Real effective marginal tax rate}\label{fig:Real_effective_marginal_tax_rates_are_lower}
-\includegraphics[width=\columnwidth]{figure/Real_effective_marginal_tax_rates_are_lower-1}
+\captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Effective marginal tax rate}\label{fig:Effective_marginal_tax_rates_are_lower}
+\includegraphics[width=\columnwidth]{figure/Effective_marginal_tax_rates_are_lower-1}
 \source{Grattan analysis}
 \end{bigbox*}
 }
