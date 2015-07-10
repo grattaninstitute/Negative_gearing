@@ -73,22 +73,6 @@ library(grattan)
 library(XLConnect)
 #devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
 
-
-      my_emf <- function(file, width, height){
-        devEMF::emf(file, width=width, height=height,
-                    family = "Arial")
-      }
-      
-      # knitr chunk opts
-      # fig.width must = out.width and same for *.height
-      knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
-                            out.width="11.000in", out.height="7.00in", 
-                            fig.show='hide',echo=FALSE,
-                            message=FALSE, warning=FALSE
-                            ,cache=TRUE
-                            ,dev=c('pdf', 'my_emf')
-                            ,fig.ext = c("pdf", "emf")
-      )
       # for asymmetric expansion of limits
       scale_dimension.custom_expand <- function(scale, expand = ggplot2:::scale_expand(scale)) {
         expand_range(ggplot2:::scale_limits(scale), expand[[1]], expand[[2]])
