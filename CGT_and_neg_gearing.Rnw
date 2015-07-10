@@ -3,7 +3,9 @@
 
 
 \title{Negative gearing and the capital gains discount}
-\author{John Daley and Danielle Wood}
+\usepackage[normalem]{ulem}
+\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.4ex]{2pt}{3pt}}}\ULon}
+\author{\redsout{John Daley and Danielle Wood}}
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
@@ -26,6 +28,24 @@
 \begin{document}
 \clearpage
 %\chapter{Distribution of negative gearing}
+<<minimal_preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
+      my_emf <- function(file, width, height){
+        devEMF::emf(file, width=width, height=height,
+                    family = "Arial")
+      }
+      
+      # knitr chunk opts
+      # fig.width must = out.width and same for *.height
+      knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                            out.width="11.000in", out.height="7.00in", 
+                            fig.show='hide',echo=FALSE,
+                            message=FALSE, warning=FALSE
+                            ,cache=TRUE
+                            ,dev=c('pdf', 'my_emf')
+                            ,fig.ext = c("pdf", "emf")
+      )
+@
+
 <<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 library(data.table)
 library(dplyr)
@@ -643,13 +663,15 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   geom_bar(stat = "identity",
            position = "dodge") + 
   geom_hline(yintercept = 0.028, 
-             color = Orange, size = 2) + 
+             color = theGrey, size = 2) + 
   annotate("text", x = 2, y = 0.0299, 
            hjust = 0,
-           label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
+           label = "CPI (2.8% p.a.)", color = theGrey, fontface = "bold",
            size = 7.14) + 
-  scale_y_continuous(expand = c(0,0), label = percent) + 
-  theme(panel.grid.major = element_blank()) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,0.1), label = percent) + 
+  theme(panel.grid.major = element_blank(),
+        plot.margin = grid::unit(c(0.7,2.2,0.1,0.1), "lines"),
+        axis.title = element_blank()) + 
   coord_flip()
 @
 \begin{figure}

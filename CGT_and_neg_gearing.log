@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  10 JUL 2015 15:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  10 JUL 2015 21:59
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -1865,6 +1865,18 @@ Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\alltt.sty"
 Package: alltt 1997/06/16 v2.0g defines alltt environment
 )
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\ulem\ulem.sty"
+\UL@box=\box95
+\UL@hyphenbox=\box96
+\UL@skip=\skip184
+\UL@hook=\toks45
+\UL@height=\dimen301
+\UL@pe=\count397
+\UL@pixel=\dimen302
+\ULC@box=\box97
+Package: ulem 2012/05/18
+\ULdepth=\dimen303
+)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\frontendlayer\tikz\librarie
 s\tikzlibraryshapes.code.tex"
 File: tikzlibraryshapes.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
@@ -1914,26 +1926,26 @@ File: tikzlibraryshapes.multipart.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\libraries\shapes\pgflibrary
 shapes.multipart.code.tex"
 File: pgflibraryshapes.multipart.code.tex 2010/01/07 v3.0.0 (rcs-revision 1.2)
-\pgfnodepartlowerbox=\box95
-\pgfnodeparttwobox=\box96
-\pgfnodepartthreebox=\box97
-\pgfnodepartfourbox=\box98
-\pgfnodeparttwentybox=\box99
-\pgfnodepartnineteenbox=\box100
-\pgfnodeparteighteenbox=\box101
-\pgfnodepartseventeenbox=\box102
-\pgfnodepartsixteenbox=\box103
-\pgfnodepartfifteenbox=\box104
-\pgfnodepartfourteenbox=\box105
-\pgfnodepartthirteenbox=\box106
-\pgfnodeparttwelvebox=\box107
-\pgfnodepartelevenbox=\box108
-\pgfnodeparttenbox=\box109
-\pgfnodepartninebox=\box110
-\pgfnodeparteightbox=\box111
-\pgfnodepartsevenbox=\box112
-\pgfnodepartsixbox=\box113
-\pgfnodepartfivebox=\box114
+\pgfnodepartlowerbox=\box98
+\pgfnodeparttwobox=\box99
+\pgfnodepartthreebox=\box100
+\pgfnodepartfourbox=\box101
+\pgfnodeparttwentybox=\box102
+\pgfnodepartnineteenbox=\box103
+\pgfnodeparteighteenbox=\box104
+\pgfnodepartseventeenbox=\box105
+\pgfnodepartsixteenbox=\box106
+\pgfnodepartfifteenbox=\box107
+\pgfnodepartfourteenbox=\box108
+\pgfnodepartthirteenbox=\box109
+\pgfnodeparttwelvebox=\box110
+\pgfnodepartelevenbox=\box111
+\pgfnodeparttenbox=\box112
+\pgfnodepartninebox=\box113
+\pgfnodeparteightbox=\box114
+\pgfnodepartsevenbox=\box115
+\pgfnodepartsixbox=\box116
+\pgfnodepartfivebox=\box117
 )))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\frontendlayer\tikz\librarie
 s\tikzlibraryautomata.code.tex"
@@ -2126,47 +2138,47 @@ LaTeX Warning: Unused global option(s):
     [landscape].
 
 (CGT_and_neg_gearing.aux)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 75.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 75.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 77.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 77.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Try loading font information for T1+ua1 on input line 75.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Try loading font information for T1+ua1 on input line 77.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\arial\t1ua1.fd"
 File: t1ua1.fd 2006/03/21 Fontinst v1.928 font definitions for T1/ua1.
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count397
-\scratchdimen=\dimen301
-\scratchbox=\box115
-\nofMPsegments=\count398
-\nofMParguments=\count399
-\everyMPshowfont=\toks45
-\MPscratchCnt=\count400
-\MPscratchDim=\dimen302
-\MPnumerator=\count401
-\makeMPintoPDFobject=\count402
-\everyMPtoPDFconversion=\toks46
+\scratchcounter=\count398
+\scratchdimen=\dimen304
+\scratchbox=\box118
+\nofMPsegments=\count399
+\nofMParguments=\count400
+\everyMPshowfont=\toks46
+\MPscratchCnt=\count401
+\MPscratchDim=\dimen305
+\MPnumerator=\count402
+\makeMPintoPDFobject=\count403
+\everyMPtoPDFconversion=\toks47
 ) ABD: EveryShipout initializing macros
-LaTeX Info: Redefining \microtypecontext on input line 75.
+LaTeX Info: Redefining \microtypecontext on input line 77.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -2182,11 +2194,11 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `ua1' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-\AtBeginShipoutBox=\box116
+\AtBeginShipoutBox=\box119
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 75.
+Package hyperref Info: Link coloring ON on input line 77.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -2194,16 +2206,16 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count403
+\c@section@level=\count404
 LaTeX Info: Redefining \Ref on input line 513.
 )
-LaTeX Info: Redefining \ref on input line 75.
-LaTeX Info: Redefining \pageref on input line 75.
-LaTeX Info: Redefining \nameref on input line 75.
+LaTeX Info: Redefining \ref on input line 77.
+LaTeX Info: Redefining \pageref on input line 77.
+LaTeX Info: Redefining \nameref on input line 77.
 
 (CGT_and_neg_gearing.out) (CGT_and_neg_gearing.out)
 \@outlinefile=\write7
-LaTeX Info: Redefining \Ref on input line 75.
+LaTeX Info: Redefining \Ref on input line 77.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -2240,12 +2252,12 @@ LaTeX Info: Redefining \Ref on input line 75.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 75.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 77.
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <30> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 75.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 77.
 LaTeX Font Info:    Font shape `T1/ua1/m/sl' in size <10.95> not available
-(Font)              Font shape `T1/ua1/m/it' tried instead on input line 75.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 75.
+(Font)              Font shape `T1/ua1/m/it' tried instead on input line 77.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 77.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ot1lmr.fd"
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )<<ot1.cmap>>
@@ -2253,31 +2265,31 @@ File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 75.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 77.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )<<oml.cmap>>
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 75.
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 77.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )<<oms.cmap>>
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 75.
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 77.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 75.
+(Font)              <10.95> on input line 77.
 <<omx.cmap>>
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 75.
+(Font)              <8> on input line 77.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 75.
-LaTeX Font Info:    Try loading font information for U+msa on input line 75.
+(Font)              <6> on input line 77.
+LaTeX Font Info:    Try loading font information for U+msa on input line 77.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -2285,7 +2297,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\microtype\mt-msa.cfg"
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 75.
+LaTeX Font Info:    Try loading font information for U+msb on input line 77.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -2297,7 +2309,7 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 File: ./FrontPage/FrontPagePicture.png Graphic file (type png)
 
 <use ./FrontPage/FrontPagePicture.png>
-Package pdftex.def Info: ./FrontPage/FrontPagePicture.png used on input line 75
+Package pdftex.def Info: ./FrontPage/FrontPagePicture.png used on input line 77
 .
 (pdftex.def)             Requested size: 845.075pt x 514.2146pt.
  [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
@@ -2305,7 +2317,7 @@ Package pdftex.def Info: ./FrontPage/FrontPagePicture.png used on input line 75
 
  <./FrontPage/FrontPagePicture.png>]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <12> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 75.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 77.
 Package epstopdf Info: Source file: <./logos/aus-gov-logo-stacked-black.eps>
 (epstopdf)                    date: 2015-06-25 17:45:09
 (epstopdf)                    size: 547766 bytes
@@ -2315,7 +2327,7 @@ verted-to.pdf>
 (epstopdf)                    size: 55851 bytes
 (epstopdf)             Command: <epstopdf --outfile=./logos/aus-gov-logo-stacke
 d-black-eps-converted-to.pdf ./logos/aus-gov-logo-stacked-black.eps>
-(epstopdf)             \includegraphics on input line 75.
+(epstopdf)             \includegraphics on input line 77.
 Package epstopdf Info: Output file is already uptodate.
 
 <./logos/aus-gov-logo-stacked-black-eps-converted-to.pdf, id=43, 112.42pt x 58.
@@ -2324,7 +2336,7 @@ File: ./logos/aus-gov-logo-stacked-black-eps-converted-to.pdf Graphic file (typ
 e pdf)
  <use ./logos/aus-gov-logo-stacked-black-eps-converted-to.pdf>
 Package pdftex.def Info: ./logos/aus-gov-logo-stacked-black-eps-converted-to.pd
-f used on input line 75.
+f used on input line 77.
 (pdftex.def)             Requested size: 113.81102pt x 58.94043pt.
 Package epstopdf Info: Source file: <./logos/Vic_Gov_Logo.eps>
 (epstopdf)                    date: 2015-06-25 17:45:09
@@ -2335,7 +2347,7 @@ Package epstopdf Info: Source file: <./logos/Vic_Gov_Logo.eps>
 (epstopdf)                    size: 21875 bytes
 (epstopdf)             Command: <epstopdf --outfile=./logos/Vic_Gov_Logo-eps-co
 nverted-to.pdf ./logos/Vic_Gov_Logo.eps>
-(epstopdf)             \includegraphics on input line 75.
+(epstopdf)             \includegraphics on input line 77.
 Package epstopdf Info: Output file is already uptodate.
 
 <./logos/Vic_Gov_Logo-eps-converted-to.pdf, id=44, 52.195pt x 30.1125pt>
@@ -2343,7 +2355,7 @@ File: ./logos/Vic_Gov_Logo-eps-converted-to.pdf Graphic file (type pdf)
 
 <use ./logos/Vic_Gov_Logo-eps-converted-to.pdf>
 Package pdftex.def Info: ./logos/Vic_Gov_Logo-eps-converted-to.pdf used on inpu
-t line 75.
+t line 77.
 (pdftex.def)             Requested size: 99.58464pt x 57.46059pt.
 Package epstopdf Info: Source file: <./logos/UOM-Pos_S_PMS.eps>
 (epstopdf)                    date: 2015-06-25 17:45:09
@@ -2354,7 +2366,7 @@ Package epstopdf Info: Source file: <./logos/UOM-Pos_S_PMS.eps>
 (epstopdf)                    size: 58836 bytes
 (epstopdf)             Command: <epstopdf --outfile=./logos/UOM-Pos_S_PMS-eps-c
 onverted-to.pdf ./logos/UOM-Pos_S_PMS.eps>
-(epstopdf)             \includegraphics on input line 75.
+(epstopdf)             \includegraphics on input line 77.
 Package epstopdf Info: Output file is already uptodate.
 
 <./logos/UOM-Pos_S_PMS-eps-converted-to.pdf, id=45, 422.57875pt x 425.59pt>
@@ -2362,13 +2374,13 @@ File: ./logos/UOM-Pos_S_PMS-eps-converted-to.pdf Graphic file (type pdf)
 
 <use ./logos/UOM-Pos_S_PMS-eps-converted-to.pdf>
 Package pdftex.def Info: ./logos/UOM-Pos_S_PMS-eps-converted-to.pdf used on inp
-ut line 75.
+ut line 77.
 (pdftex.def)             Requested size: 99.58464pt x 100.2929pt.
 
 <./logos/Bhp.pdf, id=46, 845.0471pt x 597.50829pt>
 File: ./logos/Bhp.pdf Graphic file (type pdf)
  <use ./logos/Bhp.pdf>
-Package pdftex.def Info: ./logos/Bhp.pdf used on input line 75.
+Package pdftex.def Info: ./logos/Bhp.pdf used on input line 77.
 (pdftex.def)             Requested size: 99.58464pt x 70.41237pt.
 Package epstopdf Info: Source file: <./logos/TMF_logo_green.eps>
 (epstopdf)                    date: 2015-06-25 17:45:09
@@ -2379,7 +2391,7 @@ f>
 (epstopdf)                    size: 38442 bytes
 (epstopdf)             Command: <epstopdf --outfile=./logos/TMF_logo_green-eps-
 converted-to.pdf ./logos/TMF_logo_green.eps>
-(epstopdf)             \includegraphics on input line 75.
+(epstopdf)             \includegraphics on input line 77.
 Package epstopdf Info: Output file is already uptodate.
 
 <./logos/TMF_logo_green-eps-converted-to.pdf, id=47, 146.5475pt x 118.4425pt>
@@ -2387,7 +2399,7 @@ File: ./logos/TMF_logo_green-eps-converted-to.pdf Graphic file (type pdf)
 
 <use ./logos/TMF_logo_green-eps-converted-to.pdf>
 Package pdftex.def Info: ./logos/TMF_logo_green-eps-converted-to.pdf used on in
-put line 75.
+put line 77.
 (pdftex.def)             Requested size: 71.13188pt x 57.48972pt.
  (Acknowledgements.tex)
 [2
@@ -2402,36 +2414,111 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'CGT_and_neg_gearing.bbl' found.
 
-(CGT_and_neg_gearing.bbl
+(CGT_and_neg_gearing.bbl)
+Package biblatex Info: Reference section=0 on input line 77.
+Package biblatex Info: Reference segment=0 on input line 77.
+ (package_cite_input.tex
 
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                Stewart2015
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
-
-
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                Treasury2010b
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
+LaTeX Warning: Citation 'R-XLConnect' undefined on input line 1.
 
 
-Package biblatex Warning: The following entry could not be found
-(biblatex)                in the database:
-(biblatex)                McKell
-(biblatex)                Please verify the spelling and rerun
-(biblatex)                LaTeX afterwards.
+LaTeX Warning: Citation 'R-XLConnectJars' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-devtools' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-Hmisc' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-Formula' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-survival' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-lattice' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-survey' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-foreign' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-proto' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-parallelRandomForest' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-foreach' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-randomForest' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-zoo' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-httr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-rsdmx' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-readr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-readxl' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-xtable' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-grattan' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-directlabels' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-quadprog' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-scales' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-ggplot2' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-gridExtra' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-devEMF' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-car' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-magrittr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-tidyr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-dplyr' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-data.table' undefined on input line 1.
+
+
+LaTeX Warning: Citation 'R-knitr' undefined on input line 1.
 
 )
-Package biblatex Info: Reference section=0 on input line 75.
-Package biblatex Info: Reference segment=0 on input line 75.
- (package_cite_input.tex)
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <20.74> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 99.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 103.
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 99.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 103.
  [3
 
 
@@ -2442,137 +2529,388 @@ LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
  [4
 
 
-]
-(CGT_and_neg_gearing.lof)
+] (CGT_and_neg_gearing.lof)
 \tf@lof=\write9
- (CGT_and_neg_gearing.loboxe)
+
+(CGT_and_neg_gearing.loboxe)
 \tf@loboxe=\write10
  [5
 
 ]
 Chapter 1.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 119.
+(Font)              <9> on input line 123.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 119.
+(Font)              <5> on input line 123.
+
+LaTeX Warning: Citation 'Daley2013' on page 6 undefined on input line 123.
+
+LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 123.
+
+LaTeX Warning: Citation 'Treasury2015a' on page 6 undefined on input line 127.
+
+
+LaTeX Warning: Citation 'Treasury2014a' on page 6 undefined on input line 138.
+
 [6
 
 
 ]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 140.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 144.
 
-<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=155, 794.
+<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=150, 794.
 97pt x 505.89pt>
 File: figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf Graphic 
 file (type pdf)
 
 <use figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>
 Package pdftex.def Info: figure/Majority_of_taxable_gains_are_earned_by_individ
-uals-1.pdf used on input line 141.
+uals-1.pdf used on input line 145.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
+
+
+LaTeX Warning: Citation 'ATOCapitalGainsByType' on page 7 undefined on input li
+ne 146.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 Package hyperref Info: bookmark level for unknown boxe defaults to 0 on input l
-ine 146.
-[7] [8 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
+ine 150.
+
+LaTeX Warning: Citation 'Evans2005' on page 7 undefined on input line 152.
+
+
+LaTeX Warning: Citation 'Kenny2005' on page 7 undefined on input line 152.
+
+
+LaTeX Warning: Citation 'BusinessTaxation1999' on page 7 undefined on input lin
+e 155.
+
+
+LaTeX Warning: Citation 'ATO2014a' on page 7 undefined on input line 162.
+
+
+LaTeX Warning: Citation 'Wood2010a' on page 7 undefined on input line 164.
+
+[7]
+
+LaTeX Warning: Citation 'Harding2013' on page 8 undefined on input line 178.
+
+
+LaTeX Warning: Citation 'Harding2013' on page 8 undefined on input line 178.
+
+
+LaTeX Warning: Citation 'prebble2010tax' on page 8 undefined on input line 178.
+
+
+[8 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
+
+LaTeX Warning: Citation 'Evans2005' on page 9 undefined on input line 181.
+
+
+LaTeX Warning: Citation 'Minas2013' on page 9 undefined on input line 181.
+
+
+LaTeX Warning: Citation 'OECD2006b' on page 9 undefined on input line 181.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 9 undefined on input line 183.
+
+
+LaTeX Warning: Citation 'Minas2013' on page 9 undefined on input line 183.
+
+
 <figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf, id=
-219, 794.97pt x 505.89pt>
+193, 794.97pt x 505.89pt>
 File: figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
  Graphic file (type pdf)
 
 <use figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf>
 Package pdftex.def Info: figure/Nearly_eighty_per_cent_of_capital_gains_are_ear
-ned_by_those_-1.pdf used on input line 189.
+ned_by_those_-1.pdf used on input line 193.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
+
+LaTeX Warning: Citation 'ATO2013i' on page 9 undefined on input line 194.
+
 [9 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
 >]
-<figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf, id=252, 794.97pt x
+
+LaTeX Warning: Citation 'Treasury2010' on page 10 undefined on input line 204.
+
+
+<figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf, id=219, 794.97pt x
  867.24pt>
 File: figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf Graphic file (
 type pdf)
  <use figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf>
 Package pdftex.def Info: figure/ASX_Before_and_after_tax_returns_for_10_years-1
-.pdf used on input line 208.
+.pdf used on input line 212.
 (pdftex.def)             Requested size: 322.93883pt x 352.30215pt.
 
+
+LaTeX Warning: Citation 'Fane2004' on page 10 undefined on input line 222.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 10 undefined on input line 222.
+
 [10 <./figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf>]
-<figure/Effective_marginal_tax_rates_are_lower-1.pdf, id=289, 794.97pt x 505.89
+
+LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 242.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 11 undefined on input line 242
+.
+
+
+LaTeX Warning: Citation 'Burman1999' on page 11 undefined on input line 242.
+
+
+LaTeX Warning: Citation 'ATO2014e' on page 11 undefined on input line 242.
+
+
+LaTeX Warning: Citation 'Engen1996' on page 11 undefined on input line 244.
+
+
+LaTeX Warning: Citation 'OECD2007' on page 11 undefined on input line 244.
+
+
+LaTeX Warning: Citation 'chetty2013subsidies' on page 11 undefined on input lin
+e 244.
+
+
+LaTeX Warning: Citation 'chetty2013subsidies' on page 11 undefined on input lin
+e 244.
+
+
+LaTeX Warning: Citation 'Antolin' on page 11 undefined on input line 244.
+
+
+<figure/Effective_marginal_tax_rates_are_lower-1.pdf, id=244, 794.97pt x 505.89
 pt>
 File: figure/Effective_marginal_tax_rates_are_lower-1.pdf Graphic file (type pd
 f)
  <use figure/Effective_marginal_tax_rates_are_lower-1.pdf>
 Package pdftex.def Info: figure/Effective_marginal_tax_rates_are_lower-1.pdf us
-ed on input line 241.
+ed on input line 245.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
- [11] [12 <./figure/Effective_marginal_tax_rates_are_lower-1.pdf>]
-<figure/Prob_of_CGevent_by_age_income-1.pdf, id=341, 794.97pt x 505.89pt>
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 246.
+
+
+LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 251.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 251.
+
+
+LaTeX Warning: Citation 'Lindsey1987' on page 11 undefined on input line 253.
+
+
+LaTeX Warning: Citation 'OECD2006b' on page 11 undefined on input line 253.
+
+
+LaTeX Warning: Citation 'Johnson2008' on page 11 undefined on input line 253.
+
+[11] [12 <./figure/Effective_marginal_tax_rates_are_lower-1.pdf>]
+
+LaTeX Warning: Citation 'Wood2010a' on page 13 undefined on input line 256.
+
+<figure/Prob_of_CGevent_by_age_income-1.pdf, id=279, 794.97pt x 505.89pt>
 File: figure/Prob_of_CGevent_by_age_income-1.pdf Graphic file (type pdf)
 
 <use figure/Prob_of_CGevent_by_age_income-1.pdf>
 Package pdftex.def Info: figure/Prob_of_CGevent_by_age_income-1.pdf used on inp
-ut line 267.
+ut line 271.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
- [13] [14 <./figure/Prob_of_CGevent_by_age_income-1.pdf>] [15]
-<figure/Age_negative_gearing_investments-1.pdf, id=405, 794.97pt x 722.7pt>
+
+
+LaTeX Warning: Citation 'ATO2013i' on page 13 undefined on input line 272.
+
+
+LaTeX Warning: Citation 'ABS2013' on page 13 undefined on input line 274.
+
+[13]
+
+LaTeX Warning: Citation 'Burman2009' on page 14 undefined on input line 280.
+
+
+LaTeX Warning: Citation 'OECD2006a' on page 14 undefined on input line 280.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 14 undefined on input line 280
+.
+
+
+LaTeX Warning: Citation 'Burman2009' on page 14 undefined on input line 280.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 14 undefined on input line 280.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 14 undefined on input line 280.
+
+
+LaTeX Warning: Citation 'Fane2004' on page 14 undefined on input line 286.
+
+[14 <./figure/Prob_of_CGevent_by_age_income-1.pdf>]
+
+LaTeX Warning: Citation 'IRS2015' on page 15 undefined on input line 292.
+
+
+LaTeX Warning: Citation 'RBA2014' on page 15 undefined on input line 292.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 15 undefined on input line 292
+.
+
+
+LaTeX Warning: Citation 'ODonnell2005' on page 15 undefined on input line 292.
+
+<figure/Age_negative_gearing_investments-1.pdf, id=315, 794.97pt x 722.7pt>
 File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
 Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on 
-input line 310.
+input line 314.
 (pdftex.def)             Requested size: 322.93883pt x 293.58511pt.
- [16 <./figure/Age_negative_gearing_investments-1.pdf>]
-<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=425, 794.97pt x 505.8
+
+
+LaTeX Warning: Citation 'ATO2013i' on page 15 undefined on input line 317.
+
+[15]
+
+LaTeX Warning: Citation 'Wood2010a' on page 16 undefined on input line 322.
+
+
+LaTeX Warning: Citation 'RBA2014' on page 16 undefined on input line 325.
+
+
+LaTeX Warning: Citation 'seelig2009understanding' on page 16 undefined on input
+ line 331.
+
+[16 <./figure/Age_negative_gearing_investments-1.pdf>]
+<figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=338, 794.97pt x 505.8
 9pt>
 File: figure/Effective_tax_rates_depend_on_borrowing-1.pdf Graphic file (type p
 df)
  <use figure/Effective_tax_rates_depend_on_borrowing-1.pdf>
 Package pdftex.def Info: figure/Effective_tax_rates_depend_on_borrowing-1.pdf u
-sed on input line 334.
+sed on input line 338.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
- [17 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
+
+
+LaTeX Warning: Citation 'Burman1999' on page 17 undefined on input line 343.
+
+
+LaTeX Warning: Citation 'seelig2009understanding' on page 17 undefined on input
+ line 343.
+
+
+LaTeX Warning: Citation 'Eslake2013' on page 17 undefined on input line 349.
+
+
+LaTeX Warning: Citation 'Treasury2015a' on page 17 undefined on input line 349.
+
+
+[17 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
+
+LaTeX Warning: Citation 'Treasury2015a' on page 18 undefined on input line 350.
+
+
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 348.
+ned on input line 352.
 
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 348.
+ned on input line 352.
 
 
-Package hyperref Warning: Suppressing link with empty target on input line 348.
+Package hyperref Warning: Suppressing link with empty target on input line 352.
 
 
-<figure/Net_rent_over_time-1.pdf, id=449, 794.97pt x 505.89pt>
+<figure/Net_rent_over_time-1.pdf, id=356, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
-Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 355
+Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 359
 .
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
- [18 <./figure/Net_rent_over_time-1.pdf>]
-<figure/Capital_city_rents-1.pdf, id=484, 794.97pt x 794.97pt>
+
+
+LaTeX Warning: Citation 'RBA2015' on page 18 undefined on input line 367.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 18 undefined on input line 367
+.
+
+
+LaTeX Warning: Citation 'RBA2014' on page 18 undefined on input line 370.
+
+
+LaTeX Warning: Citation 'Commission2004' on page 18 undefined on input line 370
+.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 18 undefined on input line 370.
+
+
+LaTeX Warning: Citation 'Inquiry2015' on page 18 undefined on input line 370.
+
+[18 <./figure/Net_rent_over_time-1.pdf>]
+
+LaTeX Warning: Citation 'badcock1991responsiveness' on page 19 undefined on inp
+ut line 373.
+
+
+LaTeX Warning: Citation 'Daley2013' on page 19 undefined on input line 373.
+
+<figure/Capital_city_rents-1.pdf, id=380, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
-Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 380
+Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 384
 .
 (pdftex.def)             Requested size: 322.93883pt x 322.94363pt.
  [19 <./figure/Capital_city_rents-1.pdf>]
-LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 394.
 
-<figure/Effect_of_Deductions-1.pdf, id=516, 794.97pt x 505.89pt>
+LaTeX Warning: Citation 'ABS2015' on page 20 undefined on input line 396.
+
+
+LaTeX Warning: Citation 'Kelly2011' on page 20 undefined on input line 396.
+
+
+LaTeX Warning: Citation 'Kelly2013' on page 20 undefined on input line 397.
+
+
+LaTeX Warning: Citation 'Kelly2015' on page 20 undefined on input line 397.
+
+
+LaTeX Warning: Citation 'Treasury2010b' on page 20 undefined on input line 398.
+
+
+
+LaTeX Warning: Citation 'Inquiry2014' on page 20 undefined on input line 401.
+
+
+LaTeX Warning: Citation 'RBA2015' on page 20 undefined on input line 405.
+
+
+LaTeX Warning: Citation 'HILDA2015' on page 20 undefined on input line 405.
+
+<figure/Effect_of_Deductions-1.pdf, id=404, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
 Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 4
-09.
+13.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
-Underfull \hbox (badness 1478) in paragraph at lines 409--411
+Underfull \hbox (badness 1478) in paragraph at lines 413--415
 \T1/ua1/m/it/9/-4ls (+14) No\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/m/it/9/-4ls (+14
 ) es\T1/ua1/m/it/9/-4ls (+20) : T\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls
  (+20) x-\T1/ua1/m/it/9/-4ls (+14) ab\T1/ua1/m/it/9/-4ls (+20) l\T1/ua1/m/it/9/
@@ -2585,11 +2923,48 @@ Underfull \hbox (badness 1478) in paragraph at lines 409--411
 4ls (+20) -ti\T1/ua1/m/it/9/-4ls (+14) ons means $[] \OMS/lmsy/m/n/9/-4ls  $
  []
 
-[20] [21 <./figure/Effect_of_Deductions-1.pdf>] [22] [23] [24] [25]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 506.
+
+LaTeX Warning: Citation 'ATO2013i' on page 20 undefined on input line 416.
+
+[20]
+
+LaTeX Warning: Citation 'Commission2004' on page 21 undefined on input line 426
+.
+
+[21 <./figure/Effect_of_Deductions-1.pdf>]
+
+LaTeX Warning: Citation 'Stewart2015' on page 22 undefined on input line 437.
 
 
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
+LaTeX Warning: Citation 'PBO2014' on page 22 undefined on input line 437.
+
+[22]
+
+LaTeX Warning: Citation 'McKell' on page 23 undefined on input line 464.
+
+
+LaTeX Warning: Citation 'ACIL2015' on page 23 undefined on input line 466.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 23 undefined on input line 469.
+
+
+LaTeX Warning: Citation 'Treasury2010' on page 23 undefined on input line 471.
+
+[23]
+
+LaTeX Warning: Citation 'Treasury2010' on page 24 undefined on input line 487.
+
+
+LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 489.
+
+
+LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 489.
+
+[24] [25]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 510.
+
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic settings for font family
@@ -2597,55 +2972,46 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \vbox (badness 10000) detected at line 545
+Underfull \vbox (badness 10000) detected at line 549
  []
 
 
-Underfull \vbox (badness 10000) detected at line 545
+Underfull \vbox (badness 10000) detected at line 549
  []
 
 [26
 
 ] [27]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 549.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 549.
- [28
 
+LaTeX Warning: Empty bibliography on input line 553.
 
-] [29] [30]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 550.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 550.
- [31
-
-] (CGT_and_neg_gearing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 550.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 550.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 554.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 554.
+(CGT_and_neg_gearing.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 554.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 554.
 Package rerunfilecheck Info: File `CGT_and_neg_gearing.out' has not changed.
 (rerunfilecheck)             Checksum: 303FA550D2E912A63D3C6547341CC99B;629.
 
 
 LaTeX Warning: There were undefined references.
 
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 554.
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 550.
-
-Package biblatex Warning: Please rerun LaTeX.
-(biblatex)                Page breaks have changed.
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                CGT_and_neg_gearing
+(biblatex)                and rerun LaTeX afterwards.
 
 Package logreq Info: Writing requests to 'CGT_and_neg_gearing.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 45066 strings out of 493698
- 905376 string characters out of 3141998
- 1427013 words of memory out of 3000000
- 46516 multiletter control sequences out of 15000+200000
- 369957 words of font info for 683 fonts, out of 3000000 for 9000
+ 44454 strings out of 493698
+ 896277 string characters out of 3141998
+ 1424450 words of memory out of 3000000
+ 46280 multiletter control sequences out of 15000+200000
+ 303003 words of font info for 454 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 71i,21n,102p,10500b,1848s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 71i,21n,102p,10500b,1742s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
 iles (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files (x86)/
 MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files (x86)/MiKTeX 2.9/font
@@ -2658,9 +3024,9 @@ b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Program
 /fonts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type
 1/urw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial
 /ua1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (31 pages, 668870 bytes).
+Output written on CGT_and_neg_gearing.pdf (27 pages, 568615 bytes).
 PDF statistics:
- 828 PDF objects out of 1000 (max. 8388607)
- 213 named destinations out of 1000 (max. 500000)
- 85665 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 545 PDF objects out of 1000 (max. 8388607)
+ 134 named destinations out of 1000 (max. 500000)
+ 69793 words of extra memory for PDF output out of 74296 (max. 10000000)
 
