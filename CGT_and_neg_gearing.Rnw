@@ -444,6 +444,27 @@ cost_align_gains_and_losses <-
   henry_taxstats %$%
   round(sum(diff)*50/1e9, 1)
 @
+
+<<CostofNGtotal>>=
+fread(sample_file_of(2013)) %>%
+  mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt)),
+         diff = new_tax - income_tax(Taxable_Income)) %$%
+  sum(diff) * 50 /1e9 %>%
+  round(.,1) ->
+  NG.tx.exp
+NG.tx.exp <- round(NG.tx.exp, 1)
+@
+%%% Document starts here
+\begin{summary}
+The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year.} Deductions for rental losses result in over \highlight{\$\Sexpr{NG.tx.exp}~billion} in foregone revenue each year. These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives. Losses can be fully written off in full while only half the gains are taxed. Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
+
+As a consequence property prices have soared.
+
+There is no reason to maintain such a wide gulf between the treatment of gains and losses. The Commonwealth Government's primary goal should be to narrow this gulf.
+
+Reducing the capital gains discount and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion a year in the short-term.
+\end{summary}
+
 %%%
 
 \chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
@@ -451,7 +472,7 @@ This chapter examines two significant concessions in the taxation of savings: \h
 
 These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property. The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers. Like most tax concessions on investment, these concessions largely benefit the wealthy. 
 
-The 50 per cent \highlight{CGT discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.4-21]{Treasury2015a}. This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts. THat is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment. But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings. And entrepreneurs already receive a range of other capital gains tax concessions. Reducing the CGT discount to 30 per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
+The 50 per cent \highlight{CGT discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.4-21]{Treasury2015a}. This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts. That is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment. But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings. And entrepreneurs already receive a range of other capital gains tax concessions. Reducing the CGT discount to 30 per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
 
 Negative gearing should also be limited. The tax deductibility of costs, including interest costs, prevents a tax bias against debt funding and more risky investments. But this does not mean that losses should be able to be written off against wage and salary income. The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
 
@@ -614,7 +635,6 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   #
   grplot(aes(y = returnz, x = `Asset class`, fill = tax_class)) + 
   geom_bar(stat = "identity",
-           width = 0.8,
            position = "dodge") + 
   geom_hline(yintercept = 0.028, 
              color = Orange, size = 2) + 
@@ -623,8 +643,7 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
            label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
            size = 7.14) + 
   scale_y_continuous(expand = c(0,0), label = percent) + 
-  theme(panel.grid.major = element_blank(),
-        axis.title = element_blank()) + 
+  theme(panel.grid.major = element_blank()) + 
   coord_flip()
 @
 \begin{figure}
