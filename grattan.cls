@@ -424,6 +424,10 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 \newenvironment{overview}%
   {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{Overview}\begin{multicols}{2}}%
   {\end{multicols}\vss\egroup\hfill\twocolumn}
+  
+\newenvironment{summary}%
+  {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{Summary}\begin{multicols}{2}}%
+  {\end{multicols}\vss\egroup\hfill\twocolumn}
 
 
 % Bibliography
