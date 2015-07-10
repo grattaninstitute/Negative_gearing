@@ -294,6 +294,7 @@ left=2.75cm,right=2.75cm
 \cehead[\classification]{\classification}
 \cohead[\classification]{\classification}
 \ifoot[{\textcolor{theGrey}{\normalfont Grattan Institute 2015\phantom{\Large X}}}]{\textcolor{theGrey}{\normalfont Grattan Institute 2015\phantom{\Large X}}}
+\cfoot[\classification]{\classification}
 \ofoot[\normalfont\textcolor{theGrey}{\thepage}]{\normalfont\textcolor{theGrey}{\thepage}}
 
 \setkomafont{headsepline}{\color{Orange}}
