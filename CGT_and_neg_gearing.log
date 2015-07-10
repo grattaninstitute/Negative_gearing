@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  10 JUL 2015 14:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  10 JUL 2015 15:08
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -2429,13 +2429,17 @@ Package biblatex Info: Reference section=0 on input line 75.
 Package biblatex Info: Reference segment=0 on input line 75.
  (package_cite_input.tex)
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <20.74> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 83.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 99.
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 83.
- (CGT_and_neg_gearing.toc)
-\tf@toc=\write8
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 99.
  [3
 
+
+
+
+] (CGT_and_neg_gearing.toc)
+\tf@toc=\write8
+ [4
 
 
 ]
@@ -2443,40 +2447,36 @@ LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
 \tf@lof=\write9
  (CGT_and_neg_gearing.loboxe)
 \tf@loboxe=\write10
- [4
-
-] [5
-
-
+ [5
 
 ]
 Chapter 1.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 114.
+(Font)              <9> on input line 119.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 114.
+(Font)              <5> on input line 119.
 [6
 
 
 ]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 135.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 140.
 
-<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=156, 794.
+<figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=155, 794.
 97pt x 505.89pt>
 File: figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf Graphic 
 file (type pdf)
 
 <use figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>
 Package pdftex.def Info: figure/Majority_of_taxable_gains_are_earned_by_individ
-uals-1.pdf used on input line 136.
+uals-1.pdf used on input line 141.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 Package hyperref Info: bookmark level for unknown boxe defaults to 0 on input l
-ine 141.
+ine 146.
 [7] [8 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
 <figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf, id=
 219, 794.97pt x 505.89pt>
@@ -2485,7 +2485,7 @@ File: figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
 
 <use figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf>
 Package pdftex.def Info: figure/Nearly_eighty_per_cent_of_capital_gains_are_ear
-ned_by_those_-1.pdf used on input line 184.
+ned_by_those_-1.pdf used on input line 189.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 [9 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
 >]
@@ -2495,7 +2495,7 @@ File: figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf Graphic file (
 type pdf)
  <use figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf>
 Package pdftex.def Info: figure/ASX_Before_and_after_tax_returns_for_10_years-1
-.pdf used on input line 203.
+.pdf used on input line 208.
 (pdftex.def)             Requested size: 322.93883pt x 352.30215pt.
 
 [10 <./figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf>]
@@ -2505,7 +2505,7 @@ File: figure/Effective_marginal_tax_rates_are_lower-1.pdf Graphic file (type pd
 f)
  <use figure/Effective_marginal_tax_rates_are_lower-1.pdf>
 Package pdftex.def Info: figure/Effective_marginal_tax_rates_are_lower-1.pdf us
-ed on input line 236.
+ed on input line 241.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
  [11] [12 <./figure/Effective_marginal_tax_rates_are_lower-1.pdf>]
 <figure/Prob_of_CGevent_by_age_income-1.pdf, id=341, 794.97pt x 505.89pt>
@@ -2513,7 +2513,7 @@ File: figure/Prob_of_CGevent_by_age_income-1.pdf Graphic file (type pdf)
 
 <use figure/Prob_of_CGevent_by_age_income-1.pdf>
 Package pdftex.def Info: figure/Prob_of_CGevent_by_age_income-1.pdf used on inp
-ut line 262.
+ut line 267.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
  [13] [14 <./figure/Prob_of_CGevent_by_age_income-1.pdf>] [15]
 <figure/Age_negative_gearing_investments-1.pdf, id=405, 794.97pt x 722.7pt>
@@ -2521,7 +2521,7 @@ File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
 Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on 
-input line 305.
+input line 310.
 (pdftex.def)             Requested size: 322.93883pt x 293.58511pt.
  [16 <./figure/Age_negative_gearing_investments-1.pdf>]
 <figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=425, 794.97pt x 505.8
@@ -2530,26 +2530,26 @@ File: figure/Effective_tax_rates_depend_on_borrowing-1.pdf Graphic file (type p
 df)
  <use figure/Effective_tax_rates_depend_on_borrowing-1.pdf>
 Package pdftex.def Info: figure/Effective_tax_rates_depend_on_borrowing-1.pdf u
-sed on input line 329.
+sed on input line 334.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
  [17 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 343.
+ned on input line 348.
 
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 343.
+ned on input line 348.
 
 
-Package hyperref Warning: Suppressing link with empty target on input line 343.
+Package hyperref Warning: Suppressing link with empty target on input line 348.
 
 
 <figure/Net_rent_over_time-1.pdf, id=449, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
-Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 350
+Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 355
 .
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
  [18 <./figure/Net_rent_over_time-1.pdf>]
@@ -2557,22 +2557,22 @@ Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 350
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
-Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 375
+Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 380
 .
 (pdftex.def)             Requested size: 322.93883pt x 322.94363pt.
  [19 <./figure/Capital_city_rents-1.pdf>]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 389.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 394.
 
 <figure/Effect_of_Deductions-1.pdf, id=516, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
 Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 4
-04.
+09.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
-Underfull \hbox (badness 1478) in paragraph at lines 404--406
+Underfull \hbox (badness 1478) in paragraph at lines 409--411
 \T1/ua1/m/it/9/-4ls (+14) No\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/m/it/9/-4ls (+14
 ) es\T1/ua1/m/it/9/-4ls (+20) : T\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls
  (+20) x-\T1/ua1/m/it/9/-4ls (+14) ab\T1/ua1/m/it/9/-4ls (+20) l\T1/ua1/m/it/9/
@@ -2586,7 +2586,7 @@ Underfull \hbox (badness 1478) in paragraph at lines 404--406
  []
 
 [20] [21 <./figure/Effect_of_Deductions-1.pdf>] [22] [23] [24] [25]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 501.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 506.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
@@ -2597,31 +2597,31 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \vbox (badness 10000) detected at line 540
+Underfull \vbox (badness 10000) detected at line 545
  []
 
 
-Underfull \vbox (badness 10000) detected at line 540
+Underfull \vbox (badness 10000) detected at line 545
  []
 
 [26
 
 ] [27]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 544.
+(Font)              <10> on input line 549.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 544.
+(Font)              <7> on input line 549.
  [28
 
 
 ] [29] [30]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 545.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 545.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 550.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 550.
  [31
 
 ] (CGT_and_neg_gearing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 545.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 545.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 550.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 550.
 Package rerunfilecheck Info: File `CGT_and_neg_gearing.out' has not changed.
 (rerunfilecheck)             Checksum: 303FA550D2E912A63D3C6547341CC99B;629.
 
@@ -2631,7 +2631,7 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 545.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 550.
 
 Package biblatex Warning: Please rerun LaTeX.
 (biblatex)                Page breaks have changed.
@@ -2639,11 +2639,11 @@ Package biblatex Warning: Please rerun LaTeX.
 Package logreq Info: Writing requests to 'CGT_and_neg_gearing.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
- 45090 strings out of 493698
- 905648 string characters out of 3141998
- 1428013 words of memory out of 3000000
+ 45066 strings out of 493698
+ 905376 string characters out of 3141998
+ 1427013 words of memory out of 3000000
  46516 multiletter control sequences out of 15000+200000
- 374217 words of font info for 702 fonts, out of 3000000 for 9000
+ 369957 words of font info for 683 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  71i,21n,102p,10500b,1848s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
@@ -2658,7 +2658,7 @@ b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Program
 /fonts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type
 1/urw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial
 /ua1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (31 pages, 667040 bytes).
+Output written on CGT_and_neg_gearing.pdf (31 pages, 668870 bytes).
 PDF statistics:
  828 PDF objects out of 1000 (max. 8388607)
  213 named destinations out of 1000 (max. 500000)
