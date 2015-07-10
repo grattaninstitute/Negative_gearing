@@ -1,4 +1,6 @@
 \documentclass{grattan}
+\renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
+
 
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
@@ -457,7 +459,7 @@ Quarantining losses so they can only be written off against other investment inc
 
 An alternative option would align the tax rates for capital gains and losses.  For example, the capital gains discount could be reduced so that people paid tax on 70 per cent of their capital gains, but could claim only 70 per cent of any investment losses against wage and salary income. Treating capital gains and recurrent losses consistently would reduce the tax-driven incentive for borrowing to invest. It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
 
-The best way to transition to these new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump. This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
+The best way to transition to these new arrangements would be to phase them in over a number of years. Such a phase-in would help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump. This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
 
 \section{Capital gains enjoy preferential tax treatment relative to income from working}
 Capital gains are taxed as part of the income of individuals, companies and superannuation funds. In 2013-14, capital gains tax raised around \$7.5 billion, around three per cent of total income tax revenue.\footcite{Treasury2014a} 
@@ -508,7 +510,7 @@ The tax concession is a crude way to adjust for the effects of inflation. It res
 \end{smallbox}
 Before 1985, capital gains were not taxed in Australia. Since then, the tax treatment of capital gains has varied, but they are taxed at a lower rate than wage and salary income (\Vref{box:short_history_CGT}).  
 
-Under the current rules, net capital gains are included as part of assessable income.\footnote{Capital losses can only be offset against capital gains, not ordinary income. But if taxpayers are unable to utilise their capital losses is a particular year, they are carried forward to future years \textcite{ATO2014a}.}  For individuals and small businesses, 50 per cent of their capital gains are excluded from income if they hold the asset for more than one year. This means the effective tax rate paid on these gains is half the rate for other forms of income. For superannuation funds, a third of their gains are excluded. Large corporations pay tax on all of their capital gains at the corporate tax rate of 30 per cent.
+Under the current rules, net capital gains are included as part of assessable income.\footnote{Capital losses can only be offset against capital gains, not ordinary income. But if taxpayers are unable to utilise their capital losses is a particular year, they are carried forward to future years \textcite{ATO2014a}.}  For individuals and small businesses, 50 per cent of their capital gains are excluded from income if the assets are held for more than one year. This means the effective tax rate paid on these gains is half the rate for other forms of income. For superannuation funds, a third of the gains are excluded. Large corporations pay tax on all of their capital gains at the corporate tax rate of 30 per cent.
 
 Capital gains have other less explicit tax advantages compared to recurrent income. Investors control when they realise gains. Consequently, they can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  Indeed, the probability of a landlord selling a property increases by over 20 percentage points once they retire.\footnote{The Age Pension asset test also encourages those moving into retirement to sell their assets. \textcite{Wood2010a}.}
 Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan. (See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
@@ -563,8 +565,10 @@ both %T>%
   geom_bar(stat = "identity") + 
   facet_grid(~decile_of) + 
   scale_y_continuous(expand = list(c(0,0.1), c(0,0)), label = percent) + 
-  theme(strip.background = element_rect(fill = theGrey),
-        strip.text = element_text(color = "white", face = "bold")) + 
+  scale_fill_manual(values = gpal(2, T)) + 
+  theme(strip.background = element_rect(color = theGrey, size = 12, fill = theGrey),
+        strip.text = element_text(size = 23, color = "white", face = "bold", vjust = 0.8),
+        panel.margin.x = grid::unit(1, "lines")) + 
   xlab("Taxable income decile") 
 @
 \begin{figure}
@@ -597,7 +601,37 @@ A large fraction of gains are also earned by those would be in the bottom ten pe
 \subsubsection{The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}
 A lower tax rate for capital gains is sometimes justified on the basis that the effective tax rates on real returns can be high if nominal gains are taxed at marginal income tax rates.\footcite{Treasury2010} This is particularly true of investments with low real returns that are held for an extended period (\Vref{box:short_history_CGT}).
 
-The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. In the current low inflation environment, the 50 per cent discount overcompensates most investors.
+The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. As \Vref{fig:ASX_Before_and_after_tax_returns_for_10_years} shows, in the current low inflation environment, the 50 per cent discount overcompensates most investors.%% asx
+
+<<ASX_Before_and_after_tax_returns_for_10_years, fig.height=12, out.height="12in">>=
+read_excel("ASX_Returns_by_asset_class.xlsx") %>%
+  gather(tax_class, returnz, -`Asset class`) %>%
+  # cosmetics
+  mutate(returnz = returnz/100,
+         `Asset class` = gsub("\\s+", "\n", `Asset class`),
+         `Asset class` = gsub("Global\\n", "Global ", `Asset class`)) %>%
+
+  #
+  grplot(aes(y = returnz, x = `Asset class`, fill = tax_class)) + 
+  geom_bar(stat = "identity",
+           width = 0.8,
+           position = "dodge") + 
+  geom_hline(yintercept = 0.028, 
+             color = Orange, size = 2) + 
+  annotate("text", x = 2, y = 0.0299, 
+           hjust = 0,
+           label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
+           size = 7.14) + 
+  scale_y_continuous(expand = c(0,0), label = percent) + 
+  theme(panel.grid.major = element_blank(),
+        axis.title = element_blank()) + 
+  coord_flip()
+@
+\begin{figure}
+\Caption{After tax returns well exceed CPI for most asset classes, even for those in the top marginal tax bracket}
+{Returns (\%\ p.a.) in the 10 years to December 2013}{fig:ASX_Before_and_after_tax_returns_for_10_years}
+\includegraphics[width=\columnwidth]{figure/ASX_Before_and_after_tax_returns_for_10_years-1}
+\end{figure}
 
 % We don't include this chunk
 <<Survey-Income-Housing-assets,eval=FALSE,include=FALSE>>=
@@ -760,37 +794,85 @@ In contrast, if the investor chooses a term deposit paying 7 per cent a year and
 
 The capital gains tax discount magnifies the tax advantaged status of capital gains. 
 \eject
-<<Real_effective_marginal_tax_rates_are_lower>>=
+<<Effective_marginal_tax_rates_are_lower>>=
 effective_marginal <- function(asset.type = "term_deposit", years.maturity, nominal.return, inflation = NULL, marginal.rate = 0.465, cgt.discount = 0.50){
   if(asset.type == "term_deposit"){
-    function(years.maturity, nominal.return, inflation = inflation, marginal.rate = marginal.rate, cgt.discount = cgt.discount){
-      for (year in 1:years.maturity){
-        if (year == 1){
-          nominal.value <- (1 + nominal.return)
-          carry.forward.balance <- nominal.value
-          tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
-          return.residual <- carry.forward.balance - tax.on.interest - 1
-          nominal.value.post.tax <- nominal.value - tax.on.interest
-        } else {
-          nominal.value <- (1 + nominal.return)^year
-          previous.nominal.value.post.tax <- nominal.value.post.tax
-          carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
-          tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
-          return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
-          nominal.value.post.tax <- carry.forward.balance - tax.on.interest
-          annual.pretax.return <- nominal.value ^ (1 / year) - 1
-          annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
-          if (year == years.maturity){
-            return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
-          }
+    for (year in 1:years.maturity){
+      if (year == years.maturity)
+        return(marginal.rate)
+      else
+      if (year == 1){
+        nominal.value <- (1 + nominal.return)
+        carry.forward.balance <- nominal.value
+        tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
+        return.residual <- carry.forward.balance - tax.on.interest - 1
+        nominal.value.post.tax <- nominal.value - tax.on.interest
+      } else {
+        nominal.value <- (1 + nominal.return)^year
+        previous.nominal.value.post.tax <- nominal.value.post.tax
+        carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
+        tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
+        return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
+        nominal.value.post.tax <- carry.forward.balance - tax.on.interest
+        annual.pretax.return <- nominal.value ^ (1 / year) - 1
+        annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
+        if (year == years.maturity){
+          return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
         }
       }
     }
   }
+  #
+  if(asset.type == "property_noCGTdiscount"){
+    year = years.maturity
+    nominal.value.pretax <- (1+nominal.return)^year
+    tax.on.CG <- marginal.rate * (nominal.value.pretax - 1)
+    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
+    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
+    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
+    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
+  }
+  if(asset.type == "property_50CGTdiscount"){
+    year = years.maturity
+    nominal.value.pretax <- (1+nominal.return)^year
+    tax.on.CG <- marginal.rate * 0.5 * (nominal.value.pretax - 1)
+    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
+    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
+    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
+    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
+  }
 }
+
+data.frame(
+  year = 1:30
+) %>% 
+  tbl_df %>%
+  mutate(Term_deposit = effective_marginal(years.maturity = year, nominal.return = 0.07), 
+         Property_xxno_CGT_discountzz = effective_marginal(years.maturity = year, 
+                                                       nominal.return = 0.07, 
+                                                       asset.type = "property_noCGTdiscount"),
+         Property_xx50_CGT_discountzz = effective_marginal(years.maturity = year, 
+                                                       nominal.return = 0.07,
+                                                       asset.type = "property_50CGTdiscount")
+  ) %>%
+  gather(asset_type, returnz, -year) %>%
+  mutate(asset_type = gsub("xx", "(", asset_type),
+         asset_type = gsub("zz", ")", asset_type),
+         asset_type = gsub("_", " ", asset_type, fixed = TRUE)) ->
+  rates_data
+
+rates_data %T>%
+  chart_data %>%
+  mutate(asset_label = ifelse(year == 20, asset_type, NA)) %>%
+  #
+  grplot(aes(x = year, y = returnz, color = asset_type, group = asset_type, label = asset_label)) + 
+  geom_line() + 
+  geom_text(vjust = 1.3, hjust = 1, fontface = "bold", size = 7.14) + 
+  scale_y_continuous(label=percent, breaks = c(c(0:4)/10, 0.465)) +
+  xlab("Year of maturity")
 @
-\captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Real effective marginal tax rate}\label{fig:Real_effective_marginal_tax_rates_are_lower}
-\includegraphics[width=\columnwidth]{figure/Real_effective_marginal_tax_rates_are_lower-1}
+\captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Effective marginal tax rate}\label{fig:Effective_marginal_tax_rates_are_lower}
+\includegraphics[width=\columnwidth]{figure/Effective_marginal_tax_rates_are_lower-1}
 \source{Grattan analysis}
 \end{bigbox*}
 }
@@ -1198,7 +1280,8 @@ rbind(benefits_by_taxable_income_before_deductions, benefits_by_taxable_income) 
   scale_y_continuous(expand = c(0,0.00), limits = c(0,0.525), label=percent) + 
   #scale_y_continuous(expand = c(0,0), limits = c(0,3300), label = grattan_dollar) + 
   facet_grid(~Decile_of) + 
-  theme(strip.text = element_text(angle = 0,
+  theme(strip.text = element_text(angle = 0, vjust = 0.7,
+                                  size = 23,
                                   face = "bold", colour = "white"),
         strip.background = element_rect(fill = theGrey),
         panel.margin.x = unit(1, "lines"),
@@ -1227,7 +1310,7 @@ Reforms to capital gains tax or eligibility for negative gearing should apply to
 \subsubsection{Reducing the capital gains tax discount}
 Reducing the capital gains tax discount would make the investment tax regime more efficient and fair. 
 
-There are good arguments to abolish the capital gains tax discount altogether. It is not obvious why returns from investment should be taxed less that returns to working. And the differential tax rates create incentives for people to convert labour into capital income. 
+There are good arguments to abolish the capital gains tax discount altogether. It is not obvious why returns from investment should be taxed less that returns from working. And the differential tax rates create incentives for people to convert labour into capital income. 
 
 But the arguments advanced for maintaining concessional treatment of gains sound a word of caution. While there is no compelling evidence that changes in tax rates materially change savings and investment behaviour, most studies examining these issues look at changes in behaviour in response to relatively modest changes in tax rates. Eliminating the capital gains tax discount would at least double the effective tax rate paid on capital returns. No OECD country taxes capital gains at full marginal tax rates in all circumstances.\footnote{OECD note} 
 
