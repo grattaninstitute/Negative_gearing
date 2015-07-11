@@ -4,7 +4,7 @@
 
 \title{Negative gearing and the capital gains discount}
 \usepackage[normalem]{ulem}
-\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.4ex]{2pt}{3pt}}}\ULon}
+\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{0.6pt}}}\ULon}
 \author{\redsout{John Daley and Danielle Wood}}
 
 \addbibresource{bibliography.bib}
@@ -28,25 +28,7 @@
 \begin{document}
 \clearpage
 %\chapter{Distribution of negative gearing}
-<<minimal_preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
-      my_emf <- function(file, width, height){
-        devEMF::emf(file, width=width, height=height,
-                    family = "Arial")
-      }
-      
-      # knitr chunk opts
-      # fig.width must = out.width and same for *.height
-      knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
-                            out.width="11.000in", out.height="7.00in", 
-                            fig.show='hide',echo=FALSE,
-                            message=FALSE, warning=FALSE
-                            ,cache=TRUE
-                            ,dev=c('pdf', 'my_emf')
-                            ,fig.ext = c("pdf", "emf")
-      )
-@
-
-<<preamble, cache=F, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
+<<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 library(data.table)
 library(dplyr)
 library(tidyr)
@@ -70,9 +52,25 @@ library(foreign)
 library(Hmisc)
 library(devtools)
 library(grattan)
-# temp issues with library(XLConnect)
+library(XLConnect)
 #devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
 
+
+      my_emf <- function(file, width, height){
+        devEMF::emf(file, width=width, height=height,
+                    family = "Arial")
+      }
+      
+      # knitr chunk opts
+      # fig.width must = out.width and same for *.height
+      knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                            out.width="11.000in", out.height="7.00in", 
+                            fig.show='hide',echo=FALSE,
+                            message=FALSE, warning=FALSE
+                            ,cache=TRUE
+                            ,dev=c('pdf', 'my_emf')
+                            ,fig.ext = c("pdf", "emf")
+      )
       # for asymmetric expansion of limits
       scale_dimension.custom_expand <- function(scale, expand = ggplot2:::scale_expand(scale)) {
         expand_range(ggplot2:::scale_limits(scale), expand[[1]], expand[[2]])
@@ -459,11 +457,11 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 \begin{summary}
-This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly. This is a test sentence.
+This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly.
 
-What will you do with this?
+When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain. Currently only half the income from a capital gain forms part of the seller's taxable income. Whilst the asset is accruing gains, any costs incurred (like interest payments)  can be fully deducted -- and it can be deducted against income which may be totally unrelated to holding or improving the asset.
 
-When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain. Currently only half the income from a capital gain forms part of the seller's taxable income. Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
+Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
 
 The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year.} Deductions for rental losses result in over \highlight{\$\Sexpr{NG.tx.exp}~billion} in foregone revenue each year. These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives. Losses can be written off in full while only half the gains are taxed. Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
 

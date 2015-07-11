@@ -3,7 +3,9 @@
 
 
 \title{Negative gearing and the capital gains discount}
-\author{John Daley and Danielle Wood}
+\usepackage[normalem]{ulem}
+\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{0.6pt}}}\ULon}
+\author{\redsout{John Daley and Danielle Wood}}
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
@@ -18,7 +20,7 @@
 
 \newcommand{\Act}[2]{\emph{#1} (#2)}
 \newcommand{\EMPH}[1]{\textbf{#1}}
-\newcommand{\highlight}[1]{\emph{#1}}
+\newcommand{\highlight}[1]{\textbf{#1}}
 
 \usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
 \AtBeginEnvironment{quote}{\smaller}
@@ -90,8 +92,6 @@ write(package_cite_input, file = "package_cite_input.tex")
 % citations
 \input{package_cite_input}
 \raggedbottom
-\setcounter{tocdepth}{1}
-\contentspage
 
 %%% Costings analysis
 <<paths_to_sample_files>>=
@@ -450,21 +450,31 @@ fread(sample_file_of(2013)) %>%
   mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt)),
          diff = new_tax - income_tax(Taxable_Income)) %$%
   sum(diff) * 50 /1e9 %>%
-  round(.,1) ->
+  round(1) ->
   NG.tx.exp
+
 NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 \begin{summary}
-The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year.} Deductions for rental losses result in over \highlight{\$\Sexpr{NG.tx.exp}~billion} in foregone revenue each year. These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives. Losses can be fully written off in full while only half the gains are taxed. Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
+This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly.
 
-As a consequence property prices have soared.
+When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain. Currently only half the income from a capital gain forms part of the seller's taxable income. Whilst the asset is accruing gains, any costs incurred  can be fully deducted -- and it can be deducted against income which may be totally unrelated to holding or improving the asset.
+
+Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
+
+The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year.} Deductions for rental losses result in over \highlight{\$\Sexpr{NG.tx.exp}~billion} in foregone revenue each year. These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives. Losses can be written off in full while only half the gains are taxed. Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
+
+As a consequence property prices have soared, revenue has leaked, and economic investments have been neglected. 
 
 There is no reason to maintain such a wide gulf between the treatment of gains and losses. The Commonwealth Government's primary goal should be to narrow this gulf.
 
 Reducing the capital gains discount and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion a year in the short-term.
 \end{summary}
 
+%%%
+\setcounter{tocdepth}{1}
+\contentspage
 %%%
 
 \chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
@@ -637,13 +647,15 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   geom_bar(stat = "identity",
            position = "dodge") + 
   geom_hline(yintercept = 0.028, 
-             color = Orange, size = 2) + 
+             color = theGrey, size = 2) + 
   annotate("text", x = 2, y = 0.0299, 
            hjust = 0,
-           label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
+           label = "CPI (2.8% p.a.)", color = theGrey, fontface = "bold",
            size = 7.14) + 
-  scale_y_continuous(expand = c(0,0), label = percent) + 
-  theme(panel.grid.major = element_blank()) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,0.1), label = percent) + 
+  theme(panel.grid.major = element_blank(),
+        plot.margin = grid::unit(c(0.7,2.2,0.1,0.1), "lines"),
+        axis.title = element_blank()) + 
   coord_flip()
 @
 \begin{figure}
