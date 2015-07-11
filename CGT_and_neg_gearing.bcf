@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bcf:controlfile version="2.6" xmlns:bcf="https://sourceforge.net/projects/biblatex">
+<bcf:controlfile version="2.7" xmlns:bcf="https://sourceforge.net/projects/biblatex">
   <!-- BIBER OPTIONS -->
   <bcf:options component="biber" type="global">
     <bcf:option type="singlevalued">
@@ -132,7 +132,27 @@
       <bcf:value>2</bcf:value>
     </bcf:option>
     <bcf:option type="singlevalued">
+      <bcf:key>useprefix</bcf:key>
+      <bcf:value>0</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useafterword</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useannotator</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
       <bcf:key>useauthor</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>usebookauthor</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>usecommentator</bcf:key>
       <bcf:value>1</bcf:value>
     </bcf:option>
     <bcf:option type="singlevalued">
@@ -140,14 +160,263 @@
       <bcf:value>1</bcf:value>
     </bcf:option>
     <bcf:option type="singlevalued">
-      <bcf:key>useprefix</bcf:key>
-      <bcf:value>0</bcf:value>
+      <bcf:key>useeditora</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useeditorb</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useeditorc</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useforeword</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useholder</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useintroduction</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>usenamea</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>usenameb</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>usenamec</bcf:key>
+      <bcf:value>1</bcf:value>
     </bcf:option>
     <bcf:option type="singlevalued">
       <bcf:key>usetranslator</bcf:key>
       <bcf:value>0</bcf:value>
     </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useshortauthor</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
+    <bcf:option type="singlevalued">
+      <bcf:key>useshorteditor</bcf:key>
+      <bcf:value>1</bcf:value>
+    </bcf:option>
   </bcf:options>
+  <!-- BIBLATEX OPTION SCOPE -->
+  <bcf:optionscope type="GLOBAL">
+    <bcf:option>alphaothers</bcf:option>
+    <bcf:option>sortalphaothers</bcf:option>
+    <bcf:option>controlversion</bcf:option>
+    <bcf:option>datamodel</bcf:option>
+    <bcf:option>useafterword</bcf:option>
+    <bcf:option>useannotator</bcf:option>
+    <bcf:option>useauthor</bcf:option>
+    <bcf:option>usebookauthor</bcf:option>
+    <bcf:option>usecommentator</bcf:option>
+    <bcf:option>useeditor</bcf:option>
+    <bcf:option>useeditora</bcf:option>
+    <bcf:option>useeditorb</bcf:option>
+    <bcf:option>useeditorc</bcf:option>
+    <bcf:option>useforeword</bcf:option>
+    <bcf:option>useholder</bcf:option>
+    <bcf:option>useintroduction</bcf:option>
+    <bcf:option>usenamea</bcf:option>
+    <bcf:option>usenameb</bcf:option>
+    <bcf:option>usenamec</bcf:option>
+    <bcf:option>usetranslator</bcf:option>
+    <bcf:option>useshortauthor</bcf:option>
+    <bcf:option>useshorteditor</bcf:option>
+    <bcf:option>labelalphatemplate</bcf:option>
+    <bcf:option>inheritance</bcf:option>
+    <bcf:option>sortscheme</bcf:option>
+    <bcf:option>presort</bcf:option>
+    <bcf:option>labelnamespec</bcf:option>
+    <bcf:option>labeltitlespec</bcf:option>
+    <bcf:option>labeldatespec</bcf:option>
+    <bcf:option>backend</bcf:option>
+    <bcf:option>debug</bcf:option>
+    <bcf:option>loadfiles</bcf:option>
+    <bcf:option>mincrossrefs</bcf:option>
+    <bcf:option>texencoding</bcf:option>
+    <bcf:option>bibencoding</bcf:option>
+    <bcf:option>safeinputenc</bcf:option>
+    <bcf:option>sorting</bcf:option>
+    <bcf:option>sortcase</bcf:option>
+    <bcf:option>sortupper</bcf:option>
+    <bcf:option>sortlos</bcf:option>
+    <bcf:option>maxnames</bcf:option>
+    <bcf:option>minnames</bcf:option>
+    <bcf:option>maxbibnames</bcf:option>
+    <bcf:option>minbibnames</bcf:option>
+    <bcf:option>maxcitenames</bcf:option>
+    <bcf:option>mincitenames</bcf:option>
+    <bcf:option>maxitems</bcf:option>
+    <bcf:option>minitems</bcf:option>
+    <bcf:option>maxalphanames</bcf:option>
+    <bcf:option>minalphanames</bcf:option>
+    <bcf:option>terseinits</bcf:option>
+    <bcf:option>firstinits</bcf:option>
+    <bcf:option>sortfirstinits</bcf:option>
+    <bcf:option>abbreviate</bcf:option>
+    <bcf:option>dateabbrev</bcf:option>
+    <bcf:option>sortlocale</bcf:option>
+    <bcf:option>language</bcf:option>
+    <bcf:option>clearlang</bcf:option>
+    <bcf:option>babel</bcf:option>
+    <bcf:option>autolang</bcf:option>
+    <bcf:option>indexing</bcf:option>
+    <bcf:option>sortcites</bcf:option>
+    <bcf:option>hyperref</bcf:option>
+    <bcf:option>backref</bcf:option>
+    <bcf:option>backrefsetstyle</bcf:option>
+    <bcf:option>block</bcf:option>
+    <bcf:option>pagetracker</bcf:option>
+    <bcf:option>citecounter</bcf:option>
+    <bcf:option>citetracker</bcf:option>
+    <bcf:option>ibidtracker</bcf:option>
+    <bcf:option>idemtracker</bcf:option>
+    <bcf:option>opcittracker</bcf:option>
+    <bcf:option>loccittracker</bcf:option>
+    <bcf:option>parentracker</bcf:option>
+    <bcf:option>maxparens</bcf:option>
+    <bcf:option>date</bcf:option>
+    <bcf:option>datelabel</bcf:option>
+    <bcf:option>urldate</bcf:option>
+    <bcf:option>eventdate</bcf:option>
+    <bcf:option>origdate</bcf:option>
+    <bcf:option>alldates</bcf:option>
+    <bcf:option>datezeros</bcf:option>
+    <bcf:option>autocite</bcf:option>
+    <bcf:option>notetype</bcf:option>
+    <bcf:option>autopunct</bcf:option>
+    <bcf:option>punctfont</bcf:option>
+    <bcf:option>labelnumber</bcf:option>
+    <bcf:option>labelalpha</bcf:option>
+    <bcf:option>labeltitle</bcf:option>
+    <bcf:option>labeltitleyear</bcf:option>
+    <bcf:option>labeldate</bcf:option>
+    <bcf:option>labelyear</bcf:option>
+    <bcf:option>uniquelist</bcf:option>
+    <bcf:option>uniquename</bcf:option>
+    <bcf:option>singletitle</bcf:option>
+    <bcf:option>defernumbers</bcf:option>
+    <bcf:option>refsection</bcf:option>
+    <bcf:option>refsegment</bcf:option>
+    <bcf:option>citereset</bcf:option>
+    <bcf:option>bibwarn</bcf:option>
+    <bcf:option>useprefix</bcf:option>
+    <bcf:option>defernums</bcf:option>
+    <bcf:option>backrefstyle</bcf:option>
+    <bcf:option>arxiv</bcf:option>
+    <bcf:option>isbn</bcf:option>
+    <bcf:option>url</bcf:option>
+    <bcf:option>doi</bcf:option>
+    <bcf:option>eprint</bcf:option>
+    <bcf:option>related</bcf:option>
+    <bcf:option>dashed</bcf:option>
+    <bcf:option>mergedate</bcf:option>
+    <bcf:option>ibidpage</bcf:option>
+  </bcf:optionscope>
+  <bcf:optionscope type="PER_TYPE">
+    <bcf:option>alphaothers</bcf:option>
+    <bcf:option>sortalphaothers</bcf:option>
+    <bcf:option>useafterword</bcf:option>
+    <bcf:option>useannotator</bcf:option>
+    <bcf:option>useauthor</bcf:option>
+    <bcf:option>usebookauthor</bcf:option>
+    <bcf:option>usecommentator</bcf:option>
+    <bcf:option>useeditor</bcf:option>
+    <bcf:option>useeditora</bcf:option>
+    <bcf:option>useeditorb</bcf:option>
+    <bcf:option>useeditorc</bcf:option>
+    <bcf:option>useforeword</bcf:option>
+    <bcf:option>useholder</bcf:option>
+    <bcf:option>useintroduction</bcf:option>
+    <bcf:option>usenamea</bcf:option>
+    <bcf:option>usenameb</bcf:option>
+    <bcf:option>usenamec</bcf:option>
+    <bcf:option>usetranslator</bcf:option>
+    <bcf:option>useshortauthor</bcf:option>
+    <bcf:option>useshorteditor</bcf:option>
+    <bcf:option>labelalphatemplate</bcf:option>
+    <bcf:option>presort</bcf:option>
+    <bcf:option>sortexclusion</bcf:option>
+    <bcf:option>labelnamespec</bcf:option>
+    <bcf:option>labeltitlespec</bcf:option>
+    <bcf:option>labeldatespec</bcf:option>
+    <bcf:option>maxnames</bcf:option>
+    <bcf:option>minnames</bcf:option>
+    <bcf:option>maxbibnames</bcf:option>
+    <bcf:option>minbibnames</bcf:option>
+    <bcf:option>maxcitenames</bcf:option>
+    <bcf:option>mincitenames</bcf:option>
+    <bcf:option>maxitems</bcf:option>
+    <bcf:option>minitems</bcf:option>
+    <bcf:option>maxalphanames</bcf:option>
+    <bcf:option>minalphanames</bcf:option>
+    <bcf:option>indexing</bcf:option>
+    <bcf:option>labelnumber</bcf:option>
+    <bcf:option>labelalpha</bcf:option>
+    <bcf:option>labeltitle</bcf:option>
+    <bcf:option>labeltitleyear</bcf:option>
+    <bcf:option>labeldate</bcf:option>
+    <bcf:option>labelyear</bcf:option>
+    <bcf:option>uniquelist</bcf:option>
+    <bcf:option>uniquename</bcf:option>
+    <bcf:option>singletitle</bcf:option>
+    <bcf:option>useprefix</bcf:option>
+    <bcf:option>skipbib</bcf:option>
+    <bcf:option>skiplos</bcf:option>
+    <bcf:option>skipbiblist</bcf:option>
+    <bcf:option>skiplab</bcf:option>
+    <bcf:option>dataonly</bcf:option>
+  </bcf:optionscope>
+  <bcf:optionscope type="PER_ENTRY">
+    <bcf:option>useafterword</bcf:option>
+    <bcf:option>useannotator</bcf:option>
+    <bcf:option>useauthor</bcf:option>
+    <bcf:option>usebookauthor</bcf:option>
+    <bcf:option>usecommentator</bcf:option>
+    <bcf:option>useeditor</bcf:option>
+    <bcf:option>useeditora</bcf:option>
+    <bcf:option>useeditorb</bcf:option>
+    <bcf:option>useeditorc</bcf:option>
+    <bcf:option>useforeword</bcf:option>
+    <bcf:option>useholder</bcf:option>
+    <bcf:option>useintroduction</bcf:option>
+    <bcf:option>usenamea</bcf:option>
+    <bcf:option>usenameb</bcf:option>
+    <bcf:option>usenamec</bcf:option>
+    <bcf:option>usetranslator</bcf:option>
+    <bcf:option>useshortauthor</bcf:option>
+    <bcf:option>useshorteditor</bcf:option>
+    <bcf:option>presort</bcf:option>
+    <bcf:option>maxnames</bcf:option>
+    <bcf:option>minnames</bcf:option>
+    <bcf:option>maxbibnames</bcf:option>
+    <bcf:option>minbibnames</bcf:option>
+    <bcf:option>maxcitenames</bcf:option>
+    <bcf:option>mincitenames</bcf:option>
+    <bcf:option>maxitems</bcf:option>
+    <bcf:option>minitems</bcf:option>
+    <bcf:option>maxalphanames</bcf:option>
+    <bcf:option>minalphanames</bcf:option>
+    <bcf:option>indexing</bcf:option>
+    <bcf:option>uniquelist</bcf:option>
+    <bcf:option>uniquename</bcf:option>
+    <bcf:option>useprefix</bcf:option>
+    <bcf:option>skipbib</bcf:option>
+    <bcf:option>skiplos</bcf:option>
+    <bcf:option>skipbiblist</bcf:option>
+    <bcf:option>skiplab</bcf:option>
+    <bcf:option>dataonly</bcf:option>
+  </bcf:optionscope>
   <!-- SOURCEMAP -->
   <bcf:sourcemap>
     <bcf:maps datatype="bibtex" level="driver">
@@ -1969,124 +2238,118 @@
     <bcf:datasource type="file" datatype="bibtex">bibliography2.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">R-XLConnect</bcf:citekey>
-    <bcf:citekey order="2">R-XLConnectJars</bcf:citekey>
-    <bcf:citekey order="3">R-devtools</bcf:citekey>
-    <bcf:citekey order="4">R-Hmisc</bcf:citekey>
-    <bcf:citekey order="5">R-Formula</bcf:citekey>
-    <bcf:citekey order="6">R-survival</bcf:citekey>
-    <bcf:citekey order="7">R-lattice</bcf:citekey>
-    <bcf:citekey order="8">R-survey</bcf:citekey>
-    <bcf:citekey order="9">R-foreign</bcf:citekey>
-    <bcf:citekey order="10">R-proto</bcf:citekey>
-    <bcf:citekey order="11">R-parallelRandomForest</bcf:citekey>
-    <bcf:citekey order="12">R-foreach</bcf:citekey>
-    <bcf:citekey order="13">R-randomForest</bcf:citekey>
-    <bcf:citekey order="14">R-zoo</bcf:citekey>
-    <bcf:citekey order="15">R-httr</bcf:citekey>
-    <bcf:citekey order="16">R-rsdmx</bcf:citekey>
-    <bcf:citekey order="17">R-readr</bcf:citekey>
-    <bcf:citekey order="18">R-readxl</bcf:citekey>
-    <bcf:citekey order="19">R-xtable</bcf:citekey>
-    <bcf:citekey order="20">R-grattan</bcf:citekey>
-    <bcf:citekey order="21">R-directlabels</bcf:citekey>
-    <bcf:citekey order="22">R-quadprog</bcf:citekey>
-    <bcf:citekey order="23">R-scales</bcf:citekey>
-    <bcf:citekey order="24">R-ggplot2</bcf:citekey>
-    <bcf:citekey order="25">R-gridExtra</bcf:citekey>
-    <bcf:citekey order="26">R-devEMF</bcf:citekey>
-    <bcf:citekey order="27">R-car</bcf:citekey>
-    <bcf:citekey order="28">R-magrittr</bcf:citekey>
-    <bcf:citekey order="29">R-tidyr</bcf:citekey>
-    <bcf:citekey order="30">R-dplyr</bcf:citekey>
-    <bcf:citekey order="31">R-data.table</bcf:citekey>
-    <bcf:citekey order="32">R-knitr</bcf:citekey>
-    <bcf:citekey order="33">Daley2013</bcf:citekey>
-    <bcf:citekey order="34">Treasury2015a</bcf:citekey>
-    <bcf:citekey order="35">Treasury2014a</bcf:citekey>
-    <bcf:citekey order="36">ATOCapitalGainsByType</bcf:citekey>
-    <bcf:citekey order="37">Evans2005</bcf:citekey>
-    <bcf:citekey order="38">Kenny2005</bcf:citekey>
-    <bcf:citekey order="39">BusinessTaxation1999</bcf:citekey>
-    <bcf:citekey order="40">ATO2014a</bcf:citekey>
-    <bcf:citekey order="41">Wood2010a</bcf:citekey>
-    <bcf:citekey order="42">Harding2013</bcf:citekey>
-    <bcf:citekey order="43">Harding2013</bcf:citekey>
-    <bcf:citekey order="44">prebble2010tax</bcf:citekey>
-    <bcf:citekey order="45">Evans2005</bcf:citekey>
-    <bcf:citekey order="46">Minas2013</bcf:citekey>
-    <bcf:citekey order="47">OECD2006b</bcf:citekey>
-    <bcf:citekey order="48">Ingles2009</bcf:citekey>
-    <bcf:citekey order="49">Minas2013</bcf:citekey>
-    <bcf:citekey order="50">ATO2013i</bcf:citekey>
-    <bcf:citekey order="51">Treasury2010</bcf:citekey>
-    <bcf:citekey order="52">Fane2004</bcf:citekey>
-    <bcf:citekey order="53">Ingles2009</bcf:citekey>
-    <bcf:citekey order="54">Burman2009</bcf:citekey>
-    <bcf:citekey order="55">Commission2004</bcf:citekey>
-    <bcf:citekey order="56">Burman1999</bcf:citekey>
-    <bcf:citekey order="57">ATO2014e</bcf:citekey>
-    <bcf:citekey order="58">Engen1996</bcf:citekey>
-    <bcf:citekey order="59">OECD2007</bcf:citekey>
-    <bcf:citekey order="60">chetty2013subsidies</bcf:citekey>
-    <bcf:citekey order="61">chetty2013subsidies</bcf:citekey>
-    <bcf:citekey order="62">Antolin</bcf:citekey>
-    <bcf:citekey order="63">Ingles2009</bcf:citekey>
-    <bcf:citekey order="64">Burman2009</bcf:citekey>
-    <bcf:citekey order="65">Ingles2009</bcf:citekey>
-    <bcf:citekey order="66">Lindsey1987</bcf:citekey>
-    <bcf:citekey order="67">OECD2006b</bcf:citekey>
-    <bcf:citekey order="68">Johnson2008</bcf:citekey>
-    <bcf:citekey order="69">Wood2010a</bcf:citekey>
-    <bcf:citekey order="70">ATO2013i</bcf:citekey>
-    <bcf:citekey order="71">ABS2013</bcf:citekey>
-    <bcf:citekey order="72">Burman2009</bcf:citekey>
-    <bcf:citekey order="73">OECD2006a</bcf:citekey>
-    <bcf:citekey order="74">Commission2004</bcf:citekey>
-    <bcf:citekey order="75">Burman2009</bcf:citekey>
-    <bcf:citekey order="76">Ingles2009</bcf:citekey>
-    <bcf:citekey order="77">Treasury2010</bcf:citekey>
-    <bcf:citekey order="78">Fane2004</bcf:citekey>
-    <bcf:citekey order="79">IRS2015</bcf:citekey>
-    <bcf:citekey order="80">RBA2014</bcf:citekey>
-    <bcf:citekey order="81">Commission2004</bcf:citekey>
-    <bcf:citekey order="82">ODonnell2005</bcf:citekey>
-    <bcf:citekey order="83">ATO2013i</bcf:citekey>
-    <bcf:citekey order="84">Wood2010a</bcf:citekey>
-    <bcf:citekey order="85">RBA2014</bcf:citekey>
-    <bcf:citekey order="86">seelig2009understanding</bcf:citekey>
-    <bcf:citekey order="87">Burman1999</bcf:citekey>
-    <bcf:citekey order="88">seelig2009understanding</bcf:citekey>
-    <bcf:citekey order="89">Eslake2013</bcf:citekey>
-    <bcf:citekey order="90">Treasury2015a</bcf:citekey>
-    <bcf:citekey order="91">Treasury2015a</bcf:citekey>
-    <bcf:citekey order="92">RBA2015</bcf:citekey>
-    <bcf:citekey order="93">Commission2004</bcf:citekey>
-    <bcf:citekey order="94">RBA2014</bcf:citekey>
-    <bcf:citekey order="95">Commission2004</bcf:citekey>
-    <bcf:citekey order="96">Treasury2010</bcf:citekey>
-    <bcf:citekey order="97">Inquiry2015</bcf:citekey>
-    <bcf:citekey order="98">badcock1991responsiveness</bcf:citekey>
-    <bcf:citekey order="99">Daley2013</bcf:citekey>
-    <bcf:citekey order="100">ABS2015</bcf:citekey>
-    <bcf:citekey order="101">Kelly2011</bcf:citekey>
-    <bcf:citekey order="102">Kelly2013</bcf:citekey>
-    <bcf:citekey order="103">Kelly2015</bcf:citekey>
-    <bcf:citekey order="104">Treasury2010b</bcf:citekey>
-    <bcf:citekey order="105">Inquiry2014</bcf:citekey>
-    <bcf:citekey order="106">RBA2015</bcf:citekey>
-    <bcf:citekey order="107">HILDA2015</bcf:citekey>
-    <bcf:citekey order="108">ATO2013i</bcf:citekey>
-    <bcf:citekey order="109">Commission2004</bcf:citekey>
-    <bcf:citekey order="110">Stewart2015</bcf:citekey>
-    <bcf:citekey order="111">PBO2014</bcf:citekey>
-    <bcf:citekey order="112">McKell</bcf:citekey>
-    <bcf:citekey order="113">ACIL2015</bcf:citekey>
-    <bcf:citekey order="114">Treasury2010</bcf:citekey>
-    <bcf:citekey order="115">Treasury2010</bcf:citekey>
-    <bcf:citekey order="116">Treasury2010</bcf:citekey>
-    <bcf:citekey order="117">Daley2014</bcf:citekey>
-    <bcf:citekey order="118">Daley2014</bcf:citekey>
+    <bcf:citekey order="1">R-devtools</bcf:citekey>
+    <bcf:citekey order="2">R-Hmisc</bcf:citekey>
+    <bcf:citekey order="3">R-Formula</bcf:citekey>
+    <bcf:citekey order="4">R-survival</bcf:citekey>
+    <bcf:citekey order="5">R-lattice</bcf:citekey>
+    <bcf:citekey order="6">R-survey</bcf:citekey>
+    <bcf:citekey order="7">R-foreign</bcf:citekey>
+    <bcf:citekey order="8">R-zoo</bcf:citekey>
+    <bcf:citekey order="9">R-httr</bcf:citekey>
+    <bcf:citekey order="10">R-rsdmx</bcf:citekey>
+    <bcf:citekey order="11">R-readr</bcf:citekey>
+    <bcf:citekey order="12">R-readxl</bcf:citekey>
+    <bcf:citekey order="13">R-xtable</bcf:citekey>
+    <bcf:citekey order="14">R-grattan</bcf:citekey>
+    <bcf:citekey order="15">R-directlabels</bcf:citekey>
+    <bcf:citekey order="16">R-quadprog</bcf:citekey>
+    <bcf:citekey order="17">R-scales</bcf:citekey>
+    <bcf:citekey order="18">R-ggplot2</bcf:citekey>
+    <bcf:citekey order="19">R-gridExtra</bcf:citekey>
+    <bcf:citekey order="20">R-devEMF</bcf:citekey>
+    <bcf:citekey order="21">R-car</bcf:citekey>
+    <bcf:citekey order="22">R-magrittr</bcf:citekey>
+    <bcf:citekey order="23">R-tidyr</bcf:citekey>
+    <bcf:citekey order="24">R-dplyr</bcf:citekey>
+    <bcf:citekey order="25">R-data.table</bcf:citekey>
+    <bcf:citekey order="26">R-knitr</bcf:citekey>
+    <bcf:citekey order="27">Daley2013</bcf:citekey>
+    <bcf:citekey order="28">Treasury2015a</bcf:citekey>
+    <bcf:citekey order="29">Treasury2014a</bcf:citekey>
+    <bcf:citekey order="30">ATOCapitalGainsByType</bcf:citekey>
+    <bcf:citekey order="31">Evans2005</bcf:citekey>
+    <bcf:citekey order="32">Kenny2005</bcf:citekey>
+    <bcf:citekey order="33">BusinessTaxation1999</bcf:citekey>
+    <bcf:citekey order="34">ATO2014a</bcf:citekey>
+    <bcf:citekey order="35">Wood2010a</bcf:citekey>
+    <bcf:citekey order="36">Harding2013</bcf:citekey>
+    <bcf:citekey order="37">Harding2013</bcf:citekey>
+    <bcf:citekey order="38">prebble2010tax</bcf:citekey>
+    <bcf:citekey order="39">Evans2005</bcf:citekey>
+    <bcf:citekey order="40">Minas2013</bcf:citekey>
+    <bcf:citekey order="41">OECD2006b</bcf:citekey>
+    <bcf:citekey order="42">Ingles2009</bcf:citekey>
+    <bcf:citekey order="43">Minas2013</bcf:citekey>
+    <bcf:citekey order="44">ATO2013i</bcf:citekey>
+    <bcf:citekey order="45">Treasury2010</bcf:citekey>
+    <bcf:citekey order="46">Fane2004</bcf:citekey>
+    <bcf:citekey order="47">Ingles2009</bcf:citekey>
+    <bcf:citekey order="48">Burman2009</bcf:citekey>
+    <bcf:citekey order="49">Commission2004</bcf:citekey>
+    <bcf:citekey order="50">Burman1999</bcf:citekey>
+    <bcf:citekey order="51">ATO2014e</bcf:citekey>
+    <bcf:citekey order="52">Engen1996</bcf:citekey>
+    <bcf:citekey order="53">OECD2007</bcf:citekey>
+    <bcf:citekey order="54">chetty2013subsidies</bcf:citekey>
+    <bcf:citekey order="55">chetty2013subsidies</bcf:citekey>
+    <bcf:citekey order="56">Antolin</bcf:citekey>
+    <bcf:citekey order="57">Ingles2009</bcf:citekey>
+    <bcf:citekey order="58">Burman2009</bcf:citekey>
+    <bcf:citekey order="59">Ingles2009</bcf:citekey>
+    <bcf:citekey order="60">Lindsey1987</bcf:citekey>
+    <bcf:citekey order="61">OECD2006b</bcf:citekey>
+    <bcf:citekey order="62">Johnson2008</bcf:citekey>
+    <bcf:citekey order="63">Wood2010a</bcf:citekey>
+    <bcf:citekey order="64">ATO2013i</bcf:citekey>
+    <bcf:citekey order="65">ABS2013</bcf:citekey>
+    <bcf:citekey order="66">Burman2009</bcf:citekey>
+    <bcf:citekey order="67">OECD2006a</bcf:citekey>
+    <bcf:citekey order="68">Commission2004</bcf:citekey>
+    <bcf:citekey order="69">Burman2009</bcf:citekey>
+    <bcf:citekey order="70">Ingles2009</bcf:citekey>
+    <bcf:citekey order="71">Treasury2010</bcf:citekey>
+    <bcf:citekey order="72">Fane2004</bcf:citekey>
+    <bcf:citekey order="73">IRS2015</bcf:citekey>
+    <bcf:citekey order="74">RBA2014</bcf:citekey>
+    <bcf:citekey order="75">Commission2004</bcf:citekey>
+    <bcf:citekey order="76">ODonnell2005</bcf:citekey>
+    <bcf:citekey order="77">ATO2013i</bcf:citekey>
+    <bcf:citekey order="78">Wood2010a</bcf:citekey>
+    <bcf:citekey order="79">RBA2014</bcf:citekey>
+    <bcf:citekey order="80">seelig2009understanding</bcf:citekey>
+    <bcf:citekey order="81">Burman1999</bcf:citekey>
+    <bcf:citekey order="82">seelig2009understanding</bcf:citekey>
+    <bcf:citekey order="83">Eslake2013</bcf:citekey>
+    <bcf:citekey order="84">Treasury2015a</bcf:citekey>
+    <bcf:citekey order="85">Treasury2015a</bcf:citekey>
+    <bcf:citekey order="86">RBA2015</bcf:citekey>
+    <bcf:citekey order="87">Commission2004</bcf:citekey>
+    <bcf:citekey order="88">RBA2014</bcf:citekey>
+    <bcf:citekey order="89">Commission2004</bcf:citekey>
+    <bcf:citekey order="90">Treasury2010</bcf:citekey>
+    <bcf:citekey order="91">Inquiry2015</bcf:citekey>
+    <bcf:citekey order="92">badcock1991responsiveness</bcf:citekey>
+    <bcf:citekey order="93">Daley2013</bcf:citekey>
+    <bcf:citekey order="94">ABS2015</bcf:citekey>
+    <bcf:citekey order="95">Kelly2011</bcf:citekey>
+    <bcf:citekey order="96">Kelly2013</bcf:citekey>
+    <bcf:citekey order="97">Kelly2015</bcf:citekey>
+    <bcf:citekey order="98">Treasury2010b</bcf:citekey>
+    <bcf:citekey order="99">Inquiry2014</bcf:citekey>
+    <bcf:citekey order="100">RBA2015</bcf:citekey>
+    <bcf:citekey order="101">HILDA2015</bcf:citekey>
+    <bcf:citekey order="102">ATO2013i</bcf:citekey>
+    <bcf:citekey order="103">Commission2004</bcf:citekey>
+    <bcf:citekey order="104">Stewart2015</bcf:citekey>
+    <bcf:citekey order="105">PBO2014</bcf:citekey>
+    <bcf:citekey order="106">McKell</bcf:citekey>
+    <bcf:citekey order="107">ACIL2015</bcf:citekey>
+    <bcf:citekey order="108">Treasury2010</bcf:citekey>
+    <bcf:citekey order="109">Treasury2010</bcf:citekey>
+    <bcf:citekey order="110">Treasury2010</bcf:citekey>
+    <bcf:citekey order="111">Daley2014</bcf:citekey>
+    <bcf:citekey order="112">Daley2014</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nyt" type="entry" sortscheme="nyt">
   <bcf:sorting>
