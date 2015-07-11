@@ -458,7 +458,7 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 \begin{summary}
-This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly.
+This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly. This is a different sentence.
 
 When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain. Currently only half the income from a capital gain forms part of the seller's taxable income. Whilst the asset is accruing gains, any costs incurred (like interest payments)  can be fully deducted -- and it can be deducted against income which may be totally unrelated to holding or improving the asset.
 
