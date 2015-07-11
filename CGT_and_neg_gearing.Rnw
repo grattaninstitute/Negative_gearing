@@ -46,7 +46,7 @@
       )
 @
 
-<<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
+<<preamble, cache=F, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 library(data.table)
 library(dplyr)
 library(tidyr)
@@ -70,7 +70,7 @@ library(foreign)
 library(Hmisc)
 library(devtools)
 library(grattan)
-library(XLConnect)
+# temp issues with library(XLConnect)
 #devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
 
       # for asymmetric expansion of limits
@@ -459,7 +459,7 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 \begin{summary}
-This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly.
+This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly. This is a test sentence.
 
 When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain. Currently only half the income from a capital gain forms part of the seller's taxable income. Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
 
