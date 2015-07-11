@@ -1,71 +1,91 @@
-"age","Income_decile","prop_cg"
-"under 45",8,0.0240279
-"under 45",6,0.0153626
-"under 45",2,0.0120651
-"under 45",5,0.0130372
-"under 45",3,0.0115124
-"45-49",4,0.0363553
-"55-59",1,0.0406699
-"55-59",2,0.0392157
-"50-54",9,0.0596923
-"50-54",5,0.0346076
-"50-54",6,0.0390711
-"under 45",1,0.0171713
-"under 45",10,0.0650466
-"55-59",9,0.0584543
-"70+",1,0.032032
-"65-69",5,0.0683938
-"under 45",7,0.0192898
-"60-64",7,0.0619469
-"70+",6,0.138135
-"65-69",1,0.0433873
-"50-54",3,0.0327031
-"under 45",4,0.0134504
-"70+",3,0.126818
-"60-64",9,0.0755616
-"50-54",2,0.0298507
-"55-59",6,0.0384948
-"70+",2,0.104512
-"55-59",4,0.0466059
-"50-54",4,0.0418583
-"45-49",7,0.0385191
-"under 45",9,0.0349421
-"45-49",2,0.029051
-"45-49",5,0.0278492
-"70+",4,0.146798
-"65-69",3,0.0762527
-"50-54",7,0.0356628
-"50-54",1,0.0481221
-"45-49",3,0.0260638
-"55-59",10,0.105281
-"55-59",7,0.0448826
-"70+",5,0.116261
-"45-49",6,0.0282756
-"60-64",1,0.0502341
-"60-64",10,0.115113
-"65-69",9,0.112933
-"45-49",8,0.0383344
-"45-49",1,0.0308219
-"45-49",10,0.0829932
-"55-59",8,0.0534287
-"65-69",2,0.0727273
-"50-54",8,0.0405891
-"60-64",6,0.0551425
-"65-69",7,0.0712209
-"60-64",8,0.0619946
-"60-64",5,0.0608343
-"60-64",2,0.0667384
-"60-64",3,0.0570924
-"55-59",5,0.0529986
-"50-54",10,0.0951025
-"70+",8,0.173358
-"60-64",4,0.053076
-"45-49",9,0.0479167
-"65-69",4,0.07633
-"55-59",3,0.0446118
-"65-69",6,0.0633714
-"70+",10,0.247411
-"65-69",10,0.165278
-"65-69",8,0.0892562
-"70+",7,0.159817
-"70+",9,0.264479
+"year","asset_type","returnz"
+1,"Term deposit",0.465
+2,"Term deposit",0.465
+3,"Term deposit",0.465
+4,"Term deposit",0.465
+5,"Term deposit",0.465
+6,"Term deposit",0.465
+7,"Term deposit",0.465
+8,"Term deposit",0.465
+9,"Term deposit",0.465
+10,"Term deposit",0.465
+11,"Term deposit",0.465
+12,"Term deposit",0.465
+13,"Term deposit",0.465
+14,"Term deposit",0.465
+15,"Term deposit",0.465
+16,"Term deposit",0.465
+17,"Term deposit",0.465
+18,"Term deposit",0.465
+19,"Term deposit",0.465
+20,"Term deposit",0.465
+21,"Term deposit",0.465
+22,"Term deposit",0.465
+23,"Term deposit",0.465
+24,"Term deposit",0.465
+25,"Term deposit",0.465
+26,"Term deposit",0.465
+27,"Term deposit",0.465
+28,"Term deposit",0.465
+29,"Term deposit",0.465
+30,"Term deposit",0.465
+1,"Property (no CGT discount)",0.465
+2,"Property (no CGT discount)",0.45661
+3,"Property (no CGT discount)",0.44826
+4,"Property (no CGT discount)",0.43996
+5,"Property (no CGT discount)",0.431718
+6,"Property (no CGT discount)",0.423543
+7,"Property (no CGT discount)",0.415443
+8,"Property (no CGT discount)",0.407426
+9,"Property (no CGT discount)",0.399498
+10,"Property (no CGT discount)",0.391668
+11,"Property (no CGT discount)",0.38394
+12,"Property (no CGT discount)",0.37632
+13,"Property (no CGT discount)",0.368815
+14,"Property (no CGT discount)",0.361428
+15,"Property (no CGT discount)",0.354165
+16,"Property (no CGT discount)",0.347027
+17,"Property (no CGT discount)",0.34002
+18,"Property (no CGT discount)",0.333144
+19,"Property (no CGT discount)",0.326404
+20,"Property (no CGT discount)",0.3198
+21,"Property (no CGT discount)",0.313333
+22,"Property (no CGT discount)",0.307005
+23,"Property (no CGT discount)",0.300816
+24,"Property (no CGT discount)",0.294766
+25,"Property (no CGT discount)",0.288854
+26,"Property (no CGT discount)",0.283082
+27,"Property (no CGT discount)",0.277446
+28,"Property (no CGT discount)",0.271947
+29,"Property (no CGT discount)",0.266583
+30,"Property (no CGT discount)",0.261353
+1,"Property (50 CGT discount)",0.2325
+2,"Property (50 CGT discount)",0.226574
+3,"Property (50 CGT discount)",0.220795
+4,"Property (50 CGT discount)",0.215164
+5,"Property (50 CGT discount)",0.209679
+6,"Property (50 CGT discount)",0.204341
+7,"Property (50 CGT discount)",0.199148
+8,"Property (50 CGT discount)",0.1941
+9,"Property (50 CGT discount)",0.189193
+10,"Property (50 CGT discount)",0.184427
+11,"Property (50 CGT discount)",0.179799
+12,"Property (50 CGT discount)",0.175308
+13,"Property (50 CGT discount)",0.17095
+14,"Property (50 CGT discount)",0.166723
+15,"Property (50 CGT discount)",0.162625
+16,"Property (50 CGT discount)",0.158652
+17,"Property (50 CGT discount)",0.154802
+18,"Property (50 CGT discount)",0.151071
+19,"Property (50 CGT discount)",0.147457
+20,"Property (50 CGT discount)",0.143956
+21,"Property (50 CGT discount)",0.140566
+22,"Property (50 CGT discount)",0.137283
+23,"Property (50 CGT discount)",0.134104
+24,"Property (50 CGT discount)",0.131026
+25,"Property (50 CGT discount)",0.128046
+26,"Property (50 CGT discount)",0.125162
+27,"Property (50 CGT discount)",0.122369
+28,"Property (50 CGT discount)",0.119665
+29,"Property (50 CGT discount)",0.117048
+30,"Property (50 CGT discount)",0.114514
