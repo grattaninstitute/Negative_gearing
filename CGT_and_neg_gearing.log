@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  11 JUL 2015 14:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.1)  11 JUL 2015 15:57
 entering extended mode
 **CGT_and_neg_gearing.tex
 (CGT_and_neg_gearing.tex
@@ -2521,26 +2521,26 @@ LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <14.4> not available
 ]
 Chapter 1.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 125.
+(Font)              <9> on input line 123.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 125.
+(Font)              <5> on input line 123.
 
-LaTeX Warning: Citation 'Daley2013' on page 6 undefined on input line 125.
+LaTeX Warning: Citation 'Daley2013' on page 6 undefined on input line 123.
 
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <9> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 125.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 123.
 
-LaTeX Warning: Citation 'Treasury2015a' on page 6 undefined on input line 129.
+LaTeX Warning: Citation 'Treasury2015a' on page 6 undefined on input line 127.
 
 
-LaTeX Warning: Citation 'Treasury2014a' on page 6 undefined on input line 140.
+LaTeX Warning: Citation 'Treasury2014a' on page 6 undefined on input line 138.
 
 [6
 
 
 ]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 146.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 144.
 
 <figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf, id=150, 794.
 97pt x 505.89pt>
@@ -2549,60 +2549,60 @@ file (type pdf)
 
 <use figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>
 Package pdftex.def Info: figure/Majority_of_taxable_gains_are_earned_by_individ
-uals-1.pdf used on input line 147.
+uals-1.pdf used on input line 145.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
 
 LaTeX Warning: Citation 'ATOCapitalGainsByType' on page 7 undefined on input li
-ne 148.
+ne 146.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 Package hyperref Info: bookmark level for unknown boxe defaults to 0 on input l
-ine 152.
+ine 150.
 
-LaTeX Warning: Citation 'Evans2005' on page 7 undefined on input line 154.
+LaTeX Warning: Citation 'Evans2005' on page 7 undefined on input line 152.
 
 
-LaTeX Warning: Citation 'Kenny2005' on page 7 undefined on input line 154.
+LaTeX Warning: Citation 'Kenny2005' on page 7 undefined on input line 152.
 
 
 LaTeX Warning: Citation 'BusinessTaxation1999' on page 7 undefined on input lin
-e 157.
+e 155.
 
 
-LaTeX Warning: Citation 'ATO2014a' on page 7 undefined on input line 164.
+LaTeX Warning: Citation 'ATO2014a' on page 7 undefined on input line 162.
 
 
-LaTeX Warning: Citation 'Wood2010a' on page 7 undefined on input line 166.
+LaTeX Warning: Citation 'Wood2010a' on page 7 undefined on input line 164.
 
 [7]
 
-LaTeX Warning: Citation 'Harding2013' on page 8 undefined on input line 180.
+LaTeX Warning: Citation 'Harding2013' on page 8 undefined on input line 178.
 
 
-LaTeX Warning: Citation 'Harding2013' on page 8 undefined on input line 180.
+LaTeX Warning: Citation 'Harding2013' on page 8 undefined on input line 178.
 
 
-LaTeX Warning: Citation 'prebble2010tax' on page 8 undefined on input line 180.
+LaTeX Warning: Citation 'prebble2010tax' on page 8 undefined on input line 178.
 
 
 [8 <./figure/Majority_of_taxable_gains_are_earned_by_individuals-1.pdf>]
 
-LaTeX Warning: Citation 'Evans2005' on page 9 undefined on input line 183.
+LaTeX Warning: Citation 'Evans2005' on page 9 undefined on input line 181.
+
+
+LaTeX Warning: Citation 'Minas2013' on page 9 undefined on input line 181.
+
+
+LaTeX Warning: Citation 'OECD2006b' on page 9 undefined on input line 181.
+
+
+LaTeX Warning: Citation 'Ingles2009' on page 9 undefined on input line 183.
 
 
 LaTeX Warning: Citation 'Minas2013' on page 9 undefined on input line 183.
-
-
-LaTeX Warning: Citation 'OECD2006b' on page 9 undefined on input line 183.
-
-
-LaTeX Warning: Citation 'Ingles2009' on page 9 undefined on input line 185.
-
-
-LaTeX Warning: Citation 'Minas2013' on page 9 undefined on input line 185.
 
 
 <figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf, id=
@@ -2612,15 +2612,15 @@ File: figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
 
 <use figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf>
 Package pdftex.def Info: figure/Nearly_eighty_per_cent_of_capital_gains_are_ear
-ned_by_those_-1.pdf used on input line 195.
+ned_by_those_-1.pdf used on input line 193.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
-LaTeX Warning: Citation 'ATO2013i' on page 9 undefined on input line 196.
+LaTeX Warning: Citation 'ATO2013i' on page 9 undefined on input line 194.
 
 [9 <./figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1.pdf
 >]
 
-LaTeX Warning: Citation 'Treasury2010' on page 10 undefined on input line 206.
+LaTeX Warning: Citation 'Treasury2010' on page 10 undefined on input line 204.
 
 
 <figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf, id=219, 794.97pt x
@@ -2629,45 +2629,45 @@ File: figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf Graphic file (
 type pdf)
  <use figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf>
 Package pdftex.def Info: figure/ASX_Before_and_after_tax_returns_for_10_years-1
-.pdf used on input line 214.
+.pdf used on input line 212.
 (pdftex.def)             Requested size: 322.93883pt x 352.30215pt.
 
 
-LaTeX Warning: Citation 'Fane2004' on page 10 undefined on input line 224.
+LaTeX Warning: Citation 'Fane2004' on page 10 undefined on input line 222.
 
 
-LaTeX Warning: Citation 'Ingles2009' on page 10 undefined on input line 224.
+LaTeX Warning: Citation 'Ingles2009' on page 10 undefined on input line 222.
 
 [10 <./figure/ASX_Before_and_after_tax_returns_for_10_years-1.pdf>]
 
-LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 244.
+LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 242.
 
 
-LaTeX Warning: Citation 'Commission2004' on page 11 undefined on input line 244
+LaTeX Warning: Citation 'Commission2004' on page 11 undefined on input line 242
 .
 
 
-LaTeX Warning: Citation 'Burman1999' on page 11 undefined on input line 244.
+LaTeX Warning: Citation 'Burman1999' on page 11 undefined on input line 242.
 
 
-LaTeX Warning: Citation 'ATO2014e' on page 11 undefined on input line 244.
+LaTeX Warning: Citation 'ATO2014e' on page 11 undefined on input line 242.
 
 
-LaTeX Warning: Citation 'Engen1996' on page 11 undefined on input line 246.
+LaTeX Warning: Citation 'Engen1996' on page 11 undefined on input line 244.
 
 
-LaTeX Warning: Citation 'OECD2007' on page 11 undefined on input line 246.
-
-
-LaTeX Warning: Citation 'chetty2013subsidies' on page 11 undefined on input lin
-e 246.
+LaTeX Warning: Citation 'OECD2007' on page 11 undefined on input line 244.
 
 
 LaTeX Warning: Citation 'chetty2013subsidies' on page 11 undefined on input lin
-e 246.
+e 244.
 
 
-LaTeX Warning: Citation 'Antolin' on page 11 undefined on input line 246.
+LaTeX Warning: Citation 'chetty2013subsidies' on page 11 undefined on input lin
+e 244.
+
+
+LaTeX Warning: Citation 'Antolin' on page 11 undefined on input line 244.
 
 
 <figure/Effective_marginal_tax_rates_are_lower-1.pdf, id=244, 794.97pt x 505.89
@@ -2676,103 +2676,103 @@ File: figure/Effective_marginal_tax_rates_are_lower-1.pdf Graphic file (type pd
 f)
  <use figure/Effective_marginal_tax_rates_are_lower-1.pdf>
 Package pdftex.def Info: figure/Effective_marginal_tax_rates_are_lower-1.pdf us
-ed on input line 247.
+ed on input line 245.
 (pdftex.def)             Requested size: 318.15202pt x 202.46048pt.
 
 
-LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 248.
+LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 246.
 
 
-LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 253.
+LaTeX Warning: Citation 'Burman2009' on page 11 undefined on input line 251.
 
 
-LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 253.
+LaTeX Warning: Citation 'Ingles2009' on page 11 undefined on input line 251.
 
 
-LaTeX Warning: Citation 'Lindsey1987' on page 11 undefined on input line 255.
+LaTeX Warning: Citation 'Lindsey1987' on page 11 undefined on input line 253.
 
 
-LaTeX Warning: Citation 'OECD2006b' on page 11 undefined on input line 255.
+LaTeX Warning: Citation 'OECD2006b' on page 11 undefined on input line 253.
 
 
-LaTeX Warning: Citation 'Johnson2008' on page 11 undefined on input line 255.
+LaTeX Warning: Citation 'Johnson2008' on page 11 undefined on input line 253.
 
 [11] [12 <./figure/Effective_marginal_tax_rates_are_lower-1.pdf>]
 
-LaTeX Warning: Citation 'Wood2010a' on page 13 undefined on input line 258.
+LaTeX Warning: Citation 'Wood2010a' on page 13 undefined on input line 256.
 
 <figure/Prob_of_CGevent_by_age_income-1.pdf, id=279, 794.97pt x 505.89pt>
 File: figure/Prob_of_CGevent_by_age_income-1.pdf Graphic file (type pdf)
 
 <use figure/Prob_of_CGevent_by_age_income-1.pdf>
 Package pdftex.def Info: figure/Prob_of_CGevent_by_age_income-1.pdf used on inp
-ut line 273.
+ut line 271.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
 
-LaTeX Warning: Citation 'ATO2013i' on page 13 undefined on input line 274.
+LaTeX Warning: Citation 'ATO2013i' on page 13 undefined on input line 272.
 
 
-LaTeX Warning: Citation 'ABS2013' on page 13 undefined on input line 276.
+LaTeX Warning: Citation 'ABS2013' on page 13 undefined on input line 274.
 
 [13]
 
-LaTeX Warning: Citation 'Burman2009' on page 14 undefined on input line 282.
+LaTeX Warning: Citation 'Burman2009' on page 14 undefined on input line 280.
 
 
-LaTeX Warning: Citation 'OECD2006a' on page 14 undefined on input line 282.
+LaTeX Warning: Citation 'OECD2006a' on page 14 undefined on input line 280.
 
 
-LaTeX Warning: Citation 'Commission2004' on page 14 undefined on input line 282
+LaTeX Warning: Citation 'Commission2004' on page 14 undefined on input line 280
 .
 
 
-LaTeX Warning: Citation 'Burman2009' on page 14 undefined on input line 282.
+LaTeX Warning: Citation 'Burman2009' on page 14 undefined on input line 280.
 
 
-LaTeX Warning: Citation 'Ingles2009' on page 14 undefined on input line 282.
+LaTeX Warning: Citation 'Ingles2009' on page 14 undefined on input line 280.
 
 
-LaTeX Warning: Citation 'Treasury2010' on page 14 undefined on input line 282.
+LaTeX Warning: Citation 'Treasury2010' on page 14 undefined on input line 280.
 
 
-LaTeX Warning: Citation 'Fane2004' on page 14 undefined on input line 288.
+LaTeX Warning: Citation 'Fane2004' on page 14 undefined on input line 286.
 
 [14 <./figure/Prob_of_CGevent_by_age_income-1.pdf>]
 
-LaTeX Warning: Citation 'IRS2015' on page 15 undefined on input line 294.
+LaTeX Warning: Citation 'IRS2015' on page 15 undefined on input line 292.
 
 
-LaTeX Warning: Citation 'RBA2014' on page 15 undefined on input line 294.
+LaTeX Warning: Citation 'RBA2014' on page 15 undefined on input line 292.
 
 
-LaTeX Warning: Citation 'Commission2004' on page 15 undefined on input line 294
+LaTeX Warning: Citation 'Commission2004' on page 15 undefined on input line 292
 .
 
 
-LaTeX Warning: Citation 'ODonnell2005' on page 15 undefined on input line 294.
+LaTeX Warning: Citation 'ODonnell2005' on page 15 undefined on input line 292.
 
 <figure/Age_negative_gearing_investments-1.pdf, id=315, 794.97pt x 722.7pt>
 File: figure/Age_negative_gearing_investments-1.pdf Graphic file (type pdf)
 
 <use figure/Age_negative_gearing_investments-1.pdf>
 Package pdftex.def Info: figure/Age_negative_gearing_investments-1.pdf used on 
-input line 316.
+input line 314.
 (pdftex.def)             Requested size: 322.93883pt x 293.58511pt.
 
 
-LaTeX Warning: Citation 'ATO2013i' on page 15 undefined on input line 319.
+LaTeX Warning: Citation 'ATO2013i' on page 15 undefined on input line 317.
 
 [15]
 
-LaTeX Warning: Citation 'Wood2010a' on page 16 undefined on input line 324.
+LaTeX Warning: Citation 'Wood2010a' on page 16 undefined on input line 322.
 
 
-LaTeX Warning: Citation 'RBA2014' on page 16 undefined on input line 327.
+LaTeX Warning: Citation 'RBA2014' on page 16 undefined on input line 325.
 
 
 LaTeX Warning: Citation 'seelig2009understanding' on page 16 undefined on input
- line 333.
+ line 331.
 
 [16 <./figure/Age_negative_gearing_investments-1.pdf>]
 <figure/Effective_tax_rates_depend_on_borrowing-1.pdf, id=338, 794.97pt x 505.8
@@ -2781,118 +2781,118 @@ File: figure/Effective_tax_rates_depend_on_borrowing-1.pdf Graphic file (type p
 df)
  <use figure/Effective_tax_rates_depend_on_borrowing-1.pdf>
 Package pdftex.def Info: figure/Effective_tax_rates_depend_on_borrowing-1.pdf u
-sed on input line 340.
+sed on input line 338.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
 
-LaTeX Warning: Citation 'Burman1999' on page 17 undefined on input line 345.
+LaTeX Warning: Citation 'Burman1999' on page 17 undefined on input line 343.
 
 
 LaTeX Warning: Citation 'seelig2009understanding' on page 17 undefined on input
- line 345.
+ line 343.
 
 
-LaTeX Warning: Citation 'Eslake2013' on page 17 undefined on input line 351.
+LaTeX Warning: Citation 'Eslake2013' on page 17 undefined on input line 349.
 
 
-LaTeX Warning: Citation 'Treasury2015a' on page 17 undefined on input line 351.
+LaTeX Warning: Citation 'Treasury2015a' on page 17 undefined on input line 349.
 
 
 [17 <./figure/Effective_tax_rates_depend_on_borrowing-1.pdf>]
 
-LaTeX Warning: Citation 'Treasury2015a' on page 18 undefined on input line 352.
+LaTeX Warning: Citation 'Treasury2015a' on page 18 undefined on input line 354.
 
 
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 354.
+ned on input line 358.
 
 
 LaTeX Warning: Reference `fig:Negative_gearing_real_over_time' on page 1 undefi
-ned on input line 354.
+ned on input line 358.
 
 
-Package hyperref Warning: Suppressing link with empty target on input line 354.
+Package hyperref Warning: Suppressing link with empty target on input line 358.
 
 
 <figure/Net_rent_over_time-1.pdf, id=356, 794.97pt x 505.89pt>
 File: figure/Net_rent_over_time-1.pdf Graphic file (type pdf)
 
 <use figure/Net_rent_over_time-1.pdf>
-Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 361
+Package pdftex.def Info: figure/Net_rent_over_time-1.pdf used on input line 363
 .
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
 
-LaTeX Warning: Citation 'RBA2015' on page 18 undefined on input line 369.
+LaTeX Warning: Citation 'RBA2015' on page 18 undefined on input line 371.
 
 
-LaTeX Warning: Citation 'Commission2004' on page 18 undefined on input line 369
+LaTeX Warning: Citation 'Commission2004' on page 18 undefined on input line 371
 .
 
 
-LaTeX Warning: Citation 'RBA2014' on page 18 undefined on input line 372.
+LaTeX Warning: Citation 'RBA2014' on page 18 undefined on input line 374.
 
 
-LaTeX Warning: Citation 'Commission2004' on page 18 undefined on input line 372
+LaTeX Warning: Citation 'Commission2004' on page 18 undefined on input line 374
 .
 
 
-LaTeX Warning: Citation 'Treasury2010' on page 18 undefined on input line 372.
+LaTeX Warning: Citation 'Treasury2010' on page 18 undefined on input line 374.
 
 
-LaTeX Warning: Citation 'Inquiry2015' on page 18 undefined on input line 372.
+LaTeX Warning: Citation 'Inquiry2015' on page 18 undefined on input line 374.
 
 [18 <./figure/Net_rent_over_time-1.pdf>]
 
 LaTeX Warning: Citation 'badcock1991responsiveness' on page 19 undefined on inp
-ut line 375.
+ut line 377.
 
 
-LaTeX Warning: Citation 'Daley2013' on page 19 undefined on input line 375.
+LaTeX Warning: Citation 'Daley2013' on page 19 undefined on input line 377.
 
 <figure/Capital_city_rents-1.pdf, id=380, 794.97pt x 794.97pt>
 File: figure/Capital_city_rents-1.pdf Graphic file (type pdf)
 
 <use figure/Capital_city_rents-1.pdf>
-Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 386
+Package pdftex.def Info: figure/Capital_city_rents-1.pdf used on input line 388
 .
 (pdftex.def)             Requested size: 322.93883pt x 322.94363pt.
  [19 <./figure/Capital_city_rents-1.pdf>]
 
-LaTeX Warning: Citation 'ABS2015' on page 20 undefined on input line 398.
+LaTeX Warning: Citation 'ABS2015' on page 20 undefined on input line 400.
 
 
-LaTeX Warning: Citation 'Kelly2011' on page 20 undefined on input line 398.
+LaTeX Warning: Citation 'Kelly2011' on page 20 undefined on input line 400.
 
 
-LaTeX Warning: Citation 'Kelly2013' on page 20 undefined on input line 399.
+LaTeX Warning: Citation 'Kelly2013' on page 20 undefined on input line 401.
 
 
-LaTeX Warning: Citation 'Kelly2015' on page 20 undefined on input line 399.
+LaTeX Warning: Citation 'Kelly2015' on page 20 undefined on input line 401.
 
 
-LaTeX Warning: Citation 'Treasury2010b' on page 20 undefined on input line 400.
+LaTeX Warning: Citation 'Treasury2010b' on page 20 undefined on input line 402.
 
 
 
-LaTeX Warning: Citation 'Inquiry2014' on page 20 undefined on input line 403.
+LaTeX Warning: Citation 'Inquiry2014' on page 20 undefined on input line 405.
 
 
-LaTeX Warning: Citation 'RBA2015' on page 20 undefined on input line 407.
+LaTeX Warning: Citation 'RBA2015' on page 20 undefined on input line 409.
 
 
-LaTeX Warning: Citation 'HILDA2015' on page 20 undefined on input line 407.
+LaTeX Warning: Citation 'HILDA2015' on page 20 undefined on input line 409.
 
 <figure/Effect_of_Deductions-1.pdf, id=404, 794.97pt x 505.89pt>
 File: figure/Effect_of_Deductions-1.pdf Graphic file (type pdf)
 
 <use figure/Effect_of_Deductions-1.pdf>
 Package pdftex.def Info: figure/Effect_of_Deductions-1.pdf used on input line 4
-15.
+17.
 (pdftex.def)             Requested size: 322.93883pt x 205.50958pt.
 
-Underfull \hbox (badness 1478) in paragraph at lines 415--417
+Underfull \hbox (badness 1478) in paragraph at lines 417--419
 \T1/ua1/m/it/9/-4ls (+14) No\T1/ua1/m/it/9/-4ls (+20) t\T1/ua1/m/it/9/-4ls (+14
 ) es\T1/ua1/m/it/9/-4ls (+20) : T\T1/ua1/m/it/9/-4ls (+14) a\T1/ua1/m/it/9/-4ls
  (+20) x-\T1/ua1/m/it/9/-4ls (+14) ab\T1/ua1/m/it/9/-4ls (+20) l\T1/ua1/m/it/9/
@@ -2906,45 +2906,45 @@ Underfull \hbox (badness 1478) in paragraph at lines 415--417
  []
 
 
-LaTeX Warning: Citation 'ATO2013i' on page 20 undefined on input line 418.
+LaTeX Warning: Citation 'ATO2013i' on page 20 undefined on input line 420.
 
 [20]
 
-LaTeX Warning: Citation 'Commission2004' on page 21 undefined on input line 428
+LaTeX Warning: Citation 'Commission2004' on page 21 undefined on input line 430
 .
 
 [21 <./figure/Effect_of_Deductions-1.pdf>]
 
-LaTeX Warning: Citation 'Stewart2015' on page 22 undefined on input line 439.
+LaTeX Warning: Citation 'Stewart2015' on page 22 undefined on input line 441.
 
 
-LaTeX Warning: Citation 'PBO2014' on page 22 undefined on input line 439.
+LaTeX Warning: Citation 'PBO2014' on page 22 undefined on input line 441.
 
 [22]
 
-LaTeX Warning: Citation 'McKell' on page 23 undefined on input line 466.
+LaTeX Warning: Citation 'McKell' on page 23 undefined on input line 468.
 
 
-LaTeX Warning: Citation 'ACIL2015' on page 23 undefined on input line 468.
-
-
-LaTeX Warning: Citation 'Treasury2010' on page 23 undefined on input line 471.
+LaTeX Warning: Citation 'ACIL2015' on page 23 undefined on input line 470.
 
 
 LaTeX Warning: Citation 'Treasury2010' on page 23 undefined on input line 473.
 
+
+LaTeX Warning: Citation 'Treasury2010' on page 23 undefined on input line 475.
+
 [23]
 
-LaTeX Warning: Citation 'Treasury2010' on page 24 undefined on input line 489.
+LaTeX Warning: Citation 'Treasury2010' on page 24 undefined on input line 491.
 
 
-LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 491.
+LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 493.
 
 
-LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 491.
+LaTeX Warning: Citation 'Daley2014' on page 24 undefined on input line 493.
 
 [24] [25]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 512.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 514.
 
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -2954,31 +2954,31 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \vbox (badness 10000) detected at line 551
+Underfull \vbox (badness 10000) detected at line 553
  []
 
 
-Underfull \vbox (badness 10000) detected at line 551
+Underfull \vbox (badness 10000) detected at line 553
  []
 
 [26
 
 ] [27]
 
-LaTeX Warning: Empty bibliography on input line 555.
+LaTeX Warning: Empty bibliography on input line 557.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 556.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 556.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 558.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 558.
 (CGT_and_neg_gearing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 556.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 556.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 558.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 558.
 Package rerunfilecheck Info: File `CGT_and_neg_gearing.out' has not changed.
 (rerunfilecheck)             Checksum: 303FA550D2E912A63D3C6547341CC99B;629.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 556.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 558.
 
 Package biblatex Warning: Please (re)run Biber on the file:
 (biblatex)                CGT_and_neg_gearing
@@ -3006,7 +3006,7 @@ b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Program
 /fonts/type1/urw/arial/ua1b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type
 1/urw/arial/ua1r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/arial
 /ua1ri8a.pfb>
-Output written on CGT_and_neg_gearing.pdf (27 pages, 568688 bytes).
+Output written on CGT_and_neg_gearing.pdf (27 pages, 568620 bytes).
 PDF statistics:
  545 PDF objects out of 1000 (max. 8388607)
  134 named destinations out of 1000 (max. 500000)
