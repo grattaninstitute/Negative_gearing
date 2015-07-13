@@ -4,8 +4,9 @@
 
 \title{Negative gearing and the capital gains discount}
 \usepackage[normalem]{ulem}
-\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{0.6pt}}}\ULon}
+\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{3pt}}}\ULon}
 \author{\redsout{John Daley and Danielle Wood}}
+
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
@@ -457,9 +458,9 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 \begin{summary}
-This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly.
+This working paper examines the odd treatment of capital gains and investment losses by current tax policies. The polices are unnecessary, harmful, and costly. 
 
-When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain. Currently only half the income from a capital gain forms part of the seller's taxable income. Whilst the asset is accruing gains, any costs incurred  can be fully deducted -- and it can be deducted against income which may be totally unrelated to holding or improving the asset.
+When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain. Currently only half the income from a capital gain forms part of the seller's taxable income. Whilst the asset is accruing gains, any costs incurred (like interest payments) can be fully deducted -- and it can be deducted against income which may be totally unrelated to holding or improving the asset.
 
 Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
 
@@ -470,6 +471,8 @@ As a consequence property prices have soared, revenue has leaked, and economic i
 There is no reason to maintain such a wide gulf between the treatment of gains and losses. The Commonwealth Government's primary goal should be to narrow this gulf.
 
 Reducing the capital gains discount and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion a year in the short-term.
+
+Negative gearing is embedded in the Australian taxation system; 1.2~million taxpayers benefit from this policy. Homeowners benefit from the (artificially) higher prices. And the real estate lobby is vocal.  A superficial assessment might conclude that it is too difficult to change this policy. But these hard facts are much softer. 
 \end{summary}
 
 %%%
@@ -647,15 +650,13 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   geom_bar(stat = "identity",
            position = "dodge") + 
   geom_hline(yintercept = 0.028, 
-             color = theGrey, size = 2) + 
+             color = Orange, size = 2) + 
   annotate("text", x = 2, y = 0.0299, 
            hjust = 0,
-           label = "CPI (2.8% p.a.)", color = theGrey, fontface = "bold",
+           label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
            size = 7.14) + 
-  scale_y_continuous(expand = c(0,0), limits = c(0,0.1), label = percent) + 
-  theme(panel.grid.major = element_blank(),
-        plot.margin = grid::unit(c(0.7,2.2,0.1,0.1), "lines"),
-        axis.title = element_blank()) + 
+  scale_y_continuous(expand = c(0,0), label = percent) + 
+  theme(panel.grid.major = element_blank()) + 
   coord_flip()
 @
 \begin{figure}
@@ -1132,12 +1133,6 @@ Indeed, the distortions created are so large that it is possible that even inves
 \subsubsection{And investors have responded to these incentives}
 There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, the number of taxpayers making losses on residential property has increased steadily. Average losses for those negative gearing have grown to more than \$9,000 per year. And the total losses since the introduction of the CGT discount leave us in no doubt: investors are happy to disregard rental losses in anticipation of future gains. (\Vref{fig:Net_rent_over_time}.)
 
-Both have contributed to Australian landlords moving from being collectively profitable, to accruing billions in net rental losses each year. This coincided with the introduction of the capital gains tax discount in 1999. In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m. By 2012-13, the two~billion landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
-
-And the average level of gearing for property investors is increasing. Even though interest rates are falling, interest deductions as a proportion of rents increased from 45.6 per cent of gross rental payments in 1997-98 to 71.1 per cent in 2011-12.\footcite[p.~65]{Treasury2015a}
-\subsection{Negative gearing is growing in popularity, mainly for housing investment}
-There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
-
 <<Obtain_time_series_taxstats, results = 'hide'>>=
 taxstats_ts_url <- "https://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download/taxstats2013individual01selecteditemsbyyear.xlsx"
 GET(taxstats_ts_url, write_disk("taxstats_time_series1979-2013.xlsx", overwrite = TRUE))
@@ -1152,6 +1147,28 @@ taxstats_ts <- taxstats_ts %>%
   mutate(fy.year = gsub("[^0-9]", "-", fy.year)) %>% 
   mutate(fy.year = ifelse(fy.year == "1999-2000", "1999-00", fy.year))
 @
+
+Both have contributed to Australian landlords moving from being collectively profitable, to accruing billions in net rental losses each year. This coincided with the introduction of the capital gains tax discount in 1999. In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m. By 2012-13, the two~billion landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
+
+<<prop_rental_deductions_gross_rent>>=
+taxstats_ts %>%
+  filter(grepl("(Rent.*interest)|(Gross rent)", `Selected items`)) %>%
+  spread(`Selected items`, value) %>%
+  filter(complete.cases(.)) %>%
+  filter(grepl("\\$", unit)) %>%
+  mutate(prop = `Rent - interest deductions` / `Gross rent`) ->
+  prop_rental_deductions_gross_rent
+
+prdgr <- function(fyyear){ 
+  prop_rental_deductions_gross_rent %>%
+  filter(fy.year == fyyear) %$% 
+  round(prop, 3)*100
+}
+@
+
+And the average level of gearing for property investors is increasing. Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2012-13")}~per cent in 2012-13.\footcite[p.~65]{Treasury2015a}
+\subsection{Negative gearing is growing in popularity, mainly for housing investment}
+There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
 
 <<Net_rent_over_time>>=
 in.what.dollars <- "2013-14"
