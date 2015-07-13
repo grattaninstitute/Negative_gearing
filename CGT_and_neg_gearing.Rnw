@@ -42,6 +42,7 @@ if(require(extrafont) && grepl("Arial", fonts())){
     pdf(file = file, width = width, height = height,
         family = "Arial")
   } 
+  theme_hugh <- function(...) theme_hugh(base_family = "Arial")
 } else {
   my_pdf <- function(file, width, height){
     pdf(file = file, width, height = height)
@@ -55,7 +56,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=TRUE
+                      ,cache=F
                       ,dev=c('my_pdf', 'my_emf')
                       ,fig.ext = c("pdf", "emf")
 )
@@ -86,6 +87,7 @@ library(Hmisc)
 library(devtools)
 library(grattan)
 library(XLConnect)
+library(magrittr)
 #devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
 
 
@@ -738,7 +740,8 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
            label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
            size = 7.14) + 
   scale_y_continuous(expand = c(0,0), label = percent) + 
-  theme(panel.grid.major = element_blank()) + 
+  theme(panel.grid.major = element_blank(),
+        axis.title = element_blank()) + 
   coord_flip()
 @
 \begin{figure}
