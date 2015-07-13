@@ -68,7 +68,7 @@ library(XLConnect)
                             out.width="11.000in", out.height="7.00in", 
                             fig.show='hide',echo=FALSE,
                             message=FALSE, warning=FALSE
-                            ,cache=FALSE
+                            ,cache=TRUE
                             ,dev=c('pdf', 'my_emf')
                             ,fig.ext = c("pdf", "emf")
       )
@@ -537,7 +537,7 @@ These tax concessions create incentives for investors to favour debt financed an
 
 The 50 per cent \highlight{CGT discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.4-21]{Treasury2015a}. This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts. That is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment. But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings. And entrepreneurs already receive a range of other capital gains tax concessions. Reducing the CGT discount to 30 per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
 
-Negative gearing should also be limited. The tax deductibility of costs, including interest costs, prevents a tax bias against debt funding and more risky investments. But this does not mean that losses should be able to be written off against wage and salary income. The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
+Negative gearing should also be limited. The tax deductibility of costs, including interest costs, prevents a tax bias against debt funding and more risky investments. But allowing losses to be written off against wage and salary income is not needed to prevent such bias. The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
 
 Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term. This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income.  
 
@@ -706,7 +706,8 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
            label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
            size = 7.14) + 
   scale_y_continuous(expand = c(0,0), label = percent) + 
-  theme(panel.grid.major = element_blank()) + 
+  theme(panel.grid.major = element_blank(),
+        axis.title = element_blank()) + 
   coord_flip()
 @
 \begin{figure}
@@ -1220,7 +1221,7 @@ And the average level of gearing for property investors is increasing. Even thou
 \subsection{Negative gearing is growing in popularity, mainly for housing investment}
 There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
 
-<<Net_rent_over_time>>=
+<<Net_rent_over_time, cache=TRUE>>=
 in.what.dollars <- "2013-14"
 
 taxstats_ts %>%
