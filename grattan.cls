@@ -162,7 +162,10 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
  } {\end{multicols}\end{minipage}\end{mdframed}\end{boxe}%
  \clearpage\twocolumn\nopagecolor}
  
- 
+% Figures at top should be flush
+\setlength{\@fptop}{0pt}
+%
+
 % Captions in general
 \DeclareCaptionFont{theGrey}{\color{theGrey}}
 \captionsetup{format=plain,font={small,bf,theGrey},labelfont={small,bf,theGrey}}
