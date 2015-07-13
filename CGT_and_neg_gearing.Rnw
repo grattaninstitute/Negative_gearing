@@ -30,21 +30,34 @@
 \clearpage
 %\chapter{Distribution of negative gearing}
 <<minimal_peamble>>=
-      my_emf <- function(file, width, height){
-        devEMF::emf(file, width=width, height=height,
-                    family = "Arial")
-      }
-      
-      # knitr chunk opts
-      # fig.width must = out.width and same for *.height
-      knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
-                            out.width="11.000in", out.height="7.00in", 
-                            fig.show='hide',echo=FALSE,
-                            message=FALSE, warning=FALSE
-                            ,cache=TRUE
-                            ,dev=c('pdf', 'my_emf')
-                            ,fig.ext = c("pdf", "emf")
-      )
+my_emf <- function(file, width, height){
+  devEMF::emf(file, width=width, height=height,
+              family = "Arial")
+}
+
+
+if(require(extrafont) && grepl("Arial", fonts())){
+  my_pdf <- function(file, width, height){
+    pdf(file = file, width = width, height = height,
+        family = "Arial")
+  } 
+} else {
+  my_pdf <- function(file, width, height){
+    pdf(file = file, width, height = height)
+  }
+}
+
+
+# knitr chunk opts
+# fig.width must = out.width and same for *.height
+knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                      out.width="11.000in", out.height="7.00in", 
+                      fig.show='hide',echo=FALSE,
+                      message=FALSE, warning=FALSE
+                      ,cache=TRUE
+                      ,dev=c('my_pdf', 'my_emf')
+                      ,fig.ext = c("pdf", "emf")
+)
 @
 
 <<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
