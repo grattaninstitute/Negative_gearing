@@ -29,6 +29,24 @@
 \begin{document}
 \clearpage
 %\chapter{Distribution of negative gearing}
+<<minimal_peamble>>=
+      my_emf <- function(file, width, height){
+        devEMF::emf(file, width=width, height=height,
+                    family = "Arial")
+      }
+      
+      # knitr chunk opts
+      # fig.width must = out.width and same for *.height
+      knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                            out.width="11.000in", out.height="7.00in", 
+                            fig.show='hide',echo=FALSE,
+                            message=FALSE, warning=FALSE
+                            ,cache=TRUE
+                            ,dev=c('pdf', 'my_emf')
+                            ,fig.ext = c("pdf", "emf")
+      )
+@
+
 <<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 library(data.table)
 library(dplyr)
@@ -526,7 +544,7 @@ Negative gearing is embedded in the Australian taxation system; 1.2~million taxp
 \end{summary}
 
 %%%
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{4}
 \contentspage
 %%%
 
@@ -706,8 +724,7 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
            label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
            size = 7.14) + 
   scale_y_continuous(expand = c(0,0), label = percent) + 
-  theme(panel.grid.major = element_blank(),
-        axis.title = element_blank()) + 
+  theme(panel.grid.major = element_blank()) + 
   coord_flip()
 @
 \begin{figure}
@@ -1221,7 +1238,7 @@ And the average level of gearing for property investors is increasing. Even thou
 \subsection{Negative gearing is growing in popularity, mainly for housing investment}
 There has been a boom in negatively geared residential property investments over the last two decades. Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
 
-<<Net_rent_over_time, cache=TRUE>>=
+<<Net_rent_over_time>>=
 in.what.dollars <- "2013-14"
 
 taxstats_ts %>%
