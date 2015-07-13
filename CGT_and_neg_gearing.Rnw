@@ -29,7 +29,7 @@
 \begin{document}
 \clearpage
 %\chapter{Distribution of negative gearing}
-<<minimal_peamble>>=
+<<minimal_peamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 my_emf <- function(file, width, height){
   devEMF::emf(file, width=width, height=height,
               family = "Arial")
@@ -37,6 +37,7 @@ my_emf <- function(file, width, height){
 
 
 if(require(extrafont) && grepl("Arial", fonts())){
+  loadfonts()
   my_pdf <- function(file, width, height){
     pdf(file = file, width = width, height = height,
         family = "Arial")
