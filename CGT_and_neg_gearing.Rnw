@@ -68,7 +68,7 @@ library(XLConnect)
                             out.width="11.000in", out.height="7.00in", 
                             fig.show='hide',echo=FALSE,
                             message=FALSE, warning=FALSE
-                            ,cache=TRUE
+                            ,cache=FALSE
                             ,dev=c('pdf', 'my_emf')
                             ,fig.ext = c("pdf", "emf")
       )
@@ -187,7 +187,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   prop_full_discount <-
     get_sample_file(2013) %>%
     filter(Net_CG_amt > 0) %>%
-    group_by(apparent.discount = round(4*Net_CG_amt/Tot_CY_CG_amt,1)) %>%
+    group_by(apparent.discount = round(4*Net_CG_amt/Tot_CY_CG_amt,0)/4) %>%
     tally() %>%
     arrange(apparent.discount) %>%
     ungroup %>%
@@ -232,7 +232,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
     rowwise %>%
     # If the dice rolls between the discount.keys in prop_full_discount 
     # we choose the lowest prop
-    mutate(discount.key = max(prop_full_discount$discount.key[prop_full_discount$discount.key < randCG])) %>%
+    mutate(discount.key = min(prop_full_discount$discount.key[prop_full_discount$discount.key > randCG])) %>%
     ungroup %>%
     merge(prop_full_discount, by = "discount.key") %>%
     # avoid NaNs when we 1/apparent.discount
