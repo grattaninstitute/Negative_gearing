@@ -35,20 +35,18 @@ my_emf <- function(file, width, height){
               family = "Arial")
 }
 
-
-if(require(extrafont) && grepl("Arial", fonts())){
-  loadfonts()
-  my_pdf <- function(file, width, height){
-    pdf(file = file, width = width, height = height,
-        family = "Arial")
-  } 
-  theme_hugh <- function(...) theme_hugh(base_family = "Arial")
-} else {
+# if(require(extrafont) && any(grepl("Arial", extrafont::fonts()))){
+#   font_import(pattern = "Arial")
+#   my_pdf <- function(file, width, height){
+#     pdf.options(family = "Arial")
+#     pdf(file = file, width = width, height = height)
+#   } 
+#   theme_hugh <- function(...) {theme_hugh(...) + theme(text = element_text(family = "Arial"))}
+# } else {
   my_pdf <- function(file, width, height){
     pdf(file = file, width, height = height)
   }
-}
-
+# }
 
 # knitr chunk opts
 # fig.width must = out.width and same for *.height
@@ -56,7 +54,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=F
+                      ,cache=TRUE
                       ,dev=c('my_pdf', 'my_emf')
                       ,fig.ext = c("pdf", "emf")
 )
@@ -509,6 +507,10 @@ policy %$%
   round(sum(diff)*50/1e9, 1) ->
   cost_of_policy_2015
 
+costing_policy_2015_year0 <-
+  cost_of_daley_policy(2015, eventual = 1) %$%
+  round(sum(diff) * 50 / 1e9, 1) 
+
 cost_align_gains_and_losses <- 
   henry_taxstats %$%
   round(sum(diff)*50/1e9, 1)
@@ -532,15 +534,17 @@ When an asset like a house or a parcel of shares is sold, the difference between
 
 Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
 
-The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year.} Deductions for rental losses result in over \highlight{\$\Sexpr{NG.tx.exp}~billion} in foregone revenue each year. These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives. Losses can be written off in full while only half the gains are taxed. Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
+The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year.} Deductions for rental losses result in over \highlight{\$4~billion} in foregone revenue each year. These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives. Losses can be written off in full while only half the gains are taxed. Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
 
-As a consequence property prices have soared, revenue has leaked, and economic investments have been neglected. 
+As a consequence property prices have soared and revenue has leaked, mostly for the benefit of the wealthier taxpayers.
 
-There is no reason to maintain such a wide gulf between the treatment of gains and losses. The Commonwealth Government's primary goal should be to narrow this gulf.
+There is little reason to maintain such a wide gulf between the treatment of gains and losses. The Commonwealth Government's primary goal should be to narrow this gulf.
 
-Reducing the capital gains discount and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion a year in the short-term.
+Reducing the capital gains discount and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{costing_policy_2015_year0}~billion a year in the short-term. The preferential treatment of capital gains should be moderated, even if the policy surrounding negative gearing is untouched. 
 
-Negative gearing is embedded in the Australian taxation system; 1.2~million taxpayers benefit from this policy. Homeowners benefit from the (artificially) higher prices. And the real estate lobby is vocal.  A superficial assessment might conclude that it is too difficult to change this policy. But 
+But the asymmetric treatment of losses gains is the major flaw in the system. Proper reform requires both elements of the tax system to align. The explosion in both the number of investors running losses and the size of those losses since the two policies diverged is clear evidence of bias.  
+
+Negative gearing is embedded in the Australian taxation system; 1.2~million taxpayers benefit from this policy. Homeowners benefit from the (artificially) higher prices. And the real estate lobby is vocal.  A superficial assessment might conclude that it is too difficult to change this policy.  But the electorate also recognizes that housing is unaffordable.
 \end{summary}
 
 %%%
@@ -622,9 +626,9 @@ There are several arguments supporting the current preferential tax treatment of
 
 These arguments do not withstand closer scrutiny.
 
-Capital gains and other forms of savings income increase a person's spending power. It is arguable that all increases in spending power should be taxed consistently regardless of how they are earned (chapter 2) or as the Canadian Carter report puts it ``a buck is a buck is a buck.''  Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy. Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
+Capital gains and other forms of savings income increase a person's spending power. All increases in spending power should be taxed consistently regardless of how they are earned (chapter 2) since, as the Canadian Carter report puts it, ``a buck is a buck is a buck.''  Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy. Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
 
-On the other hand, increasing taxes on capital gains might reduce incentives to save and start new businesses. But personal income tax rates are not the most important determinants of these decisions. If nominal gains are taxed at the full marginal rate, we tax the inflation component of gains.  But with inflation rates low relative to investment returns, the 50 per cent discount overcompensates most investors. The discount also magnifies the tax advantages of capital gains over other investment income, such as bank deposits.
+That capital gains taxes might discourage worthwhile investment is a reasonable concern. Increasing taxes on capital gains might reduce incentives to save and start new businesses. But personal income tax rates are not the most important determinants of these decisions. If nominal gains are taxed at the full marginal rate, part of the tax bill is due to inflation, not an increasing in wealth or spending power.  However, policy makers have other choices between a too high 50 per cent discount and a too low abolition of the discount.  With inflation rates low relative to investment returns, the 50 per cent discount overcompensates most investors. Moreover, the discount magnifies the tax advantages of capital gains over other investment income, such as bank deposits.
 
 The other reason proffered for the discounted treatment of gains is to moderate the effect of `asset lock-in' whereby investors are deterred from selling assets that have accrued large gains. But the biggest causes of lock-in are investors waiting until retirement to realise gains or passing their assets (CGT free) to their beneficiaries. 
 
