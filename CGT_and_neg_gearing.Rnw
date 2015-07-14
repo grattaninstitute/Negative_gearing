@@ -622,18 +622,21 @@ Capital gains have other less explicit tax advantages compared to recurrent inco
 Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan. (See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
 
 \section{The preferential tax treatment of capital gains should be reined in}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
+\subsection{Arguments for the current large concessions are weak}
 There are several arguments supporting the current preferential tax treatment of capital gains. Taxes on capital gains might reduce speculative investment. Other countries offer similar preferential treatment. Investors may hold on to uneconomic assets for too long if taxes are too burdensome. Capital assets are typically held for a long time and, without discounts, investors pay taxes on the inflation component of their return, which does not represent any real gain. 
 
 These arguments do not withstand closer scrutiny.
 
 Capital gains and other forms of savings income increase a person's spending power. All increases in spending power should be taxed consistently regardless of how they are earned (chapter 2) since, as the Canadian Carter report puts it, ``a buck is a buck is a buck.''  Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy. Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
 
+Generally, tax concessions may be retained if they promote a social or common economic benefit, and there are no more efficient ways to do so. Compared with income from wage or salary income, income from capital gains is taxed much more lightly. 
+
 That capital gains taxes might discourage worthwhile investment is a reasonable concern. Increasing taxes on capital gains might reduce incentives to save and start new businesses. But personal income tax rates are not the most important determinants of these decisions. If nominal gains are taxed at the full marginal rate, part of the tax bill is due to inflation, not an increasing in wealth or spending power.  However, policy makers have other choices between a too high 50 per cent discount and a too low abolition of the discount.  With inflation rates low relative to investment returns, the 50 per cent discount overcompensates most investors. Moreover, the discount magnifies the tax advantages of capital gains over other investment income, such as bank deposits.
 
 The other reason proffered for the discounted treatment of gains is to moderate the effect of `asset lock-in' whereby investors are deterred from selling assets that have accrued large gains. But the biggest causes of lock-in are investors waiting until retirement to realise gains or passing their assets (CGT free) to their beneficiaries. 
 
 Most OECD countries offer some type of discount or concession for capital gains but it varies by investment type.\footnote{In some countries -- including Israel, Ireland, Norway, and Luxembourg -- property investments other than the family home are taxed as ordinary income. See \textcite{Harding2013} for a summary.}  But the hurdles to qualify for the most generous concessions can be stringent. Holding periods to receive maximum concession on investment property are ten years in Germany and Korea, 20 years in Slovenia, 30 years in France and 35 in Austria.\footcite{Harding2013} In New Zealand, where capital gains are notionally tax free, capital gains on property purchased with the intent to sell is taxed as ordinary income.\footcite[p.~25]{prebble2010tax} 
-  
+
 \subsubsection{Tax concessions for capital gains generate revenue leakage and favour the wealthy}
 A lower tax rate for capital gains results in `revenue leakage' as taxpayers find ways to convert income into capital gains.\footcites{Evans2005}{Minas2013}  Protecting the income tax base is a key reason capital gains are taxed in most OECD countries\footcite{OECD2006b} and motivated the introduction of capital gains in Australia (see \Vref{box:short_history_CGT})
 
@@ -677,7 +680,7 @@ both %T>%
         panel.margin.x = grid::unit(1, "lines")) + 
   xlab("Taxable income decile") 
 @
-\begin{figure}
+\begin{figure}[t]
 \Caption{Most capital gains are earned by those in the highest income decile although less when capital gains income is excluded}{Amount of net capital gains by income decile}{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}
 \includegraphics[width=\columnwidth]{figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1}
 \source{\gao\ \textcite{ATO2013i}}
@@ -709,7 +712,7 @@ A lower tax rate for capital gains is sometimes justified on the basis that the 
 
 The tax concession is a crude way to adjust for the effects of inflation. In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation. As \Vref{fig:ASX_Before_and_after_tax_returns_for_10_years} shows, in the current low inflation environment, the 50 per cent discount overcompensates most investors.%% asx
 
-<<ASX_Before_and_after_tax_returns_for_10_years, fig.height=12, out.height="12in">>=
+<<ASX_Before_and_after_tax_returns_for_10_years, fig.height=13, out.height="13in">>=
 read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   gather(tax_class, returnz, -`Asset class`) %>%
   # cosmetics
@@ -722,11 +725,11 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   geom_bar(stat = "identity",
            position = "dodge") + 
   geom_hline(yintercept = 0.028, 
-             color = Orange, size = 2) + 
+             color = theGrey, size = 2) + 
   annotate("text", x = 2, y = 0.0299, 
            hjust = 0,
-           label = "CPI (2.8% p.a.)", color = Orange, fontface = "bold",
-           size = 7.14) + 
+           label = "CPI (2.8% p.a.)", color = theGrey, fontface = "bold",
+           size = 8.14) + 
   scale_y_continuous(expand = c(0,0), label = percent) + 
   theme(panel.grid.major = element_blank(),
         axis.title = element_blank()) + 
@@ -982,6 +985,7 @@ rates_data %T>%
 \end{bigbox*}
 }
 
+\subsection{Reducing the capital gains discount will raise revenue and align the treatment with negative gearing}
 \subsubsection{Taxing capital gains without a discount will not substantially distort economic decisions}
 Taxing capital gains at the full marginal rate could deter entrepreneurship and risk taking by reducing the returns to selling a successful business.\footnote{If capital gains were taxed on an accrual basis and capital losses were fully deductible against all assets, then taxing gains in full would be neutral with respect to risk. However, since losses are only deductible against gains this increases the risk that investors will make a loss they are not able to deduct. It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (section x.1), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect may not be large. There are other factors that drive entrepreneurship and risk taking behaviour that are far more significant than the tax on any gains ultimately made.\footcite[p.~75]{Burman1999}   Further, other exceptions already in place limit the effects of capital gains tax when assets or businesses are sold.\footnote{Capital gains tax exemptions are available for the sale of active assets by small business up to a lifetime limit of \$500,000 provided the gains are paid into a complying super fund. There are also exemptions for people over 55 that are retiring and selling business asset held for more than 15 years. Small business also receive rollover relief allowing them to defer all or part of a capital gain for two years or longer on the sale of active assets, provided they acquire a replacement asset or you incur expenditure on making capital improvements to an existing asset. \textcite{ATO2014e}} In any case, gains received from the sale of business are a small proportion of total gains from individuals: most are from property and share-market investments (\Vref{fig:Majority_of_taxable_gains_are_earned_by_individuals})
 
@@ -1233,9 +1237,8 @@ taxstats_ts %>%
   prop_rental_deductions_gross_rent
 
 prdgr <- function(fyyear){ 
-  prop_rental_deductions_gross_rent %>%
-  filter(fy.year == fyyear) %$% 
-  round(prop, 3)*100
+  temp <- dplyr::filter(prop_rental_deductions_gross_rent, fy.year == fyyear)
+  round(temp$prop, 3)*100
 }
 @
 
