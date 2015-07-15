@@ -1454,11 +1454,12 @@ These tax incentives also contribute to volatility in housing markets.
 Negative gearing is most attractive as a tax minimisation strategy when asset prices are rising strongly.
 So in boom times it further increases investor demand for housing.
 The opposite is true when prices are stable or falling.
-The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.45]{RBA2014}[p.75,131]{Commission2004}[p.70,418]{Treasury2010}[p.~278]{Inquiry2015}
+The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
 
 Concerns persist that limiting negative gearing will reduce the supply of rental properties and push up rents.
 Some of this seems to reflect folk memory from when the Hawke Government temporarily restricted negative gearing in the 1980s.\footnote{Negative gearing was quarantined so that rental losses could not be used to reduce the tax bill on other income streams.}
 
+In truth, the abolition of negative gearing was innocent.  
 Rents rose rapidly in Sydney and Perth.
 But adjusted for inflation, rents were stable in Melbourne and fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}).
 In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.186]{badcock1991responsiveness}[pp.47-48]{Daley2013} As Badcock and Browett remark in their 1991 post-mortem of the policy, 
@@ -1513,11 +1514,22 @@ At the same time, negatively geared investors will face competition from the one
 Because these landlords are not negatively gearing, they will be unaffected by the tax changes.
 Tenants can try to beat rent rises by threatening to move to these other properties.
 
+Investors who are currently negatively geared may exit the market if concessions are less generous. 
+Such an investor must sell to another negatively geared investor,
+a positively geared investor, or 
+an owner-occupier. 
+If the buyer is negatively geared, there is no material change to the market, and no change in rental price.
+If the buyer is positively geared, the abolition of negative gearing is irrelevant, and so no change to the rental price would be expected.
+If the buyer is an owner-occupier, the rental market has one fewer house to supply, but also one fewer tenant to satisfy. Thus, no change in rent.
+
 Rents are set by these dynamics of demand and supply, not by the returns that owners are seeking.
 In property markets -- just like other markets -- returns determine asset prices, not the other way around.
 Rents do not increase just to ensure that buyers of assets get their money back.
-Some investors may sell their properties if tax concessions are less generous.
-This might reduce house prices, but it will not increase rents.
+Put another way, tenants will not pay more for the same just because their landlord is unable to make the same return.
+Such tenants would seek accommodation from a positively geared landlord, or purchase a house. 
+While some investors may sell their properties if tax concessions are less generous, 
+this will only reduce house prices, not rental prices.
+
 Every time an investor sells a property to a renter, there is one less rental property, and one less renter.
 There is no change to the balance between supply and demand of rental properties in the short term.
 Others may sell to another investor, but one that doesn't rely on negative gearing to make the investment profitable.
