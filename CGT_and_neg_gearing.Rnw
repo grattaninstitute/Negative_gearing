@@ -710,13 +710,15 @@ Holding periods to receive maximum concession on investment property are ten yea
 A lower tax rate for capital gains results in `revenue leakage' as taxpayers find ways to convert income into capital gains.\footcites{Evans2005}{Minas2013}  Protecting the income tax base is a key reason capital gains are taxed in most OECD countries\footcite{OECD2006b} and motivated the introduction of capital gains in Australia (see \Vref{box:short_history_CGT})
 
 Traditionally this type of tax shelter has been the preserve of the wealthy.
-Executives paid via shares or stock options\footcite[pp.8-9]{Ingles2009} or corporate reorganisations of private corporations to convert dividend income into capital gain, for example.\footcite{Minas2013} But borrowing to finance investments with negative income flow but positive capital gains is another way in which wage income is effectively converted into capital gain for tax purposes.
+Executives paid via shares or stock options\footcite[pp.~8-9]{Ingles2009} or corporate reorganisations of private corporations to convert dividend income into capital gain, for example.\footcite{Minas2013} 
+But borrowing to finance investments with negative income flow but positive capital gains is another way in which wage income is effectively converted into capital gain for tax purposes.
 This conversion comes about via the interaction of negative gearing with the capital gains tax provisions (\Cref{sec:negative_gearing_provides}).
 With more widespread availability of credit, borrowing has become a easier, increasing the popularity of this tax minimization strategy and thus the cost of revenue leakage to the budget.
 
-\subsubsection{Tax concessions distory investment choices}
-Lower taxes on capital gains also distort investment choices.
-They create an incentive for investors to choose assets more likely to generate income through capital gains rather than operating income.
+\subsubsection{Tax concessions distort investment choices}
+Arguments for lower rates, concessions, or fully abolishing the capital gains tax often rest on improving investment decisions. 
+But lower taxes on capital gains also distort investment choices.
+Setting taxes for capital gains lower than operating income creates an incentive for investors to choose assets more likely to generate income through capital gains rather than operating income.
 
 \subsubsection{Tax concessions on gains favour the wealthy}
 Tax concessions for capital gains favour wealthy taxpayers who receive most of the capital gains.
