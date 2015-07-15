@@ -61,7 +61,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
 )
 @
 
-<<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
+<<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
 library(data.table)
 library(dplyr)
 library(tidyr)
@@ -667,15 +667,17 @@ Since then, the tax treatment of capital gains has varied, but they are taxed at
 
 Under the current rules, net capital gains are included as part of assessable income.\footnote{Capital losses can only be offset against capital gains, not ordinary income.
 But if taxpayers are unable to utilise their capital losses is a particular year, they are carried forward to future years \textcite{ATO2014a}.}  For individuals and small businesses, 50 per cent of their capital gains are excluded from income if the assets are held for more than one year.
-This means the effective tax rate paid on these gains is half the rate for other forms of income.
+This means the effective tax rate paid on these gains is half the rate than for other forms of income.
 For superannuation funds, a third of the gains are excluded.
 Large corporations pay tax on all of their capital gains at the corporate tax rate of 30 per cent.
 
 Capital gains have other less explicit tax advantages compared to recurrent income.
-Investors control when they realise gains.
-Consequently, they can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  Indeed, the probability of a landlord selling a property increases by over 20 percentage points once they retire.\footnote{The Age Pension asset test also encourages those moving into retirement to sell their assets. \textcite{Wood2010a}.}
+Investors control when they realise gains; 
+they can reduce their tax by selling assets when their income is low and their tax is paid at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  
+Indeed, the probability of a landlord selling a property increases by over 20 percentage points once they retire.\footnote{The Age Pension asset test also encourages those moving into retirement to sell their assets. \textcite{Wood2010a}.}
 Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue.
-This deferral of tax is akin to the government providing the investor with an interest free loan. (See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
+Investors can defer their tax.
+This deferral of tax is as much a benefit  than as if the government had provided the investor an interest free loan. (See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
 
 \section{The preferential tax treatment of capital gains should be reined in}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
 \subsection{Arguments for the current large concessions are weak}
@@ -820,8 +822,9 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
            hjust = 0,
            label = "CPI (2.8% p.a.)", color = theGrey, fontface = "bold",
            size = 8.14) + 
-  scale_y_continuous(expand = c(0,0), label = percent) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,0.1), label = percent) + 
   theme(panel.grid.major = element_blank(),
+        plot.margin = grid::unit(c(0.7, 2.2, 0.5, 0), "lines"),
         axis.title = element_blank()) + 
   coord_flip()
 @
