@@ -207,12 +207,15 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   prop_full_discount <-
     get_sample_file(2013) %>%
     filter(Net_CG_amt > 0) %>%
-    group_by(apparent.discount = round(4*Net_CG_amt/Tot_CY_CG_amt,0)/4) %>%
+    mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
+           apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
+    group_by(apparent.discount) %>%
     tally() %>%
-    arrange(apparent.discount) %>%
+    arrange(n) %>%
     ungroup %>%
+    filter(apparent.discount %in% c(0.5,1)) %>%
     mutate(n.p = n/sum(n),
-           discount.key = cumsum(n.p)) 
+           discount.key = cumsum(n.p))
   
   # More things to consider
   # This is a problem.
@@ -563,7 +566,7 @@ Negative gearing is embedded in the Australian taxation system; 1.2~million taxp
 Homeowners benefit from the (artificially) higher prices.
 And the real estate lobby is vocal.
 A superficial assessment might conclude that it is too difficult to change this policy.
-But the electorate also recognizes that housing is unaffordable.
+But the electorate also recognizes that housing is unaffordable and parents will reward efforts that improve affordability for their children.
 \end{summary}
 
 %%%
@@ -707,13 +710,16 @@ See \textcite{Harding2013} for a summary.}  But the hurdles to qualify for the m
 Holding periods to receive maximum concession on investment property are ten years in Germany and Korea, 20 years in Slovenia, 30 years in France and 35 in Austria.\footcite{Harding2013} In New Zealand, where capital gains are notionally tax free, capital gains on property purchased with the intent to sell is taxed as ordinary income.\footcite[p.~25]{prebble2010tax} 
 
 \subsubsection{Tax concessions for capital gains generate revenue leakage}
-A lower tax rate for capital gains results in `revenue leakage' as taxpayers find ways to convert income into capital gains.\footcites{Evans2005}{Minas2013}  Protecting the income tax base is a key reason capital gains are taxed in most OECD countries\footcite{OECD2006b} and motivated the introduction of capital gains in Australia (see \Vref{box:short_history_CGT})
+A lower tax rate for capital gains results in `revenue leakage' as taxpayers find ways to convert income into capital gains.\footcites{Evans2005}{Minas2013}  
+Sealing the income tax base is a key reason capital gains are taxed in most OECD countries\footcite{OECD2006b} and motivated the introduction of capital gains in Australia (see \Vref{box:short_history_CGT})
 
-Traditionally this type of tax shelter has been the preserve of the wealthy.
+Yet the protection offered by a capital gains tax has been eroded by provisions which allow negative gearing.
+
+Traditionally sheltering income by converting it into capital has been the preserve of the wealthy.
 Executives paid via shares or stock options\footcite[pp.~8-9]{Ingles2009} or corporate reorganisations of private corporations to convert dividend income into capital gain, for example.\footcite{Minas2013} 
 But borrowing to finance investments with negative income flow but positive capital gains is another way in which wage income is effectively converted into capital gain for tax purposes.
-This conversion comes about via the interaction of negative gearing with the capital gains tax provisions (\Cref{sec:negative_gearing_provides}).
-The current storm of easy credit and lower taxes on capital has led to torrential borrowing in pursuit of tax advantages, and thus even greater revenue leakage.
+This conversion comes about via the interaction of negative gearing with the capital gains tax provisions (\cref{sec:negative_gearing_provides}).
+A storm of easy credit and lower taxes on capital has led to torrential borrowing in pursuit of tax advantages, and thus even greater revenue leakage.
 
 \subsubsection{Tax concessions distort investment choices}
 Arguments for lower rates, concessions, or fully abolishing the capital gains tax often rest on improving investment decisions. 
@@ -975,7 +981,7 @@ HILDA_wave10 %>%
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income.
 Ironically Australia's current system provides no adjustments for the least protection to bank deposits -- disproportionately held by the least well off -- and much more protection for other investments.\footnote{Over 90\%\ of those in the bottom decile have deposits, but less than 30\%\ have superannuation assets; and less than 20\%\ have equities or life insurance.}
 
-Unlike other investment income, gains are taxed when an asset is sold, not when they accrue, which provides investors with an implicit interest-free loan on tax liabilities (\Vref{box:Tax_deferral_and_effective_tax_rates}).\footcites[See also:][p.~2]{Fane2004}[p.~12]{Ingles2009} Investors are also able to choose the time of the asset's disposal to minimise tax. 
+Unlike other investment income, gains are taxed when an asset is sold, not when they accrue, which provides investors with an implicit interest-free loan on tax liabilities (See \Cref{box:Tax_deferral_and_effective_tax_rates}).\footcites[See also:][p.~2]{Fane2004}[p.~12]{Ingles2009} Investors are also able to choose the time of the asset's disposal to minimise tax. 
 
 \afterpage{%
 \begin{bigbox*}{Capital gains enjoy tax-advantaged status over other forms of income}{box:Tax_deferral_and_effective_tax_rates}
@@ -1079,8 +1085,8 @@ rates_data %T>%
 \subsubsection{Taxing capital gains without a discount will not substantially distort economic decisions}
 Taxing capital gains at the full marginal rate could deter entrepreneurship and risk taking by reducing the returns to selling a successful business.\footnote{If capital gains were taxed on an accrual basis and capital losses were fully deductible against all assets, then taxing gains in full would be neutral with respect to risk.
 However, since losses are only deductible against gains this increases the risk that investors will make a loss they are not able to deduct.
-It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (section x.1), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect may not be large.
-There are other factors that drive entrepreneurship and risk taking behaviour that are far more significant than the tax on any gains ultimately made.\footcite[p.~75]{Burman1999}   Further, other exceptions already in place limit the effects of capital gains tax when assets or businesses are sold.\footnote{Capital gains tax exemptions are available for the sale of active assets by small business up to a lifetime limit of \$500,000 provided the gains are paid into a complying super fund.
+It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (section x.1), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect is small.
+Other factors which drive entrepreneurship and risk-taking behaviour are far more significant than the tax on any gains ultimately made.\footcite[p.~75]{Burman1999}   Further, several separate exceptions already in place limit the effects of capital gains tax when assets or businesses are sold.\footnote{Capital gains tax exemptions are available for the sale of active assets by small business up to a lifetime limit of \$500,000 provided the gains are paid into a complying super fund.
 There are also exemptions for people over 55 that are retiring and selling business asset held for more than 15 years.
 Small business also receive rollover relief allowing them to defer all or part of a capital gain for two years or longer on the sale of active assets, provided they acquire a replacement asset or you incur expenditure on making capital improvements to an existing asset. \textcite{ATO2014e}} In any case, gains received from the sale of business are a small proportion of total gains from individuals: most are from property and share-market investments (\Vref{fig:Majority_of_taxable_gains_are_earned_by_individuals})
 
