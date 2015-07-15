@@ -74,4 +74,7 @@ figure/
 *.tex
 *.log
 
+bibliography2.bib
+package_cite_input.tex
+
 
