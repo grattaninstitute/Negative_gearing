@@ -1503,7 +1503,7 @@ In 1985, the Hawke Government restricted negative gearing so that rental losses 
 Two years' later, the policy was abolished out of concern for increasing rental prices.
 
 It is understandable that politicians today accept their predecessors' judgement: that rental prices did rise and that quarantining negative gearing was to blame.
-Yet in truth, the policy of quarantining was innocent.  
+Yet the policy of quarantining was innocent.  
 Rents did rise rapidly in Perth and rose somewhat in Sydney.
 But adjusted for inflation, rents were stable in Melbourne and fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}).
 In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.~186]{badcock1991responsiveness}[pp.~47-48]{Daley2013} 
