@@ -992,7 +992,7 @@ HILDA_wave10 %>%
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income.
 Ironically Australia's current system provides no adjustments for the least protection to bank deposits -- disproportionately held by the least well off -- and much more protection for other investments.\footnote{Over 90\%\ of those in the bottom decile have deposits, but less than 30\%\ have superannuation assets; and less than 20\%\ have equities or life insurance.}
 
-Unlike other investment income, gains are taxed when an asset is sold, not when they accrue, which provides investors with an implicit interest-free loan on tax liabilities (See \Cref{box:Tax_deferral_and_effective_tax_rates}).\footcites[See also:][p.~2]{Fane2004}[p.~12]{Ingles2009} Investors are also able to choose the time of the asset's disposal to minimise tax. 
+Unlike other investment income, gains are taxed when an asset is sold, not when they accrue, which provides investors with an implicit interest-free loan on tax liabilities (See \Vref{box:Tax_deferral_and_effective_tax_rates}).\footcites[See also:][p.~2]{Fane2004}[p.~12]{Ingles2009} Investors are also able to choose the time of the asset's disposal to minimise tax. 
 
 \afterpage{%
 \begin{bigbox*}{Capital gains enjoy tax-advantaged status over other forms of income}{box:Tax_deferral_and_effective_tax_rates}
