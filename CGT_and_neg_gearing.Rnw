@@ -574,13 +574,14 @@ But the electorate also recognizes that housing is unaffordable and parents will
 %%%
 
 \chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
-This chapter examines two significant concessions in the taxation of savings: \highlight{tax discounts for capital gains} and \highlight{negative gearing}.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.}  These allow investors to use debt financed investment, particularly property investment, to reduce and defer their personal income tax.
+This chapter examines two significant concessions in the taxation of savings: \highlight{tax discounts for capital gains} and \highlight{negative gearing}.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.}  
+These allow investors to use debt-financed investment, particularly property investment, to reduce and defer their personal income tax.
 
 These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property.
 The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers.
 Like most tax concessions on investment, these concessions largely benefit the wealthy. 
 
-The 50 per cent \highlight{CGT discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.4-21]{Treasury2015a}.
+The 50 per cent \highlight{capital gains tax (CGT) discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.4-21]{Treasury2015a}.
 This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts.
 That is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment.
 But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings.
@@ -588,7 +589,7 @@ And entrepreneurs already receive a range of other capital gains tax concessions
 Reducing the CGT discount to 30 per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
 
 Negative gearing should also be limited.
-The tax deductibility of costs, including interest costs, prevents a tax bias against debt funding and more risky investments.
+The tax deductibility of costs, including interest costs, is a standard feature of the tax system, preventing bias against debt-financed investments.
 But allowing investment losses to be written off against wage and salary income is not needed to prevent such bias.
 Such losses should only be deductible against investment income.
 The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
@@ -627,14 +628,15 @@ Funds	7340	507	4842
                  width = 0.7) + 
         scale_y_continuous(label = grattan_dollar, expand = c(0,0), limits = c(0,25)) + 
         annotate("text", 
-                 x = 3.5,
+                 x = 3.45,
                  hjust = 0,
-                 size = 7.14,
+                 vjust = 1,
+                 size = 8.21,
                  y = c(6129, 14597, 21479)/1e3, #cumsum(c(6129,8468,6882)), 
                  color = gpal(3),
                  fontface = "bold",
                  label = c("Shares", "Real estate", "Other")) + 
-        annotate("blank", x = 4.6, y = 0) + 
+        annotate("blank", x = 4.4, y = 0) + 
         theme(axis.title = element_blank()) 
 @
 \begin{figure}[h]
@@ -662,7 +664,7 @@ Given the strong real growth in asset prices, particularly residential property,
 
 \end{smallbox}
 Before 1985, capital gains were not taxed in Australia.
-Since then, the tax treatment of capital gains has varied, but they are taxed at a lower rate than wage and salary income (\Vref{box:short_history_CGT}).  
+Since then, the tax treatment of capital gains has varied, but they have always been taxed at a lower rate than wage and salary income (\Vref{box:short_history_CGT}).  
 
 Under the current rules, net capital gains are included as part of assessable income.\footnote{Capital losses can only be offset against capital gains, not ordinary income.
 But if taxpayers are unable to utilise their capital losses is a particular year, they are carried forward to future years \textcite{ATO2014a}.}  For individuals and small businesses, 50 per cent of their capital gains are excluded from income if the assets are held for more than one year.
@@ -671,12 +673,10 @@ For superannuation funds, a third of the gains are excluded.
 Large corporations pay tax on all of their capital gains at the corporate tax rate of 30 per cent.
 
 Capital gains have other less explicit tax advantages compared to recurrent income.
-Investors control when they realise gains; 
-they can reduce their tax by selling assets when their income is low and their tax is paid at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  
-Indeed, the probability of a landlord selling a property increases by over 20 percentage points once they retire.\footnote{The Age Pension asset test also encourages those moving into retirement to sell their assets. \textcite{Wood2010a}.}
-Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue.
-Investors can defer their tax.
-This deferral of tax is as much a benefit  than as if the government had provided the investor an interest free loan. (See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
+Investors control when they realise gains. 
+Consequently, they can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  
+Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue. 
+This deferral of tax is akin to the government providing the investor with an interest free loan(See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
 
 \section{The preferential tax treatment of capital gains should be reined in}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
 \subsection{Arguments for the current large concessions are weak}
@@ -689,7 +689,8 @@ Capital assets are typically held for a long time and, without discounts, invest
 These arguments do not withstand closer scrutiny.
 
 Capital gains and other forms of savings income increase a person's spending power.
-All increases in spending power should be taxed consistently regardless of how they are earned (chapter 2) since, as the Canadian Carter report puts it, ``a buck is a buck is a buck.''  Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy.
+All increases in spending power should be taxed consistently regardless of how they are earned (chapter 2); ``a buck is a buck is a buck'', as the Canadian Carter report put it. 
+Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy.
 Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
 
 Generally, tax concessions may be retained if they promote a social or common economic benefit, and there are no more efficient ways to do so.
@@ -698,9 +699,10 @@ Compared with income from wage or salary income, income from capital gains is ta
 That capital gains taxes might discourage worthwhile investment is a reasonable concern.
 Increasing taxes on capital gains might reduce incentives to save and start new businesses.
 But personal income tax rates are not the most important determinants of these decisions.
+
 If nominal gains are taxed at the full marginal rate, part of the tax bill is due to inflation, not an increasing in wealth or spending power.
-However, policy makers have other choices between a too high 50 per cent discount and a too low abolition of the discount.
-With inflation rates low relative to investment returns, the 50 per cent discount overcompensates most investors.
+
+On the other hand, with inflation rates low relative to investment returns, the 50 per cent discount overcompensates most investors.
 Moreover, the discount magnifies the tax advantages of capital gains over other investment income, such as bank deposits.
 
 The other reason proffered for the discounted treatment of gains is to moderate the effect of `asset lock-in' whereby investors are deterred from selling assets that have accrued large gains.
@@ -797,7 +799,7 @@ As we show later, much of this is explained by the ``retirement realisation effe
 
 
 \subsubsection{The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}
-A lower tax rate for capital gains is sometimes justified on the basis that the effective tax rates on real returns can be high if nominal gains are taxed at marginal income tax rates.\footcite{Treasury2010} This is particularly true of investments with low real returns that are held for an extended period (\Vref{box:short_history_CGT}).
+A lower tax rate for capital gains is sometimes justified on the basis that the inflation part of gains should not be taxed. The effective tax rates on real returns can be high if nominal gains are taxed at marginal income tax rates.\footcite{Treasury2010} This is particularly true of investments with low real returns that are held for an extended period (\Vref{box:short_history_CGT}).
 
 The tax concession is a crude way to adjust for the effects of inflation.
 In a world with constant tax scales, the 50 per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation.
@@ -810,6 +812,7 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   mutate(returnz = returnz/100,
          `Asset class` = gsub("\\s+", "\n", `Asset class`),
          `Asset class` = gsub("Global\\n", "Global ", `Asset class`)) %>%
+  mutate(tax_class = paste0(tax_class, "   ")) %>%
 
   #
   grplot(aes(y = returnz, x = `Asset class`, fill = tax_class)) + 
@@ -824,7 +827,13 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   scale_y_continuous(expand = c(0,0), limits = c(0,0.1), label = percent) + 
   theme(panel.grid.major = element_blank(),
         plot.margin = grid::unit(c(0.7, 2.2, 0.5, 0), "lines"),
-        axis.title = element_blank()) + 
+        axis.title = element_blank(),
+        legend.position = "bottom") + 
+  guides(fill = guide_legend(ncol = 2, 
+                             title.theme = element_blank(), 
+                             keyheight = unit(2, "lines"),
+                             keywidth = unit(2, "lines"),
+                             label.theme = element_text(angle = 0, size = 23))) +
   coord_flip()
 @
 \begin{figure}
@@ -1379,6 +1388,7 @@ This coincided with the introduction of the capital gains tax discount in 1999.
 In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m.
 By 2012-13, the two~billion landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
 
+
 <<prop_rental_deductions_gross_rent>>=
 taxstats_ts %>%
   filter(grepl("(Rent.*interest)|(Gross rent)", `Selected items`)) %>%
@@ -1399,6 +1409,28 @@ Even though interest rates are falling, interest deductions as a proportion of r
 \subsection{Negative gearing is growing in popularity, mainly for housing investment}
 There has been a boom in negatively geared residential property investments over the last two decades.
 Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
+
+<<Negative_gearing_real_over_time>>=
+taxstats_ts %>%
+  filter(grepl("Net rent.*loss", `Selected items`)) %>%
+  filter(!grepl("property", `Selected items`)) %>%
+  filter(!is.na(value)) %>%
+  mutate(value = ifelse(grepl("\\$", unit), cpi_inflator(value, from_fy = fy.year), value)) %>%
+  group_by(unit) %>%
+  arrange(fy.year) %>%
+  mutate(value.rel = value/value[which(fy.year == "1999-00")]) %>%
+  #mutate(value.real = cpi_inflator(value, from_fy = fy.year)) # requires en dash matching
+  mutate(fy.year = factor(fy.year, ordered = TRUE),
+         date = fy2date(as.character(fy.year))) %>%
+  
+  grplot(aes(x = date, y = value.rel, color = unit, label = unit)) + 
+  geom_line(aes(group = unit)) + 
+  geom_dl(method = list("lines2", dl.trans(cex = 1.875, x = x + 0.0))) + 
+  scale_y_continuous(expand = c(0.1,0.1)) + 
+  theme(
+        axis.title = element_blank(), 
+        plot.margin = grid::unit(c(0.7,1.2,0.5,0.5), "lines"))
+@
 
 <<Net_rent_over_time>>=
 in.what.dollars <- "2013-14"
@@ -1437,12 +1469,17 @@ taxstats_ts %>%
   scale_y_continuous(expand = c(0,0),
                      limits = c(-12, 5))
 @
-\begin{figure}[t]
+\begin{figure}[p]
 \Caption{The introduction of the capital gains discount, but not the introduction of negative gearing, led a large fall in rental profits.}{Total net rent, billions (\Sexpr{in.what.dollars}~dollars)}{fig:Net_rent_over_time}
 \includegraphics[width=\columnwidth]{figure/Net_rent_over_time-1}
 \notes{Net rent as marked by taxpayer upon lodgement of tax return}
 
 \source{ATO taxstats 1979-2013 (data not available pre-1989)}
+\end{figure}
+\begin{figure}[p]
+\Caption{More people are negatively gearing and the losses are growing even faster}{Number of people negatively gearing and real amount negatively geared. 1999-00 = 1.}{fig:Negative_gearing_real_over_time}
+\includegraphics[width=\columnwidth]{figure/Negative_gearing_real_over_time-1}
+\notes{Amount deflated by CPI. Other indices may be more useful.}
 \end{figure}
 \subsubsection{Impact on housing markets}
 Unlimited negative gearing contributes to higher house prices but does not ease rents. 
@@ -1465,11 +1502,11 @@ The second arguments reflects a confusion between the investor market and the wh
 In 1985, the Hawke Government restricted negative gearing so that rental losses could not be used to reduce tax payable on other income streams. 
 Two years' later, the policy was abolished out of concern for increasing rental prices.
 
-It is understandable that politicians today accept that their predecessors' judgement was right: that rental prices did rise and that quarantining negative gearing was to blame.
+It is understandable that politicians today accept their predecessors' judgement: that rental prices did rise and that quarantining negative gearing was to blame.
 Yet in truth, the policy of quarantining was innocent.  
 Rents did rise rapidly in Perth and rose somewhat in Sydney.
 But adjusted for inflation, rents were stable in Melbourne and fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}).
-In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.186]{badcock1991responsiveness}[pp.47-48]{Daley2013} 
+In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.~186]{badcock1991responsiveness}[pp.~47-48]{Daley2013} 
 The policy change was merely a coincidence.
 As Badcock and Browett remark in their 1991 post-mortem of the policy, 
 
