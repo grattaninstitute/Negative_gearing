@@ -1987,6 +1987,55 @@ While it was clearly in the interests of the real estate industry to exaggerate 
 
 Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them. 
 
+<<>>=
+rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/2.1+2+3+4+5+6+7+8+50.115522.10.Q/ABS?startTime=1948&endTime=2015") %>% 
+  as.data.frame -> cpi.df
+
+rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1990") %>% 
+  as.data.frame ->
+  rent.indices
+
+region.decode <- 
+  data.table(
+    REGION = c(1:8,50),
+    city = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "Hobart", "Darwin", "Canberra", "AUST CAP")
+  )
+
+rent.indices %>%
+  merge(region.decode, by = "REGION") %>%
+  group_by(city) %>%
+  mutate(obsValuerel = cpi_inflator_quarters(obsValue/first(obsValue), nominal.date = obsTime, target.date = "1983-Q4")) %>%
+  grplot(aes(x = as.POSIXct(as.yearqtr(obsTime, format = "%Y-Q%q")),
+             y = obsValuerel, 
+             color = city,
+             label = city,
+             group = city)) + 
+  geom_line() + 
+  facet_wrap(~city, ncol = 3) 
+
+cpi.df %>%
+  #data.table %>%
+  filter(obsTime >= "1983-Q1", obsTime <= "1990") %>%
+  group_by(REGION) %>% 
+  # precentage change from prev. period
+  mutate(growth_r = (1 + obsValue/100),
+         level = lag(cumprod(growth_r)),
+         level = ifelse(is.na(level), 1, level)) %>%
+  mutate(obsValueReal = cpi_inflator_quarters(level, nominal.date = obsTime, target.date = first(obsTime)),
+         obsTime = as.yearqtr(obsTime, format = "%Y-Q%q")) %>%
+  ungroup %>% 
+  merge(region.decode, by = "REGION") %>% 
+  filter(city %in% c("Brisbane", "Adelaide", "Melbourne", "Perth", "Sydney")) %>%
+  grplot(aes(x = as.POSIXct(obsTime),
+             y = obsValueReal,
+             color = city,
+             group = city,
+             label = city)) + 
+  geom_line() + 
+  geom_dl(method = "last.qp")
+@
+
+
 <<Capital_city_rents, fig.height = 11, out.height = "11in">>=
 read_excel("Capital_city_rents_1980s.xlsx") %>%
   gather(city, growth, Sydney:Australia) %>%
@@ -2056,7 +2105,7 @@ Again there is no shortage of rental properties.
 It is also unlikely that removing negative gearing would affect the supply of new dwellings much over the medium term.
 Currently 93~per~cent of all investment property lending is for existing dwellings.\footcite{ABS2015}  Less investor demand would put downward pressure on house prices including the price of new houses.\footnote{The price transmission will be somewhat muted by the fact that the market for new housing, typically at the edge of cities, is somewhat detached from the market for established housing typically closer to the centre (See: \textcite{Kelly2011}.)}  But the main constraint on new housing is land release and zoning restrictions -- especially in established suburbs with good access to jobs and transport -- rather than the profitability of developments.  \footcites{Kelly2013}[pp.84-90]{Kelly2015}
 
-General tax breaks like negative gearing are a poorly targeted and inefficient way of supporting the rental market\footcite[p.~74]{HenryReviewPart2Vol1}
+General tax breaks like negative gearing are a poorly targeted and inefficient way of supporting the rental market.\footcite[p.~74]{HenryReviewPart2Vol1}
 
 \subsubsection{Negative gearing benefits middle and high income earners}
 Like most tax concessions on investment, tax benefits from negative gearing are biased to the wealthy.
