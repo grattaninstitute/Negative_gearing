@@ -1315,7 +1315,7 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
 
 % We don't include this chunk
 <<Survey-Income-Housing-assets,eval=FALSE,include=FALSE>>=
-SIH11BH <- read.dta("sih11bh.dta")
+SIH11BH <- read.dta("./SIH/sih11bh.dta")
 
 SIH11BH.df <- data.frame(debt.cc = SIH11BH$LIACCCH, # Amount of credit card debt - household level
                          debt.hecs =SIH11BH$LIAHECCH, # Amount of HECS/HELP liability
@@ -1966,10 +1966,9 @@ The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry h
 But out of all the effects that negative gearing has on housing markets, its effect on rental prices is by far the most contentious.
 
 Concerns persist that limiting negative gearing will reduce the supply of rental properties and push up rents.
-These arguments typically rest on two pillars: one, that rental prices in the 1980s surged without negative gearing and two, that investors will abandon the market without present tax advantages. 
-The first argument is quite easily refuted. 
-The second arguments reflects a confusion between changes in the size of the investor market and changes in the size of housing market as a whole.
+These arguments typically rest on two pillars: one, that rental prices rose in the 1980s when negative gearing for property was restricted and two, that investors will abandon the market without present tax advantages. 
 
+The first argument is quite easily refuted.
 In 1985, the Hawke Government restricted negative gearing so that rental losses could not be used to reduce tax payable on other income streams. 
 Two years' later, the policy was abolished out of concern for increasing rental prices.
 
@@ -1987,7 +1986,7 @@ While it was clearly in the interests of the real estate industry to exaggerate 
 
 Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them. 
 
-<<>>=
+<<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
 rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/2.1+2+3+4+5+6+7+8+50.115522.10.Q/ABS?startTime=1948&endTime=2015") %>% 
   as.data.frame -> cpi.df
 
@@ -2003,36 +2002,43 @@ region.decode <-
 
 rent.indices %>%
   merge(region.decode, by = "REGION") %>%
+  filter(city %in% c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "AUST CAP")) %>%
   group_by(city) %>%
-  mutate(obsValuerel = cpi_inflator_quarters(obsValue/first(obsValue), nominal.date = obsTime, target.date = "1983-Q4")) %>%
-  grplot(aes(x = as.POSIXct(as.yearqtr(obsTime, format = "%Y-Q%q")),
+  # Why does wrapping up the obs/first(obs) work but not separately? Inflation of an index??
+  mutate(obsValuerel = cpi_inflator_quarters(obsValue/first(obsValue), nominal.date = obsTime, target.date = "1983-Q4"),
+         obsValuerel = obsValuerel/first(obsValuerel)) %>%
+  ungroup %>%
+  #mutate(obsValuerel = cpi_inflator_quarters(obsValuerel/first(obsValue), nominal.date = obsTime, target.date = "1983-Q4"))
+  mutate(up = city %in% c("Sydney", "Perth")) %>%
+  mutate(city = factor(city, 
+                       levels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "AUST CAP"),
+                       labels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "Australian\ncapitals"))) %>%
+  mutate(obsTime = as.POSIXct(as.yearqtr(obsTime, format = "%Y-Q%q"))) ->
+  rent.indices.real
+
+rent.indices.real  %>%
+  filter(obsTime < as.POSIXct("1989-01-01")) %>%
+  grplot(aes(x = obsTime,
              y = obsValuerel, 
              color = city,
              label = city,
              group = city)) + 
+  annotate("rect", 
+           xmin = as.POSIXct("1985-07-01"),
+           xmax = as.POSIXct("1987-09-30"),
+           ymin = -Inf,
+           ymax = Inf,
+           fill = theGrey,
+           alpha = 0.5) + 
   geom_line() + 
-  facet_wrap(~city, ncol = 3) 
-
-cpi.df %>%
-  #data.table %>%
-  filter(obsTime >= "1983-Q1", obsTime <= "1990") %>%
-  group_by(REGION) %>% 
-  # precentage change from prev. period
-  mutate(growth_r = (1 + obsValue/100),
-         level = lag(cumprod(growth_r)),
-         level = ifelse(is.na(level), 1, level)) %>%
-  mutate(obsValueReal = cpi_inflator_quarters(level, nominal.date = obsTime, target.date = first(obsTime)),
-         obsTime = as.yearqtr(obsTime, format = "%Y-Q%q")) %>%
-  ungroup %>% 
-  merge(region.decode, by = "REGION") %>% 
-  filter(city %in% c("Brisbane", "Adelaide", "Melbourne", "Perth", "Sydney")) %>%
-  grplot(aes(x = as.POSIXct(obsTime),
-             y = obsValueReal,
-             color = city,
-             group = city,
-             label = city)) + 
-  geom_line() + 
-  geom_dl(method = "last.qp")
+  geom_text(data = filter(rent.indices.real, obsTime == unique(obsTime)[13]),
+            hjust = 1, vjust = -1.1, size = 7.14, fontface = "bold",
+            lineheight = 0.8) +
+  scale_color_manual(values = c(gpal(6)[1:5], "black")) + 
+  facet_wrap(~city, ncol = 3)  + 
+  theme(strip.text = element_blank(),
+        strip.background = element_blank(),
+        axis.title.x = element_blank())
 @
 
 
@@ -2067,7 +2073,7 @@ chart.dat %>%
 Only Perth experienced a considerable increase in rents without negative gearing.
 Adelaide and Brisbane actually experienced declines.}{Average rent prices (real compared with overall CPI), 1983 = 1.
 Grey band indicates the dates when negative gearing was not permitted}{fig:Capital_city_rents}
-\includegraphics[width=\columnwidth]{figure/Capital_city_rents-1}
+\includegraphics[width=\columnwidth]{figure/Capital_city_rents_direct_abs-1}
 \source{ABS various years}
 \end{figure}
 Economic theory predicts that removing negative gearing should not change rents much.
