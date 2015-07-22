@@ -55,7 +55,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=F
+                      ,cache=TRUE
                       ,dev=c('my_pdf', 'my_emf')
                       ,fig.ext = c("pdf", "emf")
 )
@@ -986,16 +986,23 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 \begin{summary}
-This working paper examines the odd treatment of capital gains and investment losses by current tax policies.
-The polices are unnecessary, harmful, and costly. 
+Grattan Institute's \emph{Fiscal Challenges for Australia report}, published last month, reveals how Commonwealth and state government budgets are under pressure. 
+The Commonwealth Government has run deficits for six years, with another four forecast. 
+Reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint. 
 
-When an asset like a house or a parcel of shares is sold, the difference between the price the seller originally paid and the price at which it was sold is a capital gain.
-Currently only half the income from a capital gain forms part of the seller's taxable income.
-Whilst the asset is accruing gains, any costs incurred (like interest payments) can be fully deducted -- and it can be deducted against income which may be totally unrelated to holding or improving the asset.
+More active policy measures to achieve budget repair are required. 
+This paper is part of a series by the Grattan Institute setting out priority reforms for repairing government revenues. 
+In this paper we focus on two of the most significant areas of concessional treatment of savings outside of superannuation -- \highlight{capital gains tax (CGT) discounts} and \highlight{negative gearing}.
+These tax concessions allow investors to use debt financed investment as a means to defer and reduce their personal income tax liabilities. 
+
+These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property. 
+The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers. 
+Like most tax concessions on investment, these discounts largely benefit the wealthy. 
 
 Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
 
-The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year.} Deductions for rental losses result in over \highlight{\$4~billion} in foregone revenue each year.
+The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year}.
+Deductions for rental losses result in over \highlight{\$4~billion} in foregone revenue each year.
 These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives.
 Losses can be written off in full while only half the gains are taxed.
 Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
@@ -1986,11 +1993,8 @@ While it was clearly in the interests of the real estate industry to exaggerate 
 
 Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them. 
 
-<<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
-rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/2.1+2+3+4+5+6+7+8+50.115522.10.Q/ABS?startTime=1948&endTime=2015") %>% 
-  as.data.frame -> cpi.df
-
-rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1990") %>% 
+<<Capital_city_rents_direct_abs_get, fig.height = 11, out.height = "11in">>=
+rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1992") %>% 
   as.data.frame ->
   rent.indices
 
@@ -2012,12 +2016,14 @@ rent.indices %>%
   mutate(up = city %in% c("Sydney", "Perth")) %>%
   mutate(city = factor(city, 
                        levels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "AUST CAP"),
-                       labels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "Australian\ncapitals"))) %>%
+                       labels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "All\nAustralian\ncapitals"))) %>%
   mutate(obsTime = as.POSIXct(as.yearqtr(obsTime, format = "%Y-Q%q"))) ->
   rent.indices.real
+@
 
+<<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
 rent.indices.real  %>%
-  filter(obsTime < as.POSIXct("1989-01-01")) %>%
+  filter(obsTime < as.POSIXct("1989-06-01")) %>%
   grplot(aes(x = obsTime,
              y = obsValuerel, 
              color = city,
@@ -2028,16 +2034,20 @@ rent.indices.real  %>%
            xmax = as.POSIXct("1987-09-30"),
            ymin = -Inf,
            ymax = Inf,
-           fill = theGrey,
-           alpha = 0.5) + 
+           fill = grey(0.8),
+           alpha = 1) + 
   geom_line() + 
-  geom_text(data = filter(rent.indices.real, obsTime == unique(obsTime)[13]),
-            hjust = 1, vjust = -1.1, size = 7.14, fontface = "bold",
+  geom_text(aes(vjust = vjust),
+            data = mutate(filter(rent.indices.real, obsTime == unique(obsTime)[14]),
+                          vjust = ifelse(grepl("Aust", city), -0.6, 
+                                         ifelse(grepl("Brisbane", city), -2.3,-1.1))),
+            hjust = 1, size = 7.14, fontface = "bold",
             lineheight = 0.8) +
   scale_color_manual(values = c(gpal(6)[1:5], "black")) + 
   facet_wrap(~city, ncol = 3)  + 
   theme(strip.text = element_blank(),
         strip.background = element_blank(),
+        panel.margin.x = grid::unit(2, "lines"),
         axis.title.x = element_blank())
 @
 
@@ -2071,7 +2081,7 @@ chart.dat %>%
 \begin{figure}
 \Caption{Negative gearing does not keep rents low.
 Only Perth experienced a considerable increase in rents without negative gearing.
-Adelaide and Brisbane actually experienced declines.}{Average rent prices (real compared with overall CPI), 1983 = 1.
+Adelaide and Brisbane actually experienced declines.}{Average rent prices (real compared with overall CPI), 1982 = 1.
 Grey band indicates the dates when negative gearing was not permitted}{fig:Capital_city_rents}
 \includegraphics[width=\columnwidth]{figure/Capital_city_rents_direct_abs-1}
 \source{ABS various years}
