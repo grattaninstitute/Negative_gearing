@@ -1765,11 +1765,16 @@ get_sample_file(2013) %>%
                           levels = c("Negative gearing", "Not negative gearing", "neither"),
                           labels = c("Negative gearing", "Not negative gearing", "No investment properties"))) %T>%
   chart_data %>%
-  grplot(aes(Age, number, fill = gearing)) + 
-  geom_bar(stat = "identity", 
-           position = "fill",
-           color = NA,
-           width = 1.01) + 
+  grplot(aes(Age, number, fill = gearing,
+             group = gearing,
+             color = gearing
+             )) + 
+#   geom_bar(stat = "identity", 
+#            position = "fill",
+#            color = NA,
+#            width = 1.01) + 
+  geom_point() +  
+  stat_smooth() + 
   annotate("text", 
            x = c(9,9,9),
            y = c(0.07, 0.17, 0.3),
