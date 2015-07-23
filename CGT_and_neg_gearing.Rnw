@@ -1669,10 +1669,10 @@ We can see the retirement realisation effect in the patterns of capital gains re
 Those over 50 have much higher average realisation of gains, regardless of income level.
 The preponderance of retirees occurs regardless of income level as clearly shown in the incidence of capital gains realizations in \Vref{fig:Prob_of_CGevent_by_age_income}.
 
-<<Prob_of_CGevent_by_age_income>>=
+<<Prob_of_CGevent_by_age_income, fig.height=8.5, out.height="8.5in">>=
 get_sample_file(2013) %>% 
-  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", age)) %>% 
-  mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65-69", "70+"))) %>% 
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", ifelse(age > 65, "65+", age))) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65+"))) %>% 
   group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
   dplyr::summarise(prop_cg = mean(Net_CG_amt > 0))  %T>% 
   chart_data %>%
@@ -1690,19 +1690,20 @@ get_sample_file(2013) %>%
            x = -Inf, y = 0.30,
            xend = 10, yend = 0.30,
            color = '#DADADA') + 
-  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 1.6)) + 
+  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 2.0)) + 
   scale_x_continuous(expand = c(0,0.2), breaks = 1:10, labels = c(1:4, "5\nIncome decile", 6:10)) + 
   annotate("blank", x = 11.5, y = 0.1) + 
   theme(axis.line.x = element_blank()) + 
   annotate("segment", x = 1, xend = 10, y = 0, yend = 0) + 
-  scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.3), breaks = c(0:3)/10 ) + 
+  scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.26), breaks = c(0:3)/10 ) + 
   stat_smooth(size = 2.5, se = FALSE) + 
-  scale_color_manual(values = rev(gpal(7))) + 
+  # scale_color_manual(values = c(theGrey, rev(gpal(7)[1:6]))) + 
+  scale_color_manual(values = c(rev(gpal(6)[1:5]), "black")) +
   theme(axis.title.x = element_blank(), # requires segment
         panel.grid.major = element_blank()) + xlab("Income decile")
 @
 \begin{figure}[t]
-\Caption{Taxpayers wait till retirement to realize capital gains.}{Incidence of capital gain events in 2012-13, by age and income}{fig:Prob_of_CGevent_by_age_income}
+\Caption{Taxpayers wait till retirement to realize capital gains.}{Incidence of capital gain events, 2012-13, by age and taxable income}{fig:Prob_of_CGevent_by_age_income}
 \includegraphics[width=\columnwidth]{figure/Prob_of_CGevent_by_age_income-1}
 \source{\gao\ \textcite{ATO2013i}}
 \end{figure}
