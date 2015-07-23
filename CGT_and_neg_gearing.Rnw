@@ -101,6 +101,18 @@ library(magrittr)
         s
       }
       
+      scale_x_continuous <- function(...) {
+        s <- ggplot2::scale_x_continuous(...)
+        class(s) <- c('custom_expand', class(s))
+        s
+      }
+      
+      scale_x_date <- function(...) {
+        s <- ggplot2::scale_x_date(...)
+        class(s) <- c('custom_expand', class(s))
+        s
+      }
+      
 # Select packages to cite:
 citPkgs <- names(sessionInfo()$otherPkgs)
 # Write the bibtex file:
@@ -1947,17 +1959,40 @@ taxstats_ts %>%
   mutate(value = ifelse(grepl("\\$", unit), cpi_inflator(value, from_fy = fy.year), value)) %>%
   group_by(unit) %>%
   arrange(fy.year) %>%
-  mutate(value.rel = value/value[which(fy.year == "1999-00")]) %>%
+  mutate(value.rel = value/value[which(fy.year == "1999-00")],
+         text = ifelse(fy.year == last(fy.year), 
+                       ifelse(grepl("\\$", unit),
+                              paste0(grattan_dollar(round(value/1e9, 1))," bn"),
+                              paste0(round(value/10^6, 1), " million")
+                              ),
+                       NA)) %>%
+  mutate(
+         circ.x = ifelse(fy.year == last(fy.year), fy2date(fy.year), NA),
+         circ.y = ifelse(fy.year == last(fy.year), value.rel, NA)
+         ) %>%
   #mutate(value.real = cpi_inflator(value, from_fy = fy.year)) # requires en dash matching
   ungroup %>% 
   mutate(fy.year = factor(fy.year, ordered = TRUE),
          date = fy2date(as.character(fy.year)),
          unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
   
-  grplot(aes(x = date, y = value.rel, color = unit, label = unit)) + 
+  grplot(aes(x = date, y = value.rel, color = unit)) + 
   geom_line(aes(group = unit)) + 
-  geom_dl(method = list("lines2", dl.trans(cex = 1.875, x = x + 0.0)), hjust = 0) + 
+  geom_text(aes(label = text),
+            fontface = "bold",
+            hjust = -0.1,
+            size = 8.2) + 
+  geom_dl(aes(label = unit), 
+          method = list("lines2", dl.trans(cex = 1.875, x = x + 0.0
+                                           #, fontfamily = "Arial"
+                                           )), 
+          font = "bold",
+          hjust = 0) + 
   scale_y_continuous(expand = c(0.1,0.1)) + 
+  # scale_x_date(expand = c(0.1,2)) + 
+  annotate("blank",
+           x = as.Date("2020-01-01"),
+           y = 0) + 
   theme(
         axis.title = element_blank(), 
         plot.margin = grid::unit(c(0.7,1.2,0.5,0.5), "lines"))
