@@ -1736,18 +1736,18 @@ get_sample_file(2013) %>%
                                   '65 to 69',
                                   '70 and over'),
                        labels = gsub("\\s", "\n",
-                                     c("under 20",
-                                       '20 to 24',
-                                       '25 to 29',
-                                       '30 to 34',
-                                       '35 to 39',
-                                       '40 to 44',
-                                       '45 to 49',
-                                       '50 to 54',
-                                       '55 to 59',
-                                       '60 to 64',
-                                       '65 to 69',
-                                       '70 and over')),
+                                     c("under 22",
+                                       '22',
+                                       '27',
+                                       '32',
+                                       '37',
+                                       '42',
+                                       '47',
+                                       '52',
+                                       '57',
+                                       '62',
+                                       '67',
+                                       '72+')),
                        ordered = T)) %>% 
   group_by(Age) %>%
   dplyr::summarise(number_negatively_gearing = sum(Net_rent_amt < 0) * 50,
@@ -1765,7 +1765,7 @@ get_sample_file(2013) %>%
                           levels = c("Negative gearing", "Not negative gearing", "neither"),
                           labels = c("Negative gearing", "Not negative gearing", "No investment properties"))) %T>%
   chart_data %>%
-  grplot(aes(Age, number, fill = gearing,
+  grplot(aes(as.numeric(Age), number, fill = gearing,
              group = gearing,
              color = gearing
              )) + 
@@ -1773,25 +1773,27 @@ get_sample_file(2013) %>%
 #            position = "fill",
 #            color = NA,
 #            width = 1.01) + 
-  geom_point() +  
-  stat_smooth() + 
+  geom_area(position = "fill") +
   annotate("text", 
-           x = c(9,9,9),
+           x = c(9,9,9)-2,
            y = c(0.07, 0.17, 0.3),
            label = c("Negative gearing", 
                      "Not negative gearing",
                      "(No investment property)"),
            fontface = "bold",
-           size = 7.14) + 
+           hjust = 0,
+           size = 8.21) + 
   scale_fill_manual("", values = c(gpal(2), gray(0.75))) + 
+  scale_color_manual("", values = c(gpal(2), gray(0.75))) + 
+  scale_x_continuous("Age", expand = c(0,0), breaks = 2*(1:6)-0.5, labels = 10*(2:7)) + 
   coord_cartesian(ylim = c(0,0.55)) + 
   theme(legend.position = 'none', axis.title.x = element_text(hjust = 0.5)) + 
   scale_y_continuous(label=percent, expand = c(0,0))
 @
 \begin{figure}
-\Caption{More people negatively gear investments in their peak earning years}{Negative gearing status, percentage within each age group.}{fig:Age_negative_gearing_investments}
+\Caption{More people negatively gear investments in their peak earning years}{Negative gearing status, by age.}{fig:Age_negative_gearing_investments}
 \includegraphics[width=\columnwidth]{figure/Age_negative_gearing_investments-1}
-\notes{The top 50\%\ of the chart is not shown -- it would be grey all the way to 100\%. ``No investment properties'' means gross rental income is zero.}
+\notes{The top half of the chart is not shown -- it would be grey all the way to 100\%. ``No investment properties'' means nil gross rental income.}
 
 \source{\gao\ \textcite{ATO2013i}}
 \end{figure}
@@ -1852,9 +1854,10 @@ Average losses for those negative gearing have grown to more than \$9,000 per ye
 And the total losses since the introduction of the CGT discount leave us in no doubt: investors are happy to disregard rental losses in anticipation of future gains. (\Vref{fig:Net_rent_over_time}.)
 
 <<Obtain_time_series_taxstats, results = 'hide'>>=
-taxstats_ts_url <- "https://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download/taxstats2013individual01selecteditemsbyyear.xlsx"
-GET(taxstats_ts_url, write_disk("taxstats_time_series1979-2013.xlsx", overwrite = TRUE))
-
+if(!file.exists("taxstats_time_series1979-2013.xlsx")){
+  taxstats_ts_url <- "https://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download/taxstats2013individual01selecteditemsbyyear.xlsx"
+  GET(taxstats_ts_url, write_disk("taxstats_time_series1979-2013.xlsx", overwrite = TRUE))
+}
 taxstats_ts <- read_excel("taxstats_time_series1979-2013.xlsx", sheet = "Individuals Table 1", skip = 2, na = "na") %>%
   setnames(2, "unit") %>%
   filter(!is.na(unit)) 
@@ -1904,7 +1907,8 @@ taxstats_ts %>%
   mutate(value.rel = value/value[which(fy.year == "1999-00")]) %>%
   #mutate(value.real = cpi_inflator(value, from_fy = fy.year)) # requires en dash matching
   mutate(fy.year = factor(fy.year, ordered = TRUE),
-         date = fy2date(as.character(fy.year))) %>%
+         date = fy2date(as.character(fy.year)),
+         unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
   
   grplot(aes(x = date, y = value.rel, color = unit, label = unit)) + 
   geom_line(aes(group = unit)) + 
@@ -2044,8 +2048,10 @@ rent.indices.real  %>%
   geom_line() + 
   geom_text(aes(vjust = vjust),
             data = mutate(filter(rent.indices.real, obsTime == unique(obsTime)[14]),
+                          # manual adjustment of vertical justification
                           vjust = ifelse(grepl("Aust", city), -0.6, 
-                                         ifelse(grepl("Brisbane", city), -2.3,-1.1))),
+                                         ifelse(grepl("Brisbane", city), -2.3,
+                                                ifelse(grepl("Perth", city),-1.8, -1.1)))),
             hjust = 1, size = 7.14, fontface = "bold",
             lineheight = 0.8) +
   scale_color_manual(values = c(gpal(6)[1:5], "black")) + 
