@@ -162,6 +162,49 @@ weighting <- function(year = 2013){
       100 / percentage_sample
   }
 }
+
+age_mutate_ <- function(.data){
+  .data %>%
+  mutate(Age = car::recode(age_range, "0 = '70 and over';
+                            1 = '65 to 69';
+                            2 = '60 to 64';
+                            3 = '55 to 59';
+                            4 = '50 to 54';
+                            5 = '45 to 49';
+                            6 = '40 to 44';
+                            7 = '35 to 39';
+                            8 = '30 to 34';
+                            9 = '25 to 29';
+                            10 = '20 to 24';
+                            11 = 'under 20'")) %>%
+  mutate(Age =  factor(Age,
+                       levels = c("under 20",
+                                  '20 to 24',
+                                  '25 to 29',
+                                  '30 to 34',
+                                  '35 to 39',
+                                  '40 to 44',
+                                  '45 to 49',
+                                  '50 to 54',
+                                  '55 to 59',
+                                  '60 to 64',
+                                  '65 to 69',
+                                  '70 and over'),
+                       labels = gsub("\\s", "\n",
+                                     c("under 20",
+                                       '20 to 24',
+                                       '25 to 29',
+                                       '30 to 34',
+                                       '35 to 39',
+                                       '40 to 44',
+                                       '45 to 49',
+                                       '50 to 54',
+                                       '55 to 59',
+                                       '60 to 64',
+                                       '65 to 69',
+                                       '70 and over')),
+                       ordered = T))
+}
 @
 
 <<Daley_parameters, echo=FALSE>>=
@@ -1906,13 +1949,14 @@ taxstats_ts %>%
   arrange(fy.year) %>%
   mutate(value.rel = value/value[which(fy.year == "1999-00")]) %>%
   #mutate(value.real = cpi_inflator(value, from_fy = fy.year)) # requires en dash matching
+  ungroup %>% 
   mutate(fy.year = factor(fy.year, ordered = TRUE),
          date = fy2date(as.character(fy.year)),
          unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
   
   grplot(aes(x = date, y = value.rel, color = unit, label = unit)) + 
   geom_line(aes(group = unit)) + 
-  geom_dl(method = list("lines2", dl.trans(cex = 1.875, x = x + 0.0))) + 
+  geom_dl(method = list("lines2", dl.trans(cex = 1.875, x = x + 0.0)), hjust = 0) + 
   scale_y_continuous(expand = c(0.1,0.1)) + 
   theme(
         axis.title = element_blank(), 
@@ -2363,6 +2407,22 @@ Concerns about investor expectations are not particularly strong as the phase-in
 
 
 
+@
+
+<<income_age_effect>>=
+policy %>%
+  age_mutate_ %>%
+  group_by(Income_decile = ntile(Tot_inc_amt, 10),
+           Age) %>%
+  summarise(mean.diff = mean(diff)) %>%
+  ungroup %>% 
+  mutate(alpha = (mean.diff - min(mean.diff))/(max(mean.diff) - min(mean.diff))) %>%
+  grplot(aes(x = Age, y = factor(Income_decile),
+             alpha = mean.diff)) +
+  scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
+  geom_tile(fill = Orange) +
+  theme(legend.position = "right",
+        axis.title.x = element_text(hjust = 0.5, angle = 0))
 @
 
 %\nocite{*}
