@@ -223,8 +223,8 @@ age_mutate_ <- function(.data){
 new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
-
-<<Functions_For_All_Years>>=
+\onecolumn
+<<Functions_For_All_Years, echo=TRUE>>=
 # This is a functional version of the above.
 # It's designed to be easier to read,
 # not fast to run.
@@ -321,7 +321,9 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
       # Adjust the capital gains.The Net_CG_amt = (Gross CG - Losses) discounted by 50%, 
       # if the discount applies.But we use the apparent discount to adjust it, based on the
       # dice roll.
-      new_capital_gains = (1/apparent.discount) * Net_CG_amt * (1 - CGT.discount),
+      new_capital_gains = ifelse(apparent.discount == 0.5, 
+                                 2 * Net_CG_amt * (1 - CGT.discount),
+                                 Net_CG_amt),
       Taxable_Income_Red_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
       new_tot_inc = Tot_inc_amt - Net_CG_amt + new_capital_gains,
       # component of income from neither salary nor rent
@@ -553,7 +555,9 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
       # Adjust the capital gains.The Net_CG_amt = (Gross CG - Losses) discounted by 50%, 
       # if the discount applies.But we use the apparent discount to adjust it, based on the
       # dice roll.
-      new_capital_gains = (1/apparent.discount) * Net_CG_amt * (1 - CGT.discount),
+      new_capital_gains = ifelse(apparent.discount == 0.5, 
+                                 2 * Net_CG_amt * (1 - CGT.discount),
+                                 Net_CG_amt),
       Taxable_Income_Red_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
       new_tot_inc = Tot_inc_amt - Net_CG_amt + new_capital_gains,
       # component of income from neither salary nor rent
@@ -639,6 +643,9 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
   prob_of_noCG_if_investor <- capital_gains_by_losses4 %>%
     filter(IsInvestor, !HasCG) %$%
     sum(prop)
+  if(eventual == 0){
+    return(daley_taxstats)
+  } else {
   for (i in 1:eventual){   
     if (i == 1){
       new_daley <- 
@@ -683,6 +690,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
   #     )
   #   })
   new_daley
+  }
 }
 
 cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount = 0.30){
@@ -780,7 +788,9 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
       # Adjust the capital gains.The Net_CG_amt = (Gross CG - Losses) discounted by 50%, 
       # if the discount applies.But we use the apparent discount to adjust it, based on the
       # dice roll.
-      new_capital_gains = (1/apparent.discount) * Net_CG_amt * (1 - CGT.discount),
+      new_capital_gains = ifelse(apparent.discount == 0.5, 
+                                 2 * Net_CG_amt * (1 - CGT.discount),
+                                 Net_CG_amt),
       Taxable_Income_Red_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
       new_tot_inc = Tot_inc_amt - Net_CG_amt + new_capital_gains,
       # component of income from neither salary nor rent
@@ -866,6 +876,9 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
   prob_of_noCG_if_investor <- capital_gains_by_losses4 %>%
     filter(IsInvestor, !HasCG) %$%
     sum(prop)
+  if(eventual == 0){
+    return(daley_taxstats)
+  } else {
   for (i in 1:eventual){   
     if (i == 1){
       new_daley <- 
@@ -910,9 +923,10 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
   #     )
   #   })
   new_daley
+  }
 }
 @
-
+\twocolumn
 
 <<Just_negative_gearing_cost>>=
 tax2013 <- fread(sample_file_of(2013))
@@ -1072,10 +1086,10 @@ The preferential treatment of capital gains should be moderated, even if the pol
 
 But the asymmetric treatment of losses gains is the major flaw in the system.
 Proper reform requires both elements of the tax system to align.
-The explosion in both the number of investors running losses and the size of those losses since the two policies diverged is clear evidence of bias.  
+The explosion in both the number of investors running losses and the size of those losses since the two policies diverged is strong evidence of tax arbitrage.  
 
 <<Number_of_NG_taxpayers>>=
-get_sample_file(2013) %$% sum(Net_rent_amt < 0) * 50 / 10^6 -> n.NGrs
+n.NGrs <- get_sample_file(2013) %$% sum(Net_rent_amt < 0) * 50 / 10^6 
 n.NGrs <- round(n.NGrs, 1)
 @
 
@@ -2066,7 +2080,7 @@ These arguments typically rest on two pillars: one, that rental prices rose in t
 
 The first argument is quite easily refuted.
 In 1985, the Hawke Government restricted negative gearing so that rental losses could not be used to reduce tax payable on other income streams. 
-Two years' later, the policy was abolished out of concern for increasing rental prices.
+Two years+ later, the policy was abolished out of concern for increasing rental prices.
 
 It is understandable that politicians today accept their predecessors' judgement---that rental prices did rise and that quarantining negative gearing was to blame.
 But their predecessors were wrong.  
