@@ -55,7 +55,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=TRUE
+                      ,cache=F
                       ,dev=c('my_pdf', 'my_emf')
                       ,fig.ext = c("pdf", "emf")
 )
@@ -224,7 +224,7 @@ new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
 \onecolumn
-<<Functions_For_All_Years, echo=TRUE>>=
+<<Functions_For_All_Years>>=
 # This is a functional version of the above.
 # It's designed to be easier to read,
 # not fast to run.
@@ -536,12 +536,12 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
   #
   # so we estimate the number of capital gains events at each discount 0%, 10%, 20%, 30%, 
   # based on Net capital gains / Total capital gains.
-# It's important to note
+  # It's important to note
   # that this is polluted by losses carried forward.
   #
   # The dice roll.  
   mutate(randCG = runif(nrow(.)))
-    #
+  #
   # http://stackoverflow.com/questions/31490534/conditional-join-in-r#31492015
   #
   prop_full_discount %<>% arrange(discount.key)
@@ -1048,7 +1048,7 @@ cost_align_gains_and_losses <-
 fread(sample_file_of(2013)) %>%
   mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt)),
          diff = new_tax - income_tax(Taxable_Income)) %$%
-  sum(diff) * 50 /1e9  ->
+  sum(diff) * 50 / 1e9  ->
   NG.tx.exp
 
 NG.tx.exp <- round(NG.tx.exp, 1)
@@ -2459,7 +2459,7 @@ Concerns about investor expectations are not particularly strong as the phase-in
 
 @
 
-<<income_age_effect>>=
+<<income_age_heatmap>>=
 policy %>%
   age_mutate_ %>%
   group_by(Income_decile = ntile(Tot_inc_amt, 10),
@@ -2471,9 +2471,15 @@ policy %>%
              alpha = mean.diff)) +
   scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
   geom_tile(fill = Orange) +
+  coord_equal() + 
   theme(legend.position = "right",
+        panel.grid = element_blank(),
         axis.title.x = element_text(hjust = 0.5, angle = 0))
 @
+\begin{figure}
+\Caption{The costs of this policy fall on the high income and the elderly}{Income decile}{fig:income_age_heatmap}
+\includegraphics[height=0.9\textheight]{figure/income_age_heatmap-1}
+\end{figure}
 
 %\nocite{*}
 
