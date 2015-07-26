@@ -1359,7 +1359,15 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   mutate(returnz = returnz/100,
          `Asset class` = gsub("\\s+", "\n", `Asset class`),
          `Asset class` = gsub("Global\\n", "Global ", `Asset class`)) %>%
-  mutate(tax_class = paste0(tax_class, "   ")) %>%
+  mutate(tax_class = factor(tax_class,
+                            levels = c("Gross return", 
+                                       "Superannuation", 
+                                       "After tax lowest marginal tax rate", 
+                                       "After tax highest marginal tax rate"),
+                            labels = c("Gross return\t", 
+                                       "Superannuation\t", 
+                                       "After tax lowest marginal tax rate\t", 
+                                       "After tax highest marginal tax rate\t"))) %>%
 
   #
   grplot(aes(y = returnz, x = `Asset class`, fill = tax_class)) + 
