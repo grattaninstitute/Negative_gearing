@@ -2014,7 +2014,7 @@ taxstats_ts %>%
   scale_y_continuous(expand = c(0.1,0.1)) + 
   # scale_x_date(expand = c(0.1,2)) + 
   annotate("blank",
-           x = as.Date("2020-01-01"),
+           x = as.Date("2018-01-01"),
            y = 0) + 
   theme(
         axis.title = element_blank(), 
