@@ -1544,6 +1544,34 @@ HILDA_wave10 %>%
   geom_bar(stat = "identity")
 @
 
+<<Investor_tax_rates>>=
+cgt.marginal.rates <- 
+  get_sample_file(2013) %>% 
+  age_mutate_ %>% 
+  group_by(HasCGT = Net_CG_amt > 0, 
+           HasSalary = Sw_amt > 0, 
+           Over50 =  Age > "50\nto\n54") %>% 
+  summarise(mar.cg.tx.rate = mean(income_tax(Taxable_Income - Net_CG_amt + 1) - income_tax(Taxable_Income - Net_CG_amt)))
+
+workforce.avg.marginal.rate <- 
+  cgt.marginal.rates %>%
+  filter(HasCGT, HasSalary) %>%
+  ungroup %>% 
+  summarise(marginal.rate = mean(mar.cg.tx.rate)) %$%
+  round(marginal.rate, 3) * 100
+
+over50.no.wage.income.avg.marginal.rate <- 
+    cgt.marginal.rates %>%
+  filter(HasCGT, !HasSalary, Over50) %$%
+  round(mar.cg.tx.rate, 3) * 100
+
+@
+
+Investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. 
+We see evidence of people waiting to retirement to realise capital gains (see below). 
+This reduces the average tax rate an investor pays on capital gains income. 
+For example, the average marginal tax rate on capital gains for people in the workforce is \Sexpr{workforce.avg.marginal.rate}\%\ compared to \Sexpr{over50.no.wage.income.avg.marginal.rate}\%\ for people over 50 with no wage income. 
+
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income.
 Ironically Australia's current system provides no adjustments for the least protection to bank deposits -- disproportionately held by the least well off -- and much more protection for other investments.\footnote{Over 90\%\ of those in the bottom decile have deposits, but less than 30\%\ have superannuation assets; and less than 20\%\ have equities or life insurance.}
 
