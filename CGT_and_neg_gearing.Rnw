@@ -234,20 +234,32 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
+    CG_inflator <-
+      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
+      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
+      filter(FY %in% c("2012-13", yr2fy(year))) %>%
+      arrange(FY) %>%
+      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
     daley_taxstats <- 
-      fread(sample_file_of(2013)) %>%  
+      get_sample_file(2013) %>%  
       mutate(
-        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
-        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
-        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Net_CG_amt = Net_CG_amt * CG_inflator,
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
       )
   } else {
     daley_taxstats <- 
       # fread(sample_file_of(2013)) %>%
-      fread(sample_file_of(year = year)) 
+      get_sample_file(year = year)
   }
   
   # Year specific housekeeping
@@ -261,7 +273,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   progress_bar <- txtProgressBar(min = 0, max = eventual, title = "Progress")
   
   prop_full_discount <-
-    get_sample_file(2013) %>%
+    get_sample_file(year) %>%
     filter(Net_CG_amt > 0) %>%
     mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
            apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
@@ -466,20 +478,32 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
+    CG_inflator <-
+      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
+      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
+      filter(FY %in% c("2012-13", yr2fy(year))) %>%
+      arrange(FY) %>%
+      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
     daley_taxstats <- 
-      fread(sample_file_of(2013)) %>%  
+      get_sample_file(2013) %>%  
       mutate(
-        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
-        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
-        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Net_CG_amt = Net_CG_amt * CG_inflator,
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
       )
   } else {
     daley_taxstats <- 
       # fread(sample_file_of(2013)) %>%
-      fread(sample_file_of(year = year)) 
+      get_sample_file(year = year)
   }
   
   # Year specific housekeeping
@@ -697,20 +721,32 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
+    CG_inflator <-
+      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
+      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
+      filter(FY %in% c("2012-13", yr2fy(year))) %>%
+      arrange(FY) %>%
+      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
     daley_taxstats <- 
-      fread(sample_file_of(2013)) %>%  
+      get_sample_file(2013) %>%  
       mutate(
-        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
-        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
-        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Net_CG_amt = Net_CG_amt * CG_inflator,
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
       )
   } else {
     daley_taxstats <- 
       # fread(sample_file_of(2013)) %>%
-      fread(sample_file_of(year = year)) 
+      get_sample_file(year = year)
   }
   
   # Year specific housekeeping
@@ -1000,8 +1036,36 @@ taxable_income_by_CG <-
 @
 
 <<Henry_proposal_mutate>>=
-henry_taxstats <- 
-  fread(sample_file_of(2013)) %>%
+henry_taxstats <- function(year = 2013){
+  if (year >= 2014){
+    CG_inflator <-
+      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
+      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
+      filter(FY %in% c("2012-13", yr2fy(year))) %>%
+      arrange(FY) %>%
+      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
+    # Inflate the wages for future years.
+    # Adjust the variables which depend on Sw_amt
+    # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
+    henry_taxstats <- 
+      get_sample_file(2013) %>%  
+      mutate(
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator,
+        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Net_CG_amt = Net_CG_amt * CG_inflator,
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
+      )
+  } else {
+    henry_taxstats <- 
+      # fread(sample_file_of(2013)) %>%
+      get_sample_file(year = year)
+  }
+henry_taxstats %>% 
   mutate(
     new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
     new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
@@ -1011,8 +1075,7 @@ henry_taxstats <-
     new_tax = income_tax(new_Taxable_Income),
     diff = new_tax - current_tax
   )
-
-henry_discount_remark <- "in which the discount is only applied to negative rental income"
+}
 @
 
 <<Summary-chunk, results='hide'>>=
@@ -1021,6 +1084,11 @@ policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
   round(sum(diff_due_CG)*50/1e9, 1) ->
   cost_of_red_CGT_discount
+
+cost_of_daley_policy_fast(year = 2015, eventual = 0) %>%
+  mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
+  round(sum(diff_due_CG)*50/1e9, 1) ->
+  cost_of_red_CGT_discount_year0
 
 just_negative_gearing_taxstats_year0 %>%
   mutate(diff = new_tax - current_tax) %$%
@@ -1036,12 +1104,29 @@ policy %$%
   cost_of_policy_2015
 
 costing_policy_2015_year0 <-
-  cost_of_daley_policy_fast(2015, eventual = 1) %$%
+  cost_of_daley_policy_fast(2015, eventual = 0) %$%
   round(sum(diff) * 50 / 1e9, 1) 
 
 cost_align_gains_and_losses <- 
-  henry_taxstats %$%
+  henry_taxstats(year = 2015) %$%
   round(sum(diff)*50/1e9, 1)
+
+write(x = c(
+  "Cost of policy by policy option",
+  "===================================="),
+  file = "Summary_table.txt")
+
+write(x = c(
+  costing_policy_2015_year0, "Quarantine NG losses and reduce CGT discount (Year 0)", 
+  cost_of_policy_2015, "Quarantine NG losses and reduce CGT discount", 
+  cost_of_red_CGT_discount, "Reduce CGT discount", 
+  diff_just_due_NG, "Just quarantine losses", 
+  cost_align_gains_and_losses, "Henry proposal" 
+      ),
+  file = "Summary_table.txt",
+  append = TRUE,
+  ncolumns = 2
+  )
 @
 
 <<CostofNGtotal>>=
@@ -1055,89 +1140,123 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 \begin{summary}
-Grattan Institute's \emph{Fiscal Challenges for Australia report}, published last month, reveals how Commonwealth and state government budgets are under pressure. 
-The Commonwealth Government has run deficits for six years, with another four forecast. 
-Reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint. 
-
-More active policy measures to achieve budget repair are required. 
-This paper is part of a series by the Grattan Institute setting out priority reforms for repairing government revenues. 
+Grattan Institute's \emph{Fiscal Challenges for Australia report}, published last month, reveals how Commonwealth and state government budgets are under pressure.
+The Commonwealth Government has run deficits for six years, with another four forecast.
+Reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.
+ 
+More active policy measures to achieve budget repair are required.
+This paper is part of a series by the Grattan Institute setting out priority reforms for repairing government revenues.
 In this paper we focus on two of the most significant areas of concessional treatment of savings outside of superannuation -- \highlight{capital gains tax (CGT) discounts} and \highlight{negative gearing}.
-These tax concessions allow investors to use debt financed investment as a means to defer and reduce their personal income tax liabilities. 
-
-These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property. 
-The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers. 
-Like most tax concessions on investment, these discounts largely benefit the wealthy. 
-
+These tax concessions allow investors to use debt financed investment as a means to defer and reduce their personal income tax liabilities.
+ 
+These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property.
+The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers.
+Like most tax concessions on investment, these discounts largely benefit the wealthy.
+ 
 Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
-
+ 
 The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year}.
 Deductions for rental losses result in over \highlight{\$4~billion} in foregone revenue each year.
 These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives.
 Losses can be written off in full while only half the gains are taxed.
 Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
-
+ 
 As a consequence property prices have soared and revenue has leaked, mostly for the benefit of the wealthier taxpayers.
-
+ 
 There is little reason to maintain such a wide gulf between the treatment of gains and losses.
 The Commonwealth Government's primary goal should be to narrow this gulf.
-
+ 
 Reducing the capital gains discount and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{costing_policy_2015_year0}~billion a year in the short-term.
-The preferential treatment of capital gains should be moderated, even if the policy surrounding negative gearing is untouched. 
-
+The preferential treatment of capital gains should be moderated, even if the policy surrounding negative gearing is untouched.
+Negative gearing should also be limited.
+Allowing deductions for costs, including interest costs, is a standard feature of the tax system. It avoids bias against debt financed investments.
+But allowing deductions in full each year against wages while capital gains income is taxed concessionally on sale creates the opposite bias -- encouraging people to pursue debt financed investments that make sense only because they provide tax breaks on wages.
+ 
 But the asymmetric treatment of losses gains is the major flaw in the system.
 Proper reform requires both elements of the tax system to align.
-The explosion in both the number of investors running losses and the size of those losses since the two policies diverged is strong evidence of tax arbitrage.  
-
-<<Number_of_NG_taxpayers>>=
-n.NGrs <- get_sample_file(2013) %$% sum(Net_rent_amt < 0) * 50 / 10^6 
-n.NGrs <- round(n.NGrs, 1)
-@
-
-Negative gearing is embedded in the Australian taxation system; \Sexpr{n.NGrs}~million taxpayers benefit from this policy.
-Homeowners benefit from the (artificially) higher prices.
-And the real estate lobby is vocal.
-A superficial assessment might conclude that it is too difficult to change this policy.
-But the electorate also recognizes that housing is unaffordable and parents will reward efforts that improve affordability for their children.
-\end{summary}
-
-%%%
-\setcounter{tocdepth}{4}
-\contentspage
-%%%
-
-\chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
-This chapter examines two significant concessions in the taxation of savings: \highlight{tax discounts for capital gains} and \highlight{negative gearing}.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.}  
-These allow investors to use debt-financed investment, particularly property investment, to reduce and defer their personal income tax.
-
-These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property.
-The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers.
-Like most tax concessions on investment, these concessions largely benefit the wealthy. 
-
-The 50 per cent \highlight{capital gains tax (CGT) discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.~4-21]{Treasury2015a}.
-This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts.
-That is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment.
-But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings.
-And entrepreneurs already receive a range of other capital gains tax concessions.
-Reducing the CGT discount to 30 per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
-
-Negative gearing should also be limited.
-The tax deductibility of costs, including interest costs, is a standard feature of the tax system, preventing bias against debt-financed investments.
-But allowing investment losses to be written off against wage and salary income is not needed to prevent such bias.
-Such losses should only be deductible against investment income.
-The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
-
+The explosion in both the number of investors running losses and the size of those losses since the two policies diverged is strong evidence of tax arbitrage.
+ 
 Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term.
-This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income.  
-
+This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income. 
+ 
 An alternative option would align the tax rates for capital gains and losses.
 For example, the capital gains discount could be reduced so that people paid tax on 70 per cent of their capital gains, but could claim only 70 per cent of any investment losses against wage and salary income.
 Treating capital gains and recurrent losses consistently would reduce the tax-driven incentive for borrowing to invest.
 It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
-
-The best way to transition to these new arrangements would be to phase them in over a number of years.
-Such a phase-in would help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump.
-This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
-
+ 
+ 
+ 
+<<Number_of_NG_taxpayers>>=
+n.NGrs <- get_sample_file(2013) %$% sum(Net_rent_amt < 0) * 50 / 10^6
+n.NGrs <- round(n.NGrs, 1)
+@
+ 
+% Negative gearing is embedded in the Australian taxation system; \Sexpr{n.NGrs}~million taxpayers benefit from this policy.
+% Homeowners benefit from the (artificially) higher prices.
+% And the real estate lobby is vocal.
+% A superficial assessment might conclude that it is too difficult to change this policy.
+% But the electorate also recognizes that housing is unaffordable and parents will reward efforts that improve affordability for their children.
+ 
+The best way to transition to the new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices. Phasing the changes in for all investors would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
+\end{summary}
+ 
+%%%
+\setcounter{tocdepth}{4}
+\contentspage
+%%%
+\chapter{Commonwealth budgets under pressure}
+In five of the last six years, the Commonwealth Government has posted headline deficits of more than 2 per cent of GDP.
+Assuming revenue and spending projections are correct, Australia is on track for more than a decade of deficits between 2008 and 2019, with Commonwealth net debt projected to peak at 18 per cent of GDP in 2017, higher than any year since the mid-1990s.\footnote{Net debt was 18.1\%\ of GDP in 1995-96. See \textcite[p.~273]{Treasury2014b}}
+ 
+As Grattan Institute's Fiscal Challenges for Australia report, highlights, reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.\footcite{DaleyWood2015}
+ 
+The biggest worry is that budget projections assume that growth will return to ``trend''. The International Monetary Fund recently joined a growing group of economists who believe that long-run economic growth in developed countries was trending lower even before the financial crisis, and future expectations should be lower again.
+ 
+ 
+The government's fiscal strategy relies heavily on these optimistic projections. The measures introduced in this year's budget will make no net improvement to the budget position in 2018-19. The government justifies its inaction by saying that the projections suggest it is on a ``clear and credible path back to surplus.''\footcite{Hockey2015} But projections over the past five years have consistently overestimated the position of the budget four years out.
+ 
+However, hoping for the best is not a budget management strategy: it simply justifies putting off hard decisions, and shifts the costs and risks of budget repair onto future generations.
+ 
+Grattan research shows that each \$40 billion dollar deficit increases the lifetime tax burden for households headed by a person aged 25 to 34 by \$10,000.
+ 
+To bring their budgets back to balance, governments will need to undertake reforms on both the revenue and the spending side. But recently the Commonwealth Government's energy has been focussed on cuts to spending.
+It has deferred any significant changes in its revenue mix until after its \emph{Tax White Paper}.
+ 
+But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
+ 
+% \chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
+% This chapter examines two significant concessions in the taxation of savings: \highlight{tax discounts for capital gains} and \highlight{negative gearing}.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.} 
+% These allow investors to use debt-financed investment, particularly property investment, to reduce and defer their personal income tax.
+%
+% These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property.
+% The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers.
+% Like most tax concessions on investment, these concessions largely benefit the wealthy.
+%
+% The 50 per cent \highlight{capital gains tax (CGT) discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.~4-21]{Treasury2015a}.
+% This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts.
+% That is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment.
+% But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings.
+% And entrepreneurs already receive a range of other capital gains tax concessions.
+% Reducing the CGT discount to 30 per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
+%
+% Negative gearing should also be limited.
+% The tax deductibility of costs, including interest costs, is a standard feature of the tax system, preventing bias against debt-financed investments.
+% But allowing investment losses to be written off against wage and salary income is not needed to prevent such bias.
+% Such losses should only be deductible against investment income.
+% The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
+%
+% Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term.
+% This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income. 
+%
+% An alternative option would align the tax rates for capital gains and losses.
+% For example, the capital gains discount could be reduced so that people paid tax on 70 per cent of their capital gains, but could claim only 70 per cent of any investment losses against wage and salary income.
+% Treating capital gains and recurrent losses consistently would reduce the tax-driven incentive for borrowing to invest.
+% It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
+%
+% The best way to transition to these new arrangements would be to phase them in over a number of years.
+% Such a phase-in would help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump.
+% This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
+\chapter{The capital gains discount}
 \section{Capital gains enjoy preferential tax treatment relative to income from working}
 Capital gains are taxed as part of the income of individuals, companies and superannuation funds.
 In 2013-14, capital gains tax raised around \$7.5 billion, around three per cent of total income tax revenue.\footcite{Treasury2014a} 
@@ -1204,22 +1323,23 @@ This means the effective tax rate paid on these gains is half the rate than for 
 For superannuation funds, a third of the gains are excluded.
 Large corporations pay tax on all of their capital gains at the corporate tax rate of 30 per cent.
 
+Capital gains on owner-occupied housing are not taxed at all.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.}
+
 Capital gains have other less explicit tax advantages compared to recurrent income.
 Investors control when they realise gains. 
 Consequently, they can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  
 Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue. 
 This deferral of tax is akin to the government providing the investor with an interest free loan(See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
 
-\section{The preferential tax treatment of capital gains should be reined in}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
-\subsection{Arguments for the current large concessions are weak}
-There are several arguments supporting the current preferential tax treatment of capital gains.
-Taxes on capital gains might reduce speculative investment.
-Other countries offer similar preferential treatment.
-Investors may hold on to uneconomic assets for too long if taxes are too burdensome.
-Capital assets are typically held for a long time and, without discounts, investors pay taxes on the inflation component of their return, which does not represent any real gain. 
+\section{The 50 per cent capital gains tax discount is too generous}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
+There are good reasons for taxing capital gains consistently with other forms of income. 
+It would tax all increases in spending power the same way, reduce revenue leakage from artificially structured transactions, reduce distortions in investment choices, and make the tax system more progressive. 
 
-These arguments do not withstand closer scrutiny.
+On the other hand, taxing capital gains at full marginal rates would tax the inflation component of gains and may deter people from saving, investing or selling long held assets. 
 
+The challenge for tax policy is to strike the balance between these costs and risks. The current 50 per cent discount is too generous. When the other tax benefits for capital gains are taken into account, the discount over-compensates investors for inflation and provides a sizeable tax break for the wealthy. 
+
+\subsection{Taxing capital gains as ordinary income has merit}
 Capital gains and other forms of savings income increase a person's spending power.
 All increases in spending power should be taxed consistently regardless of how they are earned (chapter 2); ``a buck is a buck is a buck'', as the Canadian Carter report put it. 
 Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy.
@@ -2524,5 +2644,5 @@ sessionInfo()
 @
 \twocolumn
 
-\printbibliography
+\printbibliography[title=References]
 \end{document}
