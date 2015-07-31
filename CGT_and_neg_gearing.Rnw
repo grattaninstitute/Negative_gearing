@@ -1082,34 +1082,34 @@ henry_taxstats %>%
 policy <- cost_of_daley_policy_fast(2015) 
 policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
-  round(sum(diff_due_CG)*50/1e9, 1) ->
+  round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
   cost_of_red_CGT_discount
 
 cost_of_daley_policy_fast(year = 2015, eventual = 0) %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
-  round(sum(diff_due_CG)*50/1e9, 1) ->
+  round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
   cost_of_red_CGT_discount_year0
 
 just_negative_gearing_taxstats_year0 %>%
   mutate(diff = new_tax - current_tax) %$%
-  round(sum(diff) * 50 / 1e9, 1) ->
+  round(sum(diff) * weighting(2015) / 1e9, 1) ->
   diff_just_due_NG_year0
 
 just_negative_gearing_taxstats %$%
-  round(sum(diff) * 50 / 1e9, 1) ->
+  round(sum(diff) * weighting(2015) / 1e9, 1) ->
   diff_just_due_NG
 
 policy %$%
-  round(sum(diff)*50/1e9, 1) ->
+  round(sum(diff)*weighting(2015)/1e9, 1) ->
   cost_of_policy_2015
 
 costing_policy_2015_year0 <-
   cost_of_daley_policy_fast(2015, eventual = 0) %$%
-  round(sum(diff) * 50 / 1e9, 1) 
+  round(sum(diff) * weighting(2015) / 1e9, 1) 
 
 cost_align_gains_and_losses <- 
   henry_taxstats(year = 2015) %$%
-  round(sum(diff)*50/1e9, 1)
+  round(sum(diff)*weighting(2015)/1e9, 1)
 
 write(x = c(
   "Cost of policy by policy option",
@@ -1121,6 +1121,7 @@ write(x = c(
   cost_of_policy_2015, "Quarantine NG losses and reduce CGT discount", 
   cost_of_red_CGT_discount, "Reduce CGT discount", 
   diff_just_due_NG, "Just quarantine losses", 
+  diff_just_due_NG_year0, "Just quarantine losses (year 0)",
   cost_align_gains_and_losses, "Henry proposal" 
       ),
   file = "Summary_table.txt",
