@@ -224,6 +224,34 @@ new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
 \onecolumn
+<<Determine_future_rental_deductions>>=
+historical.interest.losses <- 
+  rbindlist(lapply(2004:2013, function(yr){mutate(get_sample_file(yr), year = yr)}), fill = TRUE) %>%
+  group_by(year) %>%
+  summarise(tot.rent_interest_deds = sum(Rent_int_ded_amt))
+
+total.investor.loans <- 
+  read_excel("ABS_Household_financing.xlsx", sheet = "Investment_loans_outstanding") %>%
+  group_by(year = lubridate::year(Date)) %>%
+  summarise(loans_amt = mean(Investment_housing_all_deposit_taking_institutions) * 10^6)
+
+rba_interest <- 
+  read_excel("RBA_Household_interest_rates.xlsx", sheet = "Housing_lending_rates") %>%
+  group_by(year = lubridate::year(Date)) %>%
+  summarise(mean.i = mean(Housing_lending_rate)/100)
+
+interest_losses <-
+  merge(total.investor.loans, rba_interest) %>%
+  merge(., historical.interest.losses, all.x = TRUE) %>%
+  mutate(interestXloans = mean.i * loans_amt)
+
+plot(lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses))
+
+@
+
+
+
+
 <<Functions_For_All_Years>>=
 # This is a functional version of the above.
 # It's designed to be easier to read,
