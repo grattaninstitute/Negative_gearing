@@ -1346,8 +1346,7 @@ All increases in spending power should be taxed consistently regardless of how t
 Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy.
 Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
 
-Generally, tax concessions may be retained if they promote a social or common economic benefit, and there are no more efficient ways to do so.
-Compared with income from wage or salary income, income from capital gains is taxed much more lightly. 
+There are also efficiency  reasons to tax capital gains consistently with other income. 
 
 That capital gains taxes might discourage worthwhile investment is a reasonable concern.
 Increasing taxes on capital gains might reduce incentives to save and start new businesses.
@@ -1371,7 +1370,7 @@ Sealing the income tax base is a key reason capital gains are taxed in most OECD
 
 Yet the protection offered by a capital gains tax has been eroded by negative gearing.
 
-Traditionally sheltering income by converting it into capital has been the preserve of the wealthy.
+Traditionally, sheltering income by converting it into capital has been the preserve of the wealthy.
 Executives paid via shares or stock options\footcite[pp.~8-9]{Ingles2009} or corporate reorganisations of private corporations to convert dividend income into capital gain, for example.\footcite{Minas2013} 
 Yet borrowing to finance investments with negative income flow but positive capital gains is another way in which wage income is effectively converted into capital gain for tax purposes.
 This conversion comes about via the interaction of negative gearing with the capital gains tax provisions (\cref{sec:negative_gearing_provides}).
