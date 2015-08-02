@@ -245,7 +245,22 @@ interest_losses <-
   merge(., historical.interest.losses, all.x = TRUE) %>%
   mutate(interestXloans = mean.i * loans_amt)
 
-plot(lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses))
+# Good enough 
+# plot(lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses))
+interest_losses[!complete.cases(interest_losses), ] %>%
+  do({
+    model <- lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses)
+    pred <- predict(model, newdata = .[c("interestXloans")])
+    data.frame(., pred)
+  }) %>%
+  mutate(tot.rent_interest_deds = pred) %>%
+  select(year, tot.rent_interest_deds) %>%
+  rbind(select(interest_losses, year, tot.rent_interest_deds)) %>%
+  filter(!is.na(tot.rent_interest_deds)) %>%
+  arrange(year) %>% 
+  mutate(ratio = tot.rent_interest_deds/tot.rent_interest_deds[which(year == 2013)])
+
+# It's about 1 for 2015, (certainly if se is taken into acct), so I'm not going to bother
 
 @
 
