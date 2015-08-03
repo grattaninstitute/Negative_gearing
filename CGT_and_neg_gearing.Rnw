@@ -1201,8 +1201,8 @@ Negative gearing should also be limited.
 Allowing deductions for costs, including interest costs, is a standard feature of the tax system. It avoids bias against debt financed investments.
 But allowing deductions in full each year against wages while capital gains income is taxed concessionally on sale creates the opposite bias -- encouraging people to pursue debt financed investments that make sense only because they provide tax breaks on wages.
  
-But the asymmetric treatment of losses gains is the major flaw in the system.
-Proper reform requires both elements of the tax system to align.
+But the asymmetric treatment of losses versus gains is the major flaw in the system.
+It is a necessary condition of proper reform that both these elements align.
 The explosion in both the number of investors running losses and the size of those losses since the two policies diverged is strong evidence of tax arbitrage.
  
 Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term.
@@ -2310,7 +2310,8 @@ rent.indices %>%
 
 <<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
 rent.indices.real  %>%
-  filter(obsTime < as.POSIXct("1989-06-01")) %>%
+  filter(obsTime < as.POSIXct("1989-06-01")) %T>%
+  chart_data %>%
   grplot(aes(x = obsTime,
              y = obsValuerel, 
              color = city,
