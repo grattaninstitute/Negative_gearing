@@ -1183,7 +1183,8 @@ fread(sample_file_of(2013)) %>%
 NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
-\begin{summary}
+% \begin{summary}
+\chapter*{summary}
 Grattan Institute's \emph{Fiscal Challenges for Australia report}, published last month, reveals how Commonwealth and state government budgets are under pressure.
 The Commonwealth Government has run deficits for six years, with another four forecast.
 Reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.
@@ -1242,7 +1243,7 @@ n.NGrs <- round(n.NGrs, 1)
 % But the electorate also recognizes that housing is unaffordable and parents will reward efforts that improve affordability for their children.
  
 The best way to transition to the new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices. Phasing the changes in for all investors would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
-\end{summary}
+% \end{summary}
  
 %%%
 \setcounter{tocdepth}{4}
@@ -1300,6 +1301,13 @@ But there are revenue measures that could make a meaningful contribution to budg
 % The best way to transition to these new arrangements would be to phase them in over a number of years.
 % Such a phase-in would help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump.
 % This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
+\chapter{Hugh}
+The preferential treatment of the capital gains discount and negative gearing result in revenue leakage of \textbf{\$10.2~billion}. 
+Yet Australia these tax expenditures do more harm than good, leaving alone their contribution to the deficit.
+
+When nominal investment losses can be written off in full, but investment gains enjoy a discount relative to ordinary income, 
+
+
 \chapter{The capital gains discount}
 \section{Capital gains enjoy preferential tax treatment relative to income from working}
 Capital gains are taxed as part of the income of individuals, companies and superannuation funds.
