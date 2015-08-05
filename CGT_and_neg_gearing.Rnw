@@ -1307,6 +1307,12 @@ Yet Australia these tax expenditures do more harm than good, leaving alone their
 
 When nominal investment losses can be written off in full, but investment gains enjoy a discount relative to ordinary income, 
 
+Given supply and demand, there is an optimal level of investment for property. Governments should ensure that their tax policies do not result in a different level of investment, unless there is a specific and worthy policy reason to do so.\footnote{Of course, governments should not restrict supply or induce changes in demand, as they currently do. But that is a separate matter.} 
+
+The current tax policies of negative gearing and discounts for capital gains do not respect this principle.  
+
+
+
 
 \chapter{The capital gains discount}
 \section{Capital gains enjoy preferential tax treatment relative to income from working}
@@ -2272,13 +2278,14 @@ taxstats_ts %>%
 \subsubsection{Impact on housing markets}
 Unlimited negative gearing contributes to higher house prices but does not ease rents. 
 
-The favourable tax treatment drives up house prices because it increases the after-tax returns to housing investors.\footcite{RBA2015}   This helps existing home-owners but reduces rates of home ownership among younger age groups.\footnote{For example, \textcite{Commission2004} found that these tax settings had added to the housing price boom by encouraging investors to reduce current income in favour of longer term gains.}
+The favourable tax treatment drives up house prices because it increases the after-tax returns to housing investors.\footnote{For example, \textcite{Commission2004} found that these tax settings had added to the housing price boom by encouraging investors to reduce current income in favour of longer term gains.}  This helps existing home-owners but reduces rates of home ownership among younger age groups.\footcite[pp.~14-15]{Daley2014}
 
 These tax incentives also contribute to volatility in housing markets.
 Negative gearing is most attractive as a tax minimisation strategy when asset prices are rising strongly.
 So in boom times it further increases investor demand for housing.
 The opposite is true when prices are stable or falling.
-The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
+The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75
+,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
 
 But out of all the effects that negative gearing has on housing markets, its effect on rental prices is by far the most contentious.
 
@@ -2287,13 +2294,11 @@ These arguments typically rest on two pillars: one, that rental prices rose in t
 
 The first argument is quite easily refuted.
 In 1985, the Hawke Government restricted negative gearing so that rental losses could not be used to reduce tax payable on other income streams. 
-Two years+ later, the policy was abolished out of concern for increasing rental prices.
+Two years later, the policy was abolished out of concern for increasing rental prices.
 
-It is understandable that politicians today accept their predecessors' judgement---that rental prices did rise and that quarantining negative gearing was to blame.
-But their predecessors were wrong.  
-Although rental prices rose rapidly in Perth somewhat in Sydney, %
-inflation-adjusted rental prices were stable in Melbourne and actually fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}).
-In Sydney and Perth population growth and insufficient new housing because of high borrowing rates and competition from the stock market for funds, contributed to the rent rise.\footcites[p.~186]{badcock1991responsiveness}[pp.~47-48]{Daley2013} 
+But these concerns were ill-founded. Rents did rise rapidly in Perth and rose somewhat in Sydney. 
+Yet inflation-adjusted rents were stable in Melbourne and actually fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}).
+In Sydney and Perth it was population growth and insufficient residential construction -- due to high borrowing rates and competition from the stock market for funds -- not the policy change, that effected the rent rises.\footcites[p.~186]{badcock1991responsiveness}[pp.~47-48]{Daley2013} 
 The policy change was merely a coincidence.
 As Badcock and Browett remark in their 1991 post-mortem of the policy, 
 
@@ -2301,7 +2306,7 @@ As Badcock and Browett remark in their 1991 post-mortem of the policy,
 While it was clearly in the interests of the real estate industry to exaggerate the effects of the tax reforms, the federal government was misguided in its acceptance of the pervasiveness of the `rent crisis' in mid-1987.
 \end{quote}
 
-Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them. 
+Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them.\footcite{CormannLateline2015}
 
 <<Capital_city_rents_direct_abs_get, fig.height = 11, out.height = "11in">>=
 rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1992") %>% 
@@ -2364,59 +2369,21 @@ rent.indices.real  %>%
         axis.title.x = element_blank())
 @
 
-
-<<Capital_city_rents, fig.height = 11, out.height = "11in">>=
-read_excel("Capital_city_rents_1980s.xlsx") %>%
-  gather(city, growth, Sydney:Australia) %>%
-  group_by(city) %>%
-  mutate(growth_r = 1 + growth/100,
-         level = cumprod(growth_r)) ->
-  chart.dat
-chart.dat %>%
-  grplot(aes(x = Date, y = level, color = city, group = city, label = city)) + 
-  annotate("rect", 
-           xmin = as.POSIXct("1985-07-01"),
-           xmax = as.POSIXct("1987-09-30"),
-           ymin = -Inf,
-           ymax = Inf,
-           fill = theGrey,
-           alpha = 0.5) + 
-  geom_line() + 
-  geom_text(data = filter(chart.dat, Date == unique(Date)[14]),
-            hjust = 1, vjust = -1, size = 7.14, fontface = "bold") + 
-  facet_wrap(~city, ncol = 3, nrow = 2)  + 
-  scale_color_manual(values = c(gpal(6)[1:5], "black")) + 
-  scale_y_continuous(breaks = c(1,2), labels = c(1,2)) + 
-  theme(strip.text = element_blank(),
-        strip.background = element_blank(),
-        axis.title.x = element_blank())
-@
 \begin{figure}
-\Caption{Negative gearing does not keep rents low.
-Only Perth experienced a considerable increase in rents without negative gearing.
-Adelaide and Brisbane actually experienced declines.}{Average rent prices (real compared with overall CPI), 1982 = 1.
+\Caption{Rents did not rise when negative gearing was removed in Melbourne, Adelaide or Brisbane}{Average rent prices (real compared with overall CPI), 1982 = 1.
 Grey band indicates the dates when negative gearing was not permitted}{fig:Capital_city_rents}
 \includegraphics[width=\columnwidth]{figure/Capital_city_rents_direct_abs-1}
 \source{ABS various years}
 \end{figure}
-Economic theory predicts that removing negative gearing should not change rents much.
+Beyond these historical lessons, economic theory predicts that removing negative gearing should not change rents much.
 Investors may want to increase rents to maintain their post-tax returns but the competitive dynamic in rental markets will limit any material rent increases. 
 
 Rents are ultimately a consequence of the marginal renter deciding whether they are prepared to pay rent and move out of housing they share with others -- often their parents.
 If rents go up, fewer people move out of home, and demand falls. 
 
-At the same time, negatively geared investors will face competition from the one-third of landlords making positive rental profits.
+At the same time, negatively geared investors will face competition from the third of landlords making positive rental profits.
 Because these landlords are not negatively gearing, they will be unaffected by the tax changes.
 Tenants can try to beat rent rises by threatening to move to these other properties.
-
-Investors who are currently negatively geared may exit the market if concessions are less generous. 
-Such an investor must sell to another negatively geared investor,
-a positively geared investor, or 
-an owner-occupier. 
-If the buyer is negatively geared, there is no material change to the market, and no change in rental price.
-If the buyer is positively geared, the abolition of negative gearing is irrelevant, and so no change to the rental price would be expected.
-If the buyer is an owner-occupier, the rental market has one fewer house to supply, but also one fewer tenant to satisfy. 
-Thus, no change in rent.
 
 Rents are set by these dynamics of demand and supply, not by the returns that owners are seeking.
 In property markets -- just like other markets -- returns determine asset prices, not the other way around.
@@ -2426,6 +2393,8 @@ It is much more likely such tenants would seek accommodation from a positively g
 While some investors may sell their properties if tax concessions are less generous, 
 this will only reduce house prices, not rental prices.
 
+Some investors may sell their properties if tax concessions are less generous.
+This might reduce house prices, but it will not increase rents. 
 Every time an investor sells a property to a renter, there is one less rental property, and one less renter.
 There is no change to the balance between supply and demand of rental properties in the short term.
 Others may sell to another investor, but one that doesn't rely on negative gearing to make the investment profitable.
