@@ -1305,6 +1305,7 @@ But there are revenue measures that could make a meaningful contribution to budg
 The preferential treatment of the capital gains discount and negative gearing result in revenue leakage of \textbf{\$10.2~billion}. 
 Yet Australia these tax expenditures do more harm than good, leaving alone their contribution to the deficit.
 
+When nominal investment losses can be written off in full, but investment gains enjoy a discount relative to ordinary income, 
 
 
 \chapter{The capital gains discount}
@@ -1382,7 +1383,7 @@ Consequently, they can reduce their tax by selling assets when their income is l
 Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue. 
 This deferral of tax is akin to the government providing the investor with an interest free loan(See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
 
-\section{The 50 per cent capital gains tax discount is too generous}\label{sec:ShouldCapitalGainsBeTaxedConsistently}
+\section{The 50 per cent capital gains tax discount is too generous}\label{sec:ShouldCapitalGainsBeTaxedConsistently}\label{sec:The50pcCGTdiscounttoogenerous}
 There are good reasons for taxing capital gains consistently with other forms of income. 
 It would tax all increases in spending power the same way, reduce revenue leakage from artificially structured transactions, reduce distortions in investment choices, and make the tax system more progressive. 
 
@@ -1393,10 +1394,10 @@ The challenge for tax policy is to strike the balance between these costs and ri
 \subsection{Taxing capital gains as ordinary income has merit}
 Capital gains and other forms of savings income increase a person's spending power.
 All increases in spending power should be taxed consistently regardless of how they are earned (chapter 2); ``a buck is a buck is a buck'', as the Canadian Carter report put it. 
-Taxes on capital gains are highly progressive because most capital gains income is earned by the wealthy.
-Aligning tax rates for labour and capital gains also helps prevent tax arbitrage -- people converting labour income into capital gains to reduce their taxable incomes. 
 
-There are also efficiency  reasons to tax capital gains consistently with other income. 
+Taxing capital gains consistnetly with ordinary income maintains the integrity of the tax base. 
+Concessions results in ``revenue leakage as taxpayers find ways to convert income into capital gains.\footcites{Evants2005}{Minas2013}
+
 
 That capital gains taxes might discourage worthwhile investment is a reasonable concern.
 Increasing taxes on capital gains might reduce incentives to save and start new businesses.
