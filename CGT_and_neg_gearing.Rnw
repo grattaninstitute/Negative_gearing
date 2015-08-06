@@ -139,7 +139,11 @@ get_sample_file <- function(year = 2013){
   colClasses = sapply(fread(sample_file_of(year), nrows=50), class)
   fread(sample_file_of(year), colClasses = colClasses, na.strings = "?")
 }
-
+ 
+# This function is 50 for 2012-13, as it 
+# represents a 2% sample file.  Future years
+# are a bit more subtle, as the sample file
+# will be large (have more rows)
 weighting <- function(year = 2013){
   # From Budget Table 1 from BP 1
   # http://budget.gov.au/2015-16/content/bp1/html/bp1_bs2.htm
