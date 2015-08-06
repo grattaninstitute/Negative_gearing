@@ -1984,23 +1984,22 @@ To date, annual asset revaluations have been considered impractical and beset wi
 
 
 \section{Negative gearing reduces tax on investment returns and distorts investment choices }\label{sec:negative_gearing_provides}
-Negative gearing allows taxpayers to subtract the losses they make on investments (including mortgage interest payments) from their taxable income including wages. 
+Negative gearing is the use of losses made on investments (including mortgage interest payments) to reduce one's taxable income including wages. 
 
 The ability to offset losses against other income is part of the normal operation of the Australian tax system, and applies to a wide range of investments and business activities.
 If losses were not deductible, they would be treated asymmetrically to gains (which are taxed) and investments in risky assets would be less attractive.
 Deductibility of interest payments in theory maintains tax neutrality for investors choosing between lending and equity financing.\footcite{Fane2004}  
 
-But in practice, the way in which negative gearing and capital gains tax interact allow investors to reduce and defer taxes on their wage income.
-Investors favour debt finance and investments that generate more of their returns via capital gains in order to maximise these tax advantages. 
-
-This comes at both a cost to the budget and negative impacts in investment markets, particularly housing markets, where the tax treatment has encouraged speculative activity. 
+But there is no theoretical basis for allowing losses on investment to be deducted against entirely unrelated income such as wages. 
+Indeed, allowing full deductibility of investment losses against wages when capital gains are taxed concessionally and only on realisation leads investors to favour debt financed investments that generate more of their returns via capital gains in order to maximise tax breaks on wages. 
+This reduces tax collections and has negative impacts in investment markets, particularly housing markets, where the tax treatment has encouraged speculative activity. 
 
 Most other advanced economies provide a less generous treatment for rental losses.
 The Unites States only allows losses to be written off against other forms of ``passive'' income.\footnote{Passive income is defined as income from rental properties or businesses in which the taxpayer does not materially participate.
 It is distinct from active income (wage, salary and income from business in which the person is actively involved) and portfolio income (income from interest, dividends etc). \textcite{IRS2015}.}  The UK and many European countries only allow deductions against the same class of income, so for example, losses on investment property can only be used to reduce tax on income or capital gains from other investment properties.
 Others such as the Netherlands do not allow deductibility of losses from investment housing.\footnote{See \textcite[p.~43]{RBA2014}, \textcite[p.~86]{Commission2004}, \textcite[pp.~92-95]{ODonnell2005}.}
 
-\subsubsection{Interaction with capital gains tax allows investors to defer and reduce their tax}
+\subsection{Interaction with capital gains tax allows investors to defer and reduce their tax}
 Taxes on capital gains are discounted by 50~per cent and only paid when the asset is sold.
 But negative gearing arrangements allow investors to deduct losses -- investment expenses (including interest costs) in excess of rental income from wage income that would otherwise be taxed at the full marginal rate.
 
@@ -2024,7 +2023,7 @@ So despite his profit of more than \$115,000 on the investment, in effect he pay
 
 The attractiveness of using investment losses to reduce taxes on wage income is evident in the age profile of those negatively gearing property.
 Investing in loss making properties is popular amongst those of working age, but far less prevalent amongst over 60s who are unlikely to benefit from the tax write-offs.
-Over 60~per cent of those under 60 with investment properties make rental losses compared to less than 40~per cent over 60.
+Over 70~per cent of those under 60 with investment properties make rental losses compared to less than 35~per cent over 60. (See \Vref{fig:Age_negative_gearing_investments}.)
 
 <<Age_negative_gearing_investments, fig.width=11.000, fig.height=10.00, out.width="11.000in", out.height="10.00in",>>=
 get_sample_file(2013) %>%
@@ -2135,7 +2134,7 @@ As \textcite[p.~42]{RBA2014} notes:
 \!\dots in most countries the earning of rental income is seen as the most important reason for investing in rental properties. \dots\ This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
 \end{quote}
 
-Consistent with this, \textcite{seelig2009understanding} found that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.\footnote{A clear majority considered capital gains as more important than rental income over a five and ten year time horizon.}
+\textcite{seelig2009understanding} echoes the RBA view, finding that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.\footnote{A clear majority considered capital gains as more important than rental income over a five and ten year time horizon.}
 
 The asymmetry between the tax treatment of gains and losses also makes debt financing of investment more attractive.
 For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing.
@@ -2163,6 +2162,8 @@ The property is held for seven years and then sold.}
 
 \source{Grattan analysis}
 \end{figure}
+The Henry Tax Review described the asymmetry between gains and losses as ``among the greatest tax-induced biases to the savings choices of households.''\footcite[p.~69]{Treasury2010} This runs counter to the rationale for allowing the deductibility of losses -- to maintain tax neutrality of debt and equity financing.
+
 Indeed, the distortions created are so large that it is possible that even investments with negative pre-tax returns can provide a positive profit to investors once the tax benefits are taken into account.\footcite[p.~78]{Burman1999}  \textcite{seelig2009understanding} estimate that around half of investors indicated that they would not have invested in property if negative gearing had not been available.
 
 \subsubsection{And investors have responded to these incentives}
