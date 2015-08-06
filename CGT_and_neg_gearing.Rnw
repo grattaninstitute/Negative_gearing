@@ -2168,6 +2168,32 @@ Indeed, the distortions created are so large that it is possible that even inves
 
 While these distortions exist for all investments, the tax advantages are greatest for property because bank lending rules allow greater leverage than for others assets such as shares that also produce capital gains.\footcite[p.~23]{RBA2015}
 
+<<Type>>=
+get_sample_file_and_year <- function(yr){
+  get_sample_file(yr) %>%
+    mutate(year = yr)
+}
+
+NG_tax_exps <-
+  lapply(2004:2013, get_sample_file_and_year) %>%
+  rbindlist(fill = TRUE) %>%
+  tbl_df %>%
+  group_by(year) %>%
+  mutate(current_tax = income_tax(Taxable_Income, fy.year = yr2fy(year)),
+         subseqt_tax = income_tax(ifelse(Net_rent_amt < 0, 
+                                         Taxable_Income - Net_rent_amt,
+                                         Taxable_Income), fy.year = yr2fy(year)),
+         diff = subseqt_tax - current_tax) %>%
+  group_by(year) %>%
+  summarise(avg.diff = sum(diff) * weighting(year) / 1e9)
+
+NG_tax_exps.real <-
+  NG_tax_exps %>%
+  ungroup %>%
+  mutate(avg.diff.real = cpi_inflator(avg.diff, from_fy = yr2fy(year)))
+
+@
+
 \subsubsection{And investors have responded to these incentives}
 There has been a boom in negatively geared residential property investments over the last two decades.
 Other than a temporary dip following the global financial crisis, the number of taxpayers making losses on residential property has increased steadily.
