@@ -2166,6 +2166,8 @@ The Henry Tax Review described the asymmetry between gains and losses as ``among
 
 Indeed, the distortions created are so large that it is possible that even investments with negative pre-tax returns can provide a positive profit to investors once the tax benefits are taken into account.\footcite[p.~78]{Burman1999}  \textcite{seelig2009understanding} estimate that around half of investors indicated that they would not have invested in property if negative gearing had not been available.
 
+While these distortions exist for all investments, the tax advantages are greatest for property because bank lending rules allow greater leverage than for others assets such as shares that also produce capital gains.\footcite[p.~23]{RBA2015}
+
 \subsubsection{And investors have responded to these incentives}
 There has been a boom in negatively geared residential property investments over the last two decades.
 Other than a temporary dip following the global financial crisis, the number of taxpayers making losses on residential property has increased steadily.
@@ -2191,7 +2193,7 @@ taxstats_ts <- taxstats_ts %>%
 Both have contributed to Australian landlords moving from being collectively profitable, to accruing billions in net rental losses each year.
 This coincided with the introduction of the capital gains tax discount in 1999.
 In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m.
-By 2012-13, the two~billion landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
+By 2012-13, the two~million landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
 
 
 <<prop_rental_deductions_gross_rent>>=
@@ -2211,9 +2213,7 @@ prdgr <- function(fyyear){
 
 And the average level of gearing for property investors is increasing.
 Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2012-13")}~per cent in 2012-13.\footcite[p.~65]{Treasury2015a}
-\subsection{Negative gearing is growing in popularity, mainly for housing investment}
-There has been a boom in negatively geared residential property investments over the last two decades.
-Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
+
 
 <<Negative_gearing_real_over_time>>=
 taxstats_ts %>%
