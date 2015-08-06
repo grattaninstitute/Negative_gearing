@@ -23,6 +23,7 @@
 \newcommand{\Act}[2]{\emph{#1} (#2)}
 \newcommand{\EMPH}[1]{\textbf{#1}}
 \newcommand{\highlight}[1]{\textbf{#1}}
+\newcommand\ie{\emph{i.e.~}}
 
 \usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
 \AtBeginEnvironment{quote}{\smaller}
@@ -1184,7 +1185,7 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 %%% Document starts here
 % \begin{summary}
-\chapter*{summary}
+\chapter*{Summary}
 Grattan Institute's \emph{Fiscal Challenges for Australia report}, published last month, reveals how Commonwealth and state government budgets are under pressure.
 The Commonwealth Government has run deficits for six years, with another four forecast.
 Reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.
@@ -1444,10 +1445,10 @@ In contrast, share investors, who have suffered low average capital returns due 
 But full compensation for inflation is not needed to constrain effective tax rates on gains at or below an investor's marginal rate.  
 Capital gains enjoy other tax advantage that act to lower the effective tax rates. 
 
-First, capital gains are taxed upon realisation (\ie, when the asset is sold) not as they accrue, providing investors with an implicit interest-free loan on tax liabilities.  \footnote{See also:~\textcite[p.~2]{Fane2004}[p.~12]{Ingles2009}
+First, capital gains are taxed upon realisation (\ie when the asset is sold) not as they accrue, providing investors with an implicit interest-free loan on tax liabilities.\footnote{See also:~\textcite[p.~2]{Fane2004}[p.~12]{Ingles2009}}
 This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing the longer the asset is held (\Vref{box:Tax_deferral_and_effective_tax_rates}).\footcite[p.~65]{Treasury2010}  
 
-Investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. We see evidence of people waiting to retirement to realise capital gains (see below). 
+Investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. We see evidence of people waiting to retirement to realise capital gains (see below).\label{sec:InvestorsChooseTimeOfRealization} 
 This reduces the average tax rate an investor pays on capital gains income. 
 For example, the average marginal tax rate on capital gains for people in the workforce is 31~per cent compared to 17~per cent for people over 50 with no wage income.\footcite{ATO2013i} 
 
@@ -1796,7 +1797,7 @@ After 20 years it reduces to 14.6~per cent.
 
 In contrast, if the investor chooses a term deposit paying 7~per cent a year and they reinvest the after-tax income each year, their effective tax rate is 47 cents a year, regardless of the holding period for the asset. (See \Vref{fig:Effective_marginal_tax_rates_are_lower})
 
-The capital gains tax discount magnifies the tax advantaged status of capital gains. 
+The capital gains tax discount magnifies the tax advantaged status of capital gains. With the discount, effective tax rates fall to 21~per cent after 5 years and 15 per cent after two decades, generating a substantial wedge between the tax treatment of capital gains and recurrent income such as interest on bank deposits. 
 \eject
 <<Effective_marginal_tax_rates_are_lower>>=
 effective_marginal <- function(asset.type = "term_deposit", years.maturity, nominal.return, inflation = NULL, marginal.rate = 0.465, cgt.discount = 0.50){
@@ -1881,11 +1882,10 @@ rates_data %T>%
 \end{bigbox*}
 }
 
-\subsection{Reducing the capital gains discount will raise revenue and align the treatment with negative gearing}
-\subsubsection{Taxing capital gains without a discount will not substantially distort economic decisions}
+\subsubsection{Taxing capital gains without a discount will not substantially deter savings and investment}
 Taxing capital gains at the full marginal rate could deter entrepreneurship and risk taking by reducing the returns to selling a successful business.\footnote{If capital gains were taxed on an accrual basis and capital losses were fully deductible against all assets, then taxing gains in full would be neutral with respect to risk.
 However, since losses are only deductible against gains this increases the risk that investors will make a loss they are not able to deduct.
-It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (section x.1), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect is small.
+It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (\vref{sec:InvestorsChooseTimeOfRealization}), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect is small.
 Other factors which drive entrepreneurship and risk-taking behaviour are far more significant than the tax on any gains ultimately made.\footcite[p.~75]{Burman1999}   Further, several separate exceptions already in place limit the effects of capital gains tax when assets or businesses are sold.\footnote{Capital gains tax exemptions are available for the sale of active assets by small business up to a lifetime limit of \$500,000 provided the gains are paid into a complying super fund.
 There are also exemptions for people over 55 that are retiring and selling business asset held for more than 15 years.
 Small business also receive rollover relief allowing them to defer all or part of a capital gain for two years or longer on the sale of active assets, provided they acquire a replacement asset or you incur expenditure on making capital improvements to an existing asset. \textcite{ATO2014e}} In any case, gains received from the sale of business are a small proportion of total gains from individuals: most are from property and share-market investments (\Vref{fig:Majority_of_taxable_gains_are_earned_by_individuals})
@@ -1916,9 +1916,11 @@ She makes a net rental return of 5~per cent a year, giving her a \$50,000 income
 
 If she were to sell the house she would crystallise the \$300,000 in gains, paying tax on 50~per cent of the gains at her marginal tax rate of 49~per cent (\$73,500).
 This would leave her with around \$926,500 from the sale: \$226,500 in net gains and her initial investment of \$700,000.
-In order to better her income of \$50,000 and make the sale worthwhile, she needs to find an investment (with the same opportunity for capital gains) that pays net returns of more than 5.4~per cent a year.
+The sale will only be worthwhile if Hayley can find an alternative property that yields more than her current rental income of \$50,000 with the same opportunity for capital gains. With her \$926,000 sale proceeds she would need to find a property with net rental return of more than 5.4 per cent a year. 
 
-If capital gains were taxed in full, rather than at the current 50~per cent discount, her hurdle rate for the new investment would be 5.9~per cent. 
+Properties with rental yields below this but higher than her current 5 per cent would not be attractive because realising the tax liability on her current property erodes her capital base for investment.
+
+The higher the tax rate on capital gains the less willing she will be to realise gains to pursue new investment opportunities. If capital gains were taxed in full, rather than with a 50 per cent discount, her hurdle rate for the new investment would be 5.9 per cent. 
 \end{smallbox}
 
 We can see the retirement realisation effect in the patterns of capital gains realisation by age.
