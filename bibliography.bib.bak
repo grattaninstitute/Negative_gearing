@@ -184,13 +184,12 @@
   Type                     = {Generic}
 }
 
-@Misc{ABS2015a,
+@InCollection{ABS2015a,
   Title                    = {Housing Finance {Australia}},
-
   Author                   = {ABS},
-  Year                     = {2015},
-
   Publisher                = {Australian Bureau of Statistics},
+  Year                     = {2015},
+  Series                   = {cat no. 5609.0},
   Type                     = {Generic}
 }
 
@@ -2744,6 +2743,19 @@ public policy},
   Url                      = {http://grattan.edu.au/wp-content/uploads/2014/03/801_Balancing_Budgets.pdf}
 }
 
+@Misc{DaleyWood2015,
+  Title                    = {Fiscal Challenges for Australia},
+
+  Author                   = {John Daley and Danielle Wood},
+  HowPublished             = {online},
+  Month                    = {July},
+  Year                     = {2015},
+
+  Owner                    = {hparsonage},
+  Timestamp                = {2015.08.07},
+  Url                      = {http://grattan.edu.au/wp-content/uploads/2015/07/824-Fiscal-challenges-for-Australia2.pdf}
+}
+
 @Misc{Daley2014b,
   Title                    = {Submission to Senate Select Committee into the Abbott Government{\^{a}}{\texteuro}{\texttrademark}s Budget Cuts},
 
@@ -4878,6 +4890,18 @@ public policy},
   Type                     = {Report},
 
   Url                      = {http://www.rba.gov.au/publications/rdp/2011/pdf/rdp2011-03.pdf}
+}
+
+@Misc{CormannLateline2015,
+  Title                    = {Interview with Mathias Cormann},
+
+  Author                   = {ABC Lateline},
+  Month                    = {June},
+  Year                     = {2015},
+
+  Owner                    = {hparsonage},
+  Timestamp                = {2015.08.05},
+  Url                      = {http://www.abc.net.au/lateline/content/2015/s4255517.htm}
 }
 
 @TechReport{LeesaA Wheelahan2011,
@@ -7931,5 +7955,10 @@ Australian Health Workforce Institute,},
   Number                   = {3},
 
   Type                     = {Journal Article}
+}
+
+@Misc{ABSPropertypriceindx,
+  Owner                    = {hparsonage},
+  Timestamp                = {2015.08.07}
 }
 
