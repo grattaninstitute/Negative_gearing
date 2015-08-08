@@ -56,7 +56,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=TRUE
+                      ,cache=F
                       ,dev=c('my_pdf', 'my_emf')
                       ,fig.ext = c("pdf", "emf")
 )
@@ -1127,7 +1127,7 @@ henry_taxstats %>%
 @
 
 <<Summary-chunk, results='hide'>>=
-policy <- cost_of_daley_policy_fast(2015) 
+policy <- cost_of_daley_policy_fast(2015, CGT.discount = 0.40) 
 policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
   round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
@@ -1258,7 +1258,7 @@ The best way to transition to the new arrangements would be to phase them in ove
 In five of the last six years, the Commonwealth Government has posted headline deficits of more than 2~per cent of GDP.
 Assuming revenue and spending projections are correct, Australia is on track for more than a decade of deficits between 2008 and 2019, with Commonwealth net debt projected to peak at 18~per cent of GDP in 2017, higher than any year since the mid-1990s.\footnote{Net debt was 18.1\%\ of GDP in 1995-96. See \textcite[p.~273]{Treasury2014b}}
  
-As Grattan Institute's Fiscal Challenges for Australia report, highlights, reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.\footcite{DaleyWood2015}
+As Grattan Institute's \emph{Fiscal Challenges for Australia} report highlights, reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.\footcite{DaleyWood2015}
  
 The biggest worry is that budget projections assume that growth will return to ``trend''. The International Monetary Fund recently joined a growing group of economists who believe that long-run economic growth in developed countries was trending lower even before the financial crisis, and future expectations should be lower again.
  
@@ -1442,14 +1442,14 @@ Investors pay less tax compared to a tax on real gains long as asset values grow
 So the discount overcompensates investors with high returns and undercompensates those with low ones. 
 
 Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7.3~per cent while share prices have grown by an average of only 3.6~per cent. 
-Inflation over this period was 2.8~per cent.\footcite{ABSPropertypriceindx}  
+Inflation over this period was 2.8~per cent.\footcite{ABS2015a}  
 So the 50~per cent discount has overcompensated housing investors. 
 In contrast, share investors, who have suffered low average capital returns due to the global financial crisis, would have been better off under a regime that taxed real capital gains. 
 
 But full compensation for inflation is not needed to constrain effective tax rates on gains at or below an investor's marginal rate.  
 Capital gains enjoy other tax advantage that act to lower the effective tax rates. 
 
-First, capital gains are taxed upon realisation (\ie when the asset is sold) not as they accrue, providing investors with an implicit interest-free loan on tax liabilities.\footnote{See also:~\textcite[p.~2]{Fane2004}[p.~12]{Ingles2009}}
+First, capital gains are taxed upon realisation (\ie when the asset is sold) not as they accrue, providing investors with an implicit interest-free loan on tax liabilities.\footnote{See also:~\textcites[p.~2]{Fane2004}[p.~12]{Ingles2009}}
 This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing the longer the asset is held (\Vref{box:Tax_deferral_and_effective_tax_rates}).\footcite[p.~65]{Treasury2010}  
 
 Investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. We see evidence of people waiting to retirement to realise capital gains (see below).\label{sec:InvestorsChooseTimeOfRealization} 
@@ -1457,7 +1457,7 @@ This reduces the average tax rate an investor pays on capital gains income.
 For example, the average marginal tax rate on capital gains for people in the workforce is 31~per cent compared to 17~per cent for people over 50 with no wage income.\footcite{ATO2013i} 
 
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. 
-Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite{HILDA2010}}  -- that do not receive these other tax advantages. 
+Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite[Wave~10]{HILDA2015}}  -- that do not receive these other tax advantages. \nocite{*}
 
 The current 50 per cent discount compensates, and in many cases overcompensates, for the effects of inflation on post-tax returns. 
 When the other tax advantages for capital gains income are factored in, capital growth assets receive sizeable tax breaks.  
@@ -2435,7 +2435,7 @@ rent.indices.real  %>%
 \Caption{Rents did not rise when negative gearing was removed in Melbourne, Adelaide or Brisbane}{Average rent prices (real compared with overall CPI), 1982 = 1.
 Grey band indicates the dates when negative gearing was not permitted}{fig:Capital_city_rents}
 \includegraphics[width=\columnwidth]{figure/Capital_city_rents_direct_abs-1}
-\source{ABS various years}
+\source{\textcite{ABSVariousyearsa}}
 \end{figure}
 Beyond these historical lessons, economic theory predicts that removing negative gearing should not change rents much.
 Investors may want to increase rents to maintain their post-tax returns but the competitive dynamic in rental markets will limit any material rent increases. 
