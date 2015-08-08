@@ -2168,7 +2168,7 @@ Indeed, the distortions created are so large that it is possible that even inves
 
 While these distortions exist for all investments, the tax advantages are greatest for property because bank lending rules allow greater leverage than for others assets such as shares that also produce capital gains.\footcite[p.~23]{RBA2015}
 
-<<Type>>=
+<<Negative_Gearing_tax_expenditures>>=
 get_sample_file_and_year <- function(yr){
   get_sample_file(yr) %>%
     mutate(year = yr)
@@ -2243,11 +2243,13 @@ Even though interest rates are falling, interest deductions as a proportion of r
 
 <<Negative_gearing_real_over_time>>=
 taxstats_ts %>%
-  filter(grepl("Net rent.*loss", `Selected items`)) %>%
+  filter(grepl("(Net rent.*loss)|(Gross rent)", `Selected items`)) %>%
   filter(!grepl("property", `Selected items`)) %>%
+  filter(!(grepl("Gross rent", `Selected items`) & grepl("\\$", unit))) %>%
   filter(!is.na(value)) %>%
   mutate(value = ifelse(grepl("\\$", unit), cpi_inflator(value, from_fy = fy.year), value)) %>%
-  group_by(unit) %>%
+  mutate(group = paste0(`Selected items`, unit)) %>%
+  group_by(group) %>%
   arrange(fy.year) %>%
   mutate(value.rel = value/value[which(fy.year == "1999-00")],
          text = ifelse(fy.year == last(fy.year), 
@@ -2265,19 +2267,32 @@ taxstats_ts %>%
   mutate(fy.year = factor(fy.year, ordered = TRUE),
          date = fy2date(as.character(fy.year)),
          unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
-  
-  grplot(aes(x = date, y = value.rel, color = unit)) + 
-  geom_line(aes(group = unit)) + 
+  grplot(aes(x = date, y = value.rel, color = group)) + 
+  geom_line(aes(group = group)) + 
   geom_text(aes(label = text),
             fontface = "bold",
             hjust = -0.1,
             size = 8.2) + 
-  geom_dl(aes(label = unit), 
-          method = list("lines2", dl.trans(cex = 1.875, x = x + 0.0
-                                           #, fontfamily = "Arial"
-                                           )), 
-          font = "bold",
-          hjust = 0) + 
+  annotate("text",
+           label = c("number of\nproperty investors",
+                     "Net rental losses",
+                     "number of\nnegatively geared investors"),
+           x = as.Date(paste0(c(1985, 2010, 2010), "-06-30")),
+           y = c(0.5, 3.3, 1.8),
+           lineheight = 0.8,
+           hjust = 0,
+           vjust = c(1.25,0,0),
+           size = 8.12, 
+           color = gpal(3),
+           fontface = "bold"
+           #family = "Arial"
+           ) + 
+#   geom_dl(aes(label = group), 
+#           method = list("last.qp", dl.trans(cex = 1.875, x = x + 0.0
+#                                            #, fontfamily = "Arial"
+#                                            )), 
+#           font = "bold",
+#           hjust = 0) + 
   scale_y_continuous(expand = c(0.1,0.1)) + 
   # scale_x_date(expand = c(0.1,2)) + 
   annotate("blank",
@@ -2349,6 +2364,30 @@ The opposite is true when prices are stable or falling.
 The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75
 ,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
 
+One concern with limiting negative gearing is that downward pressure on house prices could leave some highly geared investors with negative equity.  
+But given expected one-off price impacts of less than 4 per cent (\Vref{box:Impact_of_NG_on_house_prices}), the risk of negative equity from the tax changes is limited. 
+Only around ten per cent of new property loans go to investors with loan value ratios in excess of 90 per cent.\footcite{APRA2015}  
+And ratios for existing loans are falling as property prices continue to grow. 
+For the small proportion of investors that remain highly leveraged, higher interest rates pose a far greater risk than changes to the tax treatment of rental losses.
+
+\begin{smallbox}{Impact of negative gearing on house prices}{box:Impact_of_NG_on_house_prices}
+Limiting or abolishing negative gearing will reduce the post-tax investment returns for negatively geared property investors. 
+There will be a one-off decrease in house prices as investors reduce their willingness to pay. 
+Of course, house prices may not actually fall if market dynamics continue to push prices upwards. 
+But prices will be lower than they would have been in the absence of the tax changes.
+
+The impact on prices depends on investor perceptions of the size of the lost tax benefit. 
+Average annual rental losses over the last decade were \$12.8 billion, generating annual tax write-offs worth an average of \$4 billion in today's dollars. 
+If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \$30 billion. 
+
+If negative gearing were entirely abolished, then these expected tax benefits would be lost entirely. 
+If this were fully capitalised in the price of property, prices could fall by up to 4 per cent. 
+For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. 
+For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{round(grattan::pv(0.05, 10, just_negative_gearing_taxstats))}, with a maximum impact on property prices of X\%.
+
+\end{smallbox}
+
+\subsubsection{Limiting negative gearing will not change rents much}
 But out of all the effects that negative gearing has on housing markets, its effect on rental prices is by far the most contentious.
 
 Concerns persist that limiting negative gearing will reduce the supply of rental properties and push up rents.
