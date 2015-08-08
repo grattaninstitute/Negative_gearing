@@ -2166,6 +2166,8 @@ The Henry Tax Review described the asymmetry between gains and losses as ``among
 
 Indeed, the distortions created are so large that it is possible that even investments with negative pre-tax returns can provide a positive profit to investors once the tax benefits are taken into account.\footcite[p.~78]{Burman1999}  \textcite{seelig2009understanding} estimate that around half of investors indicated that they would not have invested in property if negative gearing had not been available.
 
+While these distortions exist for all investments, the tax advantages are greatest for property because bank lending rules allow greater leverage than for others assets such as shares that also produce capital gains.\footcite[p.~23]{RBA2015}
+
 \subsubsection{And investors have responded to these incentives}
 There has been a boom in negatively geared residential property investments over the last two decades.
 Other than a temporary dip following the global financial crisis, the number of taxpayers making losses on residential property has increased steadily.
@@ -2191,7 +2193,7 @@ taxstats_ts <- taxstats_ts %>%
 Both have contributed to Australian landlords moving from being collectively profitable, to accruing billions in net rental losses each year.
 This coincided with the introduction of the capital gains tax discount in 1999.
 In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m.
-By 2012-13, the two~billion landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
+By 2012-13, the two~million landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
 
 
 <<prop_rental_deductions_gross_rent>>=
@@ -2211,9 +2213,7 @@ prdgr <- function(fyyear){
 
 And the average level of gearing for property investors is increasing.
 Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2012-13")}~per cent in 2012-13.\footcite[p.~65]{Treasury2015a}
-\subsection{Negative gearing is growing in popularity, mainly for housing investment}
-There has been a boom in negatively geared residential property investments over the last two decades.
-Other than a temporary dip following the global financial crisis, both the number of taxpayers making losses on residential property investment and the average loss made has increased steadily (\Vref{fig:Negative_gearing_real_over_time})
+
 
 <<Negative_gearing_real_over_time>>=
 taxstats_ts %>%
@@ -2323,6 +2323,30 @@ The opposite is true when prices are stable or falling.
 The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75
 ,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
 
+One concern with limiting negative gearing is that downward pressure on house prices could leave some highly geared investors with negative equity.  
+But given expected one-off price impacts of less than 4 per cent (\Vref{box:Impact_of_NG_on_house_prices}), the risk of negative equity from the tax changes is limited. 
+Only around ten per cent of new property loans go to investors with loan value ratios in excess of 90 per cent.\footcite{APRA2015}  
+And ratios for existing loans are falling as property prices continue to grow. 
+For the small proportion of investors that remain highly leveraged, higher interest rates pose a far greater risk than changes to the tax treatment of rental losses.
+
+\begin{smallbox}{Impact of negative gearing on house prices}{box:Impact_of_NG_on_house_prices}
+Limiting or abolishing negative gearing will reduce the post-tax investment returns for negatively geared property investors. 
+There will be a one-off decrease in house prices as investors reduce their willingness to pay. 
+Of course, house prices may not actually fall if market dynamics continue to push prices upwards. 
+But prices will be lower than they would have been in the absence of the tax changes.
+
+The impact on prices depends on investor perceptions of the size of the lost tax benefit. 
+Average annual rental losses over the last decade were \$12.8 billion, generating annual tax write-offs worth an average of \$4 billion in today's dollars. 
+If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \$30 billion. 
+
+If negative gearing were entirely abolished, then these expected tax benefits would be lost entirely. 
+If this were fully capitalised in the price of property, prices could fall by up to 4 per cent. 
+For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. 
+For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$XX, with a maximum impact on property prices of X\%.
+
+\end{smallbox}
+
+\subsubsection{Limiting negative gearing will not change rents much}
 But out of all the effects that negative gearing has on housing markets, its effect on rental prices is by far the most contentious.
 
 Concerns persist that limiting negative gearing will reduce the supply of rental properties and push up rents.
