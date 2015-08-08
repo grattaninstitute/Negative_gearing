@@ -19,11 +19,15 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
 % needs to be switched off for copying and pasting
-\RequirePackage[activate={true,nocompatibility},final,expansion,tracking=true,kerning=true, spacing=false,selected=true,letterspace=-4]{microtype}
+\RequirePackage[activate={true,nocompatibility},final,expansion,tracking=true,kerning=true, spacing=false,selected=true, letterspace=-20]{microtype}
+
+\SetExtraSpacing{ font = * / * / * / * / * }{. = {100,100,100},}
+
 % Arial font looks a little bit spaced. One way to do it is to adjust the letterspace 
 % option to microtype.  Another is to adjust the spaceskip
-% \spaceskip=1.5\fontdimen2\font plus 1.5\fontdimen3\font
-% minus 1.5\fontdimen4\font
+% large
+% \spaceskip=1.5\fontdimen2\font plus 1.5\fontdimen3\font minus 1.5\fontdimen4\font
+\spaceskip=1.2\fontdimen2\font plus 1.2\fontdimen3\font minus 1.2\fontdimen4\font
 % ------
 % Grattan colors
 \definecolor{Orange}{HTML}{F68B33}
