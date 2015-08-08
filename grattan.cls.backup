@@ -19,7 +19,15 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
 % needs to be switched off for copying and pasting
-\RequirePackage[activate={true,nocompatibility},final,expansion,tracking=true,kerning=true, spacing=false,selected=true,letterspace=-4]{microtype}
+\RequirePackage[activate={true,nocompatibility},final,expansion,tracking=true,kerning=true, spacing=false,selected=true,letterspace=-15]{microtype}
+
+\SetExtraSpacing
+[ unit = space ] % default
+{ font = * / * / * / * / * }
+{
+. = {1000,1000,0},
+}
+
 % Arial font looks a little bit spaced. One way to do it is to adjust the letterspace 
 % option to microtype.  Another is to adjust the spaceskip
 % \spaceskip=1.5\fontdimen2\font plus 1.5\fontdimen3\font
@@ -162,7 +170,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
  } {\end{multicols}\end{minipage}\end{mdframed}\end{boxe}%
  \clearpage\twocolumn\nopagecolor}
  
- 
+
 % Captions in general
 \DeclareCaptionFont{theGrey}{\color{theGrey}}
 \captionsetup{format=plain,font={small,bf,theGrey},labelfont={small,bf,theGrey}}
@@ -172,9 +180,9 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 
 \newcommand{\captionwithunits}[2]{%
 \captionsetup{format=plain,font={small,bf,theGrey},labelfont={small,bf,theGrey}, justification=raggedright,
-singlelinecheck=false}
+singlelinecheck=false,position=top,skip=0pt}
 \caption{#1}
-\vspace{-11pt}
+%\vspace{-11pt}
 \captionsetup{font={small,color=theGrey}}
 \caption*{#2}
 }
@@ -238,7 +246,7 @@ singlelinecheck=false}
 left=2.75cm,right=2.75cm
 ]{geometry}
   %\addtolength{\columnwidth}{50pt}
-  \setlength{\columnsep}{20mm}  
+  \setlength{\columnsep}{15mm}  
   %\addtolength{\columnwidth}{0.2\columnwidth}
 
 % Ensures hyperlinked chapter headings refer to their referent headings
@@ -281,7 +289,9 @@ left=2.75cm,right=2.75cm
 \clearscrplain
 \clearscrheadfoot
 % -------
-
+% Heads and footers
+%
+\newcommand{\classification}{}
 % Avoid spaces or newlines in the following commands' arguments: they 
 % may cause errors.
 % Furthermore, optional arguments are required: they appear in Chapter 
@@ -289,7 +299,10 @@ left=2.75cm,right=2.75cm
 % \chapter{}
 \lehead[\normalfont\textcolor{theGrey}{\mytitle}]{\normalfont\textcolor{theGrey}{\mytitle}}
 \lohead[\normalfont\textcolor{theGrey}{\mytitle}]{\normalfont\textcolor{theGrey}{\mytitle}}
+\cehead[\classification]{\classification}
+\cohead[\classification]{\classification}
 \ifoot[{\textcolor{theGrey}{\normalfont Grattan Institute 2015\phantom{\Large X}}}]{\textcolor{theGrey}{\normalfont Grattan Institute 2015\phantom{\Large X}}}
+\cfoot[\classification]{\classification}
 \ofoot[\normalfont\textcolor{theGrey}{\thepage}]{\normalfont\textcolor{theGrey}{\thepage}}
 
 \setkomafont{headsepline}{\color{Orange}}
@@ -328,9 +341,10 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 
 \newcommand*{\titleTH}{\begingroup % Create the command for including the title page in the document
 \raggedleft % Right-align all text
+\phantom{.}%\vspace*{\baselineskip}
 \vfill % Whitespace at the top of the page
 
-{\bfseries\textcolor{Orange}{\fontsize{24}{24}\selectfont \mytitle}}\\[\baselineskip] % Title page font size
+{\bfseries\textcolor{Orange}{\fontsize{30}{30}\selectfont \mytitle}}\\[\baselineskip] % Title page font size
 %% This is a working paper.
 {\Large {Grattan Insitute Working Paper}}\\[2\baselineskip] % Tagline or further description
 
@@ -360,7 +374,7 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
   \begin{center}
   \includegraphics[width=4cm]{./logos/aus-gov-logo-stacked-black.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Vic_Gov_Logo.eps}\logoskip
-  \includegraphics[width=3.5cm]{./logos/UOM-Pos_S_PMS.eps}\logoskip\vfil
+  \includegraphics[width=3.5cm]{./logos/UOM-Pos_S_PMS.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Bhp.pdf}
   \end{center}
   \columnbreak
@@ -397,6 +411,10 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
   }
   \end{multicols}
   \end{minipage} 
+  \vfill
+  \phantom{.}
+  \eject
+  %\subsection*{Grattan Institute Support}
   \input{Acknowledgements}
   \twocolumn
 }
@@ -414,6 +432,10 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 % page. 
 \newenvironment{overview}%
   {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{Overview}\begin{multicols}{2}}%
+  {\end{multicols}\vss\egroup\hfill\twocolumn}
+  
+\newenvironment{summary}%
+  {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{Summary}\begin{multicols}{2}}%
   {\end{multicols}\vss\egroup\hfill\twocolumn}
 
 
