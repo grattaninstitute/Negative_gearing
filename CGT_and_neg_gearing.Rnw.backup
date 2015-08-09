@@ -56,7 +56,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=F
+                      ,cache=TRUE
                       ,dev=c('my_pdf', 'my_emf')
                       ,fig.ext = c("pdf", "emf")
 )
@@ -229,7 +229,7 @@ new.discount <- 0.30
 discount_only_to_negative_rent_income <- TRUE
 @
 \onecolumn
-<<Determine_future_rental_deductions>>=
+<<Determine_future_rental_deductions, include = FALSE>>=
 historical.interest.losses <- 
   rbindlist(lapply(2004:2013, function(yr){mutate(get_sample_file(yr), year = yr)}), fill = TRUE) %>%
   group_by(year) %>%
@@ -252,7 +252,6 @@ interest_losses <-
 
 # Good enough 
 # plot(lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses))
-rental.losses <-
 interest_losses[!complete.cases(interest_losses), ] %>%
   do({
     model <- lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses)
@@ -1128,7 +1127,7 @@ henry_taxstats %>%
 @
 
 <<Summary-chunk, results='hide'>>=
-policy <- cost_of_daley_policy_fast(2015, CGT.discount = 0.40) 
+policy <- cost_of_daley_policy_fast(2015) 
 policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
   round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
@@ -1259,7 +1258,7 @@ The best way to transition to the new arrangements would be to phase them in ove
 In five of the last six years, the Commonwealth Government has posted headline deficits of more than 2~per cent of GDP.
 Assuming revenue and spending projections are correct, Australia is on track for more than a decade of deficits between 2008 and 2019, with Commonwealth net debt projected to peak at 18~per cent of GDP in 2017, higher than any year since the mid-1990s.\footnote{Net debt was 18.1\%\ of GDP in 1995-96. See \textcite[p.~273]{Treasury2014b}}
  
-As Grattan Institute's \emph{Fiscal Challenges for Australia} report highlights, reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.\footcite{DaleyWood2015}
+As Grattan Institute's Fiscal Challenges for Australia report, highlights, reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.\footcite{DaleyWood2015}
  
 The biggest worry is that budget projections assume that growth will return to ``trend''. The International Monetary Fund recently joined a growing group of economists who believe that long-run economic growth in developed countries was trending lower even before the financial crisis, and future expectations should be lower again.
  
@@ -1443,14 +1442,14 @@ Investors pay less tax compared to a tax on real gains long as asset values grow
 So the discount overcompensates investors with high returns and undercompensates those with low ones. 
 
 Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7.3~per cent while share prices have grown by an average of only 3.6~per cent. 
-Inflation over this period was 2.8~per cent.\footcite{ABS2015a}  
+Inflation over this period was 2.8~per cent.\footcite{ABSPropertypriceindx}  
 So the 50~per cent discount has overcompensated housing investors. 
 In contrast, share investors, who have suffered low average capital returns due to the global financial crisis, would have been better off under a regime that taxed real capital gains. 
 
 But full compensation for inflation is not needed to constrain effective tax rates on gains at or below an investor's marginal rate.  
 Capital gains enjoy other tax advantage that act to lower the effective tax rates. 
 
-First, capital gains are taxed upon realisation (\ie when the asset is sold) not as they accrue, providing investors with an implicit interest-free loan on tax liabilities.\footnote{See also:~\textcites[p.~2]{Fane2004}[p.~12]{Ingles2009}}
+First, capital gains are taxed upon realisation (\ie when the asset is sold) not as they accrue, providing investors with an implicit interest-free loan on tax liabilities.\footnote{See also:~\textcite[p.~2]{Fane2004}[p.~12]{Ingles2009}}
 This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing the longer the asset is held (\Vref{box:Tax_deferral_and_effective_tax_rates}).\footcite[p.~65]{Treasury2010}  
 
 Investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. We see evidence of people waiting to retirement to realise capital gains (see below).\label{sec:InvestorsChooseTimeOfRealization} 
@@ -1458,7 +1457,7 @@ This reduces the average tax rate an investor pays on capital gains income.
 For example, the average marginal tax rate on capital gains for people in the workforce is 31~per cent compared to 17~per cent for people over 50 with no wage income.\footcite{ATO2013i} 
 
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. 
-Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite[Wave~10]{HILDA2015}}  -- that do not receive these other tax advantages. \nocite{*}
+Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite{HILDA2010}}  -- that do not receive these other tax advantages. 
 
 The current 50 per cent discount compensates, and in many cases overcompensates, for the effects of inflation on post-tax returns. 
 When the other tax advantages for capital gains income are factored in, capital growth assets receive sizeable tax breaks.  
@@ -2169,32 +2168,6 @@ Indeed, the distortions created are so large that it is possible that even inves
 
 While these distortions exist for all investments, the tax advantages are greatest for property because bank lending rules allow greater leverage than for others assets such as shares that also produce capital gains.\footcite[p.~23]{RBA2015}
 
-<<Negative_Gearing_tax_expenditures>>=
-get_sample_file_and_year <- function(yr){
-  get_sample_file(yr) %>%
-    mutate(year = yr)
-}
-
-NG_tax_exps <-
-  lapply(2004:2013, get_sample_file_and_year) %>%
-  rbindlist(fill = TRUE) %>%
-  tbl_df %>%
-  group_by(year) %>%
-  mutate(current_tax = income_tax(Taxable_Income, fy.year = yr2fy(year)),
-         subseqt_tax = income_tax(ifelse(Net_rent_amt < 0, 
-                                         Taxable_Income - Net_rent_amt,
-                                         Taxable_Income), fy.year = yr2fy(year)),
-         diff = subseqt_tax - current_tax) %>%
-  group_by(year) %>%
-  summarise(avg.diff = sum(diff) * weighting(year) / 1e9)
-
-NG_tax_exps.real <-
-  NG_tax_exps %>%
-  ungroup %>%
-  mutate(avg.diff.real = cpi_inflator(avg.diff, from_fy = yr2fy(year)))
-
-@
-
 \subsubsection{And investors have responded to these incentives}
 There has been a boom in negatively geared residential property investments over the last two decades.
 Other than a temporary dip following the global financial crisis, the number of taxpayers making losses on residential property has increased steadily.
@@ -2223,34 +2196,32 @@ In the year prior to the introduction of the discount, Australia's 1.3 million l
 By 2012-13, the two~million landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
 
 
- <<prop_rental_deductions_gross_rent>>=
- taxstats_ts %>%
-   filter(grepl("(Rent.*interest)|(Gross rent)", `Selected items`)) %>%
-   spread(`Selected items`, value) %>%
-   filter(complete.cases(.)) %>%
-   filter(grepl("\\$", unit)) %>%
-   mutate(prop = `Rent - interest deductions` / `Gross rent`) ->
-   prop_rental_deductions_gross_rent
- 
- prdgr <- function(fyyear){ 
-   temp <- dplyr::filter(prop_rental_deductions_gross_rent, fy.year == fyyear)
-   round(temp$prop, 3)*100
- }
- @
- 
- And the average level of gearing for property investors is increasing.
- Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2012-13")}~per cent in 2012-13.\footcite[p.~65]{Treasury2015a}
+<<prop_rental_deductions_gross_rent>>=
+taxstats_ts %>%
+  filter(grepl("(Rent.*interest)|(Gross rent)", `Selected items`)) %>%
+  spread(`Selected items`, value) %>%
+  filter(complete.cases(.)) %>%
+  filter(grepl("\\$", unit)) %>%
+  mutate(prop = `Rent - interest deductions` / `Gross rent`) ->
+  prop_rental_deductions_gross_rent
+
+prdgr <- function(fyyear){ 
+  temp <- dplyr::filter(prop_rental_deductions_gross_rent, fy.year == fyyear)
+  round(temp$prop, 3)*100
+}
+@
+
+And the average level of gearing for property investors is increasing.
+Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2012-13")}~per cent in 2012-13.\footcite[p.~65]{Treasury2015a}
 
 
 <<Negative_gearing_real_over_time>>=
 taxstats_ts %>%
-  filter(grepl("(Net rent.*loss)|(Gross rent)", `Selected items`)) %>%
+  filter(grepl("Net rent.*loss", `Selected items`)) %>%
   filter(!grepl("property", `Selected items`)) %>%
-  filter(!(grepl("Gross rent", `Selected items`) & grepl("\\$", unit))) %>%
   filter(!is.na(value)) %>%
   mutate(value = ifelse(grepl("\\$", unit), cpi_inflator(value, from_fy = fy.year), value)) %>%
-  mutate(group = paste0(`Selected items`, unit)) %>%
-  group_by(group) %>%
+  group_by(unit) %>%
   arrange(fy.year) %>%
   mutate(value.rel = value/value[which(fy.year == "1999-00")],
          text = ifelse(fy.year == last(fy.year), 
@@ -2268,22 +2239,21 @@ taxstats_ts %>%
   mutate(fy.year = factor(fy.year, ordered = TRUE),
          date = fy2date(as.character(fy.year)),
          unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
-  grplot(aes(x = date, y = value.rel, color = group)) + 
-  stat_smooth(se = FALSE, size = 2) + 
-  #geom_line(aes(group = group)) + 
-  annotate("text",
-           label = c("number of\nproperty investors",
-                     "Net rental losses",
-                     "number of negatively\ngeared investors"),
-           x = as.Date(paste0(c(2009, 2009, 2009), "-06-30")),
-           y = c(1.3, 3.3, 1.8),
-           lineheight = 0.8,
-           hjust = 0,
-           vjust = c(1.25,0.1,0),
-           size = 8.12, 
-           color = gpal(3),
-           fontface = "bold") + 
+  
+  grplot(aes(x = date, y = value.rel, color = unit)) + 
+  geom_line(aes(group = unit)) + 
+  geom_text(aes(label = text),
+            fontface = "bold",
+            hjust = -0.1,
+            size = 8.2) + 
+  geom_dl(aes(label = unit), 
+          method = list("lines2", dl.trans(cex = 1.875, x = x + 0.0
+                                           #, fontfamily = "Arial"
+                                           )), 
+          font = "bold",
+          hjust = 0) + 
   scale_y_continuous(expand = c(0.1,0.1)) + 
+  # scale_x_date(expand = c(0.1,2)) + 
   annotate("blank",
            x = as.Date("2018-01-01"),
            y = 0) + 
@@ -2372,7 +2342,7 @@ If investor expectations are guided by history, the present value of tax benefit
 If negative gearing were entirely abolished, then these expected tax benefits would be lost entirely. 
 If this were fully capitalised in the price of property, prices could fall by up to 4 per cent. 
 For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. 
-For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{-round(grattan::pv(0.05, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)/1e9))}~billion, with a maximum impact on property prices of X\%.
+For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$XX, with a maximum impact on property prices of X\%.
 
 \end{smallbox}
 
@@ -2463,7 +2433,7 @@ rent.indices.real  %>%
 \Caption{Rents did not rise when negative gearing was removed in Melbourne, Adelaide or Brisbane}{Average rent prices (real compared with overall CPI), 1982 = 1.
 Grey band indicates the dates when negative gearing was not permitted}{fig:Capital_city_rents}
 \includegraphics[width=\columnwidth]{figure/Capital_city_rents_direct_abs-1}
-\source{\textcite{ABSVariousyearsa}}
+\source{ABS various years}
 \end{figure}
 Beyond these historical lessons, economic theory predicts that removing negative gearing should not change rents much.
 Investors may want to increase rents to maintain their post-tax returns but the competitive dynamic in rental markets will limit any material rent increases. 
