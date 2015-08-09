@@ -63,7 +63,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
 \RequirePackage{lmodern}
-\RequirePackage{uarial}
+%\RequirePackage{uarial}
   \renewcommand{\familydefault}{\sfdefault}
 
 \RequirePackage[framemethod=TikZ]{mdframed}
