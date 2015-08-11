@@ -56,7 +56,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=F
+                      ,cache=TRUE
                       ,dev=c('my_pdf', 'my_emf')
                       ,fig.ext = c("pdf", "emf")
 )
@@ -2150,7 +2150,9 @@ data.frame(
   grplot(aes(x = Type, y = real_emtr)) + 
   geom_bar(stat = "identity",
            width = 0.7) + 
-  theme(axis.title = element_blank()) + 
+  theme(axis.title = element_blank(),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank()) + 
   geom_hline(yintercept = 0) + 
   scale_y_continuous(expand = c(0,0), limits = c(-0.05, 0.35), label=percent)
 @
@@ -2220,7 +2222,7 @@ taxstats_ts <- taxstats_ts %>%
 Both have contributed to Australian landlords moving from being collectively profitable, to accruing billions in net rental losses each year.
 This coincided with the introduction of the capital gains tax discount in 1999.
 In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m.
-By 2012-13, the two~million landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time})\footcites{Eslake2013}{Treasury2015a}
+By 2012-13, the two~million landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time}).\footcites{Eslake2013}{Treasury2015a}
 
 
  <<prop_rental_deductions_gross_rent>>=
@@ -2269,23 +2271,25 @@ taxstats_ts %>%
          date = fy2date(as.character(fy.year)),
          unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
   grplot(aes(x = date, y = value.rel, color = group)) + 
-  stat_smooth(se = FALSE, size = 2) + 
-  #geom_line(aes(group = group)) + 
+  #stat_smooth(se = FALSE, size = 2) + 
+  geom_line(aes(group = group)) + 
   annotate("text",
-           label = c("number of\nproperty investors",
-                     "Net rental losses",
-                     "number of negatively\ngeared investors"),
-           x = as.Date(paste0(c(2009, 2009, 2009), "-06-30")),
-           y = c(1.3, 3.3, 1.8),
-           lineheight = 0.8,
+           label = c("number\nproperty\ninvestors",
+                     "Net rental losses\n(total)",
+                     "number negatively\ngeared investors"),
+           x = as.Date(paste0(c(2008, 2008, 2008), "-01-30")),
+           y = c(1.35, 3.7, 1.9),
+           lineheight = 0.82,
            hjust = 0,
-           vjust = c(1.25,0.1,0),
+           vjust = c(1.25,1,0),
            size = 8.12, 
            color = gpal(3),
            fontface = "bold") + 
-  scale_y_continuous(expand = c(0.1,0.1)) + 
+  scale_y_continuous(expand = c(0.0,0.0)) + 
+  scale_x_date(breaks = as.Date(paste0(seq(1980, 2010, by = 10), "-01-01")),
+               labels = seq(1980, 2010, by = 10)) +
   annotate("blank",
-           x = as.Date("2018-01-01"),
+           x = as.Date("2020-01-01"),
            y = 0) + 
   theme(
         axis.title = element_blank(), 
@@ -2337,7 +2341,7 @@ taxstats_ts %>%
 \source{ATO taxstats 1979-2013 (data not available pre-1989)}
 \end{figure}
 \begin{figure}[p]
-\Caption{More people are negatively gearing and the losses are growing even faster}{Number of people negatively gearing and real amount negatively geared. 1999-00 = 1.}{fig:Negative_gearing_real_over_time}
+\Caption{Growth in the number of negatively geared investors has outpaced the growth in the number of investors. And the growth in the amount of their losses is even greater.}{1999-00 = 1.}{fig:Negative_gearing_real_over_time}
 \includegraphics[width=\columnwidth]{figure/Negative_gearing_real_over_time-1}
 \notes{Amount deflated by CPI. Other indices may be more useful.}
 \end{figure}
