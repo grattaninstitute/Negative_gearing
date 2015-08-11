@@ -433,6 +433,10 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 \newenvironment{summary}%
   {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{Summary}\begin{multicols}{2}}%
   {\end{multicols}\vss\egroup\hfill\twocolumn}
+  
+\newenvironment{onepager}[1]%  
+  {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{#1}\begin{multicols}{2}}%
+  {\end{multicols}\vss\egroup\hfill\twocolumn}
 
 
 % Bibliography
