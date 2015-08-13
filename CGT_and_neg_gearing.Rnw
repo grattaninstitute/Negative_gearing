@@ -13,6 +13,10 @@
 \addbibresource{bibliography2.bib} % r packages
 
 \newcommand\gao{Grattan analysis of}
+\newcommand{\mpfootnotes}[1][1]{
+  \renewcommand{\thempfootnote}{\thefootnote}
+  \addtocounter{footnote}{-#1}
+  \renewcommand{\footnote}{\stepcounter{footnote}\footnotetext[\value{footnote}]}}
 
 \usetikzlibrary{shapes,arrows,automata,positioning}
 \tikzstyle{block} = [rectangle, draw, 
@@ -1255,7 +1259,7 @@ The best way to transition to the new arrangements would be to phase them in ove
 \setcounter{tocdepth}{4}
 \contentspage
 %%%
-\chapter{Commonwealth budgets under pressure}
+\chapter*{Commonwealth budgets under pressure}
 In five of the last six years, the Commonwealth Government has posted headline deficits of more than 2~per cent of GDP.
 Assuming revenue and spending projections are correct, Australia is on track for more than a decade of deficits between 2008 and 2019, with Commonwealth net debt projected to peak at 18~per cent of GDP in 2017, higher than any year since the mid-1990s.\footnote{Net debt was 18.1\%\ of GDP in 1995-96. See \textcite[p.~273]{Treasury2014b}}
  
@@ -1307,16 +1311,18 @@ But there are revenue measures that could make a meaningful contribution to budg
 % The best way to transition to these new arrangements would be to phase them in over a number of years.
 % Such a phase-in would help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump.
 % This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
-\chapter{Hugh}
-The preferential treatment of the capital gains discount and negative gearing result in revenue leakage of \textbf{\$10.2~billion}. 
-Yet Australia these tax expenditures do more harm than good, leaving alone their contribution to the deficit.
-
-When nominal investment losses can be written off in full, but investment gains enjoy a discount relative to ordinary income, 
-
-Given supply and demand, there is an optimal level of investment for property. Governments should ensure that their tax policies do not result in a different level of investment, unless there is a specific and worthy policy reason to do so.\footnote{Of course, governments should not restrict supply or induce changes in demand, as they currently do. But that is a separate matter.} 
-
-The current tax policies of negative gearing and discounts for capital gains do not respect this principle.  
-
+% \chapter{Hugh}
+% The preferential treatment of the capital gains discount and negative gearing result in revenue leakage of \textbf{\$10.2~billion}. 
+% Yet Australia these tax expenditures do more harm than good, leaving alone their contribution to the deficit.
+% 
+% When nominal investment losses can be written off in full, but investment gains enjoy a discount relative to ordinary income, 
+% 
+% Given supply and demand, there is an optimal level of investment for property. Governments should ensure that their tax policies do not result in a different level of investment, unless there is a specific and worthy policy reason to do so.\footnote{Of course, governments should not restrict supply or induce changes in demand, as they currently do. But that is a separate matter.} 
+% 
+% The current tax policies of negative gearing and discounts for capital gains do not respect this principle.  
+% \mpfootnotes[3]
+% \end{onepager}
+% \clearpage
 
 
 
@@ -2177,6 +2183,12 @@ get_sample_file_and_year <- function(yr){
     mutate(year = yr)
 }
 
+# Excel chart poorly formatted.
+#  read_excel("DAT - Average property tax burden.xlsx", sheet = "Property tax burden", skip = 1, col_types = c())
+#  8,223,900.0 
+
+total.value.of.property.2014 <- 8223900 * 10^6
+
 NG_tax_exps <-
   lapply(2004:2013, get_sample_file_and_year) %>%
   rbindlist(fill = TRUE) %>%
@@ -2369,6 +2381,86 @@ There will be a one-off decrease in house prices as investors reduce their willi
 Of course, house prices may not actually fall if market dynamics continue to push prices upwards. 
 But prices will be lower than they would have been in the absence of the tax changes.
 
+<<Impact_of_NG_on_house_prices>>=
+get_sample_file_and_year <- function(yr){
+  get_sample_file(yr) %>%
+    mutate(year = yr)
+}
+
+NG_tax_exps <-
+  lapply(2004:2013, get_sample_file_and_year) %>%
+  rbindlist(fill = TRUE) %>%
+  tbl_df %>%
+  group_by(year) %>%
+  mutate(current_tax = income_tax(Taxable_Income, fy.year = yr2fy(year)),
+         subseqt_tax = income_tax(ifelse(Net_rent_amt < 0, 
+                                         Taxable_Income - Net_rent_amt,
+                                         Taxable_Income), fy.year = yr2fy(year)),
+         diff = subseqt_tax - current_tax) %>%
+  group_by(year) %>%
+  summarise(avg.diff = sum(diff) * weighting(year))
+
+NG_tax_exps.real <-
+  NG_tax_exps %>%
+  ungroup %>%
+  mutate(avg.diff.real = cpi_inflator(avg.diff, from_fy = yr2fy(year))) %$%
+  mean(avg.diff.real)
+
+present.value_benefit_from_NG <-
+  grattan::npv(rate = 0.05, values = rep(NG_tax_exps.real, 10))
+
+housing_finance_commitments.metadata <-
+  # This file is Table 8 of Cat. 5671.8 
+  ##          WITH CLEANSING          ##
+  # the cleansing consisted of
+  #   1.  Retrieving the "metadata" rows that link the series ID with things like the 
+  #       long name of the series, its frequency and units, etc, and placing them in
+  #       sheet "metadata"
+  #   2.  Deleting the metadata rows from the main data and placing in a new sheet called
+  #       "Data_without_metadata"
+  #
+  # 
+  read_excel("ABSP_567108_Housing_Finance_Table8.xlsx", sheet = "Metadata") %>%
+  select_("`Series ID`", "Long_name", "`Series Type`") %>%
+  data.table %>%
+  setnames(c("series_id", "Long_name", "Series_Type")) %>%
+  setkeyv("series_id")
+
+housing_finance_commitments <-
+  read_excel("ABS_Cat5671-0_Lending_Finance_Table8_Finance_Commitments_For_housing.xlsx", sheet = "Data_no_metadata") %>%
+  gather(series, value, -Date) %>%
+  data.table %>%
+  setnames("series", "series_id") %>%
+  setkey(series_id) %>%
+  merge(housing_finance_commitments.metadata, by = "series_id")
+@
+
+<<Owner_occupiers_loans_are_being_outnumbered_by_investors>>=
+housing_finance_commitments %>% 
+  filter(Long_name %in% c("Owner Occupation (Secured Finance) - Construction of dwellings ;",
+                          "Owner Occupation (Secured Finance) - Purchase of new dwellings ;",
+                          "Owner Occupation (Secured Finance) - Purchase of established dwellings ;",
+                          "Investment housing - Construction of dwellings for rent and resale ;",
+                          "Investment housing - Purchase for rent/resale by individuals ;",
+                          "Investment housing - Purchase for rent/resale by others ;"),
+         grepl("Seasonally", Series_Type)) %>%
+  mutate(OwnerType = gsub("^.*((Owner)|(Investment)).*$", "\\1", Long_name)) %>%
+  group_by(Date, OwnerType) %>%
+  summarise(new_finance = sum(value)) %>%
+  ungroup %>%
+  arrange(desc(Date)) %>%
+  spread(OwnerType, new_finance) %>%
+  group_by(Date) %>%
+  mutate(prop.owner = Owner/(Investment + Owner)) %>%
+  filter(prop.owner != 1) %>%
+  grplot(aes(x = Date, y = prop.owner)) + 
+  geom_line(aes(group = 1), size = 0.8)
+@
+
+<<total_value_of_land_australia>>=
+present.value_benefit_from_NG / total.value.of.property.2014
+@
+
 The impact on prices depends on investor perceptions of the size of the lost tax benefit. 
 Average annual rental losses over the last decade were \$12.8 billion, generating annual tax write-offs worth an average of \$4 billion in today's dollars. 
 If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \$30 billion. 
@@ -2376,7 +2468,7 @@ If investor expectations are guided by history, the present value of tax benefit
 If negative gearing were entirely abolished, then these expected tax benefits would be lost entirely. 
 If this were fully capitalised in the price of property, prices could fall by up to 4 per cent. 
 For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. 
-For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{-round(grattan::pv(0.05, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)/1e9))}~billion, with a maximum impact on property prices of X\%.
+For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{-round(grattan::pv(0.05, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)/1e9))}~billion, with a maximum impact on property prices of \Sexpr{"\\%X"}.
 
 \end{smallbox}
 
@@ -2565,7 +2657,7 @@ rbind(benefits_by_taxable_income_before_deductions, benefits_by_taxable_income) 
         axis.title = element_blank()) + 
   xlab("Decile") 
 @
-\begin{figure}
+\begin{figure}[t]
 \Caption{Negative gearing mostly benefits those on high incomes, and the difference is especially stark when incomes are measured before subtracting rental interest deductions}{Percentage of each decile's share of the benefit in reduced income tax due to negative gearing (2012-13)}  {fig:Effect_of_Deductions}
 \includegraphics[width=\columnwidth]{figure/Effect_of_Deductions-1}
 \notes{Taxable income before rental deductions means $\text{Taxable Income} - \min(\text{Net rental profit}, 0)$.
