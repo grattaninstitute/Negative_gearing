@@ -305,7 +305,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
           Net_CG_amt + Net_CG_amt * CG_inflator,
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
-        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
         Net_CG_amt = Net_CG_amt * CG_inflator,
         Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
       )
@@ -322,8 +322,6 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   
   if (!("ETP_txbl_amt" %in% names(daley_taxstats)))
     daley_taxstats[,ETP_txbl_amt := 0]
-  
-  progress_bar <- txtProgressBar(min = 0, max = eventual, title = "Progress")
   
   prop_full_discount <-
     get_sample_file(year) %>%
@@ -369,7 +367,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   #
   # so we estimate the number of capital gains events at each discount 0%, 10%, 20%, 30%, 
   # based on Net capital gains / Total capital gains.
-# It's important to note
+  # It's important to note
   # that this is polluted by losses carried forward.
   #
   # The dice roll.  
@@ -490,7 +488,8 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
       mutate(rand = runif(nrow(.))) %>%
       mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
       mutate(HasCG = !noCGevent) %>%
-      merge(taxable_income_by_CG, by = "HasCG")  %>%
+      setkey(HasCG) %>%
+      merge(taxable_income_by_CG)  %>%
       mutate(
         # We act on the new_tax directly.If someone has a CG event,
         # we bring forward all their losses thitherto and reduce their tax
@@ -508,13 +507,6 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
       ) %>%
       select(-marginal.tax.of.avg) %>%
       data.table
-    
-    setTxtProgressBar(progress_bar, value = i)
-    close(progress_bar)
-    
-    if(i == eventual){
-      cat("\n")
-    }
   }
   #   return({
   #     data.table(Year = year,
@@ -549,7 +541,8 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
           Net_CG_amt + Net_CG_amt * CG_inflator,
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
-        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        # data.table may be tempestuous without explicit coercion.
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
         Net_CG_amt = Net_CG_amt * CG_inflator,
         Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
       )
@@ -739,7 +732,8 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
       mutate(rand = runif(nrow(.))) %>%
       mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
       mutate(HasCG = !noCGevent) %>%
-      merge(taxable_income_by_CG, by = "HasCG")  %>%
+      setkey(HasCG) %>%
+      merge(taxable_income_by_CG)  %>%
       mutate(
         # We act on the new_tax directly.If someone has a CG event,
         # we bring forward all their losses thitherto and reduce their tax
@@ -792,7 +786,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
           Net_CG_amt + Net_CG_amt * CG_inflator,
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
-        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
         Net_CG_amt = Net_CG_amt * CG_inflator,
         Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
       )
@@ -984,7 +978,8 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
       mutate(rand = runif(nrow(.))) %>%
       mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
       mutate(HasCG = !noCGevent) %>%
-      merge(taxable_income_by_CG, by = "HasCG")  %>%
+      setkey(HasCG) %>%
+      merge(taxable_income_by_CG)  %>%
       mutate(
         # We act on the new_tax directly.If someone has a CG event,
         # we bring forward all their losses thitherto and reduce their tax
@@ -1069,7 +1064,8 @@ taxable_income_by_CG <-
       mutate(loss_carry_fwd_orig = loss_ignore_CG) %>% 
       mutate(noCGevent = rand < prob_of_noCG_if_investor201213) %>%
       mutate(HasCG = !noCGevent) %>%
-      merge(taxable_income_by_CG, by = "HasCG") %>%
+      setkey(HasCG) %>%
+      merge(taxable_income_by_CG) %>%
       mutate(
         new_tax = ifelse(noCGevent, 
                          income_tax(new_Taxable_Income, fy.year = "2012-13"),
@@ -1109,7 +1105,7 @@ henry_taxstats <- function(year = 2013){
           Net_CG_amt + Net_CG_amt * CG_inflator,
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
-        Sw_amt = Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013),
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
         Net_CG_amt = Net_CG_amt * CG_inflator,
         Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
       )
@@ -1132,7 +1128,7 @@ henry_taxstats %>%
 @
 
 <<Summary-chunk, results='hide'>>=
-policy <- cost_of_daley_policy_fast(2015, CGT.discount = 0.40) 
+policy <- cost_of_daley_policy_fast(2015, CGT.discount = 0.30) 
 policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
   round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
@@ -2087,7 +2083,7 @@ get_sample_file(2013) %>%
                           ifelse(grepl("not", gearing), "Not negative gearing", "Negative gearing"))) %>%
   mutate(gearing = factor(gearing, 
                           levels = c("Negative gearing", "Not negative gearing", "neither"),
-                          labels = c("Negative gearing", "Not negative gearing", "No investment properties"))) %T>%
+                          labels = c("Negatively geared", "Positively geared", "(Not in property market)"))) %T>%
   chart_data %>%
   grplot(aes(as.numeric(Age), number, fill = gearing,
              group = gearing,
@@ -2101,9 +2097,9 @@ get_sample_file(2013) %>%
   annotate("text", 
            x = c(9,9,9)-2,
            y = c(0.07, 0.17, 0.3),
-           label = c("Negative gearing", 
-                     "Not negative gearing",
-                     "(No investment property)"),
+           label = c("Negatively geared", 
+                     "Positively geared",
+                     "(Not in property market)"),
            fontface = "bold",
            hjust = 0,
            size = 8.21) + 
@@ -2183,11 +2179,7 @@ get_sample_file_and_year <- function(yr){
     mutate(year = yr)
 }
 
-# Excel chart poorly formatted.
-#  read_excel("DAT - Average property tax burden.xlsx", sheet = "Property tax burden", skip = 1, col_types = c())
-#  8,223,900.0 
 
-total.value.of.property.2014 <- 8223900 * 10^6
 
 NG_tax_exps <-
   lapply(2004:2013, get_sample_file_and_year) %>%
@@ -2281,31 +2273,32 @@ taxstats_ts %>%
   ungroup %>% 
   mutate(fy.year = factor(fy.year, ordered = TRUE),
          date = fy2date(as.character(fy.year)),
-         unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
-  grplot(aes(x = date, y = value.rel, color = group)) + 
-  #stat_smooth(se = FALSE, size = 2) + 
-  geom_line(aes(group = group)) + 
-  annotate("text",
-           label = c("number\nproperty\ninvestors",
-                     "Net rental losses\n(total)",
-                     "number negatively\ngeared investors"),
-           x = as.Date(paste0(c(2008, 2008, 2008), "-01-30")),
-           y = c(1.35, 3.7, 1.9),
-           lineheight = 0.82,
-           hjust = 0,
-           vjust = c(1.25,1,0),
-           size = 8.12, 
-           color = gpal(3),
-           fontface = "bold") + 
-  scale_y_continuous(expand = c(0.0,0.0)) + 
-  scale_x_date(breaks = as.Date(paste0(seq(1980, 2010, by = 10), "-01-01")),
-               labels = seq(1980, 2010, by = 10)) +
-  annotate("blank",
-           x = as.Date("2020-01-01"),
-           y = 0) + 
-  theme(
-        axis.title = element_blank(), 
-        plot.margin = grid::unit(c(0.7,1.2,0.5,0.5), "lines"))
+         unit = ifelse(grepl("\\$", unit), "amount", "number")) %T>%
+   chart_data %>%
+   grplot(aes(x = date, y = value.rel, color = group)) + 
+   #stat_smooth(se = FALSE, size = 2) + 
+   geom_line(aes(group = group)) + 
+   annotate("text",
+            label = c("number\nproperty\ninvestors",
+                      "Net rental losses\n(total)",
+                      "number negatively\ngeared investors"),
+            x = as.Date(paste0(c(2008, 2008, 2008), "-01-30")),
+            y = c(1.35, 3.7, 1.9),
+            lineheight = 0.82,
+            hjust = 0,
+            vjust = c(1.25,1,0),
+            size = 8.12, 
+            color = gpal(3),
+            fontface = "bold") + 
+   scale_y_continuous(expand = c(0.0,0.0)) + 
+   scale_x_date(breaks = as.Date(paste0(seq(1980, 2010, by = 10), "-01-01")),
+                labels = seq(1980, 2010, by = 10)) +
+   annotate("blank",
+            x = as.Date("2020-01-01"),
+            y = 0) + 
+   theme(
+     axis.title = element_blank(), 
+     plot.margin = grid::unit(c(0.7,1.2,0.5,0.5), "lines"))
 @
 
 <<Net_rent_over_time>>=
@@ -2369,12 +2362,6 @@ The opposite is true when prices are stable or falling.
 The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75
 ,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
 
-One concern with limiting negative gearing is that downward pressure on house prices could leave some highly geared investors with negative equity.  
-But given expected one-off price impacts of less than 4 per cent (\Vref{box:Impact_of_NG_on_house_prices}), the risk of negative equity from the tax changes is limited. 
-Only around ten per cent of new property loans go to investors with loan value ratios in excess of 90 per cent.\footcite{APRA2015}  
-And ratios for existing loans are falling as property prices continue to grow. 
-For the small proportion of investors that remain highly leveraged, higher interest rates pose a far greater risk than changes to the tax treatment of rental losses.
-
 \begin{smallbox}{Impact of negative gearing on house prices}{box:Impact_of_NG_on_house_prices}
 Limiting or abolishing negative gearing will reduce the post-tax investment returns for negatively geared property investors. 
 There will be a one-off decrease in house prices as investors reduce their willingness to pay. 
@@ -2387,9 +2374,18 @@ get_sample_file_and_year <- function(yr){
     mutate(year = yr)
 }
 
-NG_tax_exps <-
+all_sample_files <-
   lapply(2004:2013, get_sample_file_and_year) %>%
-  rbindlist(fill = TRUE) %>%
+  rbindlist(fill = TRUE)
+
+rental_losses <- 
+  all_sample_files %>% 
+  filter(Net_rent_amt < 0) %>%
+  group_by(year) %>%
+  summarise(real_tot_avg_loss = cpi_inflator(sum(Net_rent_amt), from_fy = yr2fy(year)))
+
+NG_tax_exps <-
+  all_sample_files %>%
   tbl_df %>%
   group_by(year) %>%
   mutate(current_tax = income_tax(Taxable_Income, fy.year = yr2fy(year)),
@@ -2408,6 +2404,9 @@ NG_tax_exps.real <-
 
 present.value_benefit_from_NG <-
   grattan::npv(rate = 0.05, values = rep(NG_tax_exps.real, 10))
+
+present.value_benefit_from_Quaran_NG <-
+  -round(grattan::pv(0.05, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)))
 
 housing_finance_commitments.metadata <-
   # This file is Table 8 of Cat. 5671.8 
@@ -2432,7 +2431,7 @@ housing_finance_commitments <-
   data.table %>%
   setnames("series", "series_id") %>%
   setkey(series_id) %>%
-  merge(housing_finance_commitments.metadata, by = "series_id")
+  merge(housing_finance_commitments.metadata)
 @
 
 <<Owner_occupiers_loans_are_being_outnumbered_by_investors>>=
@@ -2457,20 +2456,38 @@ housing_finance_commitments %>%
   geom_line(aes(group = 1), size = 0.8)
 @
 
-<<total_value_of_land_australia>>=
-present.value_benefit_from_NG / total.value.of.property.2014
+<<percent_of_prop_value_due_NG>>=
+# Excel chart poorly formatted.
+#  read_excel("DAT - Average property tax burden.xlsx", sheet = "Property tax burden", skip = 1, col_types = c())
+#  8,223,900.0 
+
+total.value.of.property.2014 <- 
+  # 8223900 * 10^6  # total value of all property 
+  283323.1 * 10^6
+
+pc.prop_val_due_NG <- 
+  paste0(round(100*present.value_benefit_from_NG / total.value.of.property.2014, 1), "\\%")
+pc.prop_val_due_NG_Quaran <-
+  paste0(round(100*present.value_benefit_from_Quaran_NG / total.value.of.property.2014, 1), "\\%")
 @
 
 The impact on prices depends on investor perceptions of the size of the lost tax benefit. 
 Average annual rental losses over the last decade were \$12.8 billion, generating annual tax write-offs worth an average of \$4 billion in today's dollars. 
-If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \$30 billion. 
+If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \Sexpr{round(present.value_benefit_from_NG/10^9)}~billion. 
 
 If negative gearing were entirely abolished, then these expected tax benefits would be lost entirely. 
-If this were fully capitalised in the price of property, prices could fall by up to 4 per cent. 
+If this were fully capitalised in the price of property, prices could fall by up to \Sexpr{pc.prop_val_due_NG}. 
 For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. 
-For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{-round(grattan::pv(0.05, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)/1e9))}~billion, with a maximum impact on property prices of \Sexpr{"\\%X"}.
-
+For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{round(present.value_benefit_from_Quaran_NG/1e9)}~billion, with a maximum impact on property prices of \Sexpr{pc.prop_val_due_NG_Quaran}.
 \end{smallbox}
+
+One concern with limiting negative gearing is that downward pressure on house prices could leave some highly geared investors with negative equity.  
+But given expected one-off price impacts of less than 
+\Sexpr{pc.prop_val_due_NG} 
+(\Vref{box:Impact_of_NG_on_house_prices}), the risk of negative equity from the tax changes is limited. 
+Only around ten per cent of new property loans go to investors with loan value ratios in excess of 90 per cent.\footcite{APRA2015}  
+And ratios for existing loans are falling as property prices continue to grow. 
+For the small proportion of investors that remain highly leveraged, higher interest rates pose a far greater risk than changes to the tax treatment of rental losses.
 
 \subsubsection{Limiting negative gearing will not change rents much}
 But out of all the effects that negative gearing has on housing markets, its effect on rental prices is by far the most contentious.
