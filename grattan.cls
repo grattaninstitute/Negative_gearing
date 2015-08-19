@@ -316,7 +316,7 @@ left=2.75cm,right=2.75cm
 \vfill
 \centering
 \includegraphics[width=\paperwidth,height=\paperheight,%
-keepaspectratio]{./FrontPage/FrontPagePicture.png}%
+keepaspectratio]{./FrontPage/grattan-logo-right-aligned.svg}%
 \vfill
 }}}
 
