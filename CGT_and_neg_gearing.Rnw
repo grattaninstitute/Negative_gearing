@@ -2863,6 +2863,27 @@ policy %>%
 \includegraphics[height=0.9\textheight]{figure/income_age_heatmap-1}
 \end{figure}
 
+<<income_age_heatmap_just_NG>>=
+just_negative_gearing_taxstats_year0 %>%
+  mutate(diff = new_tax - current_tax) %>%
+  age_mutate_ %>%
+  group_by(Income_decile = ntile(Tot_inc_amt, 10),
+           Age) %>%
+  summarise(mean.diff = mean(diff)) %>%
+  ungroup %>% 
+  mutate(alpha = (mean.diff - min(mean.diff))/(max(mean.diff) - min(mean.diff))) %>%
+  grplot(aes(x = Age, y = factor(Income_decile),
+             alpha = mean.diff)) +
+  scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
+  geom_tile(fill = Orange) +
+  coord_equal() + 
+  guides(alpha = guide_legend("Increased tax burden")) + 
+  theme(legend.position = "right",
+        panel.grid = element_blank(),
+        axis.title.x = element_text(hjust = 0.5, angle = 0))
+@
+
+
 %\nocite{*}
 
 <<sessionInfo>>=
