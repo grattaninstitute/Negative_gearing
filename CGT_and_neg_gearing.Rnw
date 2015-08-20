@@ -2463,7 +2463,7 @@ housing_finance_commitments %>%
 
 total.value.of.property.2014 <- 
   # 8223900 * 10^6  # total value of all property 
-  283323.1 * 10^6
+  283323.1 * 10^6 # total value of dwellings owned by non-households
 
 pc.prop_val_due_NG <- 
   paste0(round(100*present.value_benefit_from_NG / total.value.of.property.2014, 1), "\\%")
