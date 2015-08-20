@@ -2853,12 +2853,13 @@ policy %>%
   scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
   geom_tile(fill = Orange) +
   coord_equal() + 
+  guides(alpha = guide_legend("Increased tax burden")) + 
   theme(legend.position = "right",
         panel.grid = element_blank(),
         axis.title.x = element_text(hjust = 0.5, angle = 0))
 @
 \begin{figure}
-\Caption{The costs of this policy fall on the high income and the elderly}{Income decile}{fig:income_age_heatmap}
+\Caption{The costs of this policy fall on the high income and the elderly}{Total income decile}{fig:income_age_heatmap}
 \includegraphics[height=0.9\textheight]{figure/income_age_heatmap-1}
 \end{figure}
 
