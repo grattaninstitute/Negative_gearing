@@ -1236,7 +1236,7 @@ Treating capital gains and recurrent losses consistently would reduce the tax-dr
 It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
  
  
- 
+
 <<Number_of_NG_taxpayers>>=
 n.NGrs <- get_sample_file(2013) %$% sum(Net_rent_amt < 0) * 50 / 10^6
 n.NGrs <- round(n.NGrs, 1)
@@ -2713,11 +2713,10 @@ The Henry tax review nominated a 40 per cent discount for capital gains as an ap
 But the additional tax advantages for capital gains -- being taxed only on realisation and at the timing of the investor's choosing -- means that investors would still be substantially overcompensated at this rate.
 A somewhat lower discount in recognition of these tax benefits would be fairer and distort investment choices less. 
 
-Reducing the discount to 30~per cent, could raise around \$4 billion.
-Because this estimate does not include the effect on asset prices and investor behaviour, actual revenue raised is likely to be somewhat lower.
-On the other hand, these revenues should rise over time as capital losses built up from the GFC pass through the system.\footnote{CGT revenues are yet to recover following the GFC.
+Reducing the discount to 30~per cent, could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion.
+This estimate relies on a pair of assumptions with opposing effects. The first is that asset prices and investor behaviour would not change and the second is that the 2012-13 taxation statistics, being the most recent, are representative of future years.  The first is likely to result in a higher estimate than could actually be anticipated as a less favourable tax treatment would discourage investors and lower prices. On the other hand, the second assumption would underestimate the revenue gain these revenues should rise over time  as capital losses built up from the GFC pass were yet to pass through the system.\footnote{CGT revenues are yet to recover following the GFC.
 Receipts were 0.46~per cent of GDP in 2012-13, down from a peak of 1.56~per cent of GDP in 2007-08.
-Even as asset prices have improved, capital losses carried forward have limited taxable gains. \textcite{Stewart2015}; \textcite{PBO2014}. }
+Even as asset prices have improved, capital losses carried forward have limited taxable gains. \textcite{Stewart2015}; \textcite{PBO2014}. } In our judgement, the opposing effects are likely to be of similar magnitude.\footnote{An independent costing by the Parliamentary Budget Office on behalf of Sen. Di Natale this year yielded similar forecasts: a 25 percentage point reduction in the CGT discount resulted in a forecast increase in revenue of \$5.7~bn over three years, looking at a different sample year and accounting for reductions in asset investment due to discouraged investor behaviour (but not changes in asset prices). Our analysis suggests a \$1.9~bn (or \$5.7~bn over three years) under the same CGT discount change.}
 
 \subsection{Limiting negative gearing}
 There is also a strong case for \highlight{limiting the tax deductibility of losses}.
@@ -2840,7 +2839,22 @@ Concerns about investor expectations are not particularly strong as the phase-in
 
 @
 
-<<income_age_heatmap>>=
+<<income_age_heatmap_raw>>=
+tax2013 %>%
+  age_mutate_ %>%
+  group_by(Income_decile = ntile(Tot_inc_amt, 10),
+           Age) %>%
+  tally %>%
+  ungroup %>% 
+  mutate(alpha = (n - min(n))/(max(n) - min(n))) %>%
+  grplot(aes(x = Age, y = factor(Income_decile),
+             alpha = n)) +
+  scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
+  geom_tile(fill = Orange) +
+  coord_equal() 
+@
+
+<<income_age_heatmap_costing>>=
 policy %>%
   age_mutate_ %>%
   group_by(Income_decile = ntile(Tot_inc_amt, 10),
@@ -2860,15 +2874,16 @@ policy %>%
 @
 \begin{figure}
 \Caption{The costs of this policy fall on the high income and the elderly}{Total income decile}{fig:income_age_heatmap}
-\includegraphics[height=0.9\textheight]{figure/income_age_heatmap-1}
+\includegraphics[height=0.9\textheight]{figure/income_age_heatmap_costing-1}
 \end{figure}
 
 <<income_age_heatmap_just_NG>>=
 just_negative_gearing_taxstats_year0 %>%
   mutate(diff = new_tax - current_tax) %>%
   age_mutate_ %>%
+  # mutate(Income_decile = ntile(Tot_inc_amt, 10))
   group_by(Income_decile = ntile(Tot_inc_amt, 10),
-           Age) %>%
+           Age) %>% 
   summarise(mean.diff = mean(diff)) %>%
   ungroup %>% 
   mutate(alpha = (mean.diff - min(mean.diff))/(max(mean.diff) - min(mean.diff))) %>%
