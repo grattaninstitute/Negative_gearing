@@ -143,13 +143,11 @@
   Type                     = {Generic}
 }
 
-@Misc{ABSVariousyearsa,
+@InCollection{ABSVariousyearsa,
   Title                    = {Consumer Price Index},
-
   Author                   = {ABS},
-  Year                     = {Various years},
-
   Publisher                = {Australian Bureau of Statistics },
+  Year                     = {Various years},
   Type                     = {Generic},
   Volume                   = {6401.0}
 }
