@@ -228,10 +228,6 @@ age_mutate_ <- function(.data){
 }
 @
 
-<<Daley_parameters, echo=FALSE>>=
-new.discount <- 0.30
-discount_only_to_negative_rent_income <- TRUE
-@
 \onecolumn
 <<Determine_future_rental_deductions>>=
 historical.interest.losses <- 
@@ -1085,7 +1081,7 @@ taxable_income_by_CG <-
 @
 
 <<Henry_proposal_mutate>>=
-henry_taxstats <- function(year = 2013){
+henry_taxstats <- function(year = 2013, new.discount = 0.30){
   if (year >= 2014){
     CG_inflator <-
       read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
@@ -1128,7 +1124,13 @@ henry_taxstats %>%
 @
 
 <<Summary-chunk, results='hide'>>=
-policy <- cost_of_daley_policy_fast(2015, CGT.discount = 0.30) 
+new.discount <- 0.30
+
+# Our proposal
+policy <- cost_of_daley_policy_fast(2015, CGT.discount = new.discount) 
+# The Henry proposal
+policy_align_gains_and_losses <- henry_taxstats(2015, new.discount = new.discount)
+
 policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
   round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
@@ -1157,8 +1159,17 @@ costing_policy_2015_year0 <-
   round(sum(diff) * weighting(2015) / 1e9, 1) 
 
 cost_align_gains_and_losses <- 
-  henry_taxstats(year = 2015) %$%
+  policy_align_gains_and_losses %$%
   round(sum(diff)*weighting(2015)/1e9, 1)
+
+cost_align_gains_and_losses_NG <-
+  policy_align_gains_and_losses %>%
+  mutate(
+    new_Taxable_Income = Taxable_Income - Net_rent_amt + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
+    new_tax_only_NG = income_tax(new_Taxable_Income),
+    diff_due_NG = new_tax_only_NG - current_tax
+    ) %$%
+  round(sum(diff_due_NG) * weighting(2015) / 1e9, 1)
 
 write(x = c(
   "Cost of policy by policy option",
@@ -1171,7 +1182,8 @@ write(x = c(
   cost_of_red_CGT_discount, "Reduce CGT discount", 
   diff_just_due_NG, "Just quarantine losses", 
   diff_just_due_NG_year0, "Just quarantine losses (year 0)",
-  cost_align_gains_and_losses, "Henry proposal" 
+  cost_align_gains_and_losses, "Henry proposal", 
+  cost_align_gains_and_losses_NG, "Henry proposal (just NG)"
       ),
   file = "Summary_table.txt",
   append = TRUE,
@@ -2238,11 +2250,13 @@ By 2012-13, the two~million landlords reported collective losses of \$5.5 billio
    mutate(prop = `Rent - interest deductions` / `Gross rent`) ->
    prop_rental_deductions_gross_rent
  
- prdgr <- function(fyyear){ 
-   temp <- dplyr::filter(prop_rental_deductions_gross_rent, fy.year == fyyear)
-   round(temp$prop, 3)*100
- }
- @
+# proportion of rental deductions against gross rent (as a percentage
+# to three decimal places).
+prdgr <- function(fyyear){ 
+  temp <- dplyr::filter(prop_rental_deductions_gross_rent, fy.year == fyyear)
+  round(temp$prop, 3)*100
+}
+@
  
  And the average level of gearing for property investors is increasing.
  Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2012-13")}~per cent in 2012-13.\footcite[p.~65]{Treasury2015a}
