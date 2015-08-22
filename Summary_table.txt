@@ -6,3 +6,4 @@ Cost of policy by policy option
 2 Just quarantine losses
 3 Just quarantine losses (year 0)
 3.3 Henry proposal
+1.1 Henry proposal (just NG)
