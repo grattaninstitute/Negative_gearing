@@ -1,9 +1,9 @@
 Cost of policy by policy option
 ====================================
 4.8 Quarantine NG losses and reduce CGT discount (Year 0)
-3.7 Quarantine NG losses and reduce CGT discount
-1.6 Reduce CGT discount
+4.1 Quarantine NG losses and reduce CGT discount
+2 Reduce CGT discount
 2 Just quarantine losses
 3 Just quarantine losses (year 0)
-3.3 Henry proposal
-1.1 Henry proposal (just NG)
+3.7 Henry proposal
+0.9 Henry proposal (just NG)

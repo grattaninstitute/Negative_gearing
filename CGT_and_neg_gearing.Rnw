@@ -1124,7 +1124,7 @@ henry_taxstats %>%
 @
 
 <<Summary-chunk, results='hide'>>=
-new.discount <- 0.30
+new.discount <- 0.25
 
 # Our proposal
 policy <- cost_of_daley_policy_fast(2015, CGT.discount = new.discount) 
@@ -2097,7 +2097,10 @@ get_sample_file(2013) %>%
                           levels = c("Negative gearing", "Not negative gearing", "neither"),
                           labels = c("Negatively geared", "Positively geared", "(Not in property market)"))) %T>%
   chart_data %>%
-  grplot(aes(as.numeric(Age), number, fill = gearing,
+  grplot(aes(as.numeric(Age), 
+             number, 
+             fill = gearing,
+             order = gearing,
              group = gearing,
              color = gearing
              )) + 
