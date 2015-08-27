@@ -1,8 +1,20 @@
-# What are the consumption patterns of different income quintiles?
+---
+title: "GST expenditure by age and income, for categories"
+author: "Hugh Parsonage"
+output: 
+  html_document:
+    css: floatToc.css
+    toc: true
+    toc_depth: 3
+    theme: united
+---
 
+# What are the consumption patterns of different income quintiles?
+.
 ```{r, results='hide'}
 knitr::opts_chunk$set(warning = FALSE,
-                      message = FALSE)
+                      message = FALSE, 
+                      fig.height=8, fig.width=8)
 ```
 
 ```{r}
@@ -19,6 +31,17 @@ library(readr)
 library(tidyr)
 library(magrittr)
 
+weighted.var.se <- function(x, w, na.rm=FALSE){
+  # Computes the variance of a weighted mean following Cochran 1977 definition
+  # http://stats.stackexchange.com/questions/25895/computing-standard-error-in-weighted-mean-estimation
+  if (na.rm) { w <- w[i <- !is.na(x)]; x <- x[i] }
+  n = length(w)
+  xWbar = weighted.mean(x,w,na.rm=na.rm)
+  wbar = mean(w)
+  out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
+  return(out)
+}
+
 hes10hh_raw <- read.dta("./HES/hes10bh.dta")
 sih11hh_raw <- read.dta("./SIH/sih11bh.dta")
 
@@ -28,7 +51,6 @@ hes.sih.vars <- read_excel("./SIH/HES_and_SIH_variable_listing.xlsx")
 # http://www.ausstats.abs.gov.au/ausstats/subscriber.nsf/0/1D03ACBBD40275ADCA257A3900173E85/$File/65030_1.pdf
 hes.sih.vars %<>%
   mutate(Definition = ifelse(HES_basic_name == "COICEXP", paste0(Definition, "_COICOP"), Definition))
-
 
 hes.sih.vars %<>%
   gather(GROUP, variable, -Definition) %>%
@@ -41,19 +63,9 @@ hes.sih.vars %<>%
     Definition_new = gsub("[^A-Za-z]+(?!$)", "_", Definition, perl = TRUE),
     Definition_new = gsub("[^A-Za-z]+$", "", Definition_new)
   )
+```
 
-weighted.var.se <- function(x, w, na.rm=FALSE){
-  #  Computes the variance of a weighted mean following Cochran 1977 definition
-  # http://stats.stackexchange.com/questions/25895/computing-standard-error-in-weighted-mean-estimation
-  if (na.rm) { w <- w[i <- !is.na(x)]; x <- x[i] }
-  n = length(w)
-  xWbar = weighted.mean(x,w,na.rm=na.rm)
-  wbar = mean(w)
-  out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
-  return(out)
-}
-
-
+```{r}
 hes10hh.names <- 
   hes.sih.vars$HES_basic_name[hes.sih.vars$HES_basic_name %in% names(hes10hh_raw)]
 hes10hh.newnames <-
@@ -221,38 +233,11 @@ HH_food_expenditure_by_decile.age <-
                        age_group
     )
   ) %>% 
-  mutate(total.inc.deciles = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
+  mutate(Total_income_decile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
                                                    breaks = total.inc.deciles, 
-                                                   include.lowest = TRUE)))) %>%
-  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
-  svyby(~Household_weekly_expenditure_on_food_and_non_alcoholic_beverages_HES_only, ~total.inc.deciles + age_group, ., svymean)
+                                                   include.lowest = TRUE)))) 
 ```
 
-
-```{r}
-merge(hes10_indiv, hes10hh, by = "Unique_household_number") %>%
-  mutate(total.inc.quintiles_indiv = factor(as.numeric(cut(Total_current_weekly_income_from_all_sources, 
-                                                           breaks = total.inc.quintiles_indiv, 
-                                                           include.lowest = TRUE)))) %>%
-  mutate(
-    age_group = as.character(Age_of_HH_reference_person),
-    age_group = ifelse(grepl("^[0-9]+$", age_group), 
-                       ifelse(as.numeric(age_group) < 20,
-                              "20 or under",
-                              paste((as.numeric(age_group) %/% 5) * 5,
-                                    "to",
-                                    (as.numeric(age_group) %/% 5) * 5 + 4)),
-                       age_group
-    )
-  ) %>%
-  group_by(Unique_household_number) %>%
-  mutate(n = n()) %>%
-  ungroup %>%
-  group_by(age_group, total.inc.quintiles_indiv) %>%
-  summarise(average.food = weighted.mean(Household_weekly_expenditure_on_food_and_non_alcoholic_beverages_HES_only, 
-                                         # or should it be person
-                                         w = Weight_HH_HES))
-```
 ## Determining the GST expenditure for each category, for each age and income decile
 ### Household quintiles
 ```{r}
@@ -294,21 +279,8 @@ chessboard <-
   ) %>%
   setnames(old = paste0("V", 1:2), new = c("age_group", "Total_income_decile"))
 
-hes10hh %>% 
-  mutate(
-    age_group = as.character(Age_of_HH_reference_person),
-    age_group = ifelse(grepl("^[0-9]+$", age_group), 
-                       ifelse(as.numeric(age_group) < 20,
-                              "20 or under",
-                              paste((as.numeric(age_group) %/% 5) * 5,
-                                    "to",
-                                    (as.numeric(age_group) %/% 5) * 5 + 4)),
-                       age_group
-    )
-  ) %>% 
-  mutate(Total_income_decile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
-                                                     breaks = total.inc.deciles, 
-                                                     include.lowest = TRUE)))) %>%
+food_by_age_and_income <- 
+  HH_food_expenditure_by_decile.age %>%
   merge(chessboard, by = c("age_group", "Total_income_decile"), all.y = TRUE) %>%
   ## HOT DECK 
   VIM::hotdeck(., variable = "Household_weekly_expenditure_on_food_and_non_alcoholic_beverages_HES_only") %>%
@@ -328,12 +300,24 @@ hes10hh %>%
              "se")) %>%
   setattr(c("call", "svyby"), c(NULL, NULL)) %>%
   mutate(Total_income_decile = as.integer(as.character(Total_income_decile))) %>%
-  merge(food_and_income.gst) %>%
+  merge(food_and_income.gst, by = "Total_income_decile") %>%
   mutate(Food_GST = Food_exp.avg * pred_prop_GST) %>%
-  grplot(aes(x = age_group, y = factor(Total_income_decile), alpha = Food_GST)) + 
+  mutate(age_group_text = gsub("\\s+", "\n", age_group))
+
+food_by_age_and_income %>%
+  grplot(aes(x = age_group_text, y = factor(Total_income_decile), alpha = Food_GST)) + 
   geom_tile(fill = Orange) + 
-  coord_equal()
+  geom_point(data = filter(food_by_age_and_income, 1.96 * se > Food_GST | se == 0),
+             aes(size = se/Food_GST,
+                 shape = se == 0),
+             color = "red", alpha= 1) + 
+  xlab("Age group") + 
+  scale_shape_manual(values = c(23, 24)) +
+  coord_equal() + 
+  theme_grattan(base_size = 18) +
+  theme(panel.grid.major.y = element_blank())
 ```
+
 
 ## Imputation: nearest neighbour regression
 ```{r,eval=FALSE}
@@ -359,19 +343,85 @@ health_by_age.income <-
                        age_group
     )
   ) %>% 
-  mutate(total.inc.deciles = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
+  mutate(Total_income_decile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
                                                    breaks = total.inc.deciles, 
                                                    include.lowest = TRUE)))) %>%
+  merge(chessboard, by = c("age_group", "Total_income_decile"), all.y = TRUE) %>%
+  ## HOT DECK 
+  VIM::hotdeck(., variable = "Household_weekly_expenditure_on_medical_care_and_health_expenses_HES_only") %>%
+  mutate(Unique_household_number = ifelse(is.na(Unique_household_number), 
+                                          paste0(lag(Unique_household_number), "x"),
+                                          Unique_household_number),
+         Weight_HH_HES = ifelse(is.na(Weight_HH_HES),
+                                max(Weight_HH_HES, na.rm = TRUE),
+                                Weight_HH_HES)) %>%
   svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
-  svyby(~Household_weekly_expenditure_on_medical_care_and_health_expenses_HES_only, ~total.inc.deciles + age_group, ., svymean) %>%  
+  svyby(~Household_weekly_expenditure_on_medical_care_and_health_expenses_HES_only, ~Total_income_decile + age_group, ., svymean) %>%  
   setnames(c("Total_income_decile", 
              "age_group",
              "Health_exp.avg",
              "se")) %>%
-  # cosmetic
   setattr(c("call", "svyby"), c(NULL, NULL)) %>%
-  mutate(Total_income_decile = as.integer(as.character(Total_income_decile)))
+  mutate(Total_income_decile = as.integer(as.character(Total_income_decile))) %>%
+  mutate(age_group_text = gsub("\\s+", "\n", age_group))
+
+grplot(data = health_by_age.income,
+       aes(x = age_group_text,
+           y = Total_income_decile, 
+           alpha = Health_exp.avg)) + 
+  geom_tile(fill = Orange) + 
+  # se == 0 is also suspicious: it suggests there was only one observation in that group.
+  geom_point(data = filter(health_by_age.income, 1.96 * se > Health_exp.avg | se == 0),
+             aes(size = se/Health_exp.avg,
+                 shape = se == 0),
+             color = "red", alpha= 1) + 
+  xlab("Age group") + 
+  scale_shape_manual(values = c(23, 24)) +
+  coord_equal() + 
+  theme_grattan(base_size = 18) +
+  theme(panel.grid.major.y = element_blank())
 ```
 
-### Plot
+## Education
+```{r}
+education_by_incomeQ <- 
+  read_excel("Education_HES10_detailed.xlsx", sheet = "Education_by_income") %>%
+  filter(as.logical(Total)) %>% select(-Total, -Subgroup) %>%
+  gather(Quintile, amount, Q1:Q5) %>%
+  mutate(amount = as.numeric(gsub("*", "", amount, fixed = TRUE))) %>%
+  mutate(Quintile = as.integer(gsub("Q", "", Quintile))) %>%
+  group_by(Quintile) %>%
+  summarise(education.exp = sum(amount)) %>%
+  ungroup %>%
+  mutate(education.exp.prop = education.exp / sum(education.exp)) %>%
+  data.table %>%
+  setkey(Quintile)
+
+education_by_age.names <- 
+  read_excel("Education_HES10_detailed.xlsx", sheet = "Education_by_age") %>%
+  names
+
+education_by_age <- 
+  read_excel("Education_HES10_detailed.xlsx", sheet = "Education_by_age") %>%
+  gather_("age_group", "amount", grep("^[1-9]", education_by_age.names, value = TRUE)) %>%
+  filter(as.logical(Total)) %>% select(-Total, -Subgroup) %>%
+  mutate(amount = as.numeric(gsub("*", "", amount, fixed = TRUE))) %>%
+  group_by(age_group) %>%
+  summarise(education.exp = sum(amount)) %>%
+  ungroup %>%
+  mutate(education.exp.prop = education.exp / sum(education.exp)) %>%
+  data.table %>% 
+  setkey(age_group)
+
+chessboard_Q5 <- 
+  data.table::CJ(
+    Quintile = 1:5,
+    age_group = education_by_age$age_group
+  ) %>%
+  merge(., education_by_age, by = "age_group") %>%
+  setkey(Quintile) %>%
+  merge(., education_by_incomeQ) %>%
+  mutate(est.education.spend = education.exp.y * education.exp.prop.x)
+```
+
 
