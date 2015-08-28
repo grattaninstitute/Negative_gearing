@@ -391,9 +391,9 @@ education_by_incomeQ <-
   mutate(amount = as.numeric(gsub("*", "", amount, fixed = TRUE))) %>%
   mutate(Quintile = as.integer(gsub("Q", "", Quintile))) %>%
   group_by(Quintile) %>%
-  summarise(education.exp = sum(amount)) %>%
+  summarise(education.exp.Q = sum(amount)) %>%
   ungroup %>%
-  mutate(education.exp.prop = education.exp / sum(education.exp)) %>%
+  mutate(education.exp.prop.Q = education.exp.Q / sum(education.exp.Q)) %>%
   data.table %>%
   setkey(Quintile)
 
@@ -407,21 +407,50 @@ education_by_age <-
   filter(as.logical(Total)) %>% select(-Total, -Subgroup) %>%
   mutate(amount = as.numeric(gsub("*", "", amount, fixed = TRUE))) %>%
   group_by(age_group) %>%
-  summarise(education.exp = sum(amount)) %>%
+  summarise(education.exp.age = sum(amount)) %>%
   ungroup %>%
-  mutate(education.exp.prop = education.exp / sum(education.exp)) %>%
+  mutate(education.exp.prop.age = education.exp.age / sum(education.exp.age)) %>%
   data.table %>% 
   setkey(age_group)
 
-chessboard_Q5 <- 
-  data.table::CJ(
-    Quintile = 1:5,
-    age_group = education_by_age$age_group
-  ) %>%
+# Assume that every age has the same distribution of education expenses by income
+data.table::CJ(
+  Quintile = c(1:5, (1:5-0.5)),
+  age_group = education_by_age$age_group
+) %>%
   merge(., education_by_age, by = "age_group") %>%
   setkey(Quintile) %>%
   merge(., education_by_incomeQ) %>%
-  mutate(est.education.spend = education.exp.y * education.exp.prop.x)
+  mutate(est.education.spend = education.exp.age * education.exp.prop.Q) %>%
+  grplot(aes(x = age_group, y = Quintile, alpha = est.education.spend)) + 
+  geom_tile(fill = Orange)
 ```
 
+# Childcare
+```{r}
+childcare_by_age <- 
+  read_excel("EducationChildcare_HES10_detailed.xlsx", sheet = "Childcare_by_age") %>%
+  gather(age_group, child_care.expAge, -Group) %>%
+  data.table
+
+childcare_by_income <-
+  read_excel("EducationChildcare_HES10_detailed.xlsx", sheet = "Childcare_by_income") %>%
+  gather(Quintile, child_care.expQ, -Group) %>%
+  mutate(Quintile = as.integer(factor(Quintile))) %>%
+  filter(complete.cases(.)) %>%
+  mutate(child_care.expQ.prop = child_care.expQ/sum(child_care.expQ)) %>%
+  data.table
+
+chessboard.childcare <- 
+  data.table::CJ(
+    Quintile = 1:5,
+    age_group = childcare_by_age$age_group
+  ) %>%
+  setkey(Quintile) %>%
+  merge(., childcare_by_income) %>%
+  setkey(age_group) %>%
+  merge(., childcare_by_age) %>%
+  mutate(child_care.exp.est = child_care.expAge * child_care.expQ.prop) %>%
+  select(age_group, Quintile, child_care.exp.est)
+```
 
