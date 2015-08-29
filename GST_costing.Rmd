@@ -279,7 +279,7 @@ chessboard <-
   ) %>%
   setnames(old = paste0("V", 1:2), new = c("age_group", "Total_income_decile"))
 
-food_by_age_and_income <- 
+food_by_age_income <- 
   HH_food_expenditure_by_decile.age %>%
   merge(chessboard, by = c("age_group", "Total_income_decile"), all.y = TRUE) %>%
   ## HOT DECK 
@@ -304,18 +304,20 @@ food_by_age_and_income <-
   mutate(Food_GST = Food_exp.avg * pred_prop_GST) %>%
   mutate(age_group_text = gsub("\\s+", "\n", age_group))
 
-food_by_age_and_income %>%
+food_by_age_income %>%
   grplot(aes(x = age_group_text, y = factor(Total_income_decile), alpha = Food_GST)) + 
   geom_tile(fill = Orange) + 
-  geom_point(data = filter(food_by_age_and_income, 1.96 * se > Food_GST | se == 0),
+  geom_point(data = filter(food_by_age_income, 1.96 * se > Food_GST | se == 0),
              aes(size = se/Food_GST,
                  shape = se == 0),
              color = "red", alpha= 1) + 
+  scale_alpha_continuous(label=grattan_dollar) + 
   xlab("Age group") + 
   scale_shape_manual(values = c(23, 24)) +
   coord_equal() + 
   theme_grattan(base_size = 18) +
-  theme(panel.grid.major.y = element_blank())
+  theme(panel.grid.major.y = element_blank(),
+        legend.position = "right")
 ```
 
 
@@ -330,7 +332,7 @@ food_by_age_and_income %>%
 
 ## Health
 ```{r}
-health_by_age.income <-
+health_by_age_income <-
   hes10hh %>%
   mutate(
     age_group = as.character(Age_of_HH_reference_person),
@@ -363,24 +365,29 @@ health_by_age.income <-
              "se")) %>%
   setattr(c("call", "svyby"), c(NULL, NULL)) %>%
   mutate(Total_income_decile = as.integer(as.character(Total_income_decile))) %>%
-  mutate(age_group_text = gsub("\\s+", "\n", age_group))
+  mutate(age_group_text = gsub("\\s+", "\n", age_group)) 
 
-grplot(data = health_by_age.income,
+grplot(data = health_by_age_income,
        aes(x = age_group_text,
            y = Total_income_decile, 
            alpha = Health_exp.avg)) + 
   geom_tile(fill = Orange) + 
   # se == 0 is also suspicious: it suggests there was only one observation in that group.
-  geom_point(data = filter(health_by_age.income, 1.96 * se > Health_exp.avg | se == 0),
+  geom_point(data = filter(health_by_age_income, 1.96 * se > Health_exp.avg | se == 0),
              aes(size = se/Health_exp.avg,
                  shape = se == 0),
              color = "red", alpha= 1) + 
   xlab("Age group") + 
   scale_shape_manual(values = c(23, 24)) +
+  scale_alpha_continuous(label=grattan_dollar) +
   coord_equal() + 
   theme_grattan(base_size = 18) +
-  theme(panel.grid.major.y = element_blank())
+  theme(panel.grid.major.y = element_blank(),
+        legend.position = "right")
 ```
+
+# Expand quintiles to deciles
+## Split the difference
 
 ## Education
 ```{r}
@@ -414,6 +421,7 @@ education_by_age <-
   setkey(age_group)
 
 # Assume that every age has the same distribution of education expenses by income
+education_by_age_income <-
 data.table::CJ(
   Quintile = c(1:5, (1:5-0.5)),
   age_group = education_by_age$age_group
@@ -422,8 +430,13 @@ data.table::CJ(
   setkey(Quintile) %>%
   merge(., education_by_incomeQ) %>%
   mutate(est.education.spend = education.exp.age * education.exp.prop.Q) %>%
-  grplot(aes(x = age_group, y = Quintile, alpha = est.education.spend)) + 
-  geom_tile(fill = Orange)
+  right_join(.,
+    data.table(Quintile = rep(1:5, each = 2),
+               Decile = 1:10)
+  ) %>%
+  mutate(
+    education.exp.est_decile = est.education.spend / 2
+  )
 ```
 
 # Childcare
@@ -441,7 +454,7 @@ childcare_by_income <-
   mutate(child_care.expQ.prop = child_care.expQ/sum(child_care.expQ)) %>%
   data.table
 
-chessboard.childcare <- 
+childcare_by_age_income <- 
   data.table::CJ(
     Quintile = 1:5,
     age_group = childcare_by_age$age_group
@@ -451,6 +464,76 @@ chessboard.childcare <-
   setkey(age_group) %>%
   merge(., childcare_by_age) %>%
   mutate(child_care.exp.est = child_care.expAge * child_care.expQ.prop) %>%
-  select(age_group, Quintile, child_care.exp.est)
+  select(age_group, Quintile, child_care.exp.est) %>%
+  right_join(.,
+    data.table(Quintile = rep(1:5, each = 2),
+               Decile = 1:10)
+  ) %>%
+  mutate(
+    child_care.exp.est_decile = child_care.exp.est / 2
+  ) 
 ```
 
+# All together now
+```{r}
+age_group_tbl <- 
+  fread("age_table.csv")
+
+food_by_age_income %<>%
+  select(Total_income_decile, age_group, Food_exp.avg) %>%
+  setnames("Food_exp.avg", "est.expenditure") %>%
+  mutate(Group = "Food")
+
+health_by_age_income %<>%
+  select(Total_income_decile, age_group, Health_exp.avg) %>%
+  setnames("Health_exp.avg", "est.expenditure") %>%
+  mutate(Group = "Health")
+
+education_by_age_income %<>%
+  select(Decile, age_group, est.education.spend) %>%
+  # Note that this is not strictly true: it's household income.
+  setnames(c("Decile", "est.education.spend"), 
+           c("Total_income_decile", "est.expenditure")) %>%
+  merge(., age_group_tbl, by.x = "age_group", by.y = "big_age") %>%
+  group_by(Total_income_decile, little_age) %>%
+  # assign equally among each subage
+  mutate(n = n()) %>%
+  mutate(est.expenditure = est.expenditure / n) %>%
+  mutate(Group = "Education")  %>%
+  setnames("little_age", "age_group")
+
+childcare_by_age_income %<>%
+  select(Decile, age_group, child_care.exp.est_decile) %>%
+  setnames(c("Decile", "child_care.exp.est_decile"), 
+           c("Total_income_decile", "est.expenditure")) %>%
+  merge(., age_group_tbl, by.x = "age_group", by.y = "big_age") %>%
+  group_by(Total_income_decile, little_age) %>%
+  # assign equally among each subage
+  mutate(n = n()) %>%
+  mutate(est.expenditure = est.expenditure / n) %>%
+  mutate(Group = "Childcare") %>%
+  setnames("little_age", "age_group")
+
+GST_by_age_and_income <- 
+bind_rows(food_by_age_income,
+          health_by_age_income,
+          education_by_age_income,
+          childcare_by_age_income) %>%
+  group_by(Total_income_decile, age_group) %>%
+  summarise(total.expenditure = sum(est.expenditure))
+```
+
+```{r}
+GST_by_age_and_income %>%
+  mutate(age_group_text = gsub("\\s+", "\n", age_group)) %>%
+  grplot(aes(x = factor(age_group_text),
+             y = factor(Total_income_decile),
+             alpha = total.expenditure)) + 
+  geom_tile(fill = Orange) +
+  scale_alpha_continuous(label=grattan_dollar) + 
+  xlab("Age") +
+  coord_equal() + 
+  theme_grattan(base_size = 18) +
+  theme(panel.grid.major.y = element_blank(),
+        legend.position = "right")
+```
