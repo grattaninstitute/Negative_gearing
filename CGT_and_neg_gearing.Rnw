@@ -1124,7 +1124,7 @@ henry_taxstats %>%
 @
 
 <<Summary-chunk, results='hide'>>=
-new.discount <- 0.25
+new.discount <- 0.30
 
 # Our proposal
 policy <- cost_of_daley_policy_fast(2015, CGT.discount = new.discount) 
