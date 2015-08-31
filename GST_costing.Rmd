@@ -10,18 +10,26 @@ output:
 ---
 
 # What are the consumption patterns of different income quintiles?
-.
+This `Rmd` file attempts to determine the distributional impact of broadening the GST to include currently exempt food, education, health, and childcare. We use the ABS's Household Expenditure Survey 2009-10, being the most recent survey containing this information. 
+
+Some issues:
+
++ No behaviour change. We assume there will be no change (*i.e.* no reduction) in consumption of items currently GST exempt.
++ Health expenditure is dubious. Highly volatile spending. 
++ Fresh food is available for each quintile. We assume the relationship between spending on GST-exempt food and income is linear and does not change across age groups. 
++ Education spending not availble except aggregated by household income and household age head of household. We assume that the relationship between spending and income is the same across each age group. 
++ Education and childcare spending only available by quintile. We assume that half the total spending in a quintile goes to each decile.
+
 ```{r, results='hide'}
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE, 
-                      fig.height=8, fig.width=8)
+                      fig.height=8, fig.width=10)
 ```
 
 ```{r}
 library(ggplot2)
 library(grattan)
-library(VIM)
-# VIM::hotdeck used for imputation
+library(VIM) # VIM::hotdeck used for imputation
 library(dplyr)
 library(foreign)
 library(survey)
@@ -43,8 +51,9 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
 }
 
 hes10hh_raw <- read.dta("./HES/hes10bh.dta")
-sih11hh_raw <- read.dta("./SIH/sih11bh.dta")
-
+```
+Our first task is to make the HES variables meaningful. Do you know what `INCTOPH8` means? Let's find out! The way I did that was to link the variables in the variable listings excel file to the definition therein. We also have to make the variables suitable for R, *viz* no spaces or weird characters.
+```{r}
 hes.sih.vars <- read_excel("./SIH/HES_and_SIH_variable_listing.xlsx") 
 
 # See page 21 of HES 2009-10 user guide
@@ -78,7 +87,9 @@ hes10hh <-
   data.table %>%
   setnames(old = hes10hh.names, 
            new = hes10hh.newnames)
-
+```
+We now have an object, `hes10hh`, with meaningful column names. I prefer the following values for our ages:
+```{r}
 # Age cleaning
 hes10hh %<>%
   mutate(
@@ -86,49 +97,50 @@ hes10hh %<>%
                                              "",
                                              Age_of_HH_reference_person))
   ) 
-
-
+```
+## Calculation of quantiles.
+We will only use the quintiles and deciles.
+```{r}
 disp.inc.percentiles <- 
-  hes10hh_raw %>%
-  svydesign(~ABSHID, data = ., weights = ~HESHHWT) %>%
-  svyquantile(~DISPSCH8 # disposable income
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Current_weekly_HH_disposable_income # disposable income
               ,.
-              , quantiles = c(0:100)/100)
+              ,quantiles = c(0:100)/100)
 disp.inc.deciles <- 
-  hes10hh_raw %>%
-  svydesign(~ABSHID, data = ., weights = ~HESHHWT) %>%
-  svyquantile(~DISPSCH8 # disposable income
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Current_weekly_HH_disposable_income 
               ,.
               , quantiles = c(0:10)/10)
 
 total.inc.percentiles <- 
-  hes10hh_raw %>%
-  svydesign(~ABSHID, data = ., weights = ~HESHHWT) %>%
-  svyquantile(~INCTSCH8 # totalosable income
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
               ,.
               , quantiles = c(0:100)/100)
 
 total.inc.deciles <- 
-  hes10hh_raw %>%
-  svydesign(~ABSHID, data = ., weights = ~HESHHWT) %>%
-  svyquantile(~INCTSCH8 # totalosable income
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
               ,.
               , quantiles = c(0:10)/10)
 
 total.inc.quintiles <- 
-  hes10hh_raw %>%
-  svydesign(~ABSHID, data = ., weights = ~HESHHWT) %>%
-  svyquantile(~INCTSCH8 # totalosable income
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
               ,.
-              , quantiles = c(0:5)/5)
+              #, quantiles = c(0:5)/5)
+              ,quantiles = c(0:5)/5)
 
 
 hes10hh %<>%
   mutate(income.percentile = factor(as.numeric(cut(Current_weekly_HH_employee_income, 
                                                    breaks = disp.inc.percentiles, 
                                                    include.lowest = TRUE)))) 
-
-
 ```
 
 
@@ -318,16 +330,6 @@ food_by_age_income %>%
   theme_grattan(base_size = 18) +
   theme(panel.grid.major.y = element_blank(),
         legend.position = "right")
-```
-
-
-## Imputation: nearest neighbour regression
-```{r,eval=FALSE}
-# Not appropriate. use VIM::hotdeck in lieu
-# Bioconductor
-# http://www.bioconductor.org/packages/release/bioc/manuals/impute/man/impute.pdf
-# source("https://bioconductor.org/biocLite.R")
-# biocLite("impute")
 ```
 
 ## Health
@@ -520,20 +522,67 @@ bind_rows(food_by_age_income,
           education_by_age_income,
           childcare_by_age_income) %>%
   group_by(Total_income_decile, age_group) %>%
-  summarise(total.expenditure = sum(est.expenditure))
+  summarise(total.expenditure = sum(est.expenditure)) %>%
+  mutate(age_group_text = gsub("\\s+", "\n", age_group)) %>%
+  ungroup
 ```
 
 ```{r}
-GST_by_age_and_income %>%
-  mutate(age_group_text = gsub("\\s+", "\n", age_group)) %>%
+GST_by_age_and_income  %>%
   grplot(aes(x = factor(age_group_text),
              y = factor(Total_income_decile),
              alpha = total.expenditure)) + 
   geom_tile(fill = Orange) +
+  geom_text(data = tail(arrange(GST_by_age_and_income, total.expenditure)),
+            aes(label = grattan_dollar(total.expenditure)),
+            show_guide = FALSE) + 
   scale_alpha_continuous(label=grattan_dollar) + 
+  scale_x_discrete(expand = c(0,0)) + 
+  scale_y_discrete(expand = c(0,0)) + 
   xlab("Age") +
   coord_equal() + 
   theme_grattan(base_size = 18) +
   theme(panel.grid.major.y = element_blank(),
-        legend.position = "right")
+        legend.position = "right",
+        legend.key.size = unit(2, "lines"))
+```
+
+# RUH ROH
+```{r}
+number_households_by_age_income <-
+  hes10hh %>%
+  mutate(
+    age_group = as.character(Age_of_HH_reference_person),
+    age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                       ifelse(as.numeric(age_group) < 20,
+                              "20 or under",
+                              paste((as.numeric(age_group) %/% 5) * 5,
+                                    "to",
+                                    (as.numeric(age_group) %/% 5) * 5 + 4)),
+                       age_group
+    )
+  ) %>% 
+  mutate(total.inc.deciles = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                   breaks = total.inc.deciles, 
+                                                   include.lowest = TRUE)))) %>%
+  group_by(age_group, total.inc.deciles) %>%
+  summarise(number = sum(Weight_HH_HES)) %>%
+  mutate(age_group_text = gsub("\\s+", "\n", age_group)) %>%
+  ungroup 
+
+number_households_by_age_income %>%
+  grplot(aes(x = age_group_text,
+             y = factor(total.inc.deciles),
+             alpha = number)) + 
+  geom_tile() +
+  scale_x_discrete(expand = c(0,0)) + 
+  scale_y_discrete(expand = c(0,0)) + 
+  xlab("Age") +
+  coord_equal() + 
+  theme_grattan(base_size = 18) +
+  theme(panel.grid.major.y = element_blank(),
+        legend.position = "right",
+        legend.key.size = unit(2, "lines"))
+  
+  
 ```
