@@ -452,6 +452,7 @@ keepaspectratio]{./FrontPage/grattan-logo-right-aligned.svg}%
 \setlength\bibitemsep{1.5\itemsep}
 % format bibliography
 \renewcommand*{\bibfont}{\small}
+\DeclareFieldFormat{url}{\url{#1}}
 
 %% Citation tweaking
 \DeclareFieldFormat{titlecase}{#1}

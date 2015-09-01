@@ -547,7 +547,7 @@ GST_by_age_and_income  %>%
         legend.key.size = unit(2, "lines"))
 ```
 
-# RUH ROH
+# Comparison to household numbers
 ```{r}
 number_households_by_age_income <-
   hes10hh %>%
@@ -586,3 +586,5 @@ number_households_by_age_income %>%
   
   
 ```
+
+# GST expenditure density by 

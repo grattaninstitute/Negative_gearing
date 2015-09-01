@@ -1958,6 +1958,14 @@
   Type                     = {Book}
 }
 
+@Article{burman2009taxing,
+  Title                    = {Taxing Capital Gains in New Zealand: Assessment and Recommendations},
+  Author                   = {Burman, Leonard and White, David},
+  Year                     = {2009},
+
+  Url                      = {http://www.victoria.ac.nz/sacl/centres-and-institutes/cagtr/twg/publications/3-taxing-capital-gains-burman_white.pdf}
+}
+
 @Misc{Button2013,
   Title                    = {Beyond the king-in-excile},
 
@@ -4352,6 +4360,19 @@ public policy},
   Url                      = {http://jbh.ministers.treasury.gov.au/media-release/017-2013/}
 }
 
+@Misc{McKellSwitchingGears,
+  Title                    = {Switching Gears Reforming negative gearing to solve our housing affordability crisis},
+
+  Author                   = {Richard Holden},
+  Month                    = {June},
+  Note                     = {published by The McKell Institute},
+  Year                     = {2015},
+
+  Owner                    = {hparsonage},
+  Timestamp                = {2015.08.31},
+  Url                      = {http://mckellinstitute.org.au/wp-content/uploads/pdf/McKell_Negative-Gearing_A4_WEB.pdf}
+}
+
 @TechReport{Hood2013,
   Title                    = {The Economic Circumstances of Cohorts Born between the 1940{s} and the 1970{s}},
   Author                   = {Hood, A and Joyce, R},
@@ -4548,6 +4569,20 @@ public policy},
 
   Type                     = {Generic},
   Url                      = {http://www.indexmundi.com/commodities/Default.aspx?commodity=coal-australian&months=300}
+}
+
+@Misc{,
+  Title                    = {Should capital income be taxed? And if so, how?},
+
+  Author                   = {David Ingles},
+  Month                    = {August},
+  Note                     = {Tax and Transfer Policy Institute},
+  Year                     = {2015},
+
+  Journal                  = {Tax and Transfer},
+  Owner                    = {hparsonage},
+  Timestamp                = {2015.09.01},
+  Url                      = {https://taxpolicy.crawford.anu.edu.au/files/uploads/taxstudies_crawford_anu_edu_au/2015-08/d_ingles_should_capital_income_be_taxed-final.pdf}
 }
 
 @TechReport{Ingles2009,
