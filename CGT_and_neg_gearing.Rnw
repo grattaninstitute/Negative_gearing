@@ -1,6 +1,8 @@
 \documentclass{grattan}
 \renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
-
+\usepackage{grfext}
+\PrependGraphicsExtensions*{.pdf}
+\usepackage{longtable}
 
 \title{Negative gearing and the capital gains discount}
 \usepackage[normalem]{ulem}
@@ -61,8 +63,8 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
                       ,cache=TRUE
-                      ,dev=c('my_pdf', 'my_emf')
-                      ,fig.ext = c("pdf", "emf")
+                      ,dev=c('my_pdf', 'my_emf', 'png')
+                      ,fig.ext = c("pdf", "emf", "png")
 )
 @
 
@@ -1369,7 +1371,7 @@ Funds	7340	507	4842
         theme(axis.title = element_blank()) 
 @
 \begin{figure}[h]
-\Caption{The majority of taxable gains are earned by individuals}{Taxable net capital gains 2012-13 (billions)}{fig:Majority_of_taxable_gains_are_earned_by_individuals}
+\Caption{The minority of taxable gains are earned by individuals}{Taxable net capital gains 2012-13 (billions)}{fig:Majority_of_taxable_gains_are_earned_by_individuals}
 \includegraphics[width=\columnwidth]{figure/Majority_of_taxable_gains_are_earned_by_individuals-1}
 \source{Molten combination of \textcite{ATOCapitalGainsByType}}
 \end{figure}
@@ -1435,6 +1437,23 @@ Almost 80~per cent of capital gains are earned by those in the top 20~per cent o
 Compared to low income earners, higher income earners are more likely to have additional income that can be invested.\footnote{The top 20~per cent of households by disposable income save on average 35~per cent of their disposable income.
 This compares to dissavings of 25~per cent for the lowest income quintile and savings rates of less than 10~per cent for the second and third quintiles.}
 
+\subsubsection{Tax gains on an accruals basis?}
+Taxing capital gains on realization creates several distortionary effects, which we have mentioned above. 
+Investors are incentived to hold onto assets that they would otherwise sell because of the looming tax bill. 
+Investors also enjoy a lengthy deferral of tax, effectively a tax-free loan from the government to  (generally wealthy) asset-holders. 
+Finally, realization-based CGT regimes allow asset holders to wait until their marginal tax rate is low (as during retirement) before selling.
+
+These problems can be eliminated by taxing gains on an accruals basis -- that is, by requiring asset holders to pay tax every year the asset is held on the accrued gain, regardless of whether it is sold or not. 
+Although taxing on an accrual basis has been recognized as the ideal capital gains tax regime in theory\footcite{burman2009taxing} it has been neglected policy-makers due to perceived difficulties in implementation.
+
+Although implementation is always difficult, the claim that taxing on an accruals basis is impractical is increasingly regarded as weak in the tax literature.\footnote{See for example \textcite{Ingles2015CGT}.} The issue
+
+These problems can be avoided by switching
+
+The current regime of capital gains taxation has several well-documnted flaws.
+Taxes are imposed on realization, which creates economic distortions through asset lock-in, provides investors with an implicit interest-free loan towards their tax liabilities, and allows investors to minimize their tax by waiting till retirement (when their marginal tax rate is very low) or by avoiding tax altogether.
+
+
 \subsection{Some discount may be justified but 50~per cent is too high}
 A concession from marginal rates of income tax should only be made if it serves a policy aim. 
 
@@ -1472,7 +1491,7 @@ This reduces the average tax rate an investor pays on capital gains income.
 For example, the average marginal tax rate on capital gains for people in the workforce is 31~per cent compared to 17~per cent for people over 50 with no wage income.\footcite{ATO2013i} 
 
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. 
-Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite[Wave~10]{HILDA2015}}  -- that do not receive these other tax advantages. \nocite{*}
+Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite[Wave~10]{HILDA2015}}  -- that do not receive these other tax advantages. 
 
 The current 50 per cent discount compensates, and in many cases overcompensates, for the effects of inflation on post-tax returns. 
 When the other tax advantages for capital gains income are factored in, capital growth assets receive sizeable tax breaks.  
@@ -2918,8 +2937,13 @@ just_negative_gearing_taxstats_year0 %>%
 
 %\nocite{*}
 
-<<sessionInfo>>=
-sessionInfo()
+<<sessionInfo_platform>>=
+devtools::session_info()$platform
+@
+
+<<sessionInfo_packages, results='asis'>>=
+xtable(as.data.frame(devtools::session_info()$packages)) %>%
+  print.xtable(tabular.environment = "longtable", floating = FALSE)
 @
 \twocolumn
 
