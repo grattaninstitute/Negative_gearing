@@ -1442,9 +1442,14 @@ Investors are incentived to hold onto assets that they would otherwise sell beca
 Investors also enjoy a lengthy deferral of tax, effectively a tax-free loan from the government to  (generally wealthy) asset-holders. 
 Finally, realization-based CGT regimes allow asset holders to wait until their marginal tax rate is low (as during retirement) before selling.
 
-These problems can be eliminated by taxing gains on an accruals basis, that is by requiring asset holders to pay tax every year the asset is held on the accrued gain, regardless of whether it is sold or not.
+These problems can be eliminated by taxing gains on an accruals basis -- that is, by requiring asset holders to pay tax every year the asset is held on the accrued gain, regardless of whether it is sold or not. 
+Although taxing on an accrual basis has been recognized as the ideal capital gains tax regime in theory\footnote{Assuming a comprehensive income taxation philosophy; vide: \textcite{burman2009taxing}} it has been neglected by policy-makers due to perceived difficulties in implementation.
 
-These problems can be avoided by switching
+Although implementation is always difficult, the claim that taxing on an accruals basis is too impractical is now being questioned in the tax literature.\footnote{See for example \textcite{Ingles2015CGT}.} 
+The two main problems with accruals taxation -- determining the change in an asset's price when it hasn't been exposed to the market, and potential low liquidity in asset holders -- are serious enough to warrant focus, but in my opinion are less serious than the current regime's distortions.
+Determining the price of shares is trivial and has been advocated\footnote{Somewhere.}.
+Accrued prices of property are more difficult to determine; however, price indices are reliable indicators of growth over areas. Growth 
+
 
 The current regime of capital gains taxation has several well-documnted flaws.
 Taxes are imposed on realization, which creates economic distortions through asset lock-in, provides investors with an implicit interest-free loan towards their tax liabilities, and allows investors to minimize their tax by waiting till retirement (when their marginal tax rate is very low) or by avoiding tax altogether.

@@ -309,14 +309,25 @@ left=2.75cm,right=2.75cm
 \pagestyle{scrheadings}
 
 %% Title pages
+%% For a full picture:
+% \RequirePackage{eso-pic}
+% \newcommand\BackgroundPic{%
+% \put(0,0){%
+% \parbox[b][\paperheight]{\paperwidth}{%
+% \vfill
+% \centering
+% % Amend
+% \includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
+% \vfill
+% }}}
+
+%% For a logo only:
 \RequirePackage{eso-pic}
 \newcommand\BackgroundPic{%
 \put(0,0){%
 \parbox[b][\paperheight]{\paperwidth}{%
-\vfill
-\centering
-\includegraphics[width=\paperwidth,height=\paperheight,%
-keepaspectratio]{./FrontPage/grattan-logo-right-aligned.svg}%
+\hfill
+%\includegraphics[width=0.2\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
 \vfill
 }}}
 
@@ -337,8 +348,12 @@ keepaspectratio]{./FrontPage/grattan-logo-right-aligned.svg}%
 
 \newcommand*{\titleTH}{\begingroup % Create the command for including the title page in the document
 \raggedleft % Right-align all text
+\vfill
 \phantom{.}%\vspace*{\baselineskip}
-\vfill % Whitespace at the top of the page
+\hfill 
+\includegraphics[width=0.225\paperwidth,keepaspectratio, trim = 0 0 5mm 0,clip]{./FrontPage/GrattanSVGLogo}
+\vspace{30pt}
+\vfil % Whitespace at the top of the page
 
 {\bfseries\textcolor{Orange}{\fontsize{30}{30}\selectfont \mytitle}}\\[\baselineskip] % Title page font size
 %% This is a working paper.

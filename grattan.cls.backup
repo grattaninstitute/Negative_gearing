@@ -19,19 +19,15 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
 % needs to be switched off for copying and pasting
-\RequirePackage[activate={true,nocompatibility},final,expansion,tracking=true,kerning=true, spacing=false,selected=true,letterspace=-15]{microtype}
+\RequirePackage[activate={true,nocompatibility},final,expansion,tracking=true,kerning=true, spacing=false,selected=true, letterspace=-20]{microtype}
 
-\SetExtraSpacing
-[ unit = space ] % default
-{ font = * / * / * / * / * }
-{
-. = {1000,1000,0},
-}
+\SetExtraSpacing{ font = * / * / * / * / * }{. = {100,100,100},}
 
 % Arial font looks a little bit spaced. One way to do it is to adjust the letterspace 
 % option to microtype.  Another is to adjust the spaceskip
-% \spaceskip=1.5\fontdimen2\font plus 1.5\fontdimen3\font
-% minus 1.5\fontdimen4\font
+% large
+% \spaceskip=1.5\fontdimen2\font plus 1.5\fontdimen3\font minus 1.5\fontdimen4\font
+\spaceskip=1.2\fontdimen2\font plus 1.2\fontdimen3\font minus 1.2\fontdimen4\font
 % ------
 % Grattan colors
 \definecolor{Orange}{HTML}{F68B33}
@@ -314,13 +310,12 @@ left=2.75cm,right=2.75cm
 
 %% Title pages
 \RequirePackage{eso-pic}
+%\RequirePackage{svg}
 \newcommand\BackgroundPic{%
 \put(0,0){%
 \parbox[b][\paperheight]{\paperwidth}{%
 \vfill
 \centering
-\includegraphics[width=\paperwidth,height=\paperheight,%
-keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 \vfill
 }}}
 
@@ -437,6 +432,10 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 \newenvironment{summary}%
   {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{Summary}\begin{multicols}{2}}%
   {\end{multicols}\vss\egroup\hfill\twocolumn}
+  
+\newenvironment{onepager}[1]%  
+  {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{#1}\begin{multicols}{2}}%
+  {\end{multicols}\vss\egroup\hfill\twocolumn}
 
 
 % Bibliography
@@ -452,6 +451,7 @@ keepaspectratio]{./FrontPage/FrontPagePicture.png}%
 \setlength\bibitemsep{1.5\itemsep}
 % format bibliography
 \renewcommand*{\bibfont}{\small}
+\DeclareFieldFormat{url}{\url{#1}}
 
 %% Citation tweaking
 \DeclareFieldFormat{titlecase}{#1}

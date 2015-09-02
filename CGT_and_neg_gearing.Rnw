@@ -2,7 +2,6 @@
 \renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
 \usepackage{grfext}
 \PrependGraphicsExtensions*{.pdf}
-\usepackage{longtable}
 
 \title{Negative gearing and the capital gains discount}
 \usepackage[normalem]{ulem}
@@ -1444,11 +1443,19 @@ Investors also enjoy a lengthy deferral of tax, effectively a tax-free loan from
 Finally, realization-based CGT regimes allow asset holders to wait until their marginal tax rate is low (as during retirement) before selling.
 
 These problems can be eliminated by taxing gains on an accruals basis -- that is, by requiring asset holders to pay tax every year the asset is held on the accrued gain, regardless of whether it is sold or not. 
-Although taxing on an accrual basis has been recognized as the ideal capital gains tax regime in theory\footcite{burman2009taxing} it has been neglected policy-makers due to perceived difficulties in implementation.
+Although taxing on an accrual basis has been recognized as the ideal capital gains tax regime in theory\footnote{Assuming a comprehensive income taxation philosophy; vide: \textcite{burman2009taxing}} it has been neglected by policy-makers due to perceived difficulties in implementation.
 
-Although implementation is always difficult, the claim that taxing on an accruals basis is impractical is increasingly regarded as weak in the tax literature.\footnote{See for example \textcite{Ingles2015CGT}.} The issue
+Although implementation is always difficult, the claim that taxing on an accruals basis is too impractical is now being questioned in the tax literature.\footnote{See for example \textcite{Ingles2015CGT}.} 
+The two main problems with accruals taxation -- determining the change in an asset's price when it hasn't been exposed to the market, and potential low liquidity in asset holders -- are serious enough to warrant focus, but in my opinion are less serious than the current regime's distortions.
 
-These problems can be avoided by switching
+Determining the price of shares is trivial and has been advocated\footnote{Somewhere.}.
+Accrued prices of property are more difficult to determine; however, price indices are reliable indicators of growth over areas. 
+The details how these price indices translate into a formula to calculate accruals are, in my view, unimportant.
+Growth residual to these indices may impose a greater tax burden on some owners than is deserved; however, it is equally likely that owners would receive an unfairly low tax bill at the end of accrual period. 
+In any case, an investor who chooses to dispose of his asset would only pay tax on the last gain actually realized, which would wash out any discrepancy between the indices and the investor's true gain.
+
+Of greater difficulty are unlisted shares or business assets, which are difficult to value. 
+
 
 The current regime of capital gains taxation has several well-documnted flaws.
 Taxes are imposed on realization, which creates economic distortions through asset lock-in, provides investors with an implicit interest-free loan towards their tax liabilities, and allows investors to minimize their tax by waiting till retirement (when their marginal tax rate is very low) or by avoiding tax altogether.
@@ -1491,7 +1498,7 @@ This reduces the average tax rate an investor pays on capital gains income.
 For example, the average marginal tax rate on capital gains for people in the workforce is 31~per cent compared to 17~per cent for people over 50 with no wage income.\footcite{ATO2013i} 
 
 Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. 
-Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite[Wave~10]{HILDA2015}}  -- that do not receive these other tax advantages. 
+Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite[Wave~10]{HILDA2015}}  -- that do not receive these other tax advantages. \nocite{*}
 
 The current 50 per cent discount compensates, and in many cases overcompensates, for the effects of inflation on post-tax returns. 
 When the other tax advantages for capital gains income are factored in, capital growth assets receive sizeable tax breaks.  
@@ -2937,13 +2944,8 @@ just_negative_gearing_taxstats_year0 %>%
 
 %\nocite{*}
 
-<<sessionInfo_platform>>=
-devtools::session_info()$platform
-@
-
-<<sessionInfo_packages, results='asis'>>=
-xtable(as.data.frame(devtools::session_info()$packages)) %>%
-  print.xtable(tabular.environment = "longtable", floating = FALSE)
+<<sessionInfo>>=
+devtools::session_info()
 @
 \twocolumn
 
