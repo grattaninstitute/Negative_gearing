@@ -1436,7 +1436,7 @@ Almost 80~per cent of capital gains are earned by those in the top 20~per cent o
 Compared to low income earners, higher income earners are more likely to have additional income that can be invested.\footnote{The top 20~per cent of households by disposable income save on average 35~per cent of their disposable income.
 This compares to dissavings of 25~per cent for the lowest income quintile and savings rates of less than 10~per cent for the second and third quintiles.}
 
-\subsubsection{Tax gains on an accruals basis?}
+\begin{smallbox}{Tax gains on an accruals basis?}{box:accrual}
 Taxing capital gains on realization creates several distortionary effects, which we have mentioned above. 
 Investors are incentived to hold onto assets that they would otherwise sell because of the looming tax bill. 
 Investors also enjoy a lengthy deferral of tax, effectively a tax-free loan from the government to  (generally wealthy) asset-holders. 
@@ -1459,7 +1459,7 @@ Of greater difficulty are unlisted shares or business assets, which are difficul
 
 The current regime of capital gains taxation has several well-documnted flaws.
 Taxes are imposed on realization, which creates economic distortions through asset lock-in, provides investors with an implicit interest-free loan towards their tax liabilities, and allows investors to minimize their tax by waiting till retirement (when their marginal tax rate is very low) or by avoiding tax altogether.
-
+\end{smallbox}
 
 \subsection{Some discount may be justified but 50~per cent is too high}
 A concession from marginal rates of income tax should only be made if it serves a policy aim. 
