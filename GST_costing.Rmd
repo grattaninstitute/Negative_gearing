@@ -38,6 +38,7 @@ library(readxl)
 library(readr)
 library(tidyr)
 library(magrittr)
+library(httr)
 
 weighted.var.se <- function(x, w, na.rm=FALSE){
   # Computes the variance of a weighted mean following Cochran 1977 definition
@@ -49,6 +50,38 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
   out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
   return(out)
 }
+
+age_mutate <- function(.hes){
+  .hes %>%
+    mutate(
+      age_group = as.character(Age_of_HH_reference_person),
+      age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                         ifelse(as.numeric(age_group) < 20,
+                                "20 or under",
+                                paste((as.numeric(age_group) %/% 5) * 5,
+                                      "to",
+                                      (as.numeric(age_group) %/% 5) * 5 + 4)),
+                         age_group
+      )
+    )
+}
+
+# Taxation statistics 2012-13 Goods and services tax: Selected GST, WET and LCT items, 2001-02 to 2013-14 financial years
+if(!file.exists("GST_by_year.xlsx")){
+  GST_url <- "http://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/0e56ca39-832e-40ca-bc62-297a3fb552cf/download/taxstats2013gst1gstwetlctmultiyear.xlsx"
+  GET(GST_url, write_disk("GST_by_year.xlsx"))
+}
+GST_inflator_from0910_to1314 <-
+  read_excel("GST_by_year.xlsx", sheet = "GST Table 1", skip = 2) %>%
+  setnames(1:2, c("Selected_item", "unit")) %>% 
+  # en dash caution
+  setnames(old = names(.), new = gsub("([0-9]{4}).([0-9]{2})", "\\1-\\2", names(.))) %>%
+  gather(year, value, `2001-02`:`2013-14`) %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(complete.cases(.)) %>%
+  filter(grepl("Net.GST", Selected_item)) %>%
+  filter(grepl("^((2009)|(2013))", year)) %$%
+  {last(value) / first(value)}
 
 hes10hh_raw <- read.dta("./HES/hes10bh.dta")
 ```
@@ -522,19 +555,20 @@ bind_rows(food_by_age_income,
           education_by_age_income,
           childcare_by_age_income) %>%
   group_by(Total_income_decile, age_group) %>%
-  summarise(total.expenditure = sum(est.expenditure)) %>%
+  summarise(total.expenditure = sum(est.expenditure) * GST_inflator_from0910_to1314) %>%
   mutate(age_group_text = gsub("\\s+", "\n", age_group)) %>%
-  ungroup
+  ungroup %>%
+  mutate(extra_gst = 0.1 * total.expenditure)
 ```
 
 ```{r}
 GST_by_age_and_income  %>%
   grplot(aes(x = factor(age_group_text),
              y = factor(Total_income_decile),
-             alpha = total.expenditure)) + 
+             alpha = extra_gst)) + 
   geom_tile(fill = Orange) +
-  geom_text(data = tail(arrange(GST_by_age_and_income, total.expenditure)),
-            aes(label = grattan_dollar(total.expenditure)),
+  geom_text(data = tail(arrange(GST_by_age_and_income, extra_gst)),
+            aes(label = grattan_dollar(extra_gst)),
             show_guide = FALSE) + 
   scale_alpha_continuous(label=grattan_dollar) + 
   scale_x_discrete(expand = c(0,0)) + 
@@ -587,4 +621,75 @@ number_households_by_age_income %>%
   
 ```
 
-# GST expenditure density by 
+# GST for deciles relative to welfare
+```{r}
+
+```
+
+# GST for bottom 3 quintiles
+
+# Household ratios of income
+```{r}
+hes10hh %>%
+  select(Weekly_household_GST_on_all_goods_and_services_FIS
+         , Weekly_household_final_income_FIS
+         , Weight_HH_HES
+         , Household_weekly_expenditure_on_income_tax_HES_only) %>%
+  mutate(ratio_GST = Weekly_household_GST_on_all_goods_and_services_FIS / Weekly_household_final_income_FIS) %>%
+  group_by(Income_quintile = ntile(Weekly_household_final_income_FIS, 5)) %>%
+  summarise(mean_ratio = weighted.mean(ratio_GST, w = Weight_HH_HES),
+            #se_ratio = weighted.var.se(ratio_GST, w = Weight_HH_HES),
+            max_income = max(Weekly_household_final_income_FIS * 52.5),
+            mean_income_tax = weighted.mean(Household_weekly_expenditure_on_income_tax_HES_only, w = Weight_HH_HES),
+            max_income_tax = max(Household_weekly_expenditure_on_income_tax_HES_only),
+            prop_zero_income_tax = mean(Household_weekly_expenditure_on_income_tax_HES_only < 1)
+            ) %>%
+  arrange(Income_quintile) 
+```
+
+# Current base
+## Current GST per household
+```{r}
+hes10hh %>%
+  select(Weekly_household_GST_on_all_goods_and_services_FIS
+         , Weekly_household_final_income_FIS
+         , Weight_HH_HES
+         , Household_weekly_expenditure_on_income_tax_HES_only) %>%
+  group_by(Income_quintile = ntile(Weekly_household_final_income_FIS, 5)) %>%
+  summarise(avg.GST = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, 
+                                    Weight_HH_HES)) %>%
+  ungroup %>%
+  mutate(prop.GST = avg.GST/sum(avg.GST)) %>%
+  arrange(Income_quintile)
+```
+
+```{r}
+GST_15_by_age_income <- 
+  hes10hh %>%
+  age_mutate %>%
+  group_by(Income_decile = ntile(Weekly_household_final_income_FIS, 10), age_group) %>%
+  summarise(avg.GST.15 = 1.5 * weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, 
+                                             Weight_HH_HES)) %>%
+  ungroup %>%
+  mutate(avg.GST.15 = avg.GST.15 * GST_inflator_from0910_to1314) %>%
+  mutate(extra_gst = avg.GST.15 / 3)  # 5 percentage points = 15 / 3
+```
+
+```{r}
+GST_15_by_age_income  %>% 
+  grplot(aes(x = age_group, y = Income_decile, alpha = extra_gst)) + 
+  geom_tile(fill = Orange) +
+  geom_text(data = tail(arrange(GST_15_by_age_income, extra_gst)),
+            aes(label = grattan_dollar(extra_gst)),
+            show_guide = FALSE) + 
+  scale_alpha_continuous(label=grattan_dollar) + 
+  scale_x_discrete(expand = c(0,0)) + 
+  scale_y_discrete(expand = c(0,0)) + 
+  xlab("Age") +
+  coord_equal() + 
+  theme_grattan(base_size = 18) +
+  theme(panel.grid.major.y = element_blank(),
+        legend.position = "right",
+        legend.key.size = unit(2, "lines"))
+```
+

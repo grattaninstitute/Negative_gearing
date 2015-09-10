@@ -1,0 +1,349 @@
+---
+title: "What to do with $43bn?"
+author: "Hugh Parsonage"
+date: "4 September 2015"
+output: html_document
+runtime: shiny
+---
+
+```{r, results='hide'}
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE, 
+                      echo=FALSE,
+                      fig.height=8, fig.width=13)
+```
+
+```{r}
+library(shiny)
+library(ggplot2)
+library(scales)
+library(grattan)
+library(VIM) # VIM::hotdeck used for imputation
+library(dplyr)
+library(data.table)
+library(readxl)
+library(readr)
+library(tidyr)
+library(magrittr)
+
+
+sample_file_of <- function(year = 2013){
+  year <- min(2013, year)
+  fy.year <- paste0(year - 1, "-", formatC(year - 2000, flag = "0", width=2))
+  # List all files with sample in them that have csv or txt at the end.
+  list.of.files <- list.files(path = "./IndividualSampleFile", pattern = paste0("(s|S)ample.*((csv)|(txt))$"), recursive = TRUE, full.names = TRUE)
+  return(list.of.files[grepl(fy.year, list.of.files)])
+}
+
+stopifnot(file.exists(sample_file_of(2013)))
+
+get_sample_file <- function(year = 2013){
+  colClasses = sapply(fread(sample_file_of(year), nrows=50), class)
+  fread(sample_file_of(year), colClasses = colClasses, na.strings = "?")
+}
+```
+
+```{r}
+forty.three <- cpi_inflator_quarters(43 * 10^9, nominal.date = "2014-Q4", target.date = "2012-Q4") # 2012-13 taxstats
+```
+
+```{r}
+cumulative.tax <-
+  get_sample_file(2013) %>%
+  select(Taxable_Income) %>%
+  mutate(
+    marginal.tax = income_tax(Taxable_Income + 1) - income_tax(Taxable_Income),
+    estimated_tax_payable = income_tax(Taxable_Income)
+  ) %>%
+  arrange(estimated_tax_payable) %>%
+  mutate(cumulative_tax_burden = 50*cumsum(estimated_tax_payable)) 
+
+cumulative.tax %>%
+  grplot(aes(x = Taxable_Income, y = cumulative_tax_burden, group = 1)) + 
+  geom_line() + 
+  scale_y_continuous(breaks = c(0, forty.three, 50e9, 100e9, 150e9, 161e9),
+                     labels = c(0, "\n$43 bn\n(in 2012-13 dollars)", "$50 bn", "$100 bn", "$150 bn", "total")
+                     #,expand = c(0.01,0.075)
+                     ) + 
+  coord_cartesian(xlim = c(0,2.5e5), ylim = c(-1000,165e9)) + 
+  scale_x_continuous("Taxable income (2012-13)",
+                     breaks = c(0, 50e3, 70644, 100e3, 150e3, 200e3),
+                     labels = c("$0", "$50,000", "\n$70,644", "$100,000", "$150,000", "$200,00")) + 
+  geom_segment(y = forty.three, yend = forty.three, x = -Inf, xend = 70644) + # by inspection 
+  geom_segment(y = -Inf, yend = forty.three, x = 70644, xend = 70644) + 
+  ggtitle("Cumulative tax burden by taxable income")
+```
+
+# What to do?
+## Give every below $70,644 a tax break
+Of course the tax-free threshold would need to remain the same, so the effective marginal tax rates for someone earning $70,644 would increase from 34% to 16,000%.
+```{r}
+# old rates
+tax_rates <- 
+  data.table(
+    brackets = c(0, 18200, 37000, 80000, 180000),
+    rates = c(0, 0.19, 0.325, 0.37, 0.45)
+  ) %>%
+  mutate(
+    tax_amount = NA_real_
+  )
+
+for (i in 1:nrow(tax_rates)){
+  if (i == 1 || i == 2) {
+    tax_rates$tax_amount <- 0
+  } else {
+    tax_rates$tax_amount[i] <-
+      tax_rates$tax_amount[i - 1] + 
+      tax_rates$rates[i - 1] * (tax_rates$brackets[i] - tax_rates$brackets[i - 1]) 
+  }
+  
+}
+
+txamt <- function(bracket.lwr){
+  tax_rates %>%
+    filter(brackets == bracket.lwr) %$%
+    tax_amount
+}
+
+txmr <- function(bracket.lwr){
+  tax_rates %>% 
+    filter(brackets == bracket.lwr) %$%
+    rates
+}
+```
+### Old rates
+```{r}
+kable(tax_rates)
+```
+## Shiny
+
+
+## Change the marginal tax rates
+```{r}
+shinyApp( options = list(height = 1024),
+  ui = sidebarLayout(
+    fluid = FALSE,
+    sidebarPanel = sidebarPanel(
+      sliderInput("rate_1", label = "$0-$18,200 marginal rate",
+                  min = 0, max = 0.6, value = 0, step = 0.005),
+      sliderInput("rate_2", label = "$18,200-$37,000 marginal rate",
+                  min = 0, max = 0.6, value = 0.19, step = 0.005),
+      sliderInput("rate_3", label = "$37,000-$80,000 marginal rate",
+                  min = 0, max = 0.6, value = 0.325, step = 0.005),
+      sliderInput("rate_4", label = "$80,000-$180,000 marginal rate",
+                  min = 0, max = 0.6, value = 0.37, step = 0.005),
+      sliderInput("rate_5", label = "$180,000- marginal rate",
+                  min = 0, max = 0.6, value = 0.45, step = 0.005)
+    ),
+    mainPanel(
+      tableOutput("values")
+    )
+  )
+  ,
+  #####################################
+  #####################################
+  #               SERVER              #
+  #####################################
+  #####################################
+  server = function(input, output) {
+    sliderValues <- reactive({
+      
+      # The heavy lifting begins here.
+      tax_rates <- 
+        data.table(
+          brackets = c(0, 18200, 37000, 80000, 180000),
+          rates = c(input$rate_1, 
+                    input$rate_2,
+                    input$rate_3,
+                    input$rate_4,
+                    input$rate_5)
+        ) %>%
+        mutate(
+          tax_amount = NA_real_
+        )
+      
+      for (i in 1:nrow(tax_rates)){
+        if (i == 1 || i == 2) {
+          tax_rates$tax_amount <- 0
+        } else {
+          tax_rates$tax_amount[i] <-
+            tax_rates$tax_amount[i - 1] + 
+            tax_rates$rates[i - 1] * (tax_rates$brackets[i] - tax_rates$brackets[i - 1]) 
+        }
+        
+      }
+      
+      txamt <- function(bracket.lwr){
+        tax_rates %>%
+          filter(brackets == bracket.lwr) %$%
+          tax_amount
+      }
+      
+      txmr <- function(bracket.lwr){
+        tax_rates %>% 
+          filter(brackets == bracket.lwr) %$%
+          rates
+      }
+      
+      new_income_tax <- function(income){
+        ML.lower <- 20542
+        ML.upper <- 24167
+        medicare.base.rate <- 0.015
+        LITO <- ifelse(income < 37000, 445, ifelse(income < 66667, 
+                                                   445 - ((income - 37000) * 0.015), 0))
+        tax <- ifelse(income < 18200, 0, ifelse(income < 37000, 
+                                                txmr(18200) * (income - 18200), # from 0.19
+                                                ifelse(income < 80000, 
+                                                       txamt(37000) + txmr(37000) * (income - 37000), # from 0.325
+                                                       ifelse(income < 180000,
+                                                              txamt(80000) + txmr(80000) * (income - 80000), # from 0.37
+                                                              txamt(180000) + txmr(180000) * (income - 180000)))))
+        medicare.levy <- ifelse(income <= ML.lower, 0, ifelse(income > ML.lower & income <= ML.upper, 
+                                                              0.1 * (income - 20542), 
+                                                              0.015 * income))
+        out <- pmax(tax + medicare.levy - LITO, 0)
+        return(out)
+      }
+      
+      fread(sample_file_of(2013), select = "Taxable_Income") %>% 
+        mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income)) %$% 
+        {sum(diff)*50 - forty.three} %>%
+        grattan_dollar(.) ->
+        the_amount_remaining
+      
+      # Reactive expression to compose a data frame containing all of
+      # the values
+      
+      
+      # Compose data frame
+      data.frame(
+        Marginal.Rate = c("$0-$18,200", 
+                          "$18,200-$37,000",
+                          "$37,000-$80,000",
+                          "$80,000-$180,000",
+                          "$180,000-",
+                          "Amount minus $43bn"),
+        Value = as.character(c(input$rate_1, 
+                               input$rate_2,
+                               input$rate_3,
+                               input$rate_4,
+                               input$rate_5,
+                               the_amount_remaining)), 
+        stringsAsFactors=FALSE)
+      }) 
+      
+      # Show the values using an HTML table
+      output$values <- renderTable(
+        expr = sliderValues(),
+        align = "llr",
+        include.rownames = FALSE
+      )
+    }
+    
+)
+```
+
+```{r}
+tax_rates <- 
+  data.table(
+    brackets = c(0, 18200, 37000, 80000, 180000),
+    rates = c(0, 0.17, 0.325, 0.37, 0.45)
+  ) %>%
+  mutate(
+    tax_amount = NA_real_
+  )
+
+for (i in 1:nrow(tax_rates)){
+  if (i == 1 || i == 2) {
+    tax_rates$tax_amount <- 0
+  } else {
+    tax_rates$tax_amount[i] <-
+      tax_rates$tax_amount[i - 1] + 
+      tax_rates$rates[i - 1] * (tax_rates$brackets[i] - tax_rates$brackets[i - 1]) 
+  }
+  
+}
+
+txamt <- function(bracket.lwr){
+  tax_rates %>%
+    filter(brackets == bracket.lwr) %$%
+    tax_amount
+}
+
+txmr <- function(bracket.lwr){
+  tax_rates %>% 
+    filter(brackets == bracket.lwr) %$%
+    rates
+}
+
+new_income_tax <- function(income){
+  ML.lower <- 20542
+  ML.upper <- 24167
+  medicare.base.rate <- 0.015
+  LITO <- ifelse(income < 37000, 445, ifelse(income < 66667, 
+                                             445 - ((income - 37000) * 0.015), 0))
+  tax <- ifelse(income < 18200, 0, ifelse(income < 37000, 
+                                          txmr(18200) * (income - 18200), # from 0.19
+                                          ifelse(income < 80000, 
+                                                 txamt(37000) + txmr(37000) * (income - 37000), # from 0.325
+                                                 ifelse(income < 180000,
+                                                        txamt(80000) + txmr(80000) * (income - 80000), # from 0.37
+                                                        txamt(180000) + txmr(180000) * (income - 180000)))))
+  medicare.levy <- ifelse(income <= ML.lower, 0, ifelse(income > ML.lower & income <= ML.upper, 
+                                                        0.1 * (income - 20542), 
+                                                        0.015 * income))
+  out <- pmax(tax + medicare.levy - LITO, 0)
+  return(out)
+}
+```
+### New rates
+```{r}
+kable(tax_rates)
+```
+
+Amount you would still have left over
+```{r}
+get_sample_file(2013) %>% 
+  select(Taxable_Income) %>%
+  mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income)) %$% 
+  {sum(diff)*50 - forty.three} %>%
+  grattan_dollar(.)
+```
+
+## Marginal tax rates:
+```{r}
+cumulative.tax %>%
+  mutate(
+    new.marginal.tax = new_income_tax(Taxable_Income + 1) - new_income_tax(Taxable_Income)
+  ) %>%
+  gather(new_or_old, marginal.rate, marginal.tax,new.marginal.tax) %>% 
+  sample_n(size = 10000) %>%
+  mutate(new_or_old = ifelse(new_or_old == "marginal.tax", "New", "Old")) %>%
+  grplot(aes(x = Taxable_Income, y = marginal.rate, 
+             group = new_or_old, color = new_or_old, label = new_or_old)) + 
+  geom_line() + 
+  scale_x_continuous(limits = c(0,2.5e5), label=grattan_dollar) + 
+  scale_y_continuous(label=percent) + 
+  annotate("text",
+           label = "Old rate",
+           size = 7.14,
+           fontface = "bold",
+           color = gpal(2)[1],
+           x = 50e3,
+           y = 0.38, 
+           vjust = 1) +
+  annotate("text", 
+           label = "New rate",
+           size = 7.14,
+           fontface = "bold",
+           color = gpal(2)[2],
+           x = 88e3,
+           y = 0.205,
+           vjust = 0,
+           hjust = 0)
+           
+```
+
+
+
+
