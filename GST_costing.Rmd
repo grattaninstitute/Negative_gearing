@@ -515,8 +515,9 @@ age_group_tbl <-
   fread("age_table.csv")
 
 food_by_age_income %<>%
-  select(Total_income_decile, age_group, Food_exp.avg) %>%
-  setnames("Food_exp.avg", "est.expenditure") %>%
+  select(Total_income_decile, age_group, Food_GST) %>%
+  # Check that this is indeed the right variable
+  setnames("Food_GST", "est.expenditure") %>%
   mutate(Group = "Food")
 
 health_by_age_income %<>%
