@@ -14,6 +14,7 @@ knitr::opts_chunk$set(warning = FALSE,
 ```
 
 ```{r}
+library(knitr)
 library(shiny)
 library(ggplot2)
 library(scales)
@@ -115,7 +116,8 @@ txmr <- function(bracket.lwr){
 ```{r}
 kable(tax_rates)
 ```
-## Shiny
+
+# Shiny
 
 
 ## Change the marginal tax rates
@@ -124,19 +126,29 @@ shinyApp( options = list(height = 1024),
   ui = sidebarLayout(
     fluid = FALSE,
     sidebarPanel = sidebarPanel(
-      sliderInput("rate_1", label = "$0-$18,200 marginal rate",
+      
+      sliderInput("rate_1", label = "marginal rate",
                   min = 0, max = 0.6, value = 0, step = 0.005),
-      sliderInput("rate_2", label = "$18,200-$37,000 marginal rate",
+      sliderInput("bracket_1", label = "bracket",
+                  min = 0, max = 250e3, value = 18200, step = 100),
+      sliderInput("rate_2", label = "marginal rate",
                   min = 0, max = 0.6, value = 0.19, step = 0.005),
-      sliderInput("rate_3", label = "$37,000-$80,000 marginal rate",
+      sliderInput("bracket_2", label = " bracket",
+                  min = 0, max = 250e3, value = 37000, step = 100),
+      sliderInput("rate_3", label = "marginal rate",
                   min = 0, max = 0.6, value = 0.325, step = 0.005),
-      sliderInput("rate_4", label = "$80,000-$180,000 marginal rate",
+      sliderInput("bracket_3", label = "bracket",
+                  min = 0, max = 250e3, value = 80000, step = 100),
+      sliderInput("rate_4", label = "marginal rate",
                   min = 0, max = 0.6, value = 0.37, step = 0.005),
-      sliderInput("rate_5", label = "$180,000- marginal rate",
+      sliderInput("bracket_4", label = "bracket",
+                  min = 0, max = 250e3, value = 180000, step = 100),
+      sliderInput("rate_5", label = "marginal rate",
                   min = 0, max = 0.6, value = 0.45, step = 0.005)
     ),
     mainPanel(
-      tableOutput("values")
+      tableOutput("values"),
+      plotOutput("chart")
     )
   )
   ,
@@ -151,7 +163,7 @@ shinyApp( options = list(height = 1024),
       # The heavy lifting begins here.
       tax_rates <- 
         data.table(
-          brackets = c(0, 18200, 37000, 80000, 180000),
+          brackets = c(0, input$bracket_1, input$bracket_2, input$bracket_3, input$bracket_4),
           rates = c(input$rate_1, 
                     input$rate_2,
                     input$rate_3,
@@ -189,15 +201,15 @@ shinyApp( options = list(height = 1024),
         ML.lower <- 20542
         ML.upper <- 24167
         medicare.base.rate <- 0.015
-        LITO <- ifelse(income < 37000, 445, ifelse(income < 66667, 
-                                                   445 - ((income - 37000) * 0.015), 0))
-        tax <- ifelse(income < 18200, 0, ifelse(income < 37000, 
-                                                txmr(18200) * (income - 18200), # from 0.19
-                                                ifelse(income < 80000, 
-                                                       txamt(37000) + txmr(37000) * (income - 37000), # from 0.325
-                                                       ifelse(income < 180000,
-                                                              txamt(80000) + txmr(80000) * (income - 80000), # from 0.37
-                                                              txamt(180000) + txmr(180000) * (income - 180000)))))
+        LITO <- ifelse(income < input$bracket_2, 445, ifelse(income < 66667, 
+                                                   445 - ((income - input$bracket_2) * 0.015), 0))
+        tax <- ifelse(income < input$bracket_1, 0, ifelse(income < input$bracket_2, 
+                                                txmr(input$bracket_1) * (income - input$bracket_1), # from 0.19
+                                                ifelse(income < input$bracket_3, 
+                                                       txamt(input$bracket_2) + txmr(input$bracket_2) * (income - input$bracket_2), # from 0.325
+                                                       ifelse(income < input$bracket_4,
+                                                              txamt(input$bracket_3) + txmr(input$bracket_3) * (income - input$bracket_3), # from 0.37
+                                                              txamt(input$bracket_4) + txmr(input$bracket_4) * (income - input$bracket_4)))))
         medicare.levy <- ifelse(income <= ML.lower, 0, ifelse(income > ML.lower & income <= ML.upper, 
                                                               0.1 * (income - 20542), 
                                                               0.015 * income))
@@ -207,7 +219,7 @@ shinyApp( options = list(height = 1024),
       
       fread(sample_file_of(2013), select = "Taxable_Income") %>% 
         mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income)) %$% 
-        {sum(diff)*50 - forty.three} %>%
+        {-1 * sum(diff)*50} %>%
         grattan_dollar(.) ->
         the_amount_remaining
       
@@ -216,20 +228,23 @@ shinyApp( options = list(height = 1024),
       
       
       # Compose data frame
+      brackets <- 
+        paste0(paste0("$", prettyNum(c(0, input$bracket_1, input$bracket_2, input$bracket_3), big.mark = ",")),
+               "-",
+               paste0("$", prettyNum(c(input$bracket_1, input$bracket_2, input$bracket_3, input$bracket_4), big.mark = ","))
+        )
+      
       data.frame(
-        Marginal.Rate = c("$0-$18,200", 
-                          "$18,200-$37,000",
-                          "$37,000-$80,000",
-                          "$80,000-$180,000",
-                          "$180,000-",
-                          "Amount minus $43bn"),
+        `Marginal rate of` = c(brackets,
+                               "",
+                          "Extra revenue"),
         Value = as.character(c(input$rate_1, 
                                input$rate_2,
                                input$rate_3,
                                input$rate_4,
                                input$rate_5,
                                the_amount_remaining)), 
-        stringsAsFactors=FALSE)
+        stringsAsFactors=FALSE) 
       }) 
       
       # Show the values using an HTML table
@@ -238,6 +253,40 @@ shinyApp( options = list(height = 1024),
         align = "llr",
         include.rownames = FALSE
       )
+      
+      output$chart <- renderPlot({
+        data.table(
+          Taxable_Income = 10*(1:25000)
+        ) %>%
+          mutate(
+            marginal.tax = income_tax(Taxable_Income + 1) - income_tax(Taxable_Income),
+            new.marginal.tax = new_income_tax(Taxable_Income + 1) - new_income_tax(Taxable_Income)
+          ) %>%
+          gather(new_or_old, marginal.rate, marginal.tax,new.marginal.tax) %>%
+          mutate(new_or_old = ifelse(new_or_old == "marginal.tax", "New", "Old")) %>%
+          grplot(aes(x = Taxable_Income, y = marginal.rate, 
+                     group = new_or_old, color = new_or_old, label = new_or_old)) + 
+          geom_line() + 
+          scale_x_continuous(limits = c(0,2.5e5), label=grattan_dollar) + 
+          scale_y_continuous(label=percent) + 
+          annotate("text",
+                   label = "Old rate",
+                   size = 7.14,
+                   fontface = "bold",
+                   color = gpal(2)[1],
+                   x = 50e3,
+                   y = 0.38, 
+                   vjust = 1) +
+          annotate("text", 
+                   label = "New rate",
+                   size = 7.14,
+                   fontface = "bold",
+                   color = gpal(2)[2],
+                   x = 88e3,
+                   y = 0.205,
+                   vjust = 0,
+                   hjust = 0)
+      })
     }
     
 )
@@ -306,18 +355,20 @@ Amount you would still have left over
 get_sample_file(2013) %>% 
   select(Taxable_Income) %>%
   mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income)) %$% 
-  {sum(diff)*50 - forty.three} %>%
+  {sum(diff)*50} %>%
   grattan_dollar(.)
 ```
 
 ## Marginal tax rates:
 ```{r}
-cumulative.tax %>%
+data.table(
+  Taxable_Income = 10*(1:25000)
+) %>%
   mutate(
+    marginal.tax = income_tax(Taxable_Income + 1) - income_tax(Taxable_Income),
     new.marginal.tax = new_income_tax(Taxable_Income + 1) - new_income_tax(Taxable_Income)
   ) %>%
-  gather(new_or_old, marginal.rate, marginal.tax,new.marginal.tax) %>% 
-  sample_n(size = 10000) %>%
+  gather(new_or_old, marginal.rate, marginal.tax,new.marginal.tax) %>%
   mutate(new_or_old = ifelse(new_or_old == "marginal.tax", "New", "Old")) %>%
   grplot(aes(x = Taxable_Income, y = marginal.rate, 
              group = new_or_old, color = new_or_old, label = new_or_old)) + 
