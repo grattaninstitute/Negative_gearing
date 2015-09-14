@@ -638,13 +638,14 @@ hes10hh %>%
   grplot(aes(x = Total_current_weekly_HH_income_from_all_sources,
              y = Weekly_household_GST_on_all_goods_and_services_FIS)) + 
   geom_point(alpha = 0.2) + 
-  geom_vline(aes(xintercept = decile_cuts), colour = theGrey) + 
+  geom_vline(aes(xintercept = decile_cuts), colour = theGrey, linetype = 2) + 
   stat_smooth()  + 
   scale_y_continuous(limits = c(0,300), 
                      label = grattan_dollar) + 
   scale_x_continuous(label = grattan_dollar,
                      limits = c(-2, 250e3/52)) 
 ```
+
 ## Perfect GST substitution
 ### Broadening the base
 ```{r}
@@ -664,7 +665,9 @@ hes10hh %>%
                                                      include.lowest = TRUE))))   %>%
   inner_join(HH_GST_expenditure_by_quintile) %>%
   data.table %>%
-  mutate(share_of_spending = GST_expenditure * Weight_HH_HES * 52.5 ) 
+  mutate(share_of_spending = GST_expenditure * Weight_HH_HES * 52.5 ) %>%
+  group_by(total.inc.quintiles) %>%
+  summarise(avg.pension = weighted.mean(Current_weekly_HH_income_from_government_pensions_and_allowances > 0, Weight_HH_HES))
 ```
 
 ### 15 per cent
@@ -683,8 +686,8 @@ hes10hh %>%
                                                                                                     GST_extra,
                                                                                                     0)
   ) %>%
-  grplot(aes(x = Current_weekly_HH_income_from_government_pensions_and_allowances,
-             y = new_income_required)) +
+  grplot(aes(x = Total_current_weekly_HH_income_from_all_sources,
+             y = Weekly_household_GST_on_all_goods_and_services_FIS)) +
   geom_point()
 ```
 
