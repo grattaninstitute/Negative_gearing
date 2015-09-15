@@ -759,6 +759,57 @@ GST_15_by_age_income  %>%
 ```
 
 # Deloitte study
+
+```{r}
+proportion_of_welfare_by_quintile <-
+  hes10hh %>% 
+  group_by(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                     breaks = total.inc.quintiles,  
+                                                     include.lowest = TRUE)))) %>%
+  summarise(total_welfare = sum(Current_weekly_HH_income_from_government_pensions_and_allowances * Weight_HH_HES),
+            extra_gst = sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) / 2) %>%
+  ungroup %>%
+  mutate(extra_gst.prop = extra_gst / sum(extra_gst),
+         prop_welfare = total_welfare/sum(total_welfare),
+         implied_transfr = prop_welfare * compensatory.transfers / 52.5,
+         comp_adequacy = implied_transfr/extra_gst)
+```
+
+## Raw doughnut
+```{r}
+data.frame(expense = c("Net revenue gain", "Personal tax cuts", "Transfer payments"),
+                    number = c(115,21,16)) %>%
+  mutate(fraction = number/sum(number)) %>%
+  arrange(fraction) %>%
+  mutate(ymax = cumsum(fraction),
+         ymin = c(0, lag(ymax)[-1])) %>%
+  grplot(aes(fill = expense, ymax = ymax, ymin = ymin, xmax = 4, xmin = 3)) + 
+  geom_rect(colour = theGrey) + 
+  geom_text(aes(x = 4.5, y = 0.5 * (ymin + ymax), label = expense)) +
+  coord_polar(theta = "y") + 
+  xlim(0,4.6) +
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+```
+
+```{r}
+proportion_of_welfare_by_quintile %>%
+  mutate(fraction = extra_gst.prop) %>%
+  arrange(fraction) %>%
+  mutate(ymax = cumsum(fraction),
+         ymin = c(0, lag(ymax)[-1])) %>%
+  grplot(aes(fill = Gross_income_quintile, ymax = ymax, ymin = ymin, xmax = 4, xmin = 3)) + 
+  geom_rect(colour = theGrey) + 
+  geom_text(aes(x = 4.5, y = 0.5 * (ymin + ymax), label = Gross_income_quintile)) +
+  coord_polar(theta = "y") + 
+  xlim(0,4.6) +
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+```
+
+
 ## Household expenditure per week by gross income 
 ```{r}
 final.income.quintiles <- 
@@ -824,9 +875,21 @@ proportion_of_welfare_by_quintile <-
                                                      breaks = total.inc.quintiles,  
                                                      include.lowest = TRUE)))) %>%
   summarise(total_welfare = sum(Current_weekly_HH_income_from_government_pensions_and_allowances * Weight_HH_HES),
-            extra_gst = sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES)) %>%
+            extra_gst = sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) / 2) %>%
   ungroup %>%
   mutate(prop_welfare = total_welfare/sum(total_welfare),
-         prop_transfr = prop_welfare * (extra_gst_raised/52) * (1/4)*(16/(16+21)),
-         comp_adequcy = prop_transfr/extra_gst)
+         implied_transfr = prop_welfare * compensatory.transfers / 52.5,
+         comp_adequacy = implied_transfr/extra_gst)
 ```
+
+## Tax cuts
+By inspection of <https://grattan.shinyapps.io/Forty_three_app/Forty_three_app.Rmd> we see that a reduction in the bottom marginal tax rate from 19% to 15.5% results in a $5.6 billion decrease in revenue.
+
+```{r}
+
+
+```
+
+
+
+
