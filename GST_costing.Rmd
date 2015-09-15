@@ -732,7 +732,7 @@ hes10hh %>%
 GST_15_by_age_income <- 
   hes10hh %>%
   age_mutate %>%
-  group_by(Income_decile = ntile(Weekly_household_final_income_FIS, 10), age_group) %>%
+  group_by(# needs to be weighted Income_decile = ntile(Weekly_household_final_income_FIS, 10), age_group) %>%
   summarise(avg.GST.15 = 1.5 * weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, 
                                              Weight_HH_HES)) %>%
   ungroup %>%
@@ -758,3 +758,75 @@ GST_15_by_age_income  %>%
         legend.key.size = unit(2, "lines"))
 ```
 
+# Deloitte study
+## Household expenditure per week by gross income 
+```{r}
+final.income.quintiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Weekly_household_final_income_FIS 
+              ,.
+              #, quantiles = c(0:5)/5)
+              ,quantiles = c(0:5)/5
+              )
+
+hes10hh %>%
+  group_by(
+    Gross_income_quintile = factor(as.numeric(cut(Weekly_household_final_income_FIS, 
+                                                     breaks = final.income.quintiles,  
+                                                     include.lowest = TRUE)))
+  ) %>%
+  summarise(
+    average_total_spending = weighted.mean(Total_household_expenditure_including_selected_other_payments_HES_only, Weight_HH_HES), 
+    average_extra_gst = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, Weight_HH_HES) / 2,
+    average_welfare_payments = weighted.mean(Current_weekly_HH_income_from_government_pensions_and_allowances, Weight_HH_HES),
+    average_income = weighted.mean(Weekly_household_final_income_FIS, Weight_HH_HES)
+  ) %>% 
+  arrange(Gross_income_quintile) %>%
+  ungroup %>%
+  mutate(prop_income_on_extra_gst = average_extra_gst / average_income,
+         prop_income_spending = average_total_spending / average_income
+         )
+
+hes10hh %>%
+  group_by(
+    Gross_income_quintile = factor(as.numeric(cut(Weekly_household_final_income_FIS, 
+                                                     breaks = final.income.quintiles,  
+                                                     include.lowest = TRUE)))
+  ) %>%
+  mutate(extra_gst = Weekly_household_GST_on_all_goods_and_services_FIS / 2) %$%
+  sum(extra_gst * Weight_HH_HES) * 52.5 ->
+  extra_gst_raised
+
+compensatory.transfers <-
+  ((16/(16+21))/4)*extra_gst_raised   # p. 15 of report
+
+hes10hh %>% 
+  mutate(Gross_income_quintile = factor(as.numeric(cut(Weekly_household_final_income_FIS, 
+                                                     breaks = final.income.quintiles,  
+                                                     include.lowest = TRUE))),
+         extra_gst = 52.5 * Weight_HH_HES * Weekly_household_GST_on_all_goods_and_services_FIS / 2,
+         compensatory_transfer = ifelse(Gross_income_quintile == 1,
+                                        compensatory.transfers / Weight_HH_HES,
+                                        0),
+         compensation_adequacy = compensatory_transfer / extra_gst) %>%
+  group_by(Gross_income_quintile) %>%
+  summarise(extra_gst_mean = weighted.mean(extra_gst, Weight_HH_HES),
+            compensatory_transfer_mean = weighted.mean(compensatory_transfer, Weight_HH_HES)) %>%
+  mutate(compensation_adequacy = compensatory_transfer_mean / extra_gst_mean)
+
+```
+
+```{r}
+proportion_of_welfare_by_quintile <-
+  hes10hh %>% 
+  group_by(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                     breaks = total.inc.quintiles,  
+                                                     include.lowest = TRUE)))) %>%
+  summarise(total_welfare = sum(Current_weekly_HH_income_from_government_pensions_and_allowances * Weight_HH_HES),
+            extra_gst = sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES)) %>%
+  ungroup %>%
+  mutate(prop_welfare = total_welfare/sum(total_welfare),
+         prop_transfr = prop_welfare * (extra_gst_raised/52) * (1/4)*(16/(16+21)),
+         comp_adequcy = prop_transfr/extra_gst)
+```
