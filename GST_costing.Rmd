@@ -23,6 +23,7 @@ Some issues:
 ```{r, results='hide'}
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE, 
+                      cache=TRUE,
                       fig.height=8, fig.width=10)
 ```
 
@@ -729,38 +730,46 @@ hes10hh %>%
 ```
 
 ```{r}
-GST_15_by_age_income <- 
-  hes10hh %>%
-  age_mutate %>%
-  group_by(# needs to be weighted Income_decile = ntile(Weekly_household_final_income_FIS, 10), age_group) %>%
-  summarise(avg.GST.15 = 1.5 * weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, 
-                                             Weight_HH_HES)) %>%
-  ungroup %>%
-  mutate(avg.GST.15 = avg.GST.15 * GST_inflator_from0910_to1314) %>%
-  mutate(extra_gst = avg.GST.15 / 3)  # 5 percentage points = 15 / 3
+# GST_15_by_age_income <- 
+#   hes10hh %>%
+#   age_mutate %>%
+#   group_by(# needs to be weighted Income_decile = ntile(Weekly_household_final_income_FIS, 10), age_group) %>%
+#   summarise(avg.GST.15 = 1.5 * weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, 
+#                                              Weight_HH_HES)) %>%
+#   ungroup %>%
+#   mutate(avg.GST.15 = avg.GST.15 * GST_inflator_from0910_to1314) %>%
+#   mutate(extra_gst = avg.GST.15 / 3)  # 5 percentage points = 15 / 3
 ```
 
 ```{r}
-GST_15_by_age_income  %>% 
-  grplot(aes(x = age_group, y = Income_decile, alpha = extra_gst)) + 
-  geom_tile(fill = Orange) +
-  geom_text(data = tail(arrange(GST_15_by_age_income, extra_gst)),
-            aes(label = grattan_dollar(extra_gst)),
-            show_guide = FALSE) + 
-  scale_alpha_continuous(label=grattan_dollar) + 
-  scale_x_discrete(expand = c(0,0)) + 
-  scale_y_discrete(expand = c(0,0)) + 
-  xlab("Age") +
-  coord_equal() + 
-  theme_grattan(base_size = 18) +
-  theme(panel.grid.major.y = element_blank(),
-        legend.position = "right",
-        legend.key.size = unit(2, "lines"))
+# GST_15_by_age_income  %>% 
+#   grplot(aes(x = age_group, y = Income_decile, alpha = extra_gst)) + 
+#   geom_tile(fill = Orange) +
+#   geom_text(data = tail(arrange(GST_15_by_age_income, extra_gst)),
+#             aes(label = grattan_dollar(extra_gst)),
+#             show_guide = FALSE) + 
+#   scale_alpha_continuous(label=grattan_dollar) + 
+#   scale_x_discrete(expand = c(0,0)) + 
+#   scale_y_discrete(expand = c(0,0)) + 
+#   xlab("Age") +
+#   coord_equal() + 
+#   theme_grattan(base_size = 18) +
+#   theme(panel.grid.major.y = element_blank(),
+#         legend.position = "right",
+#         legend.key.size = unit(2, "lines"))
 ```
 
 # Deloitte study
 
 ```{r}
+# 15 pc.
+extra_gst_raised <- 
+  hes10hh %$%
+  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) *52.5 / 2
+
+compensatory.transfers <-
+  ((16/(16+21))/4)*extra_gst_raised
+
 proportion_of_welfare_by_quintile <-
   hes10hh %>% 
   group_by(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
@@ -790,7 +799,8 @@ data.frame(expense = c("Net revenue gain", "Personal tax cuts", "Transfer paymen
   xlim(0,4.6) +
   theme(panel.grid = element_blank(),
         axis.text = element_blank(),
-        axis.ticks = element_blank())
+        axis.ticks = element_blank(),
+        axis.title = element_blank())
 ```
 
 ```{r}
@@ -802,13 +812,43 @@ proportion_of_welfare_by_quintile %>%
   grplot(aes(fill = Gross_income_quintile, ymax = ymax, ymin = ymin, xmax = 4, xmin = 3)) + 
   geom_rect(colour = theGrey) + 
   geom_text(aes(x = 4.5, y = 0.5 * (ymin + ymax), label = Gross_income_quintile)) +
-  coord_polar(theta = "y") + 
+  coord_polar(theta = "y")+ 
   xlim(0,4.6) +
   theme(panel.grid = element_blank(),
         axis.text = element_blank(),
-        axis.ticks = element_blank())
+        axis.ticks = element_blank(),
+        axis.title = element_blank())
 ```
 
+
+```{r}
+outside <- 
+  proportion_of_welfare_by_quintile %>%
+  mutate(fraction = extra_gst.prop) %>%
+  arrange(fraction) %>%
+  mutate(ymax = cumsum(fraction),
+         ymin = c(0, lag(ymax)[-1]))
+
+inside <- 
+  data.frame(expense = c("Net revenue gain", "Personal tax cuts", "Transfer payments"),
+                    number = c(115,21,16)) %>%
+  mutate(fraction = number/sum(number)) %>%
+  arrange(fraction) %>%
+  mutate(ymax = cumsum(fraction),
+         ymin = c(0, lag(ymax)[-1]))
+
+grplot(NULL) + 
+  geom_rect(data = inside, aes(fill = expense, ymax = ymax, ymin = ymin, xmax = 3, xmin = 2)) + 
+  geom_rect(data = outside, aes(fill = Gross_income_quintile, ymax = ymax, ymin = ymin, xmax = 4, xmin = 3)) + 
+  coord_polar(theta = "y") + 
+  xlim(0, 4.5) + 
+  geom_text(data = outside, aes(x = 4.5, y = 0.5 * (ymin + ymax), label = Gross_income_quintile))  + 
+  geom_text(data = inside, aes(x = 1.5, y = 0.5 * (ymin + ymax), label = expense)) +
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank())
+```
 
 ## Household expenditure per week by gross income 
 ```{r}
