@@ -47,6 +47,7 @@ HILDA/
 SIH/
 cache/
 figure/
+GST_costing_cache/
 
 # figures
 *.pdf
