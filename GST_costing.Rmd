@@ -27,7 +27,7 @@ knitr::opts_chunk$set(warning = FALSE,
                       fig.height=8, fig.width=10)
 ```
 
-```{r}
+```{r, cache=FALSE}
 library(ggplot2)
 library(grattan)
 library(VIM) # VIM::hotdeck used for imputation
@@ -67,6 +67,14 @@ age_mutate <- function(.hes){
     )
 }
 
+group_by.income_quintile <- function(.data, type = "Current_weekly_HH_disposable_income"){
+  if(type == "Current_weekly_HH_disposable_income"){
+    group_by(.data, income_quintile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
+                                                            breaks = total.inc.quintiles, 
+                                                            include.lowest = TRUE)))) 
+  }
+}
+
 # Taxation statistics 2012-13 Goods and services tax: Selected GST, WET and LCT items, 2001-02 to 2013-14 financial years
 if(!file.exists("GST_by_year.xlsx")){
   GST_url <- "http://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/0e56ca39-832e-40ca-bc62-297a3fb552cf/download/taxstats2013gst1gstwetlctmultiyear.xlsx"
@@ -83,11 +91,11 @@ GST_inflator_from0910_to1314 <-
   filter(grepl("Net.GST", Selected_item)) %>%
   filter(grepl("^((2009)|(2013))", year)) %$%
   {last(value) / first(value)}
-
-hes10hh_raw <- read.dta("./HES/hes10bh.dta")
 ```
 Our first task is to make the HES variables meaningful. Do you know what `INCTOPH8` means? Let's find out! The way I did that was to link the variables in the variable listings excel file to the definition therein. We also have to make the variables suitable for R, *viz* no spaces or weird characters.
 ```{r}
+hes10hh_raw <- read.dta("./HES/hes10bh.dta")
+
 hes.sih.vars <- read_excel("./SIH/HES_and_SIH_variable_listing.xlsx") 
 
 # See page 21 of HES 2009-10 user guide
@@ -718,15 +726,18 @@ hes10hh %>%
 ```{r}
 hes10hh %>%
   select(Weekly_household_GST_on_all_goods_and_services_FIS
+         , Total_current_weekly_HH_income_from_all_sources
          , Weekly_household_final_income_FIS
          , Weight_HH_HES
          , Household_weekly_expenditure_on_income_tax_HES_only) %>%
-  group_by(Income_quintile = ntile(Weekly_household_final_income_FIS, 5)) %>%
+  group_by(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                     breaks = total.inc.quintiles,  
+                                                     include.lowest = TRUE)))) %>%
   summarise(avg.GST = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, 
                                     Weight_HH_HES)) %>%
   ungroup %>%
   mutate(prop.GST = avg.GST/sum(avg.GST)) %>%
-  arrange(Income_quintile)
+  arrange(Gross_income_quintile)
 ```
 
 ```{r}
@@ -760,21 +771,25 @@ hes10hh %>%
 ```
 
 # Deloitte study
-
+I use the 2009-10 HES/FIS to estimate the effect of a 5 percentage point raise in a 10% GST. I then hardcoded the numbers from the Deloitte report to determine the size of their proposed compensatory transfers as a function of the extra GST raised. 
 ```{r}
 # 15 pc.
 extra_gst_raised <- 
   hes10hh %$%
-  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) *52.5 / 2
+  # Divide by 2 because 10/2 = 5, a 5 percentage point increase in GST.
+  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) * 52.5 / 2
 
 compensatory.transfers <-
-  ((16/(16+21))/4)*extra_gst_raised
+  # A quarter of money raised goes to tax cuts and transfers.
+  # Transfers = 16 bn, tax cuts = 21 bn (which is over four years 
+  # but that is relevant here).
+  (1/4)*((16/(16+21)))*extra_gst_raised
 
 proportion_of_welfare_by_quintile <-
   hes10hh %>% 
   group_by(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
-                                                     breaks = total.inc.quintiles,  
-                                                     include.lowest = TRUE)))) %>%
+                                                         breaks = total.inc.quintiles,  
+                                                         include.lowest = TRUE)))) %>%
   summarise(total_welfare = sum(Current_weekly_HH_income_from_government_pensions_and_allowances * Weight_HH_HES),
             extra_gst = sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) / 2) %>%
   ungroup %>%
@@ -784,8 +799,10 @@ proportion_of_welfare_by_quintile <-
          comp_adequacy = implied_transfr/extra_gst)
 ```
 
-## Raw doughnut
-```{r}
+
+## Deloitte double donut
+Assuming perfect precision in welfare means testing ('well-targeted payments'), 
+```{r, fig.show='hide'}
 data.frame(expense = c("Net revenue gain", "Personal tax cuts", "Transfer payments"),
                     number = c(115,21,16)) %>%
   mutate(fraction = number/sum(number)) %>%
@@ -800,10 +817,11 @@ data.frame(expense = c("Net revenue gain", "Personal tax cuts", "Transfer paymen
   theme(panel.grid = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
-        axis.title = element_blank())
+        axis.title = element_blank(),
+        axis.line = element_blank())
 ```
 
-```{r}
+```{r, fig.show='hide'}
 proportion_of_welfare_by_quintile %>%
   mutate(fraction = extra_gst.prop) %>%
   arrange(fraction) %>%
@@ -817,7 +835,8 @@ proportion_of_welfare_by_quintile %>%
   theme(panel.grid = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
-        axis.title = element_blank())
+        axis.title = element_blank(),
+        axis.line  = element_blank())
 ```
 
 
@@ -847,8 +866,70 @@ grplot(NULL) +
   theme(panel.grid = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
-        axis.title = element_blank())
+        axis.title = element_blank(),
+        axis.line = element_blank())
 ```
+
+## But this does not paint the full picture
+In reality, welfare payments cannot be perfectly targeted -- and certainly not to the bottom household. Past precision is the best performance of future precision, so I analyzed the 2009-10 Housing Expenditure Survey from the ABS to determine how well targeted welfare payments are. 
+
+```{r, echo=TRUE, fig.height = 15, fig.width = 20}
+welfare.by.income.quintile <- 
+  hes10_indiv %>%
+  merge(hes10hh, by = "Unique_household_number", suffixes = c("indiv", "hh")) %>%
+  mutate(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                       breaks = total.inc.quintiles,  
+                                                       include.lowest = TRUE)))) %>%
+  select(Unique_household_number, Gross_income_quintile, 
+         Weight_Person_HES, 
+         Current_weekly_amount_of_Commonwealth_Rent_Assistance, Current_weekly_income_from_age_pension, Current_weekly_income_from_wife_pension, Current_weekly_income_from_carer_payment, 
+         Current_weekly_income_from_carer_allowance, Current_weekly_income_from_special_benefit, Current_weekly_income_from_widow_allowance, Current_weekly_income_from_youth_allowance, Current_weekly_income_from_Austudy_Abstudy, Current_weekly_income_from_parenting_payment, Current_weekly_income_from_Baby_Bonus_payment, Current_weekly_income_from_partner_allowance, Current_weekly_income_from_senior_supplement, Current_weekly_income_from_newstart_allowance, Current_weekly_income_from_pension_supplement, Current_weekly_income_from_sickness_allowance, Current_weekly_income_from_service_pension_DVA, Current_weekly_income_from_utilities_allowance, Current_weekly_income_from_disability_pension_DVA, Current_weekly_income_from_war_widows_pension_DVA, Current_weekly_income_from_disability_support_pension, Current_weekly_income_from_family_tax_benefits_modelled, Current_weekly_income_from_other_government_pensions_and_allowances) %>%
+  gather(Allowance, income, -Unique_household_number, -Gross_income_quintile, -Weight_Person_HES) %>%
+  data.table %>%
+  mutate(Allowance = gsub("Current_weekly_income_from_", "", Allowance, fixed = TRUE)) %>%
+  group_by(Gross_income_quintile, Allowance) %>%
+  summarise(total = sum(income * Weight_Person_HES)) %>%
+  ungroup %>% 
+  arrange(desc(total)) 
+
+
+welfare.by.income.quintile %>%
+  mutate(Allowance = factor(Allowance, levels = (welfare.by.income.quintile$Allowance), ordered = TRUE)) %>%
+  mutate(text = ifelse(Gross_income_quintile == 2 & total > 1e7, gsub("_", " ", Allowance, fixed = TRUE), NA_character_)) %>%
+  group_by(Gross_income_quintile) %>%
+  arrange(desc(total)) %>%
+  mutate(text.y = cumsum(total)) %>%
+  ggplot(aes(x = Gross_income_quintile, fill = Allowance, order = Allowance)) + 
+  geom_bar(aes(y = total), stat = "identity", position = "stack") + 
+  geom_text(aes(label = text, y = text.y), vjust = 1, fontface = "bold", size = 5.5) + 
+  scale_fill_manual(values = c(rep(RColorBrewer::brewer.pal(11, name="Spectral"), 2), "black")) + 
+  scale_y_continuous("Weekly total income", label = grattan_dollar) + 
+  theme_light(base_size = 18)
+```
+
+```{r, results = 'asis'}
+proportion_of_welfare_by_quintile.tots <- 
+  proportion_of_welfare_by_quintile %>% 
+  ungroup %>%
+  summarise(Total = sum)
+
+proportion_of_welfare_by_quintile_pretty <- 
+  proportion_of_welfare_by_quintile %>%
+  arrange(Gross_income_quintile) %>%
+  mutate(`Gross income quintile` = Gross_income_quintile,
+         `Total welfare` = grattan_dollar(total_welfare * 52.5),
+         `Increased GST burden` = grattan_dollar(extra_gst * 52.5),
+         `(%)` = scales::percent(extra_gst.prop),
+         `Share of total welfare` = scales::percent(prop_welfare),
+         `Implied compensation` = grattan_dollar(implied_transfr * 52.5),
+         `Adequacy of compo` = scales::percent(comp_adequacy)) %>%
+  select(-contains("_"))
+
+kable(proportion_of_welfare_by_quintile_pretty,
+      align = rep("r", ncol(proportion_of_welfare_by_quintile_pretty)))
+```
+
+
 
 ## Household expenditure per week by gross income 
 ```{r}

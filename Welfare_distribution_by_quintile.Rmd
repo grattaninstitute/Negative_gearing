@@ -100,7 +100,6 @@ total.inc.quintiles <-
 
 
 ```{r, echo=FALSE}
-```{r}
 welfare.by.income.quintile <- 
   hes10_indiv %>%
   merge(hes10hh, by = "Unique_household_number", suffixes = c("indiv", "hh")) %>%
