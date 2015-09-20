@@ -840,7 +840,7 @@ proportion_of_welfare_by_quintile %>%
 ```
 
 
-```{r}
+```{r, fig.height=13, fig.width=13}
 outside <- 
   proportion_of_welfare_by_quintile %>%
   mutate(fraction = extra_gst.prop) %>%
@@ -860,14 +860,30 @@ grplot(NULL) +
   geom_rect(data = inside, aes(fill = expense, ymax = ymax, ymin = ymin, xmax = 3, xmin = 2)) + 
   geom_rect(data = outside, aes(fill = Gross_income_quintile, ymax = ymax, ymin = ymin, xmax = 4, xmin = 3)) + 
   coord_polar(theta = "y") + 
-  xlim(0, 4.5) + 
-  geom_text(data = outside, aes(x = 4.5, y = 0.5 * (ymin + ymax), label = Gross_income_quintile))  + 
-  geom_text(data = inside, aes(x = 1.5, y = 0.5 * (ymin + ymax), label = expense)) +
+  xlim(0, 5.5) + 
+  geom_text(data = outside, aes(x = 4.5, y = 0.5 * (ymin + ymax), label = Gross_income_quintile),
+            fontface = "bold", size = 6, family = "serif")  + 
+  geom_text(data = inside, aes(x = 1.5, y = 0.5 * (ymin + ymax), label = expense),
+            fontface = "bold", size = 6) +
   theme(panel.grid = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
         axis.title = element_blank(),
-        axis.line = element_blank())
+        axis.line = element_blank()) + 
+  annotate("text",
+           x = 0.01, 
+           y = 0.01,
+           fontface = "bold",
+           size = 7,
+           label = "Revenue destination") + 
+  annotate("text",
+           x = 5.15,
+           y = 0.01, 
+           hjust = 0.5,
+           fontface = "bold",
+           size = 7,
+           family = "serif",
+           label = "Revenue origin (household income quintile)")
 ```
 
 ## But this does not paint the full picture
