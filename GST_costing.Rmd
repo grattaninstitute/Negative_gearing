@@ -657,10 +657,18 @@ hes10hh %>%
   geom_point(alpha = 0.2) + 
   geom_vline(aes(xintercept = decile_cuts), colour = theGrey, linetype = 2) + 
   stat_smooth()  + 
-  scale_y_continuous(limits = c(0,300), 
+  scale_y_continuous("Weekly GST",
+                     limits = c(0,300), 
                      label = grattan_dollar) + 
   scale_x_continuous(label = grattan_dollar,
-                     limits = c(-2, 250e3/52)) 
+                     limits = c(-2, 250e3/52)) +
+  theme(axis.title.y = element_text(angle = 90)) + 
+  annotate("text", 
+           x = 1000,
+           y = 300,
+           vjust = 1,
+           size = 7.14,
+           label = "income deciles")
 ```
 
 ## Perfect GST substitution
@@ -688,7 +696,7 @@ hes10hh %>%
 ```
 
 ### 15 per cent
-```{r}
+```{r, fig.show='hide'}
 hes10hh %>%
   select(Weekly_household_GST_on_all_goods_and_services_FIS
          , Current_weekly_HH_income_from_government_pensions_and_allowances
@@ -705,7 +713,8 @@ hes10hh %>%
   ) %>%
   grplot(aes(x = Total_current_weekly_HH_income_from_all_sources,
              y = Weekly_household_GST_on_all_goods_and_services_FIS)) +
-  geom_point()
+  geom_point() + 
+  ylab("Weekly GST") 
 ```
 
 # GST for bottom 3 quintiles
@@ -897,7 +906,7 @@ grplot(NULL) +
 ## But this does not paint the full picture
 In reality, welfare payments cannot be perfectly targeted -- and certainly not to the bottom household. Past precision is the best performance of future precision, so I analyzed the 2009-10 Housing Expenditure Survey from the ABS to determine how well targeted welfare payments are. 
 
-```{r, echo=TRUE, fig.height = 15, fig.width = 20}
+```{r, echo=TRUE, fig.height = 12, fig.width = 16}
 welfare.by.income.quintile <- 
   hes10_indiv %>%
   merge(hes10hh, by = "Unique_household_number", suffixes = c("indiv", "hh")) %>%
@@ -941,13 +950,13 @@ proportion_of_welfare_by_quintile.tots <-
 proportion_of_welfare_by_quintile_pretty <- 
   proportion_of_welfare_by_quintile %>%
   arrange(Gross_income_quintile) %>%
-  mutate(`Quintile` = Gross_income_quintile,
+  mutate(`Q` = Gross_income_quintile,
          `Total welfare` = grattan_dollar(total_welfare * 52.5),
          `Increased GST burden` = grattan_dollar(extra_gst * 52.5),
          `(%)` = scales::percent(extra_gst.prop),
-         `Share of total welfare` = scales::percent(prop_welfare),
-         `Implied compensation` = grattan_dollar(implied_transfr * 52.5),
-         `Adequacy of compo` = scales::percent(comp_adequacy)) %>%
+         `% of total welfare` = scales::percent(prop_welfare),
+         `Implied compo` = grattan_dollar(implied_transfr * 52.5),
+         `Compo adeq.` = scales::percent(comp_adequacy)) %>%
   select(-contains("_"))
 
 kable(proportion_of_welfare_by_quintile_pretty,
@@ -1062,13 +1071,16 @@ sih11 <-
 ```{r}
 sih11 %>%
   mutate(prop_welfare = Total_current_weekly_income_from_government_pensions_and_allowances / Total_current_weekly_income_from_all_sources) %>%
+  filter(Total_current_weekly_income_from_all_sources >= 0) %>%
   grplot(aes(x = Total_current_weekly_income_from_all_sources, y = prop_welfare,
              alpha = Person_weight/max(Person_weight), weight = Person_weight)) + 
   geom_point() +
-  stat_smooth() + 
   scale_alpha_identity() + 
-  coord_cartesian(xlim = c(-250,10e3),
-                  ylim = c(-2,2))
+  scale_y_continuous("Income from welfare", 
+                     label = scales::percent) + 
+  coord_cartesian(xlim = c(-250,5e3),
+                  ylim = c(-0.1,2)) +
+  theme(axis.title.y = element_text(angle = 90))
 ```
 
 ## What magnitude of compensation would be required in order for the lowest 20% disposable income would be compensated?
