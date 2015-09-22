@@ -25,7 +25,7 @@ Some issues:
 ```{r, results='hide'}
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE, 
-                      cache=TRUE,
+                      cache=FALSE,
                       fig.height=8, fig.width=10)
 ```
 
@@ -928,7 +928,8 @@ welfare.by.income.quintile %>%
   geom_text(aes(label = text, y = text.y), vjust = 1, fontface = "bold", size = 5.5) + 
   scale_fill_manual(values = c(rep(RColorBrewer::brewer.pal(11, name="Spectral"), 2), "black")) + 
   scale_y_continuous("Weekly total income", label = grattan_dollar) + 
-  theme_light(base_size = 18)
+  theme_light(base_size = 18) + 
+  theme(legend.position = "none")
 ```
 
 ```{r, results = 'asis'}
@@ -940,7 +941,7 @@ proportion_of_welfare_by_quintile.tots <-
 proportion_of_welfare_by_quintile_pretty <- 
   proportion_of_welfare_by_quintile %>%
   arrange(Gross_income_quintile) %>%
-  mutate(`Gross income quintile` = Gross_income_quintile,
+  mutate(`Quintile` = Gross_income_quintile,
          `Total welfare` = grattan_dollar(total_welfare * 52.5),
          `Increased GST burden` = grattan_dollar(extra_gst * 52.5),
          `(%)` = scales::percent(extra_gst.prop),
@@ -1241,7 +1242,7 @@ perfect_and_imperfect %>%
            color = theGrey)
 ```
 
-```{r}
+```{r, fig.height = 16, fig.width = 14}
 perfect_and_imperfect_comp_adequacy <- 
   bind_rows(ordinarily_targeted_efficacy_comp_adequacy.15pc, perfectly_targeted_efficacy_comp_adequacy.15pc, .id = "targeting") %>%
   mutate(targeting = ifelse(targeting == 1, "BAU", "Perfect"))
@@ -1269,8 +1270,8 @@ text_facet.perf <-
 
 perfect_and_imperfect_comp_adequacy %>%
   mutate(alpha = ifelse(comp_adequacy == 1, 1, 1),
-         size  = ifelse(comp_adequacy == 1, 2.5, 1.25),
-         linetype = ifelse(comp_adequacy == 1, "A", "B")) %>%
+         size  = ifelse(comp_adequacy == 1, 2.5, 1.025),
+         linetype = ifelse(comp_adequacy == 1, "A", "A")) %>%
   grplot(aes(x = percentage_revenue, y = percentage_compensated, color = targeting, group = interaction(targeting, comp_adequacy), alpha = alpha, size = size, linetype = linetype)) + 
   geom_line() + 
   theme(axis.title.y = element_text(angle = 90)) + 
@@ -1281,7 +1282,8 @@ perfect_and_imperfect_comp_adequacy %>%
   geom_text(data = text_facet.bau,
             label = "BAU") +
   geom_text(data = text_facet.perf,
-            label = "Perfect") +
+            label = "Perfect") + 
+  theme(panel.margin = unit(2, "lines")) +
   facet_grid(targeting ~ .)
 
 ```
@@ -1336,6 +1338,7 @@ ordinary_20pc_comp_adequacy.15pc <-
   group_by.income_quintile %>%
   ungroup %>%
   data.table %>% 
+  # Note trailing underscore for percentage_revenue_
   mutate(revenue_for_transfer = percentage_revenue_ * extra_gst.weekly) %>%
   group_by(comp_adequacy) %>%
   mutate(revenue_transfered = ifelse(income_quintile == 1,  # may be redundant but not sure
@@ -1370,6 +1373,10 @@ perfect_and_imperfect.comp_adequacy.15pc %>%
   scale_x_continuous("Compensation threshold/Increased GST burden", label = scales::percent) + 
   scale_y_continuous("Percentage of bottom quintile meeting threshold", label = scales::percent) + 
   theme(axis.title.y = element_text(angle = 90))
+```
+
+```{r}
+
 ```
 
 
