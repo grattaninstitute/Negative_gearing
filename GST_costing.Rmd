@@ -1071,18 +1071,90 @@ sih11 <-
 ```{r}
 sih11 %>%
   mutate(prop_welfare = Total_current_weekly_income_from_government_pensions_and_allowances / Total_current_weekly_income_from_all_sources) %>%
-  mutate(has_age_p = ifelse(Current_weekly_income_from_age_pension > 0, TRUE, FALSE)) %>%
   filter(Total_current_weekly_income_from_all_sources >= 0) %>%
   grplot(aes(x = Total_current_weekly_income_from_all_sources, y = prop_welfare,
-             color = has_age_p,
              alpha = Person_weight/max(Person_weight), weight = Person_weight)) + 
   geom_point() +
   scale_alpha_identity() + 
-  scale_y_continuous("Income from welfare", 
+  scale_y_continuous("% income from welfare", 
                      label = scales::percent) + 
   coord_cartesian(xlim = c(-25,4.2e3),
                   ylim = c(-0.1,1.25)) +
   theme(axis.title.y = element_text(angle = 90))
+```
+
+```{r}
+sih11 %>%
+  mutate(prop_welfare = Total_current_weekly_income_from_government_pensions_and_allowances / Total_current_weekly_income_from_all_sources) %>%
+  mutate(has_age_pnsn = ifelse(Current_weekly_income_from_age_pension > 0, 
+                               "Age pension", 
+                               "No age pension"),
+         has_fmly_bnft = Current_weekly_income_from_parenting_payment > 0,
+         has_dsably = Current_weekly_income_from_disability_support_pension > 0,
+         has_newstart = Current_weekly_income_from_newstart_allowance > 0,
+         has_snrsupplment = ifelse(Current_weekly_income_from_senior_supplement > 0,
+                                   "Those with senior supplement",
+                                   "Those with no senior supplement")) %>%
+  filter(Total_current_weekly_income_from_all_sources >= 0) %>%
+  grplot(aes(x = Total_current_weekly_income_from_all_sources, y = prop_welfare,
+             color = has_snrsupplment, order = has_snrsupplment,
+             alpha = Person_weight/max(Person_weight), weight = Person_weight)) + 
+  geom_point() +
+  scale_alpha_identity() + 
+  scale_color_manual(values = c("Those with senior supplement" = gpal(2)[1], "Those with no senior supplement" = gpal(2)[2])) +
+  guides(color = guide_legend("", override.aes = list(size = 8))) + 
+  scale_y_continuous("% income from welfare", 
+                     label = scales::percent) + 
+  coord_cartesian(xlim = c(-25,4.2e3),
+                  ylim = c(-0.1,1.25)) +
+  xlab("Total weekly income") + 
+  theme(axis.title.y = element_text(angle = 90),
+        legend.position = c(0.7,0.85),
+        text = element_text(color = "white"),
+        line = element_line(color = "white"),
+        axis.line = element_line(color = "white"),
+        panel.grid.major.y = element_blank(),
+        axis.ticks = element_line(color = "white"),
+        plot.background = element_rect(fill = theGrey),
+        legend.key = element_rect(color = NA, fill=theGrey),
+        legend.text = element_text(lineheight = 0.7))
+```
+
+```{r}
+sih11 %>%
+  mutate(prop_welfare = Total_current_weekly_income_from_government_pensions_and_allowances / Total_current_weekly_income_from_all_sources) %>%
+  mutate(has_age_pnsn = ifelse(Current_weekly_income_from_age_pension > 0, 
+                               "Age pensioners", 
+                               "No age pension"),
+         has_fmly_bnft = Current_weekly_income_from_parenting_payment > 0,
+         has_dsably = Current_weekly_income_from_disability_support_pension > 0,
+         has_newstart = Current_weekly_income_from_newstart_allowance > 0,
+         has_snrsupplment = ifelse(Current_weekly_income_from_senior_supplement > 0,
+                                   "Senior supplement > 0",
+                                   "No senior supplement")) %>%
+  filter(Total_current_weekly_income_from_all_sources >= 0,
+         Current_weekly_income_from_age_pension > 0) %>%
+  grplot(aes(x = Total_current_weekly_income_from_all_sources, y = prop_welfare,
+             color = has_age_pnsn, order = has_age_pnsn,
+             alpha = Person_weight/max(Person_weight), weight = Person_weight)) + 
+  geom_point() +
+  scale_alpha_identity() + 
+  scale_color_manual(values = c("Age pensioners" = gpal(2)[1], "No age pension" = gpal(2)[2])) +
+  guides(color = guide_legend("", override.aes = list(size = 8))) + 
+  scale_y_continuous("% income from welfare", 
+                     label = scales::percent) + 
+  coord_cartesian(xlim = c(-25,4.2e3),
+                  ylim = c(-0.1,1.25)) +
+  xlab("Total weekly income") + 
+  theme(axis.title.y = element_text(angle = 90),
+        legend.position = c(0.7,0.85),
+        text = element_text(color = "white"),
+        line = element_line(color = "white"),
+        axis.line = element_line(color = "white"),
+        panel.grid.major.y = element_blank(),
+        axis.ticks = element_line(color = "white"),
+        plot.background = element_rect(fill = theGrey),
+        legend.key = element_rect(color = NA, fill=theGrey))
 ```
 
 ## What magnitude of compensation would be required in order for the lowest 20% disposable income would be compensated?
