@@ -1071,15 +1071,17 @@ sih11 <-
 ```{r}
 sih11 %>%
   mutate(prop_welfare = Total_current_weekly_income_from_government_pensions_and_allowances / Total_current_weekly_income_from_all_sources) %>%
+  mutate(has_age_p = ifelse(Current_weekly_income_from_age_pension > 0, TRUE, FALSE)) %>%
   filter(Total_current_weekly_income_from_all_sources >= 0) %>%
   grplot(aes(x = Total_current_weekly_income_from_all_sources, y = prop_welfare,
+             color = has_age_p,
              alpha = Person_weight/max(Person_weight), weight = Person_weight)) + 
   geom_point() +
   scale_alpha_identity() + 
   scale_y_continuous("Income from welfare", 
                      label = scales::percent) + 
-  coord_cartesian(xlim = c(-250,5e3),
-                  ylim = c(-0.1,2)) +
+  coord_cartesian(xlim = c(-25,4.2e3),
+                  ylim = c(-0.1,1.25)) +
   theme(axis.title.y = element_text(angle = 90))
 ```
 
