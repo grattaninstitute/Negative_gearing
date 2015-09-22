@@ -1,12 +1,14 @@
 ---
 title: "GST expenditure by age and income, for categories"
 author: "Hugh Parsonage"
-output: 
+output:
+  pdf_document:
+    toc: yes
   html_document:
     css: floatToc.css
-    toc: true
-    toc_depth: 3
     theme: united
+    toc: yes
+    toc_depth: 3
 ---
 
 # What are the consumption patterns of different income quintiles?
@@ -67,11 +69,17 @@ age_mutate <- function(.hes){
     )
 }
 
-group_by.income_quintile <- function(.data, type = "Current_weekly_HH_disposable_income"){
+group_by.income_quintile <- function(.data, type = "Total_current_weekly_HH_income_from_all_sources"){
   if(type == "Current_weekly_HH_disposable_income"){
     group_by(.data, income_quintile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
                                                             breaks = total.inc.quintiles, 
                                                             include.lowest = TRUE)))) 
+  } else {
+    if (type == "Total_current_weekly_HH_income_from_all_sources"){
+      group_by(.data, income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                            breaks = total.inc.quintiles, 
+                                                            include.lowest = TRUE))))
+    }
   }
 }
 
@@ -1027,6 +1035,297 @@ By inspection of <https://grattan.shinyapps.io/Forty_three_app/Forty_three_app.R
 
 ```
 
+
+# Analysis of welfare
+```{r}
+sih11.raw <- 
+  read.dta("./SIH/sih11bp.dta") %>%
+  data.table
+
+sih11.names <- 
+  hes.sih.vars$SIH_basic_name[hes.sih.vars$SIH_basic_name %in% names(sih11.raw)]
+sih11.newnames <-
+  hes.sih.vars$Definition_new[hes.sih.vars$SIH_basic_name %in% names(sih11.raw)]
+
+# SIHPSWT didn't come along for the ride
+sih11.names <- c(sih11.names, "SIHPSWT")
+sih11.newnames <- c(sih11.newnames, "Person_weight")
+
+sih11 <- 
+  sih11.raw %>%
+  select_(.dots = sih11.names) %>%
+  setnames(old = sih11.names,
+           new = sih11.newnames)
+```
+
+```{r}
+sih11 %>%
+  mutate(prop_welfare = Total_current_weekly_income_from_government_pensions_and_allowances / Total_current_weekly_income_from_all_sources) %>%
+  grplot(aes(x = Total_current_weekly_income_from_all_sources, y = prop_welfare,
+             alpha = Person_weight/max(Person_weight), weight = Person_weight)) + 
+  geom_point() +
+  stat_smooth() + 
+  scale_alpha_identity() + 
+  coord_cartesian(xlim = c(-250,10e3),
+                  ylim = c(-2,2))
+```
+
+## What magnitude of compensation would be required in order for the lowest 20% disposable income would be compensated?
+
+### 15% increase
+
+```{r}
+extra_gst.weekly <- 
+  hes10hh %$%
+  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) / 2
+
+temp.chessboard <- 
+  data.table::CJ(
+    Unique_household_number = hes10hh$Unique_household_number,
+    percentage_revenue = (0:100)/100,
+    comp_adequacy = (1:7)/4
+  )
+
+temp.chessboard.2 <- 
+  data.table::CJ(
+    Unique_household_number = hes10hh$Unique_household_number,
+    percentage_revenue = (0:100)/100
+  )
+
+perfectly_targeted_efficacy.15pc <- 
+  hes10hh %>%
+  select(Weekly_household_GST_on_all_goods_and_services_FIS,
+         Total_current_weekly_HH_income_from_all_sources,
+         Weight_HH_HES
+         ,Unique_household_number
+  ) %>% 
+  merge(., temp.chessboard.2, by = "Unique_household_number", all.y = TRUE) %>%
+  group_by.income_quintile %>%
+  ungroup %>%
+  data.table %>% 
+  mutate(revenue_for_transfer = percentage_revenue * extra_gst.weekly) %>%
+  group_by(percentage_revenue) %>%
+  mutate(revenue_transfered = ifelse(income_quintile == 1,  # may be redundant but not sure
+                                     # We multiply by 5 because all the money is transferred to the bottom
+                                     # quintile.  I can't at this time convince myself why this 
+                                     # multiple is necessary -- except the numbers don't look right
+                                     # without it.  In particular, even if all money is transferred to the
+                                     # bottom quintile, a large minority of households are undercompensated.
+                                     (five <- 5) * revenue_for_transfer/sum(Weight_HH_HES), 
+                                     0)) %>%
+  data.table %>%
+  filter(income_quintile == 1) %>% 
+  group_by(percentage_revenue) %>%
+  summarise(
+    percentage_compensated = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS/2 < revenue_transfered,
+                                           w = Weight_HH_HES))
+
+perfectly_targeted_efficacy_comp_adequacy.15pc <- 
+  hes10hh %>%
+  select(Weekly_household_GST_on_all_goods_and_services_FIS,
+         Total_current_weekly_HH_income_from_all_sources,
+         Weight_HH_HES
+         ,Unique_household_number
+  ) %>% 
+  merge(., temp.chessboard, by = "Unique_household_number", all.y = TRUE) %>%
+  group_by.income_quintile %>%
+  ungroup %>%
+  data.table %>% 
+  mutate(revenue_for_transfer = percentage_revenue * extra_gst.weekly) %>%
+  group_by(percentage_revenue, comp_adequacy) %>%
+  mutate(revenue_transfered = ifelse(income_quintile == 1,  # may be redundant but not sure
+                                     # We multiply by 5 because all the money is transferred to the bottom
+                                     # quintile.  I can't at this time convince myself why this 
+                                     # multiple is necessary -- except the numbers don't look right
+                                     # without it.  In particular, even if all money is transferred to the
+                                     # bottom quintile, a large minority of households are undercompensated.
+                                     (five <- 5) * revenue_for_transfer/sum(Weight_HH_HES), 
+                                     0)) %>%
+  data.table %>%
+  filter(income_quintile == 1) %>% 
+  group_by(percentage_revenue, comp_adequacy) %>%
+  summarise(
+    percentage_compensated = weighted.mean(comp_adequacy * Weekly_household_GST_on_all_goods_and_services_FIS/2 < revenue_transfered,
+                                           w = Weight_HH_HES))
+gc(1,1)
+```
+
+```{r}
+proportion_of_welfare_bottom_quintile <- 
+  proportion_of_welfare_by_quintile %>%
+  filter(Gross_income_quintile == 1) %$%
+  prop_welfare
+
+ordinarily_targeted_efficacy.15pc <- 
+  hes10hh %>%
+  select(Weekly_household_GST_on_all_goods_and_services_FIS,
+         Total_current_weekly_HH_income_from_all_sources,
+         Weight_HH_HES
+         ,Unique_household_number
+  ) %>%
+  merge(., temp.chessboard.2, by = "Unique_household_number", all.y = TRUE) %>%
+  group_by.income_quintile %>%
+  ungroup %>%
+  data.table %>% 
+  mutate(revenue_for_transfer = percentage_revenue * extra_gst.weekly) %>%
+  group_by(percentage_revenue) %>%
+  mutate(revenue_transfered = ifelse(income_quintile == 1,  # may be redundant but not sure
+                                     # We multiply by 5 because all the money is transferred to the bottom
+                                     # quintile.  I can't at this time convince myself why this 
+                                     # multiple is necessary -- except the numbers don't look right
+                                     # without it.  In particular, even if all money is transferred to the
+                                     # bottom quintile, a large minority of households are undercompensated.
+                                     (five <- 5) * revenue_for_transfer/sum(Weight_HH_HES), 
+                                     0)) %>%
+  # Recalling that only a fraction of welfare actually goes to the bottom quintile:
+  mutate(revenue_transfered = proportion_of_welfare_bottom_quintile * revenue_transfered) %>%
+  data.table %>%
+  filter(income_quintile == 1) %>% 
+  group_by(percentage_revenue) %>%
+  summarise(
+    percentage_compensated = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS/2 < revenue_transfered,
+                                           w = Weight_HH_HES))
+
+ordinarily_targeted_efficacy_comp_adequacy.15pc <- 
+  hes10hh %>%
+  select(Weekly_household_GST_on_all_goods_and_services_FIS,
+         Total_current_weekly_HH_income_from_all_sources,
+         Weight_HH_HES
+         ,Unique_household_number
+  ) %>%
+  merge(., temp.chessboard, by = "Unique_household_number", all.y = TRUE) %>%
+  group_by.income_quintile %>%
+  ungroup %>%
+  data.table %>% 
+  mutate(revenue_for_transfer = percentage_revenue * extra_gst.weekly) %>%
+  group_by(percentage_revenue, comp_adequacy) %>%
+  mutate(revenue_transfered = ifelse(income_quintile == 1,  # may be redundant but not sure
+                                     # We multiply by 5 because all the money is transferred to the bottom
+                                     # quintile.  I can't at this time convince myself why this 
+                                     # multiple is necessary -- except the numbers don't look right
+                                     # without it.  In particular, even if all money is transferred to the
+                                     # bottom quintile, a large minority of households are undercompensated.
+                                     (five <- 5) * revenue_for_transfer/sum(Weight_HH_HES), 
+                                     0)) %>%
+  # Recalling that only a fraction of welfare actually goes to the bottom quintile:
+  mutate(revenue_transfered = proportion_of_welfare_bottom_quintile * revenue_transfered) %>%
+  data.table %>%
+  filter(income_quintile == 1) %>% 
+  group_by(percentage_revenue, comp_adequacy) %>%
+  summarise(
+    percentage_compensated = weighted.mean(comp_adequacy * Weekly_household_GST_on_all_goods_and_services_FIS/2 < revenue_transfered,
+                                           w = Weight_HH_HES))
+```
+
+```{r}
+perfect_and_imperfect <- 
+  bind_rows(ordinarily_targeted_efficacy.15pc, perfectly_targeted_efficacy.15pc, .id = "targeting")
+
+perfect_and_imperfect %>%
+  grplot(aes(x = percentage_revenue, y = percentage_compensated, color = targeting, group = targeting)) + 
+  geom_line() + 
+  theme(axis.title.y = element_text(angle = 90)) + 
+  scale_x_continuous("Percentage of total GST revenue required", label=scales::percent) + 
+  scale_y_continuous("Percentage of bottom quintile fully compensated\n", label=scales::percent) + 
+  annotate("text",
+           x = c(0.07, 0.35),
+           y = c(0.95, 0.6), 
+           label = c("Perfect", "BAU"),
+           color = rev(gpal(2)),
+           fontface = "bold",
+           size = 7) + 
+  annotate("point",
+           x = 0.2,
+           y = ordinarily_targeted_efficacy.15pc[ordinarily_targeted_efficacy.15pc$percentage_revenue == 0.2]$percentage_compensated,
+           size = 7,
+           color = theGrey)
+```
+
+```{r, dev = 'tikz'}
+perfect_and_imperfect_comp_adequacy <- 
+  bind_rows(ordinarily_targeted_efficacy_comp_adequacy.15pc, perfectly_targeted_efficacy_comp_adequacy.15pc, .id = "targeting") %>%
+  mutate(targeting = ifelse(targeting == 1, "BAU", "Perfect"))
+
+text_facet <- 
+  data.frame(targeting = factor(c("BAU", "Perfect")),
+             percentage_revenue = c(0.07, 0.35), 
+             percentage_compensated = c(1.05, 0.6),
+             comp_adequacy = c(0,0),
+             alpha = c(0,0),
+             size = c(0,0),
+             linetype = c("A", "B"))
+
+text_facet.bau <-
+  data.frame(targeting = factor("BAU", levels =  c("BAU", "Perfect")),
+             percentage_revenue = c(0.07), 
+             percentage_compensated = c(1.05),
+             comp_adequacy = c(0),
+             alpha = c(0),
+             size = c(0),
+             linetype = c("A"))
+
+text_facet.perf <-
+  filter(text_facet, targeting == "Perfect")
+
+perfect_and_imperfect_comp_adequacy %>%
+  mutate(alpha = ifelse(comp_adequacy == 1, 1, 1),
+         size  = ifelse(comp_adequacy == 1, 2.5, 1.25),
+         linetype = ifelse(comp_adequacy == 1, "A", "B")) %>%
+  grplot(aes(x = percentage_revenue, y = percentage_compensated, color = targeting, group = interaction(targeting, comp_adequacy), alpha = alpha, size = size, linetype = linetype)) + 
+  geom_line() + 
+  theme(axis.title.y = element_text(angle = 90)) + 
+  scale_x_continuous("Percentage of total GST revenue required", label=scales::latex_percent) + 
+  scale_y_continuous("Percentage of bottom quintile compensated by 25\\%, 50\\%, ... 175\\%\n", label=scales::latex_percent) + 
+  scale_alpha_identity() + 
+  scale_size_identity() +
+  geom_text(data = text_facet.bau,
+            label = "BAU") +
+  geom_text(data = text_facet.perf,
+            label = "Perfect") +
+  facet_grid(targeting ~ .)
+
+```
+
+# Constant 20% revenue --
+x
+```{r}
+temp.chessboard <- 
+  data.table::CJ(
+    comp_adequacy = (0:200)/100,
+    Unique_household_number = hes10hh$Unique_household_number
+  )
+
+percentage_revenue_ <- 0.20
+
+hes10hh %>%
+  select(Weekly_household_GST_on_all_goods_and_services_FIS,
+         Total_current_weekly_HH_income_from_all_sources,
+         Weight_HH_HES
+         ,Unique_household_number
+  ) %>%
+  merge(., temp.chessboard, by = "Unique_household_number", all.y = TRUE) %>%
+  group_by.income_quintile %>%
+  ungroup %>%
+  data.table %>% 
+  mutate(revenue_for_transfer = percentage_revenue_ * extra_gst.weekly) %>%
+  group_by(comp_adequacy) %>%
+  mutate(revenue_transfered = ifelse(income_quintile == 1,  # may be redundant but not sure
+                                     # We multiply by 5 because all the money is transferred to the bottom
+                                     # quintile.  I can't at this time convince myself why this 
+                                     # multiple is necessary -- except the numbers don't look right
+                                     # without it.  In particular, even if all money is transferred to the
+                                     # bottom quintile, a large minority of households are undercompensated.
+                                     (five <- 5) * revenue_for_transfer/sum(Weight_HH_HES), 
+                                     0)) %>%
+  data.table %>%
+  filter(income_quintile == 1) %>% 
+  group_by(comp_adequacy) %>%
+  summarise(
+    percentage_compensated = weighted.mean(comp_adequacy * Weekly_household_GST_on_all_goods_and_services_FIS/2 < revenue_transfered,
+                                           w = Weight_HH_HES)) %>%
+  grplot(aes(x = comp_adequacy, y = percentage_compensated)) + 
+  geom_line(aes(group = 1))
+```
 
 
 
