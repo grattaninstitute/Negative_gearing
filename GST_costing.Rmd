@@ -796,11 +796,23 @@ extra_gst_raised <-
   # Divide by 2 because 10/2 = 5, a 5 percentage point increase in GST.
   sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) * 52.5 / 2
 
+welfare.from.hes <- 
+  hes10hh %$%
+  sum(Current_weekly_HH_income_from_government_pensions_and_allowances * Weight_HH_HES) * 52.5
+
+gst.raised.in.200910 <- 46553 * 10^6
+# gst.raised.in.200910 / (2*extra_gst_raised)
+## [1] 1.631501
+
+welfare.in.200910 <- (110994 - 3831) * 10^6  # total social security + welfare minus admin.
+# welfare.in.200910 / welfare.from.hes
+## [1] 1.357734
+
 compensatory.transfers <-
   # A quarter of money raised goes to tax cuts and transfers.
   # Transfers = 16 bn, tax cuts = 21 bn (which is over four years 
   # but that is relevant here).
-  (1/4)*((16/(16+21)))*extra_gst_raised
+  (1/4)*((16/(16+21))) * extra_gst_raised
 
 proportion_of_welfare_by_quintile <-
   hes10hh %>% 
@@ -916,7 +928,7 @@ welfare.by.income.quintile <-
   select(Unique_household_number, Gross_income_quintile, 
          Weight_Person_HES, 
          Current_weekly_amount_of_Commonwealth_Rent_Assistance, Current_weekly_income_from_age_pension, Current_weekly_income_from_wife_pension, Current_weekly_income_from_carer_payment, 
-         Current_weekly_income_from_carer_allowance, Current_weekly_income_from_special_benefit, Current_weekly_income_from_widow_allowance, Current_weekly_income_from_youth_allowance, Current_weekly_income_from_Austudy_Abstudy, Current_weekly_income_from_parenting_payment, Current_weekly_income_from_Baby_Bonus_payment, Current_weekly_income_from_partner_allowance, Current_weekly_income_from_senior_supplement, Current_weekly_income_from_newstart_allowance, Current_weekly_income_from_pension_supplement, Current_weekly_income_from_sickness_allowance, Current_weekly_income_from_service_pension_DVA, Current_weekly_income_from_utilities_allowance, Current_weekly_income_from_disability_pension_DVA, Current_weekly_income_from_war_widows_pension_DVA, Current_weekly_income_from_disability_support_pension, Current_weekly_income_from_family_tax_benefits_modelled, Current_weekly_income_from_other_government_pensions_and_allowances) %>%
+         Current_weekly_income_from_carer_allowance, Current_weekly_income_from_special_benefit, Current_weekly_income_from_widow_allowance, Current_weekly_income_from_youth_allowance, Current_weekly_income_from_Austudy_Abstudy, Current_weekly_income_from_parenting_payment, Current_weekly_income_from_Baby_Bonus_payment, Current_weekly_income_from_partner_allowance, Current_weekly_income_from_senior_supplement, Current_weekly_income_from_newstart_allowance, Current_weekly_incomke_from_pension_supplement, Current_weekly_income_from_sickness_allowance, Current_weekly_income_from_service_pension_DVA, Current_weekly_income_from_utilities_allowance, Current_weekly_income_from_disability_pension_DVA, Current_weekly_income_from_war_widows_pension_DVA, Current_weekly_income_from_disability_support_pension, Current_weekly_income_from_family_tax_benefits_modelled, Current_weekly_income_from_other_government_pensions_and_allowances) %>%
   gather(Allowance, income, -Unique_household_number, -Gross_income_quintile, -Weight_Person_HES) %>%
   data.table %>%
   mutate(Allowance = gsub("Current_weekly_income_from_", "", Allowance, fixed = TRUE)) %>%
