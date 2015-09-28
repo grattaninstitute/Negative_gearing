@@ -671,6 +671,28 @@ hes10hh %>%
            label = "income deciles")
 ```
 
+```{r}
+lm.income.gst <- lm(Weekly_household_GST_on_all_goods_and_services_FIS ~ Total_current_weekly_HH_income_from_all_sources,
+                    data = hes10hh, weights = Weight_HH_HES)
+
+hes10hh.pred <- 
+  predict(lm.income.gst, interval = "prediction") %>%
+  cbind(Total_current_weekly_HH_income_from_all_sources = hes10hh$Total_current_weekly_HH_income_from_all_sources_basis) %>%
+  as.data.frame %>%
+  tbl_df
+
+hes10hh %>%
+  #group_by.income_quintile %>%
+  grplot(aes(x = Total_current_weekly_HH_income_from_all_sources
+             #,y = Weekly_household_GST_on_all_goods_and_services_FIS)
+             )) + 
+  #geom_point(aes(alpha = Weight_HH_HES/max(Weight_HH_HES))) +
+  geom_ribbon(data = hes10hh.pred,
+              mapping = aes(ymax = upr, ymin = lwr)) + 
+  scale_alpha_identity() + 
+  xlim(-5, 10e3)
+```
+
 ## Perfect GST substitution
 ### Broadening the base
 ```{r}
