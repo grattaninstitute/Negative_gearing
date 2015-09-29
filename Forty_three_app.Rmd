@@ -145,13 +145,15 @@ shinyApp( options = list(height = 1024),
       data.frame(
         `Marginal rate of` = c(brackets,
                                "",
-                          "Extra revenue"),
+                          "Extra revenue", 
+                          "$100,000"),
         Value = as.character(c(input$rate_1, 
                                input$rate_2,
                                input$rate_3,
                                input$rate_4,
                                input$rate_5,
-                               the_amount_remaining)), 
+                               the_amount_remaining,
+                               grattan_dollar(new_income_tax(cpi_inflator(100e3, from_fy = "2012-13", to_fy = "2013-14"))))), 
         stringsAsFactors=FALSE) 
       }) 
     
