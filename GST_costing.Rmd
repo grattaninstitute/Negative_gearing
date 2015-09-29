@@ -31,6 +31,7 @@ knitr::opts_chunk$set(warning = FALSE,
 
 ```{r, cache=FALSE}
 library(ggplot2)
+library(scales)
 library(grattan)
 library(VIM) # VIM::hotdeck used for imputation
 library(dplyr)
@@ -82,6 +83,30 @@ group_by.income_quintile <- function(.data, type = "Total_current_weekly_HH_inco
     }
   }
 }
+
+
+      # for asymmetric expansion of limits
+      scale_dimension.custom_expand <- function(scale, expand = ggplot2:::scale_expand(scale)) {
+        expand_range(ggplot2:::scale_limits(scale), expand[[1]], expand[[2]])
+      }
+      
+      scale_y_continuous <- function(...) {
+        s <- ggplot2::scale_y_continuous(...)
+        class(s) <- c('custom_expand', class(s))
+        s
+      }
+      
+      scale_x_continuous <- function(...) {
+        s <- ggplot2::scale_x_continuous(...)
+        class(s) <- c('custom_expand', class(s))
+        s
+      }
+      
+      scale_x_date <- function(...) {
+        s <- ggplot2::scale_x_date(...)
+        class(s) <- c('custom_expand', class(s))
+        s
+      }
 
 # Taxation statistics 2012-13 Goods and services tax: Selected GST, WET and LCT items, 2001-02 to 2013-14 financial years
 if(!file.exists("GST_by_year.xlsx")){
@@ -950,7 +975,7 @@ welfare.by.income.quintile <-
   select(Unique_household_number, Gross_income_quintile, 
          Weight_Person_HES, 
          Current_weekly_amount_of_Commonwealth_Rent_Assistance, Current_weekly_income_from_age_pension, Current_weekly_income_from_wife_pension, Current_weekly_income_from_carer_payment, 
-         Current_weekly_income_from_carer_allowance, Current_weekly_income_from_special_benefit, Current_weekly_income_from_widow_allowance, Current_weekly_income_from_youth_allowance, Current_weekly_income_from_Austudy_Abstudy, Current_weekly_income_from_parenting_payment, Current_weekly_income_from_Baby_Bonus_payment, Current_weekly_income_from_partner_allowance, Current_weekly_income_from_senior_supplement, Current_weekly_income_from_newstart_allowance, Current_weekly_incomke_from_pension_supplement, Current_weekly_income_from_sickness_allowance, Current_weekly_income_from_service_pension_DVA, Current_weekly_income_from_utilities_allowance, Current_weekly_income_from_disability_pension_DVA, Current_weekly_income_from_war_widows_pension_DVA, Current_weekly_income_from_disability_support_pension, Current_weekly_income_from_family_tax_benefits_modelled, Current_weekly_income_from_other_government_pensions_and_allowances) %>%
+         Current_weekly_income_from_carer_allowance, Current_weekly_income_from_special_benefit, Current_weekly_income_from_widow_allowance, Current_weekly_income_from_youth_allowance, Current_weekly_income_from_Austudy_Abstudy, Current_weekly_income_from_parenting_payment, Current_weekly_income_from_Baby_Bonus_payment, Current_weekly_income_from_partner_allowance, Current_weekly_income_from_senior_supplement, Current_weekly_income_from_newstart_allowance, Current_weekly_income_from_pension_supplement, Current_weekly_income_from_sickness_allowance, Current_weekly_income_from_service_pension_DVA, Current_weekly_income_from_utilities_allowance, Current_weekly_income_from_disability_pension_DVA, Current_weekly_income_from_war_widows_pension_DVA, Current_weekly_income_from_disability_support_pension, Current_weekly_income_from_family_tax_benefits_modelled, Current_weekly_income_from_other_government_pensions_and_allowances) %>%
   gather(Allowance, income, -Unique_household_number, -Gross_income_quintile, -Weight_Person_HES) %>%
   data.table %>%
   mutate(Allowance = gsub("Current_weekly_income_from_", "", Allowance, fixed = TRUE)) %>%
@@ -1497,6 +1522,59 @@ perfect_and_imperfect.comp_adequacy.15pc %>%
 
 ```{r}
 
+```
+
+## Compensation
+You would have to spend x much on compensation to fully compensate the bottom quintile. Note that this would also partially compensate other quintiles.  Use the Weekly GST amount to work out the proportion of the GST burden falling on the bottom three quintiles, subtract off what has already been allocated by transfers. Then have a cameo income tax reduction to determine the income tax cuts available.
+
+
+```{r}
+gst_revenue.15pc.weekly <- 
+  hes10hh %$%
+  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES)/2
+
+ratio.gst_welfare <- 0.3
+
+welfare.by.income.quintile_total <-
+  welfare.by.income.quintile %>%
+  group_by(income_quintile = Gross_income_quintile) %>%
+  summarise(total = sum(total)) %>%
+  ungroup %>%
+  mutate(prop_welfare = total/sum(total)) %>%
+  select(-total)
+
+
+inverse = function (f, lower = -100, upper = 100000) {
+   function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[[1]]
+}
+
+inverse_income_tax.fn <- function(tax){
+  inverse(f = function(income)income_tax(income))(tax)[[1]]
+}
+
+new_inverse <- function(tax){
+  for (i in seq.int(from=10e3, to=500e3, by = 100)){
+    if (income_tax(i, fy.year = "2009-10") > tax){
+      
+      break()
+    }
+  }
+  return(i)
+}
+
+hes10hh %>%
+  tbl_df %>%
+  group_by.income_quintile %>%
+  # 0.5 because 5pcpt increase
+  summarise(gst_burden = 0.5* sum(Weekly_household_GST_on_all_goods_and_services_FIS*Weight_HH_HES)/1e6,
+            income.tax = 52.5*weighted.mean(Household_weekly_expenditure_on_income_tax_HES_only, Weight_HH_HES),
+            taxable_income = new_inverse(pmax(0,income.tax))
+            ) %>%
+  arrange(income_quintile) %>%
+  mutate(gst_burden/sum(gst_burden)) %>%
+  merge(welfare.by.income.quintile_total, by = "income_quintile") %>%
+  mutate(comp_trsfr = prop_welfare * ratio.gst_welfare * gst_revenue.15pc.weekly/1e6,
+         gst_burden_after_transfer = gst_burden - comp_trsfr)
 ```
 
 
