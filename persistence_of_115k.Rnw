@@ -1,0 +1,68 @@
+\documentclass{grattan}
+
+\title{Persistence of incomes}
+\author{HP}
+
+\addbibresource{bibliography.bib}
+
+\begin{document}
+\contentspage
+
+<<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
+my_emf <- function(file, width, height){
+  devEMF::emf(file, width=width, height=height,
+              family = "Arial")
+}
+
+# if(require(extrafont) && any(grepl("Arial", extrafont::fonts()))){
+#   font_import(pattern = "Arial")
+#   my_pdf <- function(file, width, height){
+#     pdf.options(family = "Arial")
+#     pdf(file = file, width = width, height = height)
+#   } 
+#   theme_hugh <- function(...) {theme_hugh(...) + theme(text = element_text(family = "Arial"))}
+# } else {
+  my_pdf <- function(file, width, height){
+    pdf(file = file, width, height = height)
+  }
+# }
+
+# knitr chunk opts
+# fig.width must = out.width and same for *.height
+knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                      out.width="11.000in", out.height="7.00in", 
+                      fig.show='hide',echo=FALSE,
+                      message=FALSE, warning=FALSE
+                      ,cache=TRUE
+                      ,dev=c('my_pdf', 'my_emf', 'png')
+                      ,fig.ext = c("pdf", "emf", "png")
+)
+@
+
+
+<<preamble>>=
+library(foreign)
+library(ggplot2)
+library(scales)
+library(grattan)
+library(data.table)
+library(tidyr)
+library(dplyr)
+@
+
+<<load_dta, cache=TRUE>>=
+read_hilda_file <- 
+  function(filename){
+    data.table::data.table(foreign::read.dta(filename))
+  }
+
+hilda_list <-
+  lapply(list.files(path = "./HILDA"
+                    ,pattern = "^E.*dta$"  # Enumerate person
+                    ,full.names = TRUE),
+         read_hilda_file)
+
+@
+
+
+\end{document}

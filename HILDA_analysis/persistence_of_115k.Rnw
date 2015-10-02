@@ -1,0 +1,13 @@
+\documentclass{grattan}
+
+\title{Persistence of incomes}
+\author{HP}
+
+\addbibresource{bibliography.bib}
+
+\begin{document}
+\contentspage
+
+
+
+\end{document}

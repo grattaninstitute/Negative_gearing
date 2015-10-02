@@ -2,13 +2,13 @@
 title: "GST expenditure by age and income, for categories"
 author: "Hugh Parsonage"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     css: floatToc.css
     theme: united
     toc: yes
     toc_depth: 3
+  pdf_document:
+    toc: yes
 ---
 
 # What are the consumption patterns of different income quintiles?
@@ -122,7 +122,19 @@ GST_inflator_from0910_to1314 <-
   mutate(value = as.numeric(value)) %>%
   filter(complete.cases(.)) %>%
   filter(grepl("Net.GST", Selected_item)) %>%
-  filter(grepl("^((2009)|(2013))", year)) %$%
+  filter(grepl("^((2009)|(2012)|(2013))", year)) %$%
+  {last(value) / first(value)}
+
+GST_inflator_from0910_to1213 <-
+  read_excel("GST_by_year.xlsx", sheet = "GST Table 1", skip = 2) %>%
+  setnames(1:2, c("Selected_item", "unit")) %>% 
+  # en dash caution
+  setnames(old = names(.), new = gsub("([0-9]{4}).([0-9]{2})", "\\1-\\2", names(.))) %>%
+  gather(year, value, `2001-02`:`2013-14`) %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(complete.cases(.)) %>%
+  filter(grepl("Net.GST", Selected_item)) %>%
+  filter(grepl("^((2009)|(2012))", year)) %$%
   {last(value) / first(value)}
 ```
 Our first task is to make the HES variables meaningful. Do you know what `INCTOPH8` means? Let's find out! The way I did that was to link the variables in the variable listings excel file to the definition therein. We also have to make the variables suitable for R, *viz* no spaces or weird characters.
@@ -1315,17 +1327,12 @@ ordinarily_targeted_efficacy.15pc <-
   data.table %>% 
   mutate(revenue_for_transfer = percentage_revenue * extra_gst.weekly) %>%
   group_by(percentage_revenue) %>%
-  mutate(revenue_transfered = ifelse(income_quintile == 1,  # may be redundant but not sure
-                                     # We multiply by 5 because all the money is transferred to the bottom
-                                     # quintile.  I can't at this time convince myself why this 
-                                     # multiple is necessary -- except the numbers don't look right
-                                     # without it.  In particular, even if all money is transferred to the
-                                     # bottom quintile, a large minority of households are undercompensated.
-                                     (five <- 5) * revenue_for_transfer/sum(Weight_HH_HES), 
-                                     0)) %>%
+  mutate(revenue_transfered = revenue_for_transfer/sum(Weight_HH_HES)) %>% 
   # Recalling that only a fraction of welfare actually goes to the bottom quintile:
-  mutate(revenue_transfered = proportion_of_welfare_bottom_quintile * revenue_transfered) %>%
-  data.table %>%
+  merge(., proportion_of_welfare_by_quintile, by.x = "income_quintile", by.y = "Gross_income_quintile") %>%
+  mutate(revenue_transfered = prop_welfare * revenue_transfered) %>%
+  filter(percentage_revenue == 1) %>%
+  data.table %>% print
   filter(income_quintile == 1) %>% 
   group_by(percentage_revenue) %>%
   summarise(
@@ -1442,7 +1449,7 @@ temp.chessboard <-
     Unique_household_number = hes10hh$Unique_household_number
   )
 
-percentage_revenue_ <- 0.20
+percentage_revenue_ <- 0.30
 
 perfect_20pc_comp_adequacy.15pc <-
   hes10hh %>%
@@ -1503,7 +1510,7 @@ ordinary_20pc_comp_adequacy.15pc <-
     percentage_compensated = weighted.mean(comp_adequacy * Weekly_household_GST_on_all_goods_and_services_FIS/2 < revenue_transfered,
                                            w = Weight_HH_HES)) 
 ```
-For 20% revenue
+For 30% revenue
 ```{r}
 perfect_and_imperfect.comp_adequacy.15pc <- 
   bind_rows(perfect_20pc_comp_adequacy.15pc, ordinary_20pc_comp_adequacy.15pc, .id = "targeting") %>%
@@ -1516,12 +1523,36 @@ perfect_and_imperfect.comp_adequacy.15pc %>%
   geom_text(aes(label = targeting.text), vjust = 1.5, hjust = 1,
             fontface = "bold", size =7) + 
   scale_x_continuous("Compensation threshold/Increased GST burden", label = scales::percent) + 
-  scale_y_continuous("Percentage of bottom quintile meeting threshold", label = scales::percent) + 
+  scale_y_continuous("Percentage of bottom quintile meeting threshold", limits = c(0,1), label = scales::percent) + 
   theme(axis.title.y = element_text(angle = 90))
 ```
 
+## Column chart:
 ```{r}
+compensation_board <- 
+  data.table::CJ(
+    comp_adequacy = c(0.75, 1, 1.25),
+    Unique_household_number = hes10hh$Unique_household_number
+  )
 
+
+
+extra_gst_total <- 
+  hes10hh %$%
+  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) / 2
+
+compensation.package <- 0.3 * extra_gst_total
+
+hes10hh %>%
+  merge(., compensation_board, by = "Unique_household_number") %>%
+  group_by.income_quintile %>% ungroup %>%
+  merge(., dplyr::select(proportion_of_welfare_by_quintile, -comp_adequacy), by.x = "income_quintile", by.y = "Gross_income_quintile") %>%   data.table %>%
+  group_by(comp_adequacy) %>%
+  mutate(welfare_transfered = extra_gst_total * prop_welfare * Weight_HH_HES / sum(Weight_HH_HES)) %>%
+  tbl_df %>%
+  select(Unique_household_number, comp_adequacy, welfare_transfered, Weekly_household_GST_on_all_goods_and_services_FIS)
+  
+  
 ```
 
 ## Compensation
@@ -1533,7 +1564,7 @@ gst_revenue.15pc.weekly <-
   hes10hh %$%
   sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES)/2
 
-ratio.gst_welfare <- 0.3
+ratio.gst_welfare <- 0.30
 
 welfare.by.income.quintile_total <-
   welfare.by.income.quintile %>%
@@ -1562,20 +1593,154 @@ new_inverse <- function(tax){
   return(i)
 }
 
-hes10hh %>%
+
+
+gst_third.inc.quintile_deciles <-  
+  hes10hh  %>%
+  group_by.income_quintile %>%
+  ungroup %>%
+  filter(income_quintile == 3) %>%
+  data.table %>%
+  svydesign(data = ., weights = ~Weight_HH_HES, ids = ~Unique_household_number) %>%
+  svyquantile(design = ., quantiles = c(0:100)/100, ~Weekly_household_GST_on_all_goods_and_services_FIS)
+
+gst_by_income.2 <- 
+  hes10hh %>%
   tbl_df %>%
   group_by.income_quintile %>%
   # 0.5 because 5pcpt increase
-  summarise(gst_burden = 0.5* sum(Weekly_household_GST_on_all_goods_and_services_FIS*Weight_HH_HES)/1e6,
+  summarise(gst_burden = 0.5 * sum(Weekly_household_GST_on_all_goods_and_services_FIS*Weight_HH_HES),
+            gst_burden_weekly = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, Weight_HH_HES),
             income.tax = 52.5*weighted.mean(Household_weekly_expenditure_on_income_tax_HES_only, Weight_HH_HES),
-            taxable_income = new_inverse(pmax(0,income.tax))
+            taxable_income = new_inverse(pmax(0,income.tax)),
+            Weight_HH_HES = sum(Weight_HH_HES)
             ) %>%
   arrange(income_quintile) %>%
-  mutate(gst_burden/sum(gst_burden)) %>%
+  mutate(prop_burden = gst_burden/sum(gst_burden)) %>%
   merge(welfare.by.income.quintile_total, by = "income_quintile") %>%
-  mutate(comp_trsfr = prop_welfare * ratio.gst_welfare * gst_revenue.15pc.weekly/1e6,
-         gst_burden_after_transfer = gst_burden - comp_trsfr)
+  ungroup %>%
+  mutate(comp_trsfr = prop_welfare * ratio.gst_welfare * gst_revenue.15pc.weekly,
+         gst_burden_after_transfer = gst_burden - comp_trsfr,
+         gst_burden_after_transfer.annual = (gst_burden_after_transfer / ((1/5)*sum(Weight_HH_HES)))  * 52.5) %>%
+  ## Conversion to 2012-13:
+  mutate(gst_burden_after_transfer.annual.201213 = gst_burden_after_transfer.annual * GST_inflator_from0910_to1213) 
+
+ratio.gst.burden.80th.percentile.to.average_third.decile <-
+  gst_third.inc.quintile_deciles[99]/gst_by_income.2[gst_by_income.2$income_quintile == 3,]$gst_burden_weekly
+
+gst_by_income.2 %<>%
+  mutate(gst_burden_after_transfer.annual.201213.decile8 = gst_burden_after_transfer.annual.201213 * ratio.gst.burden.80th.percentile.to.average_third.decile)
+
+gst_by_income.2 %>%
+  kable
+```
+
+```{r}
+sample_file_of <- function(year = 2013){
+  year <- min(2013, year)
+  fy.year <- paste0(year - 1, "-", formatC(year - 2000, flag = "0", width=2))
+  # List all files with sample in them that have csv or txt at the end.
+  list.of.files <- list.files(path = "./IndividualSampleFile", pattern = paste0("(s|S)ample.*((csv)|(txt))$"), recursive = TRUE, full.names = TRUE)
+  return(list.of.files[grepl(fy.year, list.of.files)])
+}
+
+
+get_sample_file <- function(year = 2013){
+  colClasses = sapply(fread(sample_file_of(year), nrows=50), class)
+  fread(sample_file_of(year), colClasses = colClasses, na.strings = "?")
+}
+
+get_sample_file(2013) %>%
+  group_by(income_quintile = ntile(Tot_inc_amt, 5)) %>%
+  summarise(mean.income = mean(Tot_inc_amt),
+            mean.tx.income = mean(Taxable_Income),
+            max. = max(Taxable_Income)) %>%
+  arrange(income_quintile)
 ```
 
 
+```{r}
+gst_201213 <- 
+  hes10hh %>% 
+  group_by.income_quintile() %>% 
+  summarise(mean. = weighted.mean(Total_current_weekly_HH_income_from_all_sources_basis, Weight_HH_HES)*52.5, 
+            max. = max(Total_current_weekly_HH_income_from_all_sources)*52.5) %>% 
+  ungroup %>% 
+  arrange(income_quintile) %>%
+  mutate(max.1213 = wage_inflator(max., from_fy = "2009-10", to_fy = "2012-13")) %>%
+  merge(gst_by_income.2, by = "income_quintile")
+
+kable(gst_201213)
+```
+So the maximum household income of a household in the third income quintile is $93,724 who required (assuming they were at the 80th percentile of the distribution by GST burden) a compensation package of $1325 . Assuming that this is a single person household, by inspection, a reduction in the marginal rates from 19% to 17.5% and from 32.5% to 30% would result in income compensation of $1357, at a cost of over $7 billion. For a two-person household, in which two-thirds of the income is earnt by one of the couple, marginal rates of 16.5% and 29.5% would result in an adequate compensation package of $1416, at a cost of $9.6 billion.
+
+```{r}
+gst_by_income.2 %>%
+  select(income_quintile,
+         comp_trsfr,
+         gst_burden_after_transfer.annual,
+         gst_burden_after_transfer.annual.201213)
+
+GST_by_year.actual <- 
+  GST_inflator_from0910_to1314 <-
+  read_excel("GST_by_year.xlsx", sheet = "GST Table 1", skip = 2) %>%
+  setnames(1:2, c("Selected_item", "unit")) %>% 
+  # en dash caution
+  setnames(old = names(.), new = gsub("([0-9]{4}).([0-9]{2})", "\\1-\\2", names(.))) %>%
+  gather(year, value, `2001-02`:`2013-14`) %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(complete.cases(.)) %>%
+  filter(grepl("Net.GST", Selected_item)) %>%
+  filter(grepl("^((2009)|(2012)|(2013))", year))
+
+GST_by_year.hes <- 
+  hes10hh %$%
+  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) * 52.5/1e6
+
+# GST_comparison_hes_vs_actual 
+
+```
+
+```{r}
+percentage_of_revenue_to_transfers <- 0.3
+
+# gst_revenue.15pc.weekly
+
+hes_with_gst_compensation <- 
+  hes10hh %>%
+  group_by.income_quintile() %>%
+  ungroup %>%
+  data.table %>%
+  setkey(income_quintile) %>%
+  merge(., welfare.by.income.quintile_total) %>%
+  group_by(income_quintile) %>%
+  mutate(
+    new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+      prop_welfare / # amount to all households in that quintile
+      sum(Weight_HH_HES)
+  ) %>%
+  group_by(income_quintile) %>%
+  summarise(comp_adequacy.75pc = mean(new_welfare > 0.75* Weekly_household_GST_on_all_goods_and_services_FIS/2),
+            comp_adequacy.100pc = mean(new_welfare > Weekly_household_GST_on_all_goods_and_services_FIS/2),
+            comp_adequacy.125pc = mean(new_welfare > 1.25*Weekly_household_GST_on_all_goods_and_services_FIS/2)
+  ) %>%
+  gather(threshold, comp_adequacy, comp_adequacy.75pc:comp_adequacy.125pc) %>%
+  mutate(threshold = gsub("pc", "%", 
+                          gsub("^.*\\.", "", threshold)),
+         threshold = factor(threshold, levels = c("75%", "100%", "125%")))
+```
+
+```{r}
+hes_with_gst_compensation %T>%
+  chart_data() %>%
+  grplot(aes(x = income_quintile, fill = threshold, y = comp_adequacy)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  scale_y_continuous("Percent reaching threshold", label=percent,
+                     limits = c(0,1)) + 
+  guides(fill = guide_legend("Threshold of adeq.\ncompensation")) + 
+  theme(legend.position = c(0.7,0.7),
+        axis.title.y = element_text(angle = 90))
+  
+```
 
