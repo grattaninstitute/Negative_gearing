@@ -50,17 +50,77 @@ library(tidyr)
 library(dplyr)
 @
 
-<<load_dta, cache=TRUE>>=
+<<load_dta, cache=FALSE, eval=FALSE>>=
 read_hilda_file <- 
   function(filename){
-    data.table::data.table(foreign::read.dta(filename))
+    dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
+                  orig.filename = filename)
   }
 
-hilda_list <-
-  lapply(list.files(path = "./HILDA"
+enumerate.person.files <- 
+  list.files(path = "./HILDA"
                     ,pattern = "^E.*dta$"  # Enumerate person
-                    ,full.names = TRUE),
-         read_hilda_file)
+                    ,full.names = TRUE)
+
+enumerate.person.files.names <-
+  gsub("^.*/([^/]+)\\.dta$", "\\1", enumerate.person.files )
+
+hilda_list <-
+  lapply(enumerate.person.files, read_hilda_file)
+
+names(hilda_list) <- enumerate.person.files.names
+
+lapply(seq_along(hilda_list), function(element) readr::write_csv(hilda_list[[element]], path = paste0("./HILDA/csv/", names(hilda_list)[element], ".csv")))
+
+@
+
+<<load_csvs, cache=TRUE>>=
+read_hilda_strip_first_letter_add_column_id <- 
+  function(filename){  
+    temp <- fread(filename)
+    nms <- names(temp)
+    # detect the prefix if it is the wave id.
+    nms.prefixes <- unique(gsub("^(.).*$", "\\1", nms))
+    yearid <- nms.prefixes[nms.prefixes %in% letters[1:13]]
+    # we're interested in stripping the names that specify the wave id (a-m)
+    setnames(temp, old = nms, new = gsub("^[a-m]", "", nms))
+    temp %<>% mutate(wave = yearid)
+    
+    # temp.long <- filter(temp, !is.na(lnwte), lnwte > 0)
+    tmp.svy.quantiles <- 
+      survey::svydesign(ids = ~xwaveid, strata = ~xhhstrat, weights = ~hhwte,
+                        data = temp) %>%
+      survey::svyquantile(x = ~tifeftp, design = ., quantiles = (0:10)/10)
+    temp %<>% mutate(tot_inc_percentile_contemporaneous = factor(cut(tifeftp,
+                                                              breaks = tmp.svy.quantiles[c(1,10,11)],
+                                                              include.lowest = TRUE)))
+                                                                 
+    return(temp)
+  }
+
+hilda_list <- 
+  lapply(list.files(path = "./HILDA/csv/", full.names = TRUE),
+         read_hilda_strip_first_letter_add_column_id)
+@
+
+<<income_vars>>=
+# Want the 
+all_hilda <- rbindlist(hilda_list, fill = TRUE)
+
+all_hilda_enumerated <- 
+  all_hilda %>%
+  filter(!is.na(lnwte)) %>% # longitudinal weight
+  group_by(xwaveid) %>%
+  mutate(min_lnwte = min(lnwte)) %>%
+  ungroup %>%
+  filter(min_lnwte > 0) %>%  # remove all xwaveids who ever had a zero lnwte
+  arrange(xwaveid) 
+  
+all_hilda_enumerated %>%
+  mutate()
+
+# [a-l]tifeft[pn]
+
 
 @
 
