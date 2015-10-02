@@ -26,6 +26,7 @@ library(readxl)
 library(readr)
 library(tidyr)
 library(magrittr)
+library(rsdmx)
 ```
 
 ## Change the marginal tax rates
@@ -34,7 +35,8 @@ shinyApp( options = list(height = 1024),
   ui = sidebarLayout(
     fluid = FALSE,
     sidebarPanel = sidebarPanel(
-      
+      textInput("cameo1", label = "Cameo 1 total income", value = 0),
+      textInput("cameo2", label = "Cameo 2 total income", value = 0),
       sliderInput("rate_1", label = "marginal rate",
                   min = 0, max = 0.6, value = 0, step = 0.005),
       sliderInput("bracket_1", label = "bracket",
@@ -131,6 +133,18 @@ shinyApp( options = list(height = 1024),
         grattan_dollar(.) ->
         the_amount_remaining
       
+      # lm(Taxable_Income ~ Tot_inc_amt, data = get_sample_file(2013)) %>% coef %>% extract2(2)
+      cameo1.Taxable_Income <- 0.96 * as.numeric(input$cameo1)
+      cameo2.Taxable_Income <- 0.96 * as.numeric(input$cameo2)
+      
+      fread("Just_Taxable_Income.csv") %$% 
+        {income_tax(as.numeric(cameo1.Taxable_Income)) - new_income_tax(as.numeric(cameo1.Taxable_Income))} ->
+        cameo1_diff
+      
+      fread("Just_Taxable_Income.csv") %$% 
+        {income_tax(as.numeric(cameo2.Taxable_Income)) - new_income_tax(as.numeric(cameo2.Taxable_Income))} ->
+        cameo2_diff
+      
       # Reactive expression to compose a data frame containing all of
       # the values
       
@@ -146,14 +160,18 @@ shinyApp( options = list(height = 1024),
         `Marginal rate of` = c(brackets,
                                "",
                           "Extra revenue", 
-                          "$100,000"),
+                          "$100,000",
+                          paste("Cameo 1 saving", input$cameo1),
+                          paste("Cameo 2 saving", input$cameo2)),
         Value = as.character(c(input$rate_1, 
                                input$rate_2,
                                input$rate_3,
                                input$rate_4,
                                input$rate_5,
                                the_amount_remaining,
-                               grattan_dollar(new_income_tax(cpi_inflator(100e3, from_fy = "2012-13", to_fy = "2013-14"))))), 
+                               grattan_dollar(new_income_tax(cpi_inflator(100e3, from_fy = "2012-13", to_fy = "2013-14"))),
+                               grattan_dollar(cameo1_diff),
+                               grattan_dollar(cameo2_diff))), 
         stringsAsFactors=FALSE) 
       }) 
     
