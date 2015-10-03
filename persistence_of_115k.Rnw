@@ -48,6 +48,7 @@ library(grattan)
 library(data.table)
 library(tidyr)
 library(dplyr)
+library(magrittr)
 @
 
 <<load_dta, cache=FALSE, eval=FALSE, include=FALSE>>=
@@ -92,9 +93,11 @@ read_hilda_strip_first_letter_add_column_id <-
                         data = temp) %>%
       survey::svyquantile(x = ~tifeftp, design = ., quantiles = (0:10)/10)
     temp %<>% mutate(tot_inc_percentile_contemporaneous = as.numeric(factor(cut(tifeftp,
-                                                              breaks = tmp.svy.quantiles[c(1,10,11)],
-                                                              include.lowest = TRUE))),
-                     top_decile = tot_inc_percentile_contemporaneous > 1)
+                                                                                breaks = tmp.svy.quantiles[c(1,9:11)],
+                                                                                include.lowest = TRUE))),
+                     top_decile = tot_inc_percentile_contemporaneous == 3,
+                     second_dec = tot_inc_percentile_contemporaneous == 2,
+                     top_quintile = top_decile | second_dec)
                                                                  
     return(temp)
   }
@@ -105,7 +108,6 @@ hilda_list <-
 @
 
 <<income_vars>>=
-# Want the 
 all_hilda <- rbindlist(hilda_list, fill = TRUE)
 
 prop_stay_by_id <- 
@@ -118,6 +120,7 @@ prop_stay_by_id <-
     ,tifefp
     ,tifefn
     ,top_decile
+    ,top_quintile
   ) %>%
   filter(lnwte != 0) %>%
   group_by(xwaveid) %>%
@@ -127,27 +130,22 @@ prop_stay_by_id <-
   group_by(xwaveid) %>%
   mutate(first_enters_decile = lag(cum_topdecile) == 0 & top_decile,
          first_enters_decile_at = as.character(ifelse(first_enters_decile, wave, NA_character_)),
-         cum_topdecile_after_entry = cumsum(cum_topdecile > 0),
-         leaves_decile = top_decile > lead(top_decile)) %>%  #only TRUE followed by false
+         has_entered_top_decile = as.logical(cumsum(top_decile)),
+         top_quintile_after_top_decile = top_decile | (as.logical(cumsum(top_decile)) & top_quintile),
+         leaves_decile = top_decile > lead(top_decile),
+         leaves_quintile = top_quintile > lead(top_quintile)) %>%  #only TRUE followed by false
   group_by(xwaveid) %>%
-  summarise(prop_stayed_in_top_decile = max(cum_topdecile)/max(cum_topdecile_after_entry),
-            start.lnwte = as.numeric(max(ifelse(first_enters_decile, lnwte, -1))),
-            min.lnwte = min(lnwte, na.rm=TRUE),
-            mea.lnwte = mean(lnwte, na.rm=TRUE),
-            max.lnwte = max(lnwte, na.rm=TRUE),
-            last.lnwte = last(lnwte)) 
+  summarise(potential_time_in_top_decile = sum(has_entered_top_decile),
+            time_in_top_decile = sum(top_decile),
+            time_in_top_quintile = sum(top_quintile_after_top_decile),
+            last_lnwte = last(lnwte)) 
 
 # Note that quite a lot have na valued weights
 prop_stay_by_id.narm <- 
   prop_stay_by_id %>%
   filter(complete.cases(.))
 
-weighted.mean(prop_stay_by_id.narm$prop_stayed_in_top_decile, prop_stay_by_id.narm$last.lnwte)
-
-
-# [a-l]tifeft[pn]
-
-
+weighted.mean(prop_stay_by_id.narm$time_in_top_quintile / prop_stay_by_id.narm$potential_time_in_top_decile, prop_stay_by_id.narm$last_lnwte)
 @
 
 
