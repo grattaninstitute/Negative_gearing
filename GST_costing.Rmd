@@ -1332,7 +1332,7 @@ ordinarily_targeted_efficacy.15pc <-
   merge(., proportion_of_welfare_by_quintile, by.x = "income_quintile", by.y = "Gross_income_quintile") %>%
   mutate(revenue_transfered = prop_welfare * revenue_transfered) %>%
   filter(percentage_revenue == 1) %>%
-  data.table %>% print
+  data.table %>% 
   filter(income_quintile == 1) %>% 
   group_by(percentage_revenue) %>%
   summarise(
