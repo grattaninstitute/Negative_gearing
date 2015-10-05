@@ -49,9 +49,21 @@ library(data.table)
 library(tidyr)
 library(dplyr)
 library(magrittr)
+
+weighted.var.se <- function(x, w, na.rm=FALSE){
+  # Computes the variance of a weighted mean following Cochran 1977 definition
+  # http://stats.stackexchange.com/questions/25895/computing-standard-error-in-weighted-mean-estimation
+  if (na.rm) { w <- w[i <- !is.na(x)]; x <- x[i] }
+  n = length(w)
+  xWbar = weighted.mean(x,w,na.rm=na.rm)
+  wbar = mean(w)
+  out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
+  return(out)
+}
 @
 
 <<load_dta, cache=FALSE, eval=FALSE, include=FALSE>>=
+# Do we actually want responding persons?
 read_hilda_file <- 
   function(filename){
     dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
@@ -85,18 +97,36 @@ read_hilda_strip_first_letter_add_column_id <-
     yearid <- nms.prefixes[nms.prefixes %in% letters[1:13]]
     # we're interested in stripping the names that specify the wave id (a-m)
     setnames(temp, old = nms, new = gsub("^[a-m]", "", nms))
-    temp %<>% mutate(wave = yearid)
     
-    # temp.long <- filter(temp, !is.na(lnwte), lnwte > 0)
+    wave.decoder <- 
+      data.table(
+        wave = letters[1:13],
+        Year = 2000 + 1:13
+      ) %>%
+      setkey(wave)
+    
+    temp %<>% mutate(wave = yearid) 
+    
+    setkey(temp, wave)
+    temp <- merge(temp, wave.decoder)
+    
+    temp %<>% mutate(income = tifefp)
+    
     tmp.svy.quantiles <- 
       survey::svydesign(ids = ~xwaveid, strata = ~xhhstrat, weights = ~hhwte,
                         data = temp) %>%
-      survey::svyquantile(x = ~tifeftp, design = ., quantiles = (0:10)/10)
-    temp %<>% mutate(tot_inc_percentile_contemporaneous = as.numeric(factor(cut(tifeftp,
-                                                                                breaks = tmp.svy.quantiles[c(1,9:11)],
+      survey::svyquantile(x = ~income, design = ., quantiles = (0:10)/10)
+    
+    temp %<>% mutate(tot_inc_percentile_contemporaneous = as.numeric(factor(cut(income,
+                                                                                # deciles.  So choose the first (the min,
+                                                                                # the eighth, the ninth, and the tenth). 
+                                                                                # This corresponds to the bottom, the 
+                                                                                # 80-90th percentiles and the 90-100 perc-
+                                                                                # entiles.
+                                                                                breaks = tmp.svy.quantiles[c(1,7:11)],
                                                                                 include.lowest = TRUE))),
-                     top_decile = tot_inc_percentile_contemporaneous == 3,
-                     second_dec = tot_inc_percentile_contemporaneous == 2,
+                     top_decile = tot_inc_percentile_contemporaneous == 5,
+                     second_dec = tot_inc_percentile_contemporaneous == 4,
                      top_quintile = top_decile | second_dec)
                                                                  
     return(temp)
@@ -136,16 +166,92 @@ prop_stay_by_id <-
          leaves_quintile = top_quintile > lead(top_quintile)) %>%  #only TRUE followed by false
   group_by(xwaveid) %>%
   summarise(potential_time_in_top_decile = sum(has_entered_top_decile),
+            years_in_sample = n(),
             time_in_top_decile = sum(top_decile),
             time_in_top_quintile = sum(top_quintile_after_top_decile),
             last_lnwte = last(lnwte)) 
 
-# Note that quite a lot have na valued weights
+# Note that quite a lot have na valued weights  - 
 prop_stay_by_id.narm <- 
   prop_stay_by_id %>%
   filter(complete.cases(.))
 
-weighted.mean(prop_stay_by_id.narm$time_in_top_quintile / prop_stay_by_id.narm$potential_time_in_top_decile, prop_stay_by_id.narm$last_lnwte)
+weighted.mean(prop_stay_by_id.narm$time_in_top_quintile/12,# / prop_stay_by_id.narm$potential_time_in_top_decile, 
+              prop_stay_by_id.narm$last_lnwte)
+@
+
+<<those_in_top_decile>>=
+all_hilda %>%
+  select(
+    xwaveid
+    ,wave
+    ,Year
+    ,lnwte
+    ,hhwte
+    ,tifefp
+    ,tifefn
+    ,income
+    ,top_decile
+    ,top_quintile
+  ) %>%
+  filter(lnwte != 0) %>%
+  group_by(xwaveid) %>%
+  arrange(wave) %>%
+  mutate(cum_topdecile = cumsum(top_decile)) %>%
+  group_by(xwaveid) %>%
+  mutate(first_enters_decile = lag(cum_topdecile) == 0 & top_decile,
+         first_enters_decile_at = as.character(ifelse(first_enters_decile, wave, NA_character_)),
+         has_entered_top_decile = as.logical(cumsum(top_decile)),
+         top_quintile_after_top_decile = top_decile | (as.logical(cumsum(top_decile)) & top_quintile),
+         leaves_decile = top_decile > lead(top_decile),
+         leaves_quintile = top_quintile > lead(top_quintile),
+         top_deciler = as.logical(max(top_decile)),
+         not_top_deciler_but_top_quintile = !top_deciler & max(top_quintile),
+         last_lnwte = last(lnwte)) %>%
+  mutate(real_income = cpi_inflator(income, from_fy = yr2fy(Year), to_fy = "2013-14")) %>%
+  group_by(top_deciler, not_top_deciler_but_top_quintile) %>%
+  summarise(mean.income = weighted.mean(real_income, last_lnwte),
+            sum(top_decile),
+            sd.income = weighted.var.se(real_income, last_lnwte))
+@
+
+<<>>=
+all_hilda %>%
+  filter(lnwte != 0 | is.na(lnwte)) %>%
+  group_by(xwaveid) %>%
+  mutate(ever_in_top_decile = sum(top_decile) > 0) %>%
+  ungroup %>%
+  filter(ever_in_top_decile) %>%
+  group_by(xwaveid) %>%
+  summarise(years_in_top_decile = sum(top_decile),
+            years_in_top_quinti = sum(top_quintile),
+            years_in_sample = n(),
+            last_lnwte = last(lnwte),
+            last_age = last(hgage)) %>%
+  ungroup %>%
+  filter(!is.na(last_lnwte)) %>%
+  
+  summarise(prop_time_top_quintile = weighted.mean(years_in_top_decile / years_in_sample,
+                                                   last_lnwte))
+  
+@
+
+<<>>=
+all_hilda %>% 
+  group_by(xwaveid) %>%
+  filter(sum(top_decile) > 0) %>%
+  filter(lnwte != 0) %>%
+  mutate(inc_quantile = paste0("Q", tot_inc_percentile_contemporaneous)) %>% 
+  #select(xwaveid, top_decile, top_quintile, inc_quantile) %>%
+  spread(inc_quantile, top_decile) %>%
+  group_by(xwaveid) %>%
+  summarise(Q1 = sum(Q1, na.rm=TRUE),
+            Q2 = sum(Q2, na.rm=TRUE),
+            Q3 = sum(Q3, na.rm=TRUE),
+            Q4 = sum(Q4, na.rm=TRUE),
+            Q5 = sum(Q5, na.rm=TRUE)) %>%
+  select(contains("Q")) %>% 
+  colMeans
 @
 
 
