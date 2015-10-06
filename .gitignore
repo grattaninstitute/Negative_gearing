@@ -46,7 +46,9 @@ IndividualSampleFile/
 HILDA/
 SIH/
 cache/
+cache*/
 figure/
+figure*/
 GST_costing_cache/
 
 # figures

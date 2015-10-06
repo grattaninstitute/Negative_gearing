@@ -33,7 +33,9 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
+                      ,fig.path = "figure_persistence_of_115k/"
                       ,cache=TRUE
+                      ,cache.path = "cache_persistence_of_115k/"
                       ,dev=c('my_pdf', 'my_emf', 'png')
                       ,fig.ext = c("pdf", "emf", "png")
 )
@@ -117,23 +119,30 @@ read_hilda_strip_first_letter_add_column_id <-
                         data = temp) %>%
       survey::svyquantile(x = ~income, design = ., quantiles = (0:10)/10)
     
-    temp %<>% mutate(tot_inc_percentile_contemporaneous = as.numeric(factor(cut(income,
-                                                                                # deciles.  So choose the first (the min,
-                                                                                # the eighth, the ninth, and the tenth). 
-                                                                                # This corresponds to the bottom, the 
-                                                                                # 80-90th percentiles and the 90-100 perc-
-                                                                                # entiles.
-                                                                                breaks = tmp.svy.quantiles[c(1,7:11)],
-                                                                                include.lowest = TRUE))),
-                     top_decile = tot_inc_percentile_contemporaneous == 5,
-                     second_dec = tot_inc_percentile_contemporaneous == 4,
+    quantile.index <- c(1,4:11)
+    
+    temp %<>% mutate(tot_inc_percentile_contemporaneous = 
+                       as.numeric(factor(cut(income,
+                                             # deciles.  So choose the first (the min,
+                                             # the eighth, the ninth, and the tenth). 
+                                             # This corresponds to the bottom, the 
+                                             # 80-90th percentiles and the 90-100 perc-
+                                             # entiles.
+                                             breaks = tmp.svy.quantiles[quantile.index],
+                                             include.lowest = TRUE))),
+                     tot_inc_percentile_contemporaneous = ifelse(tot_inc_percentile_contemporaneous == 1,
+                                                                 1,
+                                                                 tot_inc_percentile_contemporaneous + 11 - length(quantile.index)),
+                     top_decile = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous),
+                     second_dec = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous) - 1,
                      top_quintile = top_decile | second_dec)
                                                                  
     return(temp)
   }
 
 hilda_list <- 
-  lapply(list.files(path = "./HILDA/csv/", full.names = TRUE),
+  lapply(list.files(path = "./HILDA/csv/", full.names = TRUE,
+                    pattern = "^E"),  # enumerated person
          read_hilda_strip_first_letter_add_column_id)
 @
 
@@ -142,7 +151,7 @@ all_hilda <- rbindlist(hilda_list, fill = TRUE)
 
 prop_stay_by_id <- 
   all_hilda %>%
-  select(
+  dplyr::select(
     xwaveid
     ,wave
     ,lnwte
@@ -182,7 +191,7 @@ weighted.mean(prop_stay_by_id.narm$time_in_top_quintile/12,# / prop_stay_by_id.n
 
 <<those_in_top_decile>>=
 all_hilda %>%
-  select(
+  dplyr::select(
     xwaveid
     ,wave
     ,Year
@@ -241,17 +250,174 @@ all_hilda %>%
   group_by(xwaveid) %>%
   filter(sum(top_decile) > 0) %>%
   filter(lnwte != 0) %>%
-  mutate(inc_quantile = paste0("Q", tot_inc_percentile_contemporaneous)) %>% 
-  #select(xwaveid, top_decile, top_quintile, inc_quantile) %>%
-  spread(inc_quantile, top_decile) %>%
+  #mutate(inc_quantile = paste0("Q", tot_inc_percentile_contemporaneous)) %>% 
+  as.data.table %>%
+  setkey(tot_inc_percentile_contemporaneous) %>%
+  merge(data.table(tot_inc_percentile_contemporaneous = 1:10), all.y = TRUE) %>%
+  ggplot(aes(x = factor(tot_inc_percentile_contemporaneous))) + 
+  geom_bar(aes(y = ..count../sum(..count..)))
+@
+
+<<>>=
+all_hilda %>% 
   group_by(xwaveid) %>%
-  summarise(Q1 = sum(Q1, na.rm=TRUE),
-            Q2 = sum(Q2, na.rm=TRUE),
-            Q3 = sum(Q3, na.rm=TRUE),
-            Q4 = sum(Q4, na.rm=TRUE),
-            Q5 = sum(Q5, na.rm=TRUE)) %>%
-  select(contains("Q")) %>% 
-  colMeans
+  filter(max(hgage) <= 60,
+         min(hgage) >= 30) %>%
+  
+  # Exclude xwaveids who never have top_decile
+  filter(sum(top_decile) > 0) %>%
+  filter(lnwte != 0) %>%
+  as.data.table %>%
+  
+  # Forces 2:3 to be present in the chart:
+  setkey(tot_inc_percentile_contemporaneous) %>%
+  merge(data.table(tot_inc_percentile_contemporaneous = 1:10), all.y = TRUE) %>%
+  
+  grplot(aes(x = factor(tot_inc_percentile_contemporaneous))) + 
+  geom_bar(aes(y = ..count../sum(..count..), 
+               weight = lnwte))
+@
+
+<<Prop_time_in_decile_limited_age_eperson>>=
+all_hilda %>% 
+  group_by(xwaveid) %>%
+  filter(max(hgage) <= 60,
+         min(hgage) >= 30) %>%
+  filter(sum(top_decile) > 0) %>%
+  filter(lnwte != 0) %>%
+  mutate(lnwte_last = last(lnwte)) %>% 
+  #mutate(inc_quantile = paste0("Q", tot_inc_percentile_contemporaneous)) %>% 
+  as.data.table %>% # select(xwaveid, Year, lnwte, top_decile, tot_inc_percentile_contemporaneous) 
+  ungroup %>%
+  group_by(tot_inc_percentile_contemporaneous) %>%
+  summarise(time.in = sum(lnwte_last)) %>%
+  ungroup %>%
+  mutate(time.in = time.in/sum(time.in)) %>%
+  arrange(tot_inc_percentile_contemporaneous) %>%
+  setkey(tot_inc_percentile_contemporaneous) %>%
+  merge(data.table(tot_inc_percentile_contemporaneous = 1:10), all.y = TRUE) %>%
+  mutate(time.in = ifelse(tot_inc_percentile_contemporaneous %in% 1:3,
+                          first(time.in)/3,
+                          time.in)) %>%
+  # tbl_df
+  grplot(aes(x = factor(tot_inc_percentile_contemporaneous),
+             y = time.in)) + 
+  geom_bar(stat = "identity") + 
+  scale_y_continuous("Proportion of time spent",
+                     label=percent,
+                     expand = c(0,0),
+                     limits = c(0,0.5)) + 
+  scale_x_discrete("Contemporaneous total income decile") + 
+  theme(axis.title.y = element_text(angle = 90))
+@
+\begin{figure}
+\Caption{For those who reach the top decile, most will stay in the top two deciles}%
+{Proportion of years spent in given decile by those respondents aged no more than 60 and no less than 30 who were in the top decile at least once in the HILDA survey period}
+{fig:Prop_time_in_decile_limited_age_eperson}
+\includegraphics[width=\columnwidth]{figure_persistence_of_115k/Prop_time_in_decile_limited_age_eperson-1}
+\end{figure}
+
+
+<<use_last_lnwte>>=
+all_hilda %>% 
+  group_by(xwaveid) %>%
+  filter(max(hgage) <= 60,
+         min(hgage) >= 30) %>%
+  filter(sum(top_decile) > 0) %>%
+  filter(lnwte != 0) %>%
+  mutate(lnwte_last = last(lnwte)) %>% 
+  #mutate(inc_quantile = paste0("Q", tot_inc_percentile_contemporaneous)) %>% 
+  as.data.table %>% # select(xwaveid, Year, lnwte, top_decile, tot_inc_percentile_contemporaneous) 
+  ungroup %>%
+  group_by(tot_inc_percentile_contemporaneous) %>%
+  summarise(time.in = sum(lnwte_last)) %>%
+  ungroup %>%
+  mutate(time.in = time.in/sum(time.in)) %>%
+  arrange(tot_inc_percentile_contemporaneous)
+@
+
+\subsection{How many hit top decile only once}
+<<>>=
+all_hilda %>% 
+  group_by(xwaveid) %>%
+  filter(lnwte != 0) %>%
+  mutate(hits_top_decile_only_once = sum(top_decile) == 1,
+         never_hits_top_decile = sum(top_decile) == 0,
+         prop_in_top_decile = mean(top_decile),
+         last_lnwte = last(lnwte)) %>%
+  as.data.table %$% 
+  weighted.mean(hits_top_decile_only_once, last_lnwte)
+@
+
+\subsection{Number of times in top decile}
+<<>>=
+all_hilda %>% 
+  filter(lnwte != 0) %>%
+  group_by(xwaveid) %>%
+  mutate(lnwte_last = last(lnwte),
+         sum_topdecile = sum(top_decile)) %>%
+  ungroup %>%
+  group_by(sum_topdecile) %>%
+  summarise(mean.time = sum(lnwte_last)) %>%
+  ungroup %>%
+  mutate(mean.time = mean.time/sum(mean.time)) %>%
+  arrange(sum_topdecile)
+@
+
+<<years_in_top_decile>>=
+all_hilda %>% 
+  filter(lnwte != 0) %>%
+  group_by(xwaveid) %>%
+  mutate(lnwte_last = last(lnwte),
+         sum_topdecile = sum(top_decile)) %>%
+  ungroup %>%
+  group_by(sum_topdecile) %>%
+  dplyr::summarise(mean.time = sum(lnwte_last)) %>%
+  ungroup %>%
+  mutate(mean.time = mean.time/sum(mean.time)) %>%
+  arrange(sum_topdecile) %>%
+  grplot(aes(x = factor(sum_topdecile),
+             y = mean.time)) + 
+  geom_bar(stat = "identity") + 
+  scale_y_continuous("Prop of respondents",
+                     label=percent,
+                     limits = c(0,1)) + 
+  xlab("Years in top decile")
+@
+\begin{figure}
+\Caption{}{Proportion of respondents in HILDA}{fig:years_in_top_decile}
+\includegraphics[width=\columnwidth]{figure_persistence_of_115k/years_in_top_decile-1}
+\notes{}
+
+\source{HILDA}
+\end{figure}
+
+\section{Responding person}
+<<load_resp_dta, include=FALSE, eval=FALSE>>=
+read_hilda_file <- 
+  function(filename){
+    dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
+                  orig.filename = filename)
+  }
+
+enumerate.resp_person.files <- 
+  list.files(path = "./HILDA"
+                    ,pattern = "^R.*dta$"  # Enumerate person
+                    ,full.names = TRUE)
+
+enumerate.resp_person.files.names <-
+  gsub("^.*/([^/]+)\\.dta$", "\\1", enumerate.resp_person.files)
+
+hilda_list_resp <-
+  lapply(enumerate.resp_person.files, read_hilda_file)
+
+names(hilda_list_resp) <- enumerate.resp_person.files.names
+
+lapply(seq_along(hilda_list_resp), function(element) readr::write_csv(hilda_list_resp[[element]], path = paste0("./HILDA/csv/", names(hilda_list_resp)[element], ".csv")))
+@
+
+<<load_csv_resp>>=
+
 @
 
 
