@@ -1828,11 +1828,21 @@ sih11 %>%
 
 ## Number of people coming onto the age pension (2012-13)
 ```{r}
-age_pension_by_household <- 
-  hes10_indiv %>%
-  #filter(Current_weekly_income_from_age_pension > 0) %>%
-  group_by(Unique_household_number) %>%
-  summarise(total_age_pension = sum(Current_weekly_income_from_age_pension))
+current_full_pension <- 
+  675.20 * 26  # 2012-13
+  # 788.4*26  ## 2014-15
+age_pension_cutoff <- 
+  1840 * 26   ## 2012-13
+  # 1896*26   ## 2014-15
+
+welfare_inflator <- 1 +
+  0.3 *  # prop of extra revenue to transfers
+  (48499 / # GST
+           2 / # extra 5 pc
+           140569  # welfare spend   ### (all 2013-14)
+         )
+
+new_age_pension_cutoff <- age_pension_cutoff * welfare_inflator  # similar triangles
 
 age_pension_by_household %>%
   merge(dplyr::select(hes10hh, 
@@ -1841,11 +1851,9 @@ age_pension_by_household %>%
         by = "Unique_household_number") %>%
   filter(Current_weekly_HH_income_from_government_pensions_and_allowances > 0)  %$%
   weighted.mean(total_age_pension / Current_weekly_HH_income_from_government_pensions_and_allowances)
-  
-
 
 get_sample_file() %$%
-  sum(Tot_inc_amt >= 1697.20*26 & Tot_inc_amt <= 1697.20*26 + )
+  sum(Tot_inc_amt >= age_pension_cutoff & Tot_inc_amt <= new_age_pension_cutoff) * 50 / 1e6
 ```
 
 
