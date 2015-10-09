@@ -1852,8 +1852,89 @@ age_pension_by_household %>%
   filter(Current_weekly_HH_income_from_government_pensions_and_allowances > 0)  %$%
   weighted.mean(total_age_pension / Current_weekly_HH_income_from_government_pensions_and_allowances)
 
-get_sample_file() %$%
-  sum(Tot_inc_amt >= age_pension_cutoff & Tot_inc_amt <= new_age_pension_cutoff) * 50 / 1e6
+age_mutate_ <- function(.data){
+  .data %>%
+  mutate(Age = car::recode(age_range, "0 = '70 and over';
+                            1 = '65 to 69';
+                            2 = '60 to 64';
+                            3 = '55 to 59';
+                            4 = '50 to 54';
+                            5 = '45 to 49';
+                            6 = '40 to 44';
+                            7 = '35 to 39';
+                            8 = '30 to 34';
+                            9 = '25 to 29';
+                            10 = '20 to 24';
+                            11 = 'under 20'")) %>%
+  mutate(Age =  factor(Age,
+                       levels = c("under 20",
+                                  '20 to 24',
+                                  '25 to 29',
+                                  '30 to 34',
+                                  '35 to 39',
+                                  '40 to 44',
+                                  '45 to 49',
+                                  '50 to 54',
+                                  '55 to 59',
+                                  '60 to 64',
+                                  '65 to 69',
+                                  '70 and over'),
+                       labels = gsub("\\s", "\n",
+                                     c("under 20",
+                                       '20 to 24',
+                                       '25 to 29',
+                                       '30 to 34',
+                                       '35 to 39',
+                                       '40 to 44',
+                                       '45 to 49',
+                                       '50 to 54',
+                                       '55 to 59',
+                                       '60 to 64',
+                                       '65 to 69',
+                                       '70 and over')),
+                       ordered = T))
+}
+
+get_sample_file() %>%
+  age_mutate_ %>%
+  #filter(Age %in% c("55 to 59", "60 to 64", "65 to 69", "70 and over")) %$%
+  tbl_df %>%
+  group_by(Age) %>%
+  summarise(Age_pension_entrants = sum(Tot_inc_amt >= age_pension_cutoff & Tot_inc_amt <= new_age_pension_cutoff) * 50 / 1e6) %>%
+  grplot(aes(x = Age, y = Age_pension_entrants)) + 
+  geom_bar(stat = "identity")
+```
+
+```{r}
+
+current_full_pension <- 
+  675.20 * 26  # 2012-13
+  # 788.4*26  ## 2014-15
+age_pension_cutoff <- 
+  1840 * 26   ## 2012-13
+  # 1896*26   ## 2014-15
+allowance <- 
+  12807.60  # http://www.cpaaustralia.com.au/~/media/corporate/allfiles/document/professional-resources/financial-planning/tax-social-security-guide-2012-13.pdf
+
+allowance_with_income <- 
+  function(fortnightly.income){
+    fortnightly.income + max(0, 492.6 - (0.5 * (fortnightly.income - 62) * IND(fortnightly.income, min = 62, max = 250) +
+                                     IND(fortnightly.income, min = 250) * 0.6 * (fortnightly.income - 250)))
+  }
+
+for (i in 492:2000){
+  if (allowance_with_income(i) == i){
+    allowance_cutoff_fortnightly <- i
+    break
+  }
+}
+
+allowance_cutoff <- 
+  allowance_cutoff_fortnightly * 26
+
+get_sample_file() %$% sum()
+
+  
 ```
 
 
