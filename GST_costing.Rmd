@@ -56,18 +56,36 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
 }
 
 age_mutate <- function(.hes){
-  .hes %>%
-    mutate(
-      age_group = as.character(Age_of_HH_reference_person),
-      age_group = ifelse(grepl("^[0-9]+$", age_group), 
-                         ifelse(as.numeric(age_group) < 20,
-                                "20 or under",
-                                paste((as.numeric(age_group) %/% 5) * 5,
-                                      "to",
-                                      (as.numeric(age_group) %/% 5) * 5 + 4)),
-                         age_group
+  if("Age_of_HH_reference_person" %in% names(.hes)){
+    .hes %>%
+      mutate(
+        age_group = as.character(Age_of_HH_reference_person),
+        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group
+        )
       )
-    )
+  }
+  
+  if("Age_of_person" %in% names(.hes)){
+    .hes %>%
+      mutate(
+        age_group = as.character(Age_of_person),
+        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group
+        )
+      )
+  }
+  
 }
 
 group_by.income_quintile <- function(.data, type = "Total_current_weekly_HH_income_from_all_sources"){
@@ -1364,7 +1382,6 @@ ordinarily_targeted_efficacy_comp_adequacy.15pc <-
   # Recalling that only a fraction of welfare actually goes to the bottom quintile:
   mutate(revenue_transfered = proportion_of_welfare_bottom_quintile * revenue_transfered) %>%
   data.table %>%
-  filter(income_quintile == 1) %>% 
   group_by(percentage_revenue, comp_adequacy) %>%
   summarise(
     percentage_compensated = weighted.mean(comp_adequacy * Weekly_household_GST_on_all_goods_and_services_FIS/2 < revenue_transfered,
@@ -1724,7 +1741,8 @@ hes_with_gst_compensation <-
   summarise(comp_adequacy.75pc = mean(new_welfare > 0.75* Weekly_household_GST_on_all_goods_and_services_FIS/2),
             comp_adequacy.100pc = mean(new_welfare > Weekly_household_GST_on_all_goods_and_services_FIS/2),
             comp_adequacy.125pc = mean(new_welfare > 1.25*Weekly_household_GST_on_all_goods_and_services_FIS/2)
-  ) %>%
+  ) %T>%
+  readr::write_csv(path = "./figure/GST_compensation_by_quintile_and_threshold.csv") %>%
   gather(threshold, comp_adequacy, comp_adequacy.75pc:comp_adequacy.125pc) %>%
   mutate(threshold = gsub("pc", "%", 
                           gsub("^.*\\.", "", threshold)),
@@ -1745,6 +1763,187 @@ hes_with_gst_compensation %T>%
   
 ```
 
+## Calculating the effect of the increase with the taper rate
+
+```{r}
+IND <- function(x, min, max = Inf){
+  as.numeric(x >= min) * as.numeric(x < max)
+}
+
+dgp <- function(x, beta0, beta1, beta2, noise = TRUE){
+  beta0 * IND(x, min = 0, max = beta1) + (beta0 / (beta2 - beta1))*(beta2 - x) * IND(x, min = beta1, max = beta2) + 
+    ifelse(noise, rnorm(length(x), mean = 0, sd = beta0/4), 0)
+}
+
+grplot(sih11,
+       aes(Total_current_weekly_income_from_all_sources - Total_current_weekly_income_from_government_pensions_and_allowances,
+           Total_current_weekly_income_from_government_pensions_and_allowances)) + 
+  geom_point(aes(alpha = Person_weight/max(Person_weight))) +
+  scale_alpha_identity() + 
+  scale_x_continuous("Income not from welfare",
+                     limits = c(0,3000),
+                     label=grattan_dollar) + 
+  scale_y_continuous("Welfare",
+                     label=grattan_dollar) + 
+  coord_equal() + 
+  stat_smooth() + 
+  annotate("point",
+           color = col.6,
+           x = 0:1200,
+           y = dgp(x = 0:1200, beta0 = 250, beta1 = 300, beta2 = 700, noise = FALSE))
+```
+
+```{r}
+
+
+Y <- dgp(xx <- seq(-1,10, by = 0.01), beta0 = 1, beta1 = 2, beta2 = 3)
+# nls(Y ~ beta0 * IND(xx, 0, beta1) + (beta0 / (beta2 - beta1)) * (beta2 - xx) * IND(xx, beta1, beta2), start = list(beta0=1.5, beta1=2.3, beta2=4))
+```
+
+```{r, eval=FALSE}
+y <- filter(sih11, Total_current_weekly_income_from_all_sources > 0) %$% {Total_current_weekly_income_from_government_pensions_and_allowances - 1}
+x <- filter(sih11, Total_current_weekly_income_from_all_sources > 0) %$% 
+{Total_current_weekly_income_from_all_sources - Total_current_weekly_income_from_government_pensions_and_allowances}
+
+#boo
+nlsLM(y ~ beta0 * IND(x, 0, beta1) + (beta0 / (beta2 - beta1)) * (beta2 - x) * IND(x, beta1, beta2),
+    start = list(beta0 = 250,  # pars based off plot
+                 beta1 = 301.2,
+                 beta2 = 800.7),
+    control = nls.lm.control(maxiter = 1000) #
+    )
+```
+
+```{r}
+sih11 %>%
+  filter(Current_weekly_income_from_newstart_allowance > 0) %>%
+  grplot(aes(y = Current_weekly_income_from_newstart_allowance,
+             x = Total_current_weekly_income_from_all_sources - Current_weekly_income_from_newstart_allowance)) + 
+  geom_point(aes(alpha = Person_weight/max(Person_weight))) + 
+  scale_alpha_identity() + 
+  ylim(0, max(sih11$Current_weekly_income_from_newstart_allowance)*1.5) + 
+  xlim(0,1500)+
+  stat_smooth() + 
+  xlab("Income less newstart")
+```
+
+## Number of people coming onto the age pension (2012-13)
+```{r}
+current_full_pension <- 
+  675.20 * 26  # 2012-13
+  # 788.4*26  ## 2014-15
+age_pension_cutoff <- 
+  1840 * 26   ## 2012-13
+  # 1896*26   ## 2014-15
+
+welfare_inflator <- 1 +
+  0.3 *  # prop of extra revenue to transfers
+  (48499 / # GST
+           2 / # extra 5 pc
+           140569  # welfare spend   ### (all 2013-14)
+         )
+
+new_age_pension_cutoff <- age_pension_cutoff * welfare_inflator  # similar triangles
+
+age_pension_by_household <- 
+  hes10_indiv %>%
+  group_by(Unique_household_number) %>%
+  summarise(total_age_pension = sum(Current_weekly_income_from_age_pension))
+
+age_pension_by_household %>%
+  merge(dplyr::select(hes10hh, 
+                      Unique_household_number,
+                      Current_weekly_HH_income_from_government_pensions_and_allowances),
+        by = "Unique_household_number") %>%
+  filter(Current_weekly_HH_income_from_government_pensions_and_allowances > 0)  %$%
+  weighted.mean(total_age_pension / Current_weekly_HH_income_from_government_pensions_and_allowances)
+
+age_mutate_ <- function(.data){
+  .data %>%
+  mutate(Age = car::recode(age_range, "0 = '70 and over';
+                            1 = '65 to 69';
+                            2 = '60 to 64';
+                            3 = '55 to 59';
+                            4 = '50 to 54';
+                            5 = '45 to 49';
+                            6 = '40 to 44';
+                            7 = '35 to 39';
+                            8 = '30 to 34';
+                            9 = '25 to 29';
+                            10 = '20 to 24';
+                            11 = 'under 20'")) %>%
+  mutate(Age =  factor(Age,
+                       levels = c("under 20",
+                                  '20 to 24',
+                                  '25 to 29',
+                                  '30 to 34',
+                                  '35 to 39',
+                                  '40 to 44',
+                                  '45 to 49',
+                                  '50 to 54',
+                                  '55 to 59',
+                                  '60 to 64',
+                                  '65 to 69',
+                                  '70 and over'),
+                       labels = gsub("\\s", "\n",
+                                     c("under 20",
+                                       '20 to 24',
+                                       '25 to 29',
+                                       '30 to 34',
+                                       '35 to 39',
+                                       '40 to 44',
+                                       '45 to 49',
+                                       '50 to 54',
+                                       '55 to 59',
+                                       '60 to 64',
+                                       '65 to 69',
+                                       '70 and over')),
+                       ordered = T))
+}
+
+get_sample_file() %>%
+  age_mutate_ %>%
+  #filter(Age %in% c("55 to 59", "60 to 64", "65 to 69", "70 and over")) %$%
+  tbl_df %>%
+  group_by(Age) %>%
+  summarise(Age_pension_entrants = sum(Tot_inc_amt >= age_pension_cutoff & Tot_inc_amt <= new_age_pension_cutoff) * 50 / 1e6) %>%
+  grplot(aes(x = Age, y = Age_pension_entrants)) + 
+  geom_bar(stat = "identity")
+```
+
+```{r}
+
+current_full_pension <- 
+  675.20 * 26  # 2012-13
+  # 788.4*26  ## 2014-15
+age_pension_cutoff <- 
+  1840 * 26   ## 2012-13
+  # 1896*26   ## 2014-15
+allowance <- 
+  12807.60  # http://www.cpaaustralia.com.au/~/media/corporate/allfiles/document/professional-resources/financial-planning/tax-social-security-guide-2012-13.pdf
+
+allowance_with_income <- 
+  function(fortnightly.income){
+    fortnightly.income + max(0, 492.6 - (0.5 * (fortnightly.income - 62) * IND(fortnightly.income, min = 62, max = 250) +
+                                     IND(fortnightly.income, min = 250) * 0.6 * (fortnightly.income - 250)))
+  }
+
+for (i in 492:2000){
+  if (allowance_with_income(i) == i){
+    allowance_cutoff_fortnightly <- i
+    break
+  }
+}
+
+allowance_cutoff <- 
+  allowance_cutoff_fortnightly * 26
+
+get_sample_file() %$% sum()
+
+  
+```
+
+
 
 ## Absolute impacts
 Amount spent per quintile:
@@ -1756,5 +1955,6 @@ hes10hh %>%
             mean_extra_gst = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES)) %>%
   mutate(mean_extra_gst/mean_spend)
 ```
+
 
 
