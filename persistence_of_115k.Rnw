@@ -34,7 +34,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
                       ,fig.path = "figure_persistence_of_115k/"
-                      ,cache=TRUE
+                      ,cache=FALSE
                       ,cache.path = "cache_persistence_of_115k/"
                       ,dev=c('my_pdf', 'my_emf', 'png')
                       ,fig.ext = c("pdf", "emf", "png")
@@ -89,7 +89,7 @@ lapply(seq_along(hilda_list), function(element) readr::write_csv(hilda_list[[ele
 
 @
 
-<<load_csvs, cache=TRUE>>=
+<<load_csvs, cache=FALSE>>=
 read_hilda_strip_first_letter_add_column_id <- 
   function(filename){  
     temp <- fread(filename)
@@ -135,6 +135,11 @@ read_hilda_strip_first_letter_add_column_id <-
                                                                  tot_inc_percentile_contemporaneous + 11 - length(quantile.index)),
                      top_decile = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous),
                      second_dec = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous) - 1,
+                     third_decile = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous) - 2,
+                     fourth_decile = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous) - 3,
+                     fifth_decile = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous) - 4,
+                     sixth_decile = tot_inc_percentile_contemporaneous == max(tot_inc_percentile_contemporaneous) - 5,
+                     bottom_deciles = tot_inc_percentile_contemporaneous < max(tot_inc_percentile_contemporaneous) - 5,
                      top_quintile = top_decile | second_dec)
                                                                  
     return(temp)
@@ -351,38 +356,34 @@ all_hilda %>%
 
 \subsection{Number of times in top decile}
 <<>>=
-all_hilda %>% 
-  filter(lnwte != 0) %>%
+number_times_top_decile <- 
+  all_hilda %>% 
+  filter(lnwte != 0 | is.na(lnwte)) %>%
   group_by(xwaveid) %>%
   mutate(lnwte_last = last(lnwte),
+         z = n(),
          sum_topdecile = sum(top_decile)) %>%
   ungroup %>%
-  group_by(sum_topdecile) %>%
-  summarise(mean.time = sum(lnwte_last)) %>%
-  ungroup %>%
-  mutate(mean.time = mean.time/sum(mean.time)) %>%
-  arrange(sum_topdecile)
-@
-
-<<years_in_top_decile>>=
-all_hilda %>% 
-  filter(lnwte != 0) %>%
-  group_by(xwaveid) %>%
-  mutate(lnwte_last = last(lnwte),
-         sum_topdecile = sum(top_decile)) %>%
-  ungroup %>%
+  filter(!is.na(lnwte_last)) %>% 
   group_by(sum_topdecile) %>%
   dplyr::summarise(mean.time = sum(lnwte_last)) %>%
   ungroup %>%
   mutate(mean.time = mean.time/sum(mean.time)) %>%
-  arrange(sum_topdecile) %>%
+  arrange(sum_topdecile)
+
+number_times_top_decile
+@
+
+<<years_in_top_decile>>=
+number_times_top_decile %>%
   grplot(aes(x = factor(sum_topdecile),
              y = mean.time)) + 
   geom_bar(stat = "identity") + 
   scale_y_continuous("Prop of respondents",
                      label=percent,
+                     expand = c(0,0),
                      limits = c(0,1)) + 
-  xlab("Years in top decile")
+  xlab("Years in top decile") 
 @
 \begin{figure}
 \Caption{}{Proportion of respondents in HILDA}{fig:years_in_top_decile}
@@ -391,6 +392,55 @@ all_hilda %>%
 
 \source{HILDA}
 \end{figure}
+
+<<decile_presence_by_top_decile_longevity>>=
+decile_presence_by_top_decile_longevity <- 
+  all_hilda %>%
+  group_by(xwaveid) %>%
+  mutate(top_deciler = sum(top_decile) > 0,
+         sum_topdecile = sum(top_decile),
+         last_lnwte = last(lnwte)) %>%
+  ungroup %>%
+  filter(last_lnwte > 0, !is.na(last_lnwte),
+         top_deciler) %>%
+  group_by(sum_topdecile) %>%
+  summarise(Q10 = weighted.mean(top_decile, last_lnwte),
+            #Q10nw = mean(top_decile),
+            Q09 = weighted.mean(second_dec,last_lnwte),
+            Q08 = weighted.mean(third_decile,last_lnwte),
+            Q07 = weighted.mean(fourth_decile,last_lnwte),
+            Q06 = weighted.mean(fifth_decile,last_lnwte),
+            Q05 = weighted.mean(sixth_decile, last_lnwte),
+            QX = weighted.mean(bottom_deciles,last_lnwte))
+
+decile_presence_by_top_decile_longevity %>%
+  gather(decile, presence, -sum_topdecile) %>%
+  arrange(sum_topdecile, desc(decile)) %>%
+  mutate(decile.text = ifelse(sum_topdecile == 1,
+                              as.character(decile),
+                              NA_character_)) %>%
+  mutate(presence = 13 * presence) %>%
+  group_by(sum_topdecile) %>%
+  arrange(sum_topdecile, decile) %>%
+  mutate(text.y = cumsum(presence),
+         text.color = ifelse(decile == "Q10", "white", "black")) %>%
+  ungroup %>%
+  arrange(sum_topdecile, decile) %>%
+  grplot(aes(x = factor(sum_topdecile),
+             y = presence,
+             fill = decile)) + 
+  geom_bar(stat = "identity") + 
+  xlab("Years in top decile") +
+  scale_y_continuous("Years", breaks = 0:13) + 
+  geom_text(aes(y = text.y, label = decile.text, 
+                color = text.color), 
+            vjust = 1.2) +
+  scale_color_manual(values = c("white" = "white", "black" = "black"))
+@
+\begin{figure}
+\includegraphics[width=\columnwidth]{figure_persistence_of_115k/decile_presence_by_top_decile_longevity-1}7
+\end{figure}
+
 
 \section{Responding person}
 <<load_resp_dta, include=FALSE, eval=FALSE>>=
