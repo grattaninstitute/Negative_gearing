@@ -92,12 +92,14 @@ group_by.income_quintile <- function(.data, type = "Total_current_weekly_HH_inco
   if(type == "Current_weekly_HH_disposable_income"){
     group_by(.data, income_quintile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
                                                             breaks = total.inc.quintiles, 
-                                                            include.lowest = TRUE)))) 
+                                                            include.lowest = TRUE)))) %>%
+      arrange(income_quintile)
   } else {
     if (type == "Total_current_weekly_HH_income_from_all_sources"){
       group_by(.data, income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
                                                             breaks = total.inc.quintiles, 
-                                                            include.lowest = TRUE))))
+                                                            include.lowest = TRUE)))) %>%
+      arrange(income_quintile)
     }
   }
 }
@@ -1349,7 +1351,6 @@ ordinarily_targeted_efficacy.15pc <-
   # Recalling that only a fraction of welfare actually goes to the bottom quintile:
   merge(., proportion_of_welfare_by_quintile, by.x = "income_quintile", by.y = "Gross_income_quintile") %>%
   mutate(revenue_transfered = prop_welfare * revenue_transfered) %>%
-  #filter(percentage_revenue == 1) %>%
   data.table %>% 
   filter(income_quintile == 1) %>% 
   group_by(percentage_revenue) %>%
@@ -1796,7 +1797,7 @@ grplot(sih11,
 
 
 Y <- dgp(xx <- seq(-1,10, by = 0.01), beta0 = 1, beta1 = 2, beta2 = 3)
-nls(Y ~ beta0 * IND(xx, 0, beta1) + (beta0 / (beta2 - beta1)) * (beta2 - xx) * IND(xx, beta1, beta2), start = list(beta0=1.5, beta1=2.3, beta2=4))
+# nls(Y ~ beta0 * IND(xx, 0, beta1) + (beta0 / (beta2 - beta1)) * (beta2 - xx) * IND(xx, beta1, beta2), start = list(beta0=1.5, beta1=2.3, beta2=4))
 ```
 
 ```{r, eval=FALSE}
@@ -1843,6 +1844,11 @@ welfare_inflator <- 1 +
          )
 
 new_age_pension_cutoff <- age_pension_cutoff * welfare_inflator  # similar triangles
+
+age_pension_by_household <- 
+  hes10_indiv %>%
+  group_by(Unique_household_number) %>%
+  summarise(total_age_pension = sum(Current_weekly_income_from_age_pension))
 
 age_pension_by_household %>%
   merge(dplyr::select(hes10hh, 
@@ -1935,6 +1941,19 @@ allowance_cutoff <-
 get_sample_file() %$% sum()
 
   
+```
+
+
+
+## Absolute impacts
+Amount spent per quintile:
+```{r}
+hes10hh %>% 
+  group_by.income_quintile %>%
+  summarise(mean_spend = weighted.mean(Total_goods_and_services_expenditure_HES_only, Weight_HH_HES),
+            mean_gst = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS, Weight_HH_HES),
+            mean_extra_gst = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES)) %>%
+  mutate(mean_extra_gst/mean_spend)
 ```
 
 
