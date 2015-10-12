@@ -411,7 +411,8 @@ decile_presence_by_top_decile_longevity <-
             Q07 = weighted.mean(fourth_decile,last_lnwte),
             Q06 = weighted.mean(fifth_decile,last_lnwte),
             Q05 = weighted.mean(sixth_decile, last_lnwte),
-            QX = weighted.mean(bottom_deciles,last_lnwte))
+            QX = weighted.mean(bottom_deciles,last_lnwte),
+            N = sum(last_lnwte))
 
 decile_presence_by_top_decile_longevity %>%
   gather(decile, presence, -sum_topdecile) %>%
@@ -440,6 +441,40 @@ decile_presence_by_top_decile_longevity %>%
 \begin{figure}
 \includegraphics[width=\columnwidth]{figure_persistence_of_115k/decile_presence_by_top_decile_longevity-1}7
 \end{figure}
+
+<<marimekko>>=
+marimekko.data <- 
+  decile_presence_by_top_decile_longevity %>%
+  gather(decile, presence, Q10:QX) %>%
+  arrange(sum_topdecile, decile) %>%
+  group_by(decile) %>%
+  mutate(cumsum_n = cumsum(N)) %>%
+  group_by(decile) %>%
+  mutate(xmin = lag(cumsum(N), default = 0.0),
+         xmax = lead(xmin, default = Inf),
+         xmax.b = ifelse(is.finite(xmax), xmax, max(cumsum_n))) %>%
+  ungroup %>%
+  group_by(sum_topdecile) %>%
+  mutate(ymin = lag(cumsum(presence), default = 0),
+         ymax = lead(ymin, default = 1)) %>%
+  mutate(text = ifelse(xmin == min(xmin),
+                       as.character(decile), 
+                       NA_character_))
+
+marimekko.data %>%
+  grplot(aes(xmin = xmin, xmax = xmax,
+             ymin = ymin, ymax = ymax,
+             fill = decile)) + 
+  geom_rect() + 
+  geom_text(aes(x = 0.5 * (xmin + xmax),
+                y = 0.5 * (ymin + ymax),
+                label = text,
+                color = as.numeric(decile) <= 2)) + 
+  scale_color_manual(values = c("black", "white")) + 
+  scale_x_continuous("Years in top decile",
+                     breaks = unique((marimekko.data$xmin + marimekko.data$xmax.b)/2),
+                     labels = 1:13)
+@
 
 
 \section{Responding person}
