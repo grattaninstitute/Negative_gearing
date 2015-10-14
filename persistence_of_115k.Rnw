@@ -396,6 +396,8 @@ number_times_top_decile %>%
 <<decile_presence_by_top_decile_longevity>>=
 decile_presence_by_top_decile_longevity <- 
   all_hilda %>%
+  filter(max(hgage) <= 60,
+         min(hgage) >= 30) %>%
   group_by(xwaveid) %>%
   mutate(top_deciler = sum(top_decile) > 0,
          sum_topdecile = sum(top_decile),
@@ -468,12 +470,17 @@ marimekko.data %>%
   geom_rect() + 
   geom_text(aes(x = 0.5 * (xmin + xmax),
                 y = 0.5 * (ymin + ymax),
-                label = text,
-                color = as.numeric(decile) <= 2)) + 
+                label = ifelse(as.character(text) == "QX", "lower 50%", text),
+                color = as.numeric(decile) <= 2),
+            size = 7.14) + 
   scale_color_manual(values = c("black", "white")) + 
   scale_x_continuous("Years in top decile",
+                     expand = list(c(0,0.075), c(0,0)),
                      breaks = unique((marimekko.data$xmin + marimekko.data$xmax.b)/2),
-                     labels = 1:13)
+                     labels = 1:13) + 
+  scale_y_continuous("Prop time in each decile",
+                     label=percent,
+                     expand = list(c(0,0), c(0,0.1)))
 @
 
 

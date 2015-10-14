@@ -6,6 +6,10 @@ library(data.table)
 library(dplyr)
 library(magrittr)
 
+purl("GST_costing.Rmd")
+source("GST_costing.R", echo=FALSE)
+file.remove("GST_costing.R")
+
 GST_by_year <-
   read_excel("GST_by_year.xlsx", sheet = "GST Table 1", skip = 2) %>%
   setnames(1:2, c("Selected_item", "unit")) %>% 
@@ -69,3 +73,34 @@ nrow(entrants) / nrow(extants)
 # 25%
 
 # This underestimates extants...
+## How many individuals of a certian income are on newstart
+# ====
+sih11 %>% 
+  mutate(Approximate_income = round(52 * Total_current_weekly_employee_income_as_reported, -3)) %>%
+  group_by(Approximate_income) %>%
+  summarise(on_newstart = mean(Current_weekly_income_from_newstart_allowance > 0)
+            , N =n()) %>%
+  grplot(aes(x = Approximate_income,
+             y = on_newstart)) + 
+  geom_point(aes(size = N)) + 
+  stat_smooth() + 
+  xlim(0,50e3) + 
+  coord_cartesian(xlim = c(0,50e3)) + 
+  geom_vline(xintercept = c(ALLOWANCE.CUTOFF, ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO))
+
+get_sample_file() %$%
+  sum(Taxable_Income >= ALLOWANCE.CUTOFF & 
+        Taxable_Income <= ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO) * 52 / 1e6 * 0.05 / # percentage of 
+
+
+hes10_indiv %>%
+  mutate(Approximate_income = round(52 * Total_current_weekly_income_from_all_sources, -3)) %>%
+  group_by(Approximate_income) %>%
+  summarise(on_newstart = mean(Current_weekly_income_from_newstart_allowance > 0), N = sum(Weight_Person_HES)) %>%
+  grplot(aes(x = Approximate_income,
+             y = on_newstart)) + 
+  geom_point(aes(size = N)) + 
+  stat_smooth(aes(weight = N)) + 
+  xlim(0,50e3) + 
+  coord_cartesian(xlim = c(0,50e3)) + 
+  geom_vline(xintercept = c(ALLOWANCE.CUTOFF, ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO))
