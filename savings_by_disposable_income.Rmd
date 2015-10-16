@@ -1,11 +1,18 @@
+---
+output: word_document
+---
 ## 
-
-purl("GST_costing.Rmd")
+```{r, results='hide', message=FALSE,warning=FALSE}
+knitr::purl("GST_costing.Rmd")
 source("GST_costing.R", echo=FALSE)
 file.remove("GST_costing.R")
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE, 
+                      echo=TRUE,
+                      fig.height=8, fig.width=13)
+```
 
-# hes10hh.orig <- hes10hh
-# hes10hh <- hes10hh.orig
+```{r}
 hes10hh %<>%
   mutate(disposable_income = Total_current_weekly_HH_income_from_all_sources - Household_weekly_expenditure_on_income_tax_HES_only,
          disposable_income_annual = 52 * disposable_income,
@@ -27,13 +34,17 @@ savings.by.quintile <-
   mutate(savings = disposable_income - Total_goods_and_services_expenditure_HES_only) %>%
   group_by(quintiles) %>%
   summarise(avg_savings = weighted.mean(savings, Weight_HH_HES))
+```
 
+```{r}
 savings.by.quintile %>%
   grplot(aes(x = quintiles, y = avg_savings)) + 
   geom_bar(stat = "identity") + 
   scale_y_continuous("Weekly household savings", label=grattan_dollar) + 
   theme(axis.title.y = element_text(angle = 90))
+```
 
+```{r}
 savings.by.quintile_prop <- 
   hes10hh %>%
   mutate(
@@ -46,9 +57,12 @@ savings.by.quintile_prop <-
 savings.by.quintile_prop %>%
   grplot(aes(x = quintiles, y = avg_savings)) + 
   geom_bar(stat = "identity") + 
-  scale_y_continuous("Weekly household savings", label=percent) + 
+  scale_y_continuous("Prop household savings", label=percent) + 
+  xlab("disposable income") +
   theme(axis.title.y = element_text(angle = 90))
+```
 
+```{r}
 hes10hh %<>%
   mutate(private_income_weekly = Total_current_weekly_HH_income_from_all_sources - Current_weekly_HH_income_from_government_pensions_and_allowances_basis,
          private_income = private_income_weekly * 52,
@@ -62,8 +76,11 @@ hes10hh %>%
              y = prop_gst_by_disp_inc,
              weight = Weight_HH_HES)) + 
   geom_boxplot() + 
+  ggtitle("GST / disposable income") + xlab("private income") +
   scale_y_continuous(label=percent, limits = c(0,0.3))
+```
 
+```{r}
 private.income.quintiles <- 
   svydesign(data = hes10hh, ids = ~Unique_household_number, weights = ~Weight_HH_HES) %>%
   svyquantile(~private_income, design = ., quantiles = (0:5)/5)
@@ -75,20 +92,24 @@ savings.by.private.quintile_prop <-
   ) %>%
   mutate(savings = disposable_income - Total_goods_and_services_expenditure_HES_only) %>%
   group_by(quintiles) %>%
-  summarise(avg_savings = weighted.mean(savings, Weight_HH_HES)/weighted.mean(private_income, Weight_HH_HES))
+  summarise(prop_savings = weighted.mean(savings, Weight_HH_HES)/weighted.mean(private_income, Weight_HH_HES))
 
 savings.by.private.quintile_prop %>%
-  grplot(aes(x = quintiles, y = avg_savings)) + 
+  grplot(aes(x = quintiles, y = prop_savings)) + 
   geom_bar(stat = "identity") + 
-  scale_y_continuous("Weekly household savings", label=percent) + 
+  scale_y_continuous("Weekly household savings / private income", label=percent) + 
+  xlab("private income quintiles") + 
   theme(axis.title.y = element_text(angle = 90))
+```
 
+```{r}
 hes10hh %>%
   filter(private_income < 250e3) %>%
   grplot(aes(x = factor(disposable_income_group),
              y = prop_gst_by_disp_inc,
              weight = Weight_HH_HES)) + 
   geom_boxplot() + 
+  ggtitle("% GST / disposable income") + xlab("Disposable income") + 
   scale_y_continuous(label=percent, limits = c(0,0.3))
 
 hes10hh %>%
@@ -97,4 +118,16 @@ hes10hh %>%
              y = prop_gst_by_exp,
              weight = Weight_HH_HES)) + 
   geom_boxplot() + 
+  ggtitle("% GST / expenditure") + xlab("Private income") + 
   scale_y_continuous(label=percent, limits = c(0,0.3))
+
+hes10hh %>%
+  filter(private_income < 250e3) %>%
+  grplot(aes(x = factor(disposable_income_group),
+             y = prop_gst_by_exp,
+             weight = Weight_HH_HES)) + 
+  geom_boxplot() + 
+  ggtitle("% GST / expenditure") + xlab("Disposable income") + 
+  scale_y_continuous(label=percent) + 
+  coord_cartesian(ylim = c(0,0.3))
+```
