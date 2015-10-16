@@ -129,7 +129,7 @@ img {
 </ul>
 <pre class="r"><code>knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE, 
-                      cache=FALSE,
+                      cache=TRUE,
                       fig.height=8, fig.width=10)</code></pre>
 <pre class="r"><code>library(ggplot2)
 library(scales)
@@ -348,7 +348,6 @@ hes10hh %&lt;&gt;%
 <pre><code>## Source: local data table [100 x 3]
 ## 
 ##    income.percentile      mean       se
-##               (fctr)     (dbl)    (dbl)
 ## 1                  1 131.45488  2.22672
 ## 2                  2 173.42142 19.05964
 ## 3                  3 170.66720 13.79774
@@ -1480,8 +1479,8 @@ perfectly_targeted_efficacy_comp_adequacy.15pc &lt;-
                                            w = Weight_HH_HES))
 gc(1,1)</code></pre>
 <pre><code>##            used  (Mb) gc trigger   (Mb) max used  (Mb)
-## Ncells  1992488 106.5    3205452  171.2  1992488 106.5
-## Vcells 51481894 392.8  210129262 1603.2 51481894 392.8</code></pre>
+## Ncells  1981145 105.9    3205452  171.2  1981145 105.9
+## Vcells 42229612 322.2  197338601 1505.6 42229612 322.2</code></pre>
 <pre class="r"><code>proportion_of_welfare_bottom_quintile &lt;- 
   proportion_of_welfare_by_quintile %&gt;%
   filter(Gross_income_quintile == 1) %$%

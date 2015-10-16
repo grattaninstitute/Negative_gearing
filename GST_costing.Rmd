@@ -25,7 +25,7 @@ Some issues:
 ```{r, results='hide'}
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE, 
-                      cache=FALSE,
+                      cache=TRUE,
                       fig.height=8, fig.width=10)
 ```
 
@@ -1957,4 +1957,35 @@ hes10hh %>%
 ```
 
 
+
+```{r}
+inverse_income <- function(tax, fy.year = "2012-13"){
+  income <- 0L
+  while(income_tax(income, fy.year = fy.year) <= tax){
+    income <- income + 1000L
+  }
+  
+  income <- income - 999L
+  
+  while(income_tax(income, fy.year = fy.year) <= tax){
+    income <- income + 1L
+  }
+  
+  return(income)
+}
+
+
+# hes10hh %>%
+#   group_by.income_quintile() %>%
+#   ungroup %>%
+#   data.table %>%
+#   setkey(income_quintile) %>%
+#   merge(., welfare.by.income.quintile_total) %>%
+#   group_by(income_quintile) %>%
+#   mutate(
+#     new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+#       prop_welfare / # amount to all households in that quintile
+#       sum(Weight_HH_HES)
+#   ) %>% as.data.table()
+```
 
