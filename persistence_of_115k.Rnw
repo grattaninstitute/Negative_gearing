@@ -396,8 +396,6 @@ number_times_top_decile %>%
 <<decile_presence_by_top_decile_longevity>>=
 decile_presence_by_top_decile_longevity <- 
   all_hilda %>%
-  filter(max(hgage) <= 60,
-         min(hgage) >= 30) %>%
   group_by(xwaveid) %>%
   mutate(top_deciler = sum(top_decile) > 0,
          sum_topdecile = sum(top_decile),
@@ -414,10 +412,11 @@ decile_presence_by_top_decile_longevity <-
             Q06 = weighted.mean(fifth_decile,last_lnwte),
             Q05 = weighted.mean(sixth_decile, last_lnwte),
             QX = weighted.mean(bottom_deciles,last_lnwte),
-            N = sum(last_lnwte))
+            n = sum(last_lnwte)) %>%
+  arrange(sum_topdecile)
 
 decile_presence_by_top_decile_longevity %>%
-  gather(decile, presence, -sum_topdecile) %>%
+  gather(decile, presence, Q10:QX) %>%
   arrange(sum_topdecile, desc(decile)) %>%
   mutate(decile.text = ifelse(sum_topdecile == 1,
                               as.character(decile),
@@ -445,43 +444,48 @@ decile_presence_by_top_decile_longevity %>%
 \end{figure}
 
 <<marimekko>>=
-marimekko.data <- 
+marimekko_data_decile_presence_by_top_decile_longevity <- 
   decile_presence_by_top_decile_longevity %>%
   gather(decile, presence, Q10:QX) %>%
+  mutate(subpresence = presence * n) %>%
   arrange(sum_topdecile, decile) %>%
   group_by(decile) %>%
-  mutate(cumsum_n = cumsum(N)) %>%
-  group_by(decile) %>%
-  mutate(xmin = lag(cumsum(N), default = 0.0),
-         xmax = lead(xmin, default = Inf),
-         xmax.b = ifelse(is.finite(xmax), xmax, max(cumsum_n))) %>%
+  mutate(cumsum_n = cumsum(n),
+         cumsum_lag = lag(cumsum_n, default = 0),
+         cumsum_lead = lead(cumsum_n, default = Inf)) %>%
   ungroup %>%
   group_by(sum_topdecile) %>%
-  mutate(ymin = lag(cumsum(presence), default = 0),
-         ymax = lead(ymin, default = 1)) %>%
-  mutate(text = ifelse(xmin == min(xmin),
-                       as.character(decile), 
-                       NA_character_))
+  mutate(cumsubpresence = cumsum(presence),
+         cumsubpresence_lag = lag(cumsubpresence, default=0)) %>%
+  ungroup %>%
+  mutate(xmin = cumsum_lag/max(cumsum_n),
+         xmax = cumsum_n/max(cumsum_n),
+         xcenter = (xmin + xmax)/2)
 
-marimekko.data %>%
-  grplot(aes(xmin = xmin, xmax = xmax,
-             ymin = ymin, ymax = ymax,
+marimekko_data_decile_presence_by_top_decile_longevity %>%
+  grplot(aes(xmin = xmin,
+             xmax = xmax,
+             ymin = cumsubpresence_lag,
+             ymax = cumsubpresence, 
              fill = decile)) + 
   geom_rect() + 
-  geom_text(aes(x = 0.5 * (xmin + xmax),
-                y = 0.5 * (ymin + ymax),
-                label = ifelse(as.character(text) == "QX", "lower 50%", text),
-                color = as.numeric(decile) <= 2),
-            size = 7.14) + 
-  scale_color_manual(values = c("black", "white")) + 
+  geom_text(aes(x = xcenter,
+                y = (cumsubpresence_lag + cumsubpresence)/2,
+                label = ifelse(xcenter == min(xcenter), as.character(decile), NA_character_),
+                color = ifelse(decile == first(decile), "white", "black"))) + 
+  scale_color_manual(values = c("white" = "white", "black" = "black")) +
+  scale_y_continuous(expand = c(0,0),
+                     label = percent) + 
   scale_x_continuous("Years in top decile",
-                     expand = list(c(0,0.075), c(0,0)),
-                     breaks = unique((marimekko.data$xmin + marimekko.data$xmax.b)/2),
-                     labels = 1:13) + 
-  scale_y_continuous("Prop time in each decile",
-                     label=percent,
-                     expand = list(c(0,0), c(0,0.1)))
+                     expand = c(0,0),
+                     breaks = sort(unique(marimekko_data_decile_presence_by_top_decile_longevity$xcenter[-1])),
+                     labels = 1:13) + theme(axis.ticks.x = element_blank())
+
 @
+\begin{figure}
+\Caption{}{Percentage of time cohort was in decile}{fig:marimekko}
+\includegraphics[width=\columnwidth]{figure_persistence_of_115k/marimekko}
+\end{figure}
 
 
 \section{Responding person}
