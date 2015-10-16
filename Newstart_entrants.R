@@ -96,11 +96,27 @@ get_sample_file() %$%
 hes10_indiv %>%
   mutate(Approximate_income = round(52 * Total_current_weekly_income_from_all_sources, -3)) %>%
   group_by(Approximate_income) %>%
-  summarise(on_newstart = mean(Current_weekly_income_from_newstart_allowance > 0), N = sum(Weight_Person_HES)) %>%
+  summarise(on_newstart = weighted.mean(Current_weekly_income_from_newstart_allowance > 0,
+                                        Weight_Person_HES)
+            , N = sum(Weight_Person_HES)) %>%
   grplot(aes(x = Approximate_income,
              y = on_newstart)) + 
   geom_point(aes(size = N)) + 
   stat_smooth(aes(weight = N)) + 
-  xlim(0,50e3) + 
-  coord_cartesian(xlim = c(0,50e3)) + 
+  xlim(0, 50e3) + 
+  coord_cartesian(xlim = c(0, 50e3)) + 
+  geom_vline(xintercept = c(ALLOWANCE.CUTOFF, ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO))
+
+sih11 %>%
+  mutate(Approximate_income = round(52 * Total_current_weekly_income_from_all_sources, -3)) %>%
+  group_by(Approximate_income) %>%
+  summarise(on_newstart = weighted.mean(Current_weekly_income_from_newstart_allowance > 0,
+                                        Person_weight)
+            , N = sum(Person_weight)) %>%
+  grplot(aes(x = Approximate_income,
+             y = on_newstart)) + 
+  geom_point(aes(size = N)) + 
+  stat_smooth(aes(weight = N)) + 
+  xlim(0, 50e3) + 
+  coord_cartesian(xlim = c(0, 50e3)) + 
   geom_vline(xintercept = c(ALLOWANCE.CUTOFF, ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO))

@@ -397,6 +397,9 @@ number_times_top_decile %>%
 decile_presence_by_top_decile_longevity <- 
   all_hilda %>%
   group_by(xwaveid) %>%
+  filter(max(hgage) <= 60,
+         min(hgage) >= 30) %>%
+  group_by(xwaveid) %>%
   mutate(top_deciler = sum(top_decile) > 0,
          sum_topdecile = sum(top_decile),
          last_lnwte = last(lnwte)) %>%
@@ -477,15 +480,28 @@ marimekko_data_decile_presence_by_top_decile_longevity %>%
   scale_y_continuous(expand = c(0,0),
                      label = percent) + 
   scale_x_continuous("Years in top decile",
-                     expand = c(0,0),
-                     breaks = sort(unique(marimekko_data_decile_presence_by_top_decile_longevity$xcenter[-1])),
-                     labels = 1:13) + theme(axis.ticks.x = element_blank())
-
+                     expand = list(c(0,0.075), c(0,0)),
+                     breaks = unique((marimekko.data$xmin + marimekko.data$xmax.b)/2),
+                     labels = 1:13) + 
+  scale_y_continuous("Prop time in each decile",
+                     label=percent,
+                     breaks = c(0:10)/10,
+                     expand = list(c(0,0), c(0,0.1)))
 @
 \begin{figure}
 \Caption{}{Percentage of time cohort was in decile}{fig:marimekko}
 \includegraphics[width=\columnwidth]{figure_persistence_of_115k/marimekko}
 \end{figure}
+
+<<marimekko_munge_for_ppt>>=
+marimekko.data %>%
+  mutate(xmax.ppt = 100 * xmax/max(xmin)) %>%
+  group_by(sum_topdecile) %>%
+  mutate(uncum.y = c(first(ymax), diff(ymax))) %>%
+  select(sum_topdecile, decile, xmax.ppt, uncum.y) %>%
+  spread(decile, uncum.y) %>%
+  write_csv("hilda_marimekko.csv")
+@
 
 
 \section{Responding person}
