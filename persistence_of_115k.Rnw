@@ -396,9 +396,9 @@ number_times_top_decile %>%
 <<decile_presence_by_top_decile_longevity>>=
 decile_presence_by_top_decile_longevity <- 
   all_hilda %>%
+  group_by(xwaveid) %>%
   filter(max(hgage) <= 60,
          min(hgage) >= 30) %>%
-  group_by(xwaveid) %>%
   mutate(top_deciler = sum(top_decile) > 0,
          sum_topdecile = sum(top_decile),
          last_lnwte = last(lnwte)) %>%
@@ -480,7 +480,18 @@ marimekko.data %>%
                      labels = 1:13) + 
   scale_y_continuous("Prop time in each decile",
                      label=percent,
+                     breaks = c(0:10)/10,
                      expand = list(c(0,0), c(0,0.1)))
+@
+
+<<marimekko_munge_for_ppt>>=
+marimekko.data %>%
+  mutate(xmax.ppt = 100 * xmax/max(xmin)) %>%
+  group_by(sum_topdecile) %>%
+  mutate(uncum.y = c(first(ymax), diff(ymax))) %>%
+  select(sum_topdecile, decile, xmax.ppt, uncum.y) %>%
+  spread(decile, uncum.y) %>%
+  write_csv("hilda_marimekko.csv")
 @
 
 

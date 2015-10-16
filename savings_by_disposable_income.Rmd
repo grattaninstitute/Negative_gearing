@@ -128,5 +128,6 @@ hes10hh %>%
              weight = Weight_HH_HES)) + 
   geom_boxplot() + 
   ggtitle("% GST / expenditure") + xlab("Disposable income") + 
-  scale_y_continuous(label=percent, limits = c(0,0.3))
+  scale_y_continuous(label=percent) + 
+  coord_cartesian(ylim = c(0,0.3))
 ```
