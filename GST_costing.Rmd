@@ -1962,6 +1962,7 @@ hes10hh %>%
 # Our tax cuts
 
 ```{r}
+hes10_indiv.orig <- hes10_indiv
 hes10_indiv %<>%
   mutate(taxable_income = inverse_income(52 * Imputed_current_weekly_tax_payable, fy.year = "2009-10", zero.tax.income = "uniform")) 
 
@@ -2062,6 +2063,62 @@ new_income_tax_outer0910 <- function(income0910, brackets = c(6000, 35000, 80000
   return(new_income_tax(income0910))
 }
       
+```
+
+```{r}
+hes10_indiv %<>%
+  mutate(
+    old_tax = 52 * Imputed_current_weekly_tax_payable,
+    new_tax = new_income_tax_outer0910(taxable_income, rates = c(0, 0.13, 0.28, 0.38, 0.45)),
+    tax_diff = pmax(0, old_tax - new_tax)
+      ) 
+
+new_tax_by_indiv <- 
+  hes10_indiv %>%
+  select(Unique_household_number, 
+         tax_diff) %>%
+  group_by(Unique_household_number) %>%
+  summarise(tax_diff = sum(tax_diff))
+  
+```
+
+
+```{r}
+hes_with_gst_and_tax_compensation <- 
+  hes10hh %>%
+  group_by.income_quintile() %>%
+  ungroup %>%
+  data.table %>%
+  setkey(income_quintile) %>%
+  merge(., welfare.by.income.quintile_total) %>%
+  group_by(income_quintile) %>%
+  mutate(
+    new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+      prop_welfare / # amount to all households in that quintile
+      sum(Weight_HH_HES)
+  ) %>%
+  merge(new_tax_by_indiv, by = "Unique_household_number") %>%
+  mutate(tax_diff_weekly = tax_diff / 52) %>% 
+  group_by(income_quintile) %>%
+  summarise(comp_adequacy.75pc = weighted.mean(new_welfare + tax_diff_weekly > 0.75* Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
+            comp_adequacy.100pc = weighted.mean(new_welfare + tax_diff_weekly > Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
+            comp_adequacy.125pc = weighted.mean(new_welfare + tax_diff_weekly > 1.25*Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES)
+  )
+
+hes_with_gst_and_tax_compensation %>%
+  gather(threshold, comp_adequacy, comp_adequacy.75pc:comp_adequacy.125pc) %>%
+  mutate(threshold = gsub("pc", "%", 
+                          gsub("^.*\\.", "", threshold)),
+         threshold = factor(threshold, levels = c("75%", "100%", "125%"))) %>%
+  grplot(aes(x = income_quintile, fill = threshold, y = comp_adequacy)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  scale_y_continuous("Percent reaching threshold", label=percent,
+                     limits = c(0,1)) + 
+  guides(fill = guide_legend("Threshold of adeq.\ncompensation")) + 
+  theme(legend.position = c(0.7,0.7),
+        axis.title.y = element_text(angle = 90))
+
 ```
 
 
