@@ -2069,7 +2069,7 @@ new_income_tax_outer0910 <- function(income0910, brackets = c(6000, 35000, 80000
 hes10_indiv %<>%
   mutate(
     old_tax = 52 * Imputed_current_weekly_tax_payable,
-    new_tax = new_income_tax_outer0910(taxable_income, rates = c(0, 0.13, 0.28, 0.38, 0.45)),
+    new_tax = new_income_tax_outer0910(taxable_income, rates = c(0, 0.13, 0.29, 0.38, 0.45)),
     tax_diff = pmax(0, old_tax - new_tax)
       ) 
 
@@ -2108,15 +2108,20 @@ hes_with_gst_and_tax_compensation <-
 hes_with_gst_and_tax_compensation %>%
   gather(threshold, comp_adequacy, comp_adequacy.75pc:comp_adequacy.125pc) %>%
   mutate(threshold = gsub("pc", "%", 
-                          gsub("^.*\\.", "", threshold)),
+                        gsub("^.*\\.", "", threshold)),
          threshold = factor(threshold, levels = c("75%", "100%", "125%"))) %>%
-  grplot(aes(x = income_quintile, fill = threshold, y = comp_adequacy)) + 
+  grplot(aes(fill = income_quintile, x = threshold, y = comp_adequacy)) + 
   geom_bar(stat = "identity",
            position = "dodge") + 
   scale_y_continuous("Percent reaching threshold", label=percent,
+                     expand = c(0,0),
                      limits = c(0,1)) + 
-  guides(fill = guide_legend("Threshold of adeq.\ncompensation")) + 
-  theme(legend.position = c(0.7,0.7),
+  guides(fill = guide_legend("Quintiles",
+                             direction = "horizontal",
+                             label.position = "top",
+                             label.hjust = 0.5
+                             )) + 
+  theme(legend.position = c(0.7,0.8),
         axis.title.y = element_text(angle = 90))
 
 ```

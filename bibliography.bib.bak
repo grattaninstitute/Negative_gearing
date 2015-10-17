@@ -2513,6 +2513,17 @@
   Type                     = {Report}
 }
 
+@Misc{CommonwealthGrantsCommission2015,
+  Title                    = {Report on GST Revenue Sharing Relativities --- 2015 Review},
+
+  Author                   = {{Commonwealth Grants Commission}},
+  Note                     = {Volume 1: Main Report},
+
+  Owner                    = {hparsonage},
+  Timestamp                = {2015.10.18},
+  Url                      = {https://www.cgc.gov.au/index.php?option=com_content&view=article&id=219&Itemid=318}
+}
+
 @Article{Coombs2002,
   Title                    = {An Analysis of the Debate on Intergenerational Equity and Fiscal Sustainability in {Australia}},
   Author                   = {Coombs, Gregory and Dollery, Brian},
@@ -4571,12 +4582,12 @@ public policy},
   Url                      = {http://www.indexmundi.com/commodities/Default.aspx?commodity=coal-australian&months=300}
 }
 
-@Misc{,
+@Misc{Ingles2015CGT,
   Title                    = {Should capital income be taxed? And if so, how?},
 
   Author                   = {David Ingles},
   Month                    = {August},
-  Note                     = {Tax and Transfer Policy Institute},
+  Note                     = {Tax and Transfer Policy Institute, Crawford School, ANU},
   Year                     = {2015},
 
   Journal                  = {Tax and Transfer},
