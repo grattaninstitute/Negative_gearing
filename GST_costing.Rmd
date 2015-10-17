@@ -1963,10 +1963,105 @@ hes10hh %>%
 
 ```{r}
 hes10_indiv %<>%
-  mutate(taxable_income = inverse_income(52 * Imputed_current_weekly_tax_payable, fy.year = "2009-10")) 
+  mutate(taxable_income = inverse_income(52 * Imputed_current_weekly_tax_payable, fy.year = "2009-10", zero.tax.income = "uniform")) 
 
 hes10_indiv %>% select(Imputed_current_weekly_tax_payable, taxable_income) %>% head(30)
 
+actual_taxable_incomes <- get_sample_file(year = 2009) %$% Taxable_Income
+```
+
+```{r}
+new_income_tax <- 
+  function(income, input){
+      LITO <- ifelse(income < input$bracket_2, 445, 
+                     ifelse(income < 66667, 445 - ((income - input$bracket_2) * 0.015), 0))
+      tax <- ifelse(income < input$bracket_1, 0, 
+                    ifelse(income < input$bracket_2, 
+                           txmr(input$bracket_1) * (income - input$bracket_1), # from 0.19
+                           ifelse(income < input$bracket_3,
+                                  txamt(input$bracket_2) + txmr(input$bracket_2) * (income - input$bracket_2), # from 0.325
+                                  ifelse(income < input$bracket_4,
+                                         txamt(input$bracket_3) + txmr(input$bracket_3) * (income - input$bracket_3), # from 0.37
+                                         txamt(input$bracket_4) + txmr(input$bracket_4) * (income - input$bracket_4)))))
+      medicare.levy <- ifelse(income <= ML.lower, 0, 
+                              ifelse(income > ML.lower & income <= ML.upper, 
+                                     0.1 * (income - 20542), 
+                                     0.015 * income))
+      out <- pmax(tax + medicare.levy - LITO, 0)
+      return(out)
+    }
+
+
+```
+
+```{r}
+new_income_tax_outer0910 <- function(income0910, brackets = c(6000, 35000, 80000, 180000), rates = c(0, 0.15, 0.30, 0.38, 0.45)){
+  input <- 
+    list(
+      bracket_1 = brackets[1],
+      bracket_2 = brackets[2],
+      bracket_3 = brackets[3],
+      bracket_4 = brackets[4],
+      #
+      rate_1 = rates[1],
+      rate_2 = rates[2],
+      rate_3 = rates[3],
+      rate_4 = rates[4],
+      rate_5 = rates[5]
+    )
+  
+  tax_rates <- 
+    data.table(
+      brackets = c(0, input$bracket_1, input$bracket_2, input$bracket_3, input$bracket_4),
+      rates = c(input$rate_1, 
+                input$rate_2,
+                input$rate_3,
+                input$rate_4,
+                input$rate_5)
+    ) %>%
+    mutate(
+      tax_amount = NA_real_
+    )
+  
+  for (i in 1:nrow(tax_rates)){
+    if (i == 1 || i == 2) {
+      tax_rates$tax_amount <- 0
+    } else {
+      tax_rates$tax_amount[i] <-
+        tax_rates$tax_amount[i - 1] + 
+        tax_rates$rates[i - 1] * (tax_rates$brackets[i] - tax_rates$brackets[i - 1]) 
+    }
+    
+  }
+  
+  txamt <- function(bracket.lwr){
+    tax_rates %>%
+      filter(brackets == bracket.lwr) %$%
+      tax_amount
+  }
+  
+  txmr <- function(bracket.lwr){
+    tax_rates %>% 
+      filter(brackets == bracket.lwr) %$%
+      rates
+  }
+  
+  new_income_tax <- function(income){
+    LITO <- ifelse(income < 30000, 1350, ifelse(income < 63750, 1350 - 0.04 * (income - 30000), 0))
+    tax <- ifelse(income < input$bracket_1, 0, ifelse(income < input$bracket_2, 
+                                                      txmr(input$bracket_1) * (income - input$bracket_1), # from 0.19
+                                                      ifelse(income < input$bracket_3, 
+                                                             txamt(input$bracket_2) + txmr(input$bracket_2) * (income - input$bracket_2), # from 0.325
+                                                             ifelse(income < input$bracket_4,
+                                                                    txamt(input$bracket_3) + txmr(input$bracket_3) * (income - input$bracket_3), # from 0.37
+                                                                    txamt(input$bracket_4) + txmr(input$bracket_4) * (income - input$bracket_4)))))
+    medicare.levy <- ifelse(income < 18840, 0, ifelse(income < 22164, 0.1 * (income - 18840), 0.015 * income))
+    out <- pmax(tax + medicare.levy - LITO, 0)
+    out
+  }
+  return(new_income_tax(income0910))
+}
+      
 ```
 
 
