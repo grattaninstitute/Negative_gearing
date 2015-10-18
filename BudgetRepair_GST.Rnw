@@ -1,4 +1,87 @@
 \documentclass{grattan}
+<<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
+my_emf <- function(file, width, height){
+  devEMF::emf(file, width=width, height=height,
+              family = "Arial")
+}
+
+# if(require(extrafont) && any(grepl("Arial", extrafont::fonts()))){
+#   font_import(pattern = "Arial")
+#   my_pdf <- function(file, width, height){
+#     pdf.options(family = "Arial")
+#     pdf(file = file, width = width, height = height)
+#   } 
+#   theme_hugh <- function(...) {theme_hugh(...) + theme(text = element_text(family = "Arial"))}
+# } else {
+  my_pdf <- function(file, width, height){
+    pdf(file = file, width, height = height)
+  }
+# }
+
+# knitr chunk opts
+# fig.width must = out.width and same for *.height
+knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                      out.width="11.000in", out.height="7.00in", 
+                      fig.show='hide',echo=FALSE,
+                      message=FALSE, warning=FALSE
+                      ,fig.path = "figure_BudgetRepair_GST/"
+                      ,cache=FALSE
+                      ,cache.path = "cache_BudgetRepair_GST/"
+                      ,dev=c('my_pdf', 'my_emf', 'png')
+                      ,fig.ext = c("pdf", "emf", "png")
+)
+@
+
+
+<<preamble>>=
+library(foreign)
+library(readxl)
+library(readr)
+library(ggplot2)
+library(scales)
+# for asymmetric expansion of limits
+scale_dimension.custom_expand <- function(scale, expand = ggplot2:::scale_expand(scale)) {
+  expand_range(ggplot2:::scale_limits(scale), expand[[1]], expand[[2]])
+}
+
+scale_y_continuous <- function(...) {
+  s <- ggplot2::scale_y_continuous(...)
+  class(s) <- c('custom_expand', class(s))
+  s
+}
+
+scale_x_continuous <- function(...) {
+  s <- ggplot2::scale_x_continuous(...)
+  class(s) <- c('custom_expand', class(s))
+  s
+}
+
+scale_x_date <- function(...) {
+  s <- ggplot2::scale_x_date(...)
+  class(s) <- c('custom_expand', class(s))
+  s
+}
+
+
+library(grattan)
+library(data.table)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+
+weighted.var.se <- function(x, w, na.rm=FALSE){
+  # Computes the variance of a weighted mean following Cochran 1977 definition
+  # http://stats.stackexchange.com/questions/25895/computing-standard-error-in-weighted-mean-estimation
+  if (na.rm) { w <- w[i <- !is.na(x)]; x <- x[i] }
+  n = length(w)
+  xWbar = weighted.mean(x,w,na.rm=na.rm)
+  wbar = mean(w)
+  out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
+  return(out)
+}
+@
+
+
 
 \title{A higher or broader GST}
 \author{John Daley and Danielle Wood}
@@ -32,6 +115,63 @@ The GST is a 10 per cent consumption tax levied on final consumption of all good
 
 GST revenues are collected by the Commonwealth Government and are then distributed to State Governments as untied grants. The GST is distributed according to determinations of the Commonwealth Grants Commission, which tries to ensure that States have resources to provide services at them same standard as each other.\footcite[p.~12]{CommonwealthGrantsCommission2015}
 
+The GST raised \$54~billion in 2014-15.\footcite[p.~4-16]{Budget2015} This was around 12~per cent of government revenus in Australia -- well below the average of 20~per cent for all OECD countries.\footnote{The OECD average was 19.5 per cent in 2012 (See: \textcite{OECD2014})} \dots\ Indeed, Australia relies less on broad-based consumption tax to raise revenue than all but two OECD countries.\footnote{The exceptions are Japan and the United States (which does not have a broad-based consumption tax) \textcite[p~40]{OECD2014} }  Australia's GST only covers about 47 per cent of consumption, below the OECD average of 55 per cent, and well below New Zealand where the GST covers 96 per cent of all goods and services consumed.\footnote{\textcite[p.~95]{OECD2014} . The OECD calculates its consumption tax coverage ratio based on the difference between consumption tax revenue actually collected and what would be theoretically raised if consumption tax were applied at the standard rate to the potential tax base in a `pure' consumption tax regime.} 
 
+Not only are Australia's revenues from broad-based consumption taxes low by international standards, they are shrinking relative to the economy. In the decade to 2014-15, GST revenues fell from almost 4.0 to 3.4 per cent of GDP.  Households saved more of their incomes (\Vref{fig:Households_are_saving_more}), and spent more of their incomes on GST-exempt items, particularly housing (\Vref{Fig2}).
 
+\begin{figure}
+<<Households_are_saving_more>>=
+read_excel("Households_are_saving_more.xlsx") %>%
+  setNames(c("Year", "prop_savings_by_HH_disp_inc")) %>%
+  mutate(Year = as.Date(paste0(Year, "-01-01")),
+         prop_savings_by_HH_disp_inc = prop_savings_by_HH_disp_inc / 100) %>%
+  #
+  grplot(aes(x = Year, y = prop_savings_by_HH_disp_inc, group = 1)) + 
+  geom_line() + 
+  scale_y_continuous(label = percent,
+                     expand = c(0,0)) 
+@
+\Caption{Households are saving more again}{Savings as a percentage of household disposable income}{fig:Households_are_saving_more}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Households_are_saving_more-1}
+\notes{}
+
+\source{}
+\end{figure}
+\begin{figure}
+<<Spending_less_on_GST_liable>>=
+read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet = "For_output") %>%
+  gather(category, share_of_consumption, -Date) %>%
+  mutate(super_category = ifelse(category == "GST_applicable", "GST applicable",
+                                 ifelse(category %in% c("Housing", "Financial"), "Remain exempt", "Proposed inclusions"))) %>%
+  group_by(category) %>%
+  mutate(share_of_consumption_indexed = 100*share_of_consumption/first(share_of_consumption),
+         #cosmetic
+         label.text = ifelse(Date == last(Date), as.character(category), NA_character_),
+         label.text = gsub("[^a-zA-Z]", " ", label.text)) %>%
+  ungroup %>%
+  # cosmetic
+  mutate(Date = as.Date(Date)) %>%
+  #
+  grplot(aes(x = Date, y = share_of_consumption_indexed, group = category, color = super_category)) + 
+  geom_line() + 
+  # stat_smooth(se = FALSE, size = 1.5) + 
+  geom_text(aes(label = label.text),
+            hjust = -0.05, fontface = "bold",
+            size = 7.14,
+            show_guide = FALSE) + 
+  scale_color_manual("", values = gpal(6)[c(1,5,3)]) + 
+  scale_y_continuous(limits = c(80,160), expand = c(0,0)) + 
+  scale_x_date(expand = list(c(0,0.27), c(0,0.0))) + 
+  guides(color = guide_legend(keywidth = 2, )) + 
+  theme(axis.title = element_blank(),
+        legend.position = c(0.15, 0.85),
+        legend.key = element_blank()) 
+@
+\Caption{\dots\ and spending less on goods and services liable for GST}{Consumption as a share of final consumpiton, 1999 = 100}{fig:Spending_less_on_GST_liable}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Spending_less_on_GST_liable-1}
+\notes{}
+
+\source{}
+\end{figure}
+\printbibliography[title=References]
 \end{document}
