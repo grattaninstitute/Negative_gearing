@@ -243,5 +243,45 @@ The policy imposes a fixed cost on overseas retailers selling to Australians, as
 
 Any system that requires Customs to verify GST compliance and charge consumers where the supplier is non-compliant will be expensive to administer. Previous reviews found inspecting packages at the border costs much more money than it raises in additional tax, particularly for low values of the threshold.  This is because most imports below the current \$1,000 threshold are low value items. Credit-card transaction data suggests that 90 per cent of imports of less than \$1000 cost less than \$100 and 49 per cent cost less than~\$10.\footcite[p.~1]{NAB2013}  
 
+\subsection{Broadening the GST will make it simpler and more efficient}
+A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976}
+
+There are other reasons to favour a broad based tax. Exemptions create administrative costs for business that deal with both exempt and non-exempt goods. And grey lines create opportunities for tax avoidance and lobbying to exclude particular goods.\footnote{A recent poll of the 49 senior economists on the National Economic Panel found that more than half favoured broadening the base of the GST over than increasing the rate. Most were in favour of the efficiency and simplicity gains from this approach. In contrast, the one third that disagreed (the balance were undecided) were either sceptical about the net efficiency gains and/or doubts that compensation would be adequate to address the effects of a more comprehensive GST for those on low incomes.}
+
+\subsection{Social purposes of existing exemptions could be served better by other means}
+
+Some defend the existing exemptions because they send consumers worthwhile price signals to consume more healthy fresh food and to spend more on private health and education in ways that reduce the pressures on the public systems. 
+
+However, GST exemptions are an inefficient way to pursue these ends. There are any number of goods and services the government might want to promote or deter. But the tax system is a blunt instrument for fine-tuning consumption habits. There are few items with market failures so large that they justify governments imposing differential tax treatment despite the efficiency costs.\footcite{Mirlees2011}  For these items, government can design `sin taxes' specifically aimed at the problems.\footnote{  In these examples the purpose of the taxes is to change relative prices and therefore behaviour rather than to simply raise money.}
+For example, if governments want to use taxes to encourage better diet, then a high tax rate targeted at foods high in sugar and salt would be much more effective than a relatively small shift in the price of all processed food.\footnote{For example, the Australian Government's \textcite[p.~15]{PreventativeHealthTaskforce2008} recommend a review of taxation consider increasing taxes on energy dense foods.}
+In any case, empirical evidence indicates that there would be relatively little change in consumer behaviour if government broadened the GST to include fresh food \Vref{box:ChangeInConsumerChoices}.
+
+Others argue that a GST on private health and education services will give public providers an advantage over private providers. But governments don't aim for a level playing field in health and education: they explicitly provide higher subsidies for those using the public systems. 
+
+A more serious objection is that charging GST on private health and education could reduce total government revenue if it led people to switch from less subsidised private services to more subsidised government services. But the evidence suggests that switching would be limited (Box 1). Further for schools, it is now less clear that the government subsidy provided to private schools is substantially less than the subsidy for public schools once the relative disadvantage of the student base is taken into account.\footnote{A unpublished study using using MySchool data to adjust for relative disadvantage suggests that Catholic private schools receive only slightly less (and in some cases more) government funding per student for a given range of student disadvantage. Other independent schools receive somewhat less but the gap is decreasing over time. \textcite{Bonner2015}} 
+
+\begin{bigbox*}{Change in consumer choices due to a broader GST}{box:ChangeInConsumerChoices}
+Broadening the GST will increase the relative price of fresh food and private health and education services. But empirical evidence suggests that behavioural changes could be modest. 
+Treasury finds that demand in the fresh food category is inelastic, so that a price rise will not lead to much change in consumption. It estimates that a 10 per cent increased tax on food would only reduce consumption by 1.6 per cent (Treasury (2014)). 
+
+A study by the Rural Industries Research and Development Corporation using data from the ABS Household Expenditure Survey also concluded that demand for fresh foods such as milk, bread and fresh vegetables are relatively unresponsive to relative price changes. The estimates suggest that a 10 per cent increase in price for a particularly item would reduce consumption by between 2 and 7 per cent. For fresh fruit, consumption is estimated to fall proportionately with the price rise (Ulubasoglu et al. (2011)). Because these estimates look at changes in demand from price rises for particular food categories in isolation, they will overstate the degree of substitution from an across the board increase in fresh food prices.
+
+Studies of private health insurance in Australia and internationally have found that consumers are not very responsive to price changes. Estimates of the price elasticity of supplementary private health insurance (insurance that provides more choice or faster access relative to universal health care) range from $-0.2$ and $-0.5$, suggesting that demand would fall less than 5 per cent in response to a 10 per cent GST (Cheng (2013)). Another study calculates that the price elasticity of health insurance in Australia would need to be $-1.43$ for rebates to be self-financing, suggesting that switching to the public sector will not come close to eliminating revenue gains (Frech and Hopkins (2004)). This is perhaps unsurprising given policies like lifetime health cover loading and the Medicare levy surcharge provide a strong incentive for those above 30 and/or on higher incomes to maintain cover (ATO (2015)).
+
+Treasury estimates that demand for medical and health services may only fall as little as 1.5 per cent in response to a 10 per cent GST. However, the government may face pressure to decrease co-payments for some health services if price increases disproportionately impact on disadvantaged groups. This would somewhat offset potential revenue gains from applying the GST to these services. 
+
+Treasury's elasticity estimate for private education services is close to one but this includes the effects of reductions in demand for discretionary courses for which students are less likely to switch to public providers. Historical trends in Australian private school enrolments suggest that parents are not particularly price sensitive. Between 1990 and 2007, average fees roughly doubled in real terms for both Catholic and Independent schools. During this period their enrolment share increased by around two and five percentage points respectively (Nous Group (2011)). 
+
+
+\end{bigbox*}
+
+\section{Increasing the GST rate}
+An alternative to broadening the base of the GST is to increase the rate. Australia's 10 per cent rate is low by international standards. It is the fourth lowest value added tax rate in the OECD, and considerably below the OECD average of 19 per cent.
+
+Increasing the rate of the tax from 10 to 15 per cent could raise as much as \$27 billion. This does not factor in behavioural change, although revenue leakage from substitution to exempt categories is likely to be limited.  As discussed above, consumption of GST exempt categories (particularly fresh food, health and education) is not affected much by their price relative to other goods and services.
+
+For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
+
+
 \printbibliography[title=References]
 \end{document}
