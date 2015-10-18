@@ -5363,6 +5363,15 @@ Overvaluation},
   Url                      = {http://grattan.edu.au/static/files/assets/2111d9d3/194-mining-boom-impacts-and-prospects.pdf}
 }
 
+@Book{Mirrlees2011,
+  Title                    = {Tax by design},
+  Author                   = {Mirrlees, James and Adam, Stuart and Besley, Tim and Blundell, Richard and Bond, Steve and Chote, Robert and Gammie, Malcolm and Johnson, Paul and Myles, Gareth and Poterba, James},
+  Year                     = {2011},
+  Month                    = {Sep},
+
+  Url                      = {http://www.ifs.org.uk/docs/taxbydesign.pdf}
+}
+
 @TechReport{Mirrlees2011,
   Title                    = {Tax by design},
   Author                   = {Mirrlees, James and Adam, Stuart and Besley, Timothy and Blundell, Richard and Bond, Stephen and Chote, Robert and Gammie, Malcolm and Johnson, Paul and Myles, Gareth and Poterba, James},
