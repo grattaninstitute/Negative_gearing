@@ -547,6 +547,7 @@ left=2.75cm,right=2.75cm
 \end{multicols}
 \clearpage
 \listoffigures
+\setcounter{tocdepth}{2}
 \listofboxes
 \twocolumn%
 }

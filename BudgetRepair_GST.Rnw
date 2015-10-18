@@ -89,7 +89,7 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
 \addbibresource{bibliography.bib}
 
 \begin{document}
-
+\contentspage
 
 \begin{summary}
 Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Given the Commonwealth Government's revenue problems and the looming challenges for state governments in funding growing healthcare costs, it is unsurprising people are once again looking to the GST as a way to boost government revenues. 
@@ -108,8 +108,6 @@ But if the GST is to provide higher revenues to help the states fund their hospi
 
 Beyond their immediate hip pocket, most Australians benefit from better government services that increased GST collections could fund. The 40 per cent of the revenue left over after tax cuts and welfare payments should go to State governments to help them address their looming hospital funding gap so they can continue to supply the new and better treatments that the public demands. 
 \end{summary}
-
-\contentspage
 
 \chapter{Australia should raise more from the GST}\label{chap:Chapter1}
 \section{GST in context}
@@ -195,7 +193,7 @@ Overall, higher consumption taxes should cause fewer problems than higher income
 
 And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (section 3). 
 
-\begin{smallbox}{Impact of taxes on labour supply}{box:labourSupply}
+\begin{smallbox}{Impact of taxes on labour supply}{box:labour_supply}
 There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
 
 Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
@@ -258,9 +256,72 @@ However, GST exemptions are an inefficient way to pursue these ends. There are a
 For example, if governments want to use taxes to encourage better diet, then a high tax rate targeted at foods high in sugar and salt would be much more effective than a relatively small shift in the price of all processed food.\footnote{For example, the Australian Government's \textcite[p.~15]{PreventativeHealthTaskforce2008} recommend a review of taxation consider increasing taxes on energy dense foods.}
 In any case, empirical evidence indicates that there would be relatively little change in consumer behaviour if government broadened the GST to include fresh food \Vref{box:ChangeInConsumerChoices}.
 
-\begin{bigbox*}{bigbox}{bigbox1}
+Others argue that a GST on private health and education services will give public providers an advantage over private providers. But governments don't aim for a level playing field in health and education: they explicitly provide higher subsidies for those using the public systems. 
+
+A more serious objection is that charging GST on private health and education could reduce total government revenue if it led people to switch from less subsidised private services to more subsidised government services. But the evidence suggests that switching would be limited (Box 1). Further for schools, it is now less clear that the government subsidy provided to private schools is substantially less than the subsidy for public schools once the relative disadvantage of the student base is taken into account.\footnote{A unpublished study using using MySchool data to adjust for relative disadvantage suggests that Catholic private schools receive only slightly less (and in some cases more) government funding per student for a given range of student disadvantage. Other independent schools receive somewhat less but the gap is decreasing over time. \textcite{Bonner2015}} 
+
+\begin{bigbox*}{Change in consumer choices due to a broader GST}{box:ChangeInConsumerChoices}
+Broadening the GST will increase the relative price of fresh food and private health and education services. But empirical evidence suggests that behavioural changes could be modest. 
+Treasury finds that demand in the fresh food category is inelastic, so that a price rise will not lead to much change in consumption. It estimates that a 10 per cent increased tax on food would only reduce consumption by 1.6 per cent (Treasury (2014)). 
+
+A study by the Rural Industries Research and Development Corporation using data from the ABS Household Expenditure Survey also concluded that demand for fresh foods such as milk, bread and fresh vegetables are relatively unresponsive to relative price changes. The estimates suggest that a 10 per cent increase in price for a particularly item would reduce consumption by between 2 and 7 per cent. For fresh fruit, consumption is estimated to fall proportionately with the price rise (Ulubasoglu et al. (2011)). Because these estimates look at changes in demand from price rises for particular food categories in isolation, they will overstate the degree of substitution from an across the board increase in fresh food prices.
+
+Studies of private health insurance in Australia and internationally have found that consumers are not very responsive to price changes. Estimates of the price elasticity of supplementary private health insurance (insurance that provides more choice or faster access relative to universal health care) range from $-0.2$ and $-0.5$, suggesting that demand would fall less than 5 per cent in response to a 10 per cent GST (Cheng (2013)). Another study calculates that the price elasticity of health insurance in Australia would need to be $-1.43$ for rebates to be self-financing, suggesting that switching to the public sector will not come close to eliminating revenue gains (Frech and Hopkins (2004)). This is perhaps unsurprising given policies like lifetime health cover loading and the Medicare levy surcharge provide a strong incentive for those above 30 and/or on higher incomes to maintain cover (ATO (2015)).
+
+Treasury estimates that demand for medical and health services may only fall as little as 1.5 per cent in response to a 10 per cent GST. However, the government may face pressure to decrease co-payments for some health services if price increases disproportionately impact on disadvantaged groups. This would somewhat offset potential revenue gains from applying the GST to these services. 
+
+Treasury's elasticity estimate for private education services is close to one but this includes the effects of reductions in demand for discretionary courses for which students are less likely to switch to public providers. Historical trends in Australian private school enrolments suggest that parents are not particularly price sensitive. Between 1990 and 2007, average fees roughly doubled in real terms for both Catholic and Independent schools. During this period their enrolment share increased by around two and five percentage points respectively (Nous Group (2011)). 
+
 
 \end{bigbox*}
+
+\section{Increasing the GST rate}
+An alternative to broadening the base of the GST is to increase the rate. Australia's 10 per cent rate is low by international standards. It is the fourth lowest value added tax rate in the OECD, and considerably below the OECD average of 19 per cent.\footcite{PublicFinance2014}
+
+Increasing the rate of the tax from 10 to 15 per cent could raise as much as \$27 billion. This does not factor in behavioural change, although revenue leakage from substitution to exempt categories is likely to be limited.\footnote{While a higher GST will lead to some distortion in economic activity because of substitution to exempt categories this will be limited because the tax applies to most goods. \textcite{Econotech2011}}
+As discussed above, consumption of GST exempt categories (particularly fresh food, health and education) is not affected much by their price relative to other goods and services.
+
+For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
+
+\chapter{A targeted compensation package}
+Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low income households. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
+
+But if the GST package is partly to provide revenue to State Governments to fund growing health and education spending,\footnote{The decision in the 2014-15 Commonwealth budget to withdraw from the National Health Reform Agreement and to no longer fund growth in hospital spending precipitated the current discussion (including the support from the NSW Government) for the government to increase the GST. \textcite[p.~18]{Daley2015}}
+then it must be revenue positive. Some people will need to pay higher net taxes. Even if the package is budget-neutral, the political need to over-compensate low-income households to protect disadvantaged will lead to some other households paying more tax in total.
+
+This will be difficult for governments that have been accustomed to being able to buy reform. The GST and the Carbon Pollution Reduction Scheme were both accompanied by a package of generous tax cuts and increases to welfare benefits (Box 2). The history of responding to demands that there be `no losers' has changed the political economy of reform. Politicians have arguably become less adept at prosecuting the case for difficult changes.\footcite[p.~80]{Megalogenis2010} 
+And the public have come to expect that medicine will always arrive with a spoonful of sugar.\footcites{Megalogenis2010}{Henry730}
+%Ken Henry, 7.30 report. Australian Broadcasting Corporation
+%Broadcast: 22/09/2015 Reporter: Leigh Sales http://www.abc.net.au/7.30/content/2015/s4317759.htm
+But without revenue positive reforms, the budget pressures we outlined in our Fiscal Challenges paper will only continue to deteriorate. 
+
+Our proposed package balances the need for fiscal consolidation with fairness and efficiency. It overcompensates the bottom 20 per cent of the income distribution on average, mainly through higher welfare payments. So most of the poorest Australians will be no worse off, and the majority better off, in terms of their real purchasing power. Modest tax cuts focussed on the low and middle thresholds help maintain the incentives for work participation and ensure that most low and middle income earners are also better off. But importantly around 40 per cent of the additional revenue will be left over as revenue for state governments. This should make a sizeable dent in the hospital funding ``gap'', particularly if combined with sensible reforms to improve the cost-effectiveness of service delivery. 
+
+\begin{bigbox*}{Buying reform -- the GST and CPRS compensation packages}{box:BuyingReform}
+The introduction of the GST in 2000 was accompanied by cuts to personal income tax and increases in welfare benefits. 
+
+Personal income tax changes costing around \$13 billion a year included an increase in the tax free threshold, a reduction in tax rates at the lower end and an increase in the threshold for the top marginal tax rate. 
+The objective of this consumption tax/income tax `swap' was to improve the efficiency of the tax system by improving incentives for work.
+
+An across the board 4 per cent increase in pensions and other social security payments  were also introduced to compensate welfare recipients for higher prices following the introduction of the GST. These increases cost around \$2 billion in 2002-03. 
+
+More significant changes were also introduced for family payments, at a cost of around \$2.5 billion a year. Higher payments were designed to compensate for the higher cost of living following the GST and to provide greater recognition of the costs of raising a family. 
+
+The amount of revenue raised by the GST in 2002-03 was around \$30 billion. So households on average were overcompensated once the abolition of \$25 billion in other taxes, tied to the introduction of the GST, are taken into account. 
+
+
+The government claimed the package would make everyone better off but the middle class particularly benefited because of the structure of the tax cuts. And inequality was somewhat increased by the package. \textcite{Saunders2004} shows inequality measured by incomes at the 10th percentile relative to the 90th percentile increased markedly in the year following the introduction of the GST.
+
+In contrast, the compensation package for the CPRS pushed money towards those at the bottom of the income distribution. 
+
+Around half the \$4 billion revenue from the first year of the CPRS was handed over to households as compensation.  
+The compensation package included higher family payments and pensions and tax cuts to all taxpayers earning up to \$80,000. The assistance package actively targeted households at the lower end of the income distribution, with the goal of fully offsetting the cost of living increases for low-income households and helping meet the increases in costs for middle-income households. 
+
+Around 90 per cent of households received some compensation. There was also a fund to ease transition costs for business and community sector organisations. Overall the package over-compensated households for the increases in living costs; with average assistance of \$10.10 per week compared to average cost increases of \$9.90. 
+
+
+\end{bigbox*}
+
 
 \printbibliography[title=References]
 \end{document}
