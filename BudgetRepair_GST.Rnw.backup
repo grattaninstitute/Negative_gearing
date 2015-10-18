@@ -89,7 +89,7 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
 \addbibresource{bibliography.bib}
 
 \begin{document}
-
+\contentspage
 
 \begin{summary}
 Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Given the Commonwealth Government's revenue problems and the looming challenges for state governments in funding growing healthcare costs, it is unsurprising people are once again looking to the GST as a way to boost government revenues. 
@@ -108,8 +108,6 @@ But if the GST is to provide higher revenues to help the states fund their hospi
 
 Beyond their immediate hip pocket, most Australians benefit from better government services that increased GST collections could fund. The 40 per cent of the revenue left over after tax cuts and welfare payments should go to State governments to help them address their looming hospital funding gap so they can continue to supply the new and better treatments that the public demands. 
 \end{summary}
-
-\contentspage
 
 \chapter{Australia should raise more from the GST}\label{chap:Chapter1}
 \section{GST in context}
@@ -195,7 +193,7 @@ Overall, higher consumption taxes should cause fewer problems than higher income
 
 And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (section 3). 
 
-\begin{smallbox}{Impact of taxes on labour supply}{box:labourSupply}
+\begin{smallbox}{Impact of taxes on labour supply}{box:labour_supply}
 There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
 
 Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
@@ -244,23 +242,6 @@ The Government has already announced proposed changes to the GST treatment of im
 The policy imposes a fixed cost on overseas retailers selling to Australians, as they would need to implement systems that apply specifically to any purchaser based in Australia. This impost would be relatively small for retailers that sell large volumes to Australians, like Amazon and Netflix. Some of these have already suggested they will register for the GST.\footnote{Netflix indicated they will continue to comply with local tax obligations. Apple already charges GST on its digital downloads in Australia. \url{http://www.afr.com/technology/web/joe-hockey-flags-netflix-tax-in-gst-extension-20150409-1mhhed}} However, it is not clear the legal recourse available to the government if overseas vendors do not choose to register.\footnote{The Low-Value Parcel Processing Taskforce that explored this issue in 2012 said that GST obligations imposed directly on international suppliers would ``likely be non-enforceable, and hence rely on voluntary cooperation by suppliers'' (Treasury (2012b), p. 139).} The former Treasurer Joe Hockey argued that ``global pressure'' would force retailers to comply. 
 
 Any system that requires Customs to verify GST compliance and charge consumers where the supplier is non-compliant will be expensive to administer. Previous reviews found inspecting packages at the border costs much more money than it raises in additional tax, particularly for low values of the threshold.  This is because most imports below the current \$1,000 threshold are low value items. Credit-card transaction data suggests that 90 per cent of imports of less than \$1000 cost less than \$100 and 49 per cent cost less than~\$10.\footcite[p.~1]{NAB2013}  
-
-\subsection{Broadening the GST will make it simpler and more efficient}
-A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976}
-
-There are other reasons to favour a broad based tax. Exemptions create administrative costs for business that deal with both exempt and non-exempt goods. And grey lines create opportunities for tax avoidance and lobbying to exclude particular goods.\footnote{A recent poll of the 49 senior economists on the National Economic Panel found that more than half favoured broadening the base of the GST over than increasing the rate. Most were in favour of the efficiency and simplicity gains from this approach. In contrast, the one third that disagreed (the balance were undecided) were either sceptical about the net efficiency gains and/or doubts that compensation would be adequate to address the effects of a more comprehensive GST for those on low incomes.}
-
-\subsection{Social purposes of existing exemptions could be served better by other means}
-
-Some defend the existing exemptions because they send consumers worthwhile price signals to consume more healthy fresh food and to spend more on private health and education in ways that reduce the pressures on the public systems. 
-
-However, GST exemptions are an inefficient way to pursue these ends. There are any number of goods and services the government might want to promote or deter. But the tax system is a blunt instrument for fine-tuning consumption habits. There are few items with market failures so large that they justify governments imposing differential tax treatment despite the efficiency costs.\footcite{Mirlees2011}  For these items, government can design `sin taxes' specifically aimed at the problems.\footnote{  In these examples the purpose of the taxes is to change relative prices and therefore behaviour rather than to simply raise money.}
-For example, if governments want to use taxes to encourage better diet, then a high tax rate targeted at foods high in sugar and salt would be much more effective than a relatively small shift in the price of all processed food.\footnote{For example, the Australian Government's \textcite[p.~15]{PreventativeHealthTaskforce2008} recommend a review of taxation consider increasing taxes on energy dense foods.}
-In any case, empirical evidence indicates that there would be relatively little change in consumer behaviour if government broadened the GST to include fresh food \Vref{box:ChangeInConsumerChoices}.
-
-\begin{bigbox*}{bigbox}{bigbox1}
-
-\end{bigbox*}
 
 \printbibliography[title=References]
 \end{document}
