@@ -39,6 +39,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
 
 <<preamble>>=
 library(foreign)
+library(survey)
 library(readxl)
 library(readr)
 library(ggplot2)
@@ -83,6 +84,119 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
   out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
   return(out)
 }
+@
+
+<<HES_and_SIH_cleansing, cache=F>>=
+hes10hh_raw <- read.dta("./HES/hes10bh.dta")
+
+hes.sih.vars <- read_excel("./SIH/HES_and_SIH_variable_listing.xlsx") 
+
+# See page 21 of HES 2009-10 user guide
+# http://www.ausstats.abs.gov.au/ausstats/subscriber.nsf/0/1D03ACBBD40275ADCA257A3900173E85/$File/65030_1.pdf
+hes.sih.vars %<>%
+  mutate(Definition = ifelse(HES_basic_name == "COICEXP", paste0(Definition, "_COICOP"), Definition))
+
+hes.sih.vars %<>%
+  gather(GROUP, variable, -Definition) %>%
+  mutate(variable = gsub("[^A-Za-z0-9]", "", variable)) %>%
+  filter(complete.cases(.)) %>%
+  spread(GROUP, variable) %>%
+  mutate(
+    # replace all nonletters with _ unless they occur at the end of the name,
+    # in which case delete it
+    Definition_new = gsub("[^A-Za-z]+(?!$)", "_", Definition, perl = TRUE),
+    Definition_new = gsub("[^A-Za-z]+$", "", Definition_new)
+  )
+
+hes10hh.names <- 
+  hes.sih.vars$HES_basic_name[hes.sih.vars$HES_basic_name %in% names(hes10hh_raw)]
+hes10hh.newnames <-
+  hes.sih.vars$Definition_new[hes.sih.vars$HES_basic_name %in% names(hes10hh_raw)]
+
+hes10hh <-
+  hes10hh_raw %>%
+  # This omits some weights and PETTAX (hh consumption of fuel tax) for some reason
+  select_(.dots = hes10hh.names) %>%
+  data.table %>%
+  setnames(old = hes10hh.names, 
+           new = hes10hh.newnames)
+
+hes10hh %<>%
+  mutate(
+    Age_of_HH_reference_person = factor(gsub(" years",
+                                             "",
+                                             Age_of_HH_reference_person))
+  ) 
+
+disp.inc.percentiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Current_weekly_HH_disposable_income # disposable income
+              ,.
+              ,quantiles = c(0:100)/100)
+disp.inc.deciles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Current_weekly_HH_disposable_income 
+              ,.
+              , quantiles = c(0:10)/10)
+
+total.inc.percentiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
+              ,.
+              , quantiles = c(0:100)/100)
+
+total.inc.deciles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
+              ,.
+              , quantiles = c(0:10)/10)
+
+total.inc.quintiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
+              ,.
+              #, quantiles = c(0:5)/5)
+              ,quantiles = c(0:5)/5)
+
+
+hes10hh %<>%
+  mutate(income.percentile = factor(as.numeric(cut(Current_weekly_HH_employee_income, 
+                                                   breaks = disp.inc.percentiles, 
+                                                   include.lowest = TRUE)))) 
+
+hes10_indiv_raw <- 
+  read.dta("./HES/hes10bp.dta")
+
+hes10hp.names <- 
+  hes.sih.vars$HES_basic_name[hes.sih.vars$HES_basic_name %in% names(hes10_indiv_raw)]
+hes10hp.newnames <-
+  hes.sih.vars$Definition_new[hes.sih.vars$HES_basic_name %in% names(hes10_indiv_raw)]
+
+hes10_indiv <- 
+  hes10_indiv_raw %>%
+  data.table %>%
+  select_(.dots = hes10hp.names) %>%
+  setnames(old = hes10hp.names, 
+           new = hes10hp.newnames)
+
+total.inc.deciles_indiv <- 
+  hes10_indiv_raw %>%
+  svydesign(~ABSPID, data = ., weights = ~HESPSWT) %>%
+  svyquantile(~INCTSCP8 # total weekly income from all sources
+              ,.
+              , quantiles = c(0:10)/10)
+
+total.inc.quintiles_indiv <- 
+  hes10_indiv_raw %>%
+  svydesign(~ABSPID, data = ., weights = ~HESPSWT) %>%
+  svyquantile(~INCTSCP8 # total weekly income from all sources
+              ,.
+              , quantiles = c(0:5)/5)
 @
 
 
@@ -381,7 +495,118 @@ Whether or not a tax is regressive because it takes a higher proportion of incom
 \section{Higher welfare payments}\label{sec:higherWelfarePayments}
 Governments can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
 
-Households at the bottom 20 per cent of the income distribution receive almost of all of their income via government payments -- including pensions, unemployment benefits and family allowances. The next poorest 20 per cent of households receive almost half of their incomes from these sources. Unsurprisingly, those further up the income distribution generate most of their income through employment, investments and super. These households receive little from government benefits (Figure 5). 
+Households at the bottom 20 per cent of the income distribution receive almost of all of their income via government payments -- including pensions, unemployment benefits and family allowances. The next poorest 20 per cent of households receive almost half of their incomes from these sources. Unsurprisingly, those further up the income distribution generate most of their income through employment, investments and super. These households receive little from government benefits (\Vref{fig:Sources_of_income_by_quintile}). 
+
+\begin{figure}
+<<Sources_of_income_by_quintile>>=
+read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
+  setnames(1, "income_category") %>%
+  mutate(income_category = factor(income_category, levels = c("Employee.income", "Investment.income", "Super.income", "Gov.benefits"))) %>%
+  gather(Quintile, prop, -income_category) %>%
+  arrange(Quintile, income_category) %>%
+  filter(complete.cases(.)) %>%
+  mutate(label.text = ifelse(Quintile == last(Quintile),
+                             gsub("\\.", "\n", as.character(income_category)),
+                             NA_character_
+                             )) %>%
+  group_by(Quintile) %>%
+  mutate(label.y = cumsum(prop),
+         label.y = pmax(0,label.y/max(label.y)-0.145),
+         vjust = 2 - rank(label.y)) %>%
+  grplot(aes(x = Quintile, 
+             y = prop,
+             fill = income_category,
+             order = income_category)) + 
+  
+  geom_bar(stat = "identity", position = "fill") + 
+  geom_text(aes(label = label.text,
+                x = 5.55,
+                color = income_category,
+                y = label.y,
+                vjust = vjust -0.5),
+            hjust = 0,
+            lineheight = 0.70,
+            fontface = "bold", 
+            size = 8.01
+  ) + 
+  annotate("blank", x = 6.65, y = 1.15)  +
+  scale_y_continuous(label=percent, expand = c(0,0), breaks = c(0,0.25, 0.50, 0.75, 1)) + 
+  theme(panel.grid = element_blank())
+  
+@
+\Caption{Poorest households receive most of their income from government benefits}{Proportion of income}{fig:Sources_of_income_by_quintile}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Sources_of_income_by_quintile-1}
+\end{figure}
+
+It follows that targeting compensation through the welfare system is the most direct way to compensate the poorest households. The poorest 20 per cent of households currently account for just over 9 per cent of total spending on the goods and services we have proposed for including in a broader GST or 12 per cent of the revenue from a higher GST.\footcite{ABS2013cx} If these households could be targeted directly, then spending 9-12 per cent of the revenues from the GST would be enough to ensure that they are no worse off on average after their higher expenses. Higher income households would bear most of the net burden of the tax increase.
+
+However, compensation through higher welfare payments would not be perfectly targeted in reality. Only 30 per cent of welfare payments go to the bottom of 20 per cent of households (Figure 6). To ensure that the poorest households are no worse off as a group requires welfare benefits that will benefit some richer households as well, and thus spending much more than 10 per cent of the increased GST collection.
+\begin{figure}
+<<Welfare_by_household_disposable_income>>=
+welfare.by.income.quintile <- 
+  hes10_indiv %>%
+  merge(hes10hh, by = "Unique_household_number", suffixes = c("indiv", "hh")) %>%
+  mutate(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                       breaks = total.inc.quintiles,  
+                                                       include.lowest = TRUE)))) %>%
+  select(Unique_household_number, Gross_income_quintile, 
+         Weight_Person_HES, 
+         Current_weekly_amount_of_Commonwealth_Rent_Assistance, 
+         Current_weekly_income_from_age_pension, 
+         Current_weekly_income_from_wife_pension, 
+         Current_weekly_income_from_carer_payment, 
+         Current_weekly_income_from_carer_allowance, 
+         Current_weekly_income_from_special_benefit, 
+         Current_weekly_income_from_widow_allowance, 
+         Current_weekly_income_from_youth_allowance, 
+         Current_weekly_income_from_Austudy_Abstudy, 
+         Current_weekly_income_from_parenting_payment, 
+         Current_weekly_income_from_Baby_Bonus_payment, 
+         Current_weekly_income_from_partner_allowance, 
+         Current_weekly_income_from_senior_supplement, 
+         Current_weekly_income_from_newstart_allowance, 
+         Current_weekly_income_from_pension_supplement, 
+         Current_weekly_income_from_sickness_allowance, 
+         Current_weekly_income_from_service_pension_DVA, 
+         Current_weekly_income_from_utilities_allowance, 
+         Current_weekly_income_from_disability_pension_DVA, 
+         Current_weekly_income_from_war_widows_pension_DVA, 
+         Current_weekly_income_from_disability_support_pension, 
+         Current_weekly_income_from_family_tax_benefits_modelled, 
+         Current_weekly_income_from_other_government_pensions_and_allowances) %>%
+  gather(Allowance, income, -Unique_household_number, -Gross_income_quintile, -Weight_Person_HES) %>%
+  data.table %>%
+  mutate(Allowance = gsub("Current_weekly_income_from_", "", Allowance, fixed = TRUE)) %>%
+  group_by(Gross_income_quintile, Allowance) %>%
+  summarise(total = sum(income * Weight_Person_HES)) %>%
+  ungroup %>% 
+  arrange(desc(total)) 
+
+
+welfare.by.income.quintile %>%
+  mutate(Allowance = factor(Allowance, levels = (welfare.by.income.quintile$Allowance), ordered = TRUE)) %>%
+  mutate(total = 52 * total/1e9) %>%
+  mutate(text = ifelse(Gross_income_quintile == 2 & total > 1, gsub("_", " ", Allowance, fixed = TRUE), NA_character_)) %>%
+  mutate(text = gsub("^([a-z]+)\\s([a-z]+)\\s(.*)$", "\\1 \\2\n\\3", text)) %>%
+  group_by(Gross_income_quintile) %>%
+  arrange(desc(total)) %>%
+  mutate(text.y = cumsum(total)) %>%
+  ggplot(aes(x = Gross_income_quintile, fill = Allowance, order = Allowance)) + 
+  geom_bar(aes(y = total), stat = "identity", position = "stack") + 
+  geom_text(aes(label = text, y = text.y), vjust = 1.1, fontface = "bold", size = 5.5) + 
+  scale_fill_manual(values = c(rep(RColorBrewer::brewer.pal(11, name="Spectral"), 2), "black")) + 
+  scale_y_continuous(label = grattan_dollar, expand = c(0,0), limits = c(0,30)) + 
+  xlab("Gross income quintile") + 
+  theme_light(base_size = 18) + 
+  theme(legend.position = "none")
+@
+\Caption{Higher welfare payments also benefit richer households}{Total spend in 2009-10}{fig:Welfare_by_household_disposable_income}
+\makebox[\linewidth][r]{\includegraphics[width=1.1\columnwidth]{figure_BudgetRepair_GST/Welfare_by_household_disposable_income-1}}
+
+
+\end{figure}
+
+
 
 \printbibliography[title=References]
 \end{document}
