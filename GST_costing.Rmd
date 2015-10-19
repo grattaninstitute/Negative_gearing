@@ -2082,6 +2082,28 @@ new_tax_by_indiv <-
   
 ```
 
+GST compensation with welfare
+```{r}
+hes_with_gst_compensation %T>%
+  chart_data() %>%
+  grplot(aes(fill = income_quintile, x = threshold, y = comp_adequacy)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  scale_y_continuous("Percent reaching threshold", label=percent,
+                     expand = c(0,0),
+                     limits = c(0,1)) + 
+  guides(fill = guide_legend("Quintiles",
+                             direction = "horizontal",
+                             label.position = "top",
+                             label.hjust = 0.5
+                             )) + 
+  xlab("Compensation relative to increased burden") + 
+  theme(legend.position = c(0.7,0.8),
+        axis.title.y = element_text(angle = 90))
+  
+```
+
+GST compensation with welfare and tax cuts
 
 ```{r}
 hes_with_gst_and_tax_compensation <- 
