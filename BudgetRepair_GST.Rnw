@@ -27,8 +27,12 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       ,fig.path = "figure_BudgetRepair_GST/"
                       ,cache=FALSE
                       ,cache.path = "cache_BudgetRepair_GST/"
-                      ,dev=c('my_pdf', 'my_emf', 'png')
-                      ,fig.ext = c("pdf", "emf", "png")
+                      ,dev=c('my_pdf', 'my_emf'
+                             #, 'png'
+                             )
+                      ,fig.ext = c("pdf", "emf"
+                                   #, "png"
+                                   )
 )
 @
 
@@ -318,10 +322,66 @@ Around half the \$4 billion revenue from the first year of the CPRS was handed o
 The compensation package included higher family payments and pensions and tax cuts to all taxpayers earning up to \$80,000. The assistance package actively targeted households at the lower end of the income distribution, with the goal of fully offsetting the cost of living increases for low-income households and helping meet the increases in costs for middle-income households. 
 
 Around 90 per cent of households received some compensation. There was also a fund to ease transition costs for business and community sector organisations. Overall the package over-compensated households for the increases in living costs; with average assistance of \$10.10 per week compared to average cost increases of \$9.90. 
-
-
 \end{bigbox*}
+\section{The relative impacts of GST on low-income households}
+Many claim that the GST should not be increased because it would be unfair to low-income households.\footnote{For example, Labor Minister Tony Burke cited in \textcite{Hutchens2015}}
+The Government should seek to protect the welfare of the bottom 20 per cent of taxpayers. Governments have an obligation to protect the welfare of those that are most vulnerable.\footnote{See \textcite[p.~21]{Daley2013} for further discussion.}
 
+In \textbf{absolute amounts}, a GST collects far more from high-income households:\footcites{PublicFinance2014}{Freebairn2013}{Treasury2010}
+the exemption for fresh food, for example, saves the richest 20 per cent of households around \$1000 per year, compared to an average of \$400 per year for the poorest 20 per cent of households.\footnote{Grattan estimates based on \textcites{Treasury2015b}{ABS2013a}{ABS2015b}} 
+
+However, the fairness of a reform is often judged by looking at the percentage of a person's resources affected. 
+
+Poorer households pay more GST as a proportion of their income because they have lower savings rates than richer households.\footnote{Savings rates increase strongly with disposable income quintile. The bottom quintile spends around 40 per cent than they earn (dissavings), while the top quintile saves around 20 per cent of their income.} But considered in the context of lifetime consumption opportunities, consumption taxes tend to be less inequitable. Many households that are low income at a point in time -- students, retirees, short-term unemployed -- have much higher lifetime incomes. These people smooth their consumption by borrowing or drawing down on their savings when their income is low. Their consumption tax burden as a share of income will be high in these periods but much lower in others. The proportion of current consumption gives a better indication of the lifetime distributional effect of the tax.\footnote{\textcite{Treasury2010}; \textcite{PublicFinance2014} p.~34-36. If a household saves in net terms over their lifetime (ie, they pass on some assets) then some of the tax burden will be deferred until the money is spend by the next generation. 
+%Discussion of strange PC result (GST not regressive by income) and the reason -- based on private income not disposable income).
+} 
+
+As a percentage proportion of consumption, the GST has a similar effect on households across the income distribution.  Broadening the GST to include fresh food, and private spending on health and education would have a slightly larger effect on lower income households. Lower income households spend a little more on fresh food and health, which are currently exempt from GST. This outweighs their lower spending on education and childcare, the other major categories of expenditure currently exempt from GST, as shown in (\Vref{fig:Spending_on_exempt_goods_by_hh_quintile}).
+
+\begin{figure}
+<<Spending_on_exempt_goods_by_hh_quintile>>=
+read_excel("Spending_on_exempt_goods_by_hh_quintile.xlsx") %>%
+  setnames(1, "Category") %>%
+  mutate(Category = factor(Category, levels = c("Food", "Education", "Medical", "Childcare"), 
+                           labels =  c("Exempt food", "Education", "Medical", "Childcare"))) %>%
+  select(-All) %>%
+  gather(Quintile, prop_spending, -Category) %>%
+  filter(complete.cases(.)) %>%
+  group_by(Quintile) %>%
+  mutate(label.text = Category,
+         label.y = cumsum(prop_spending)) %>%
+  ungroup %>%
+  mutate(label.text = ifelse(Quintile == last(Quintile), as.character(Category), NA_character_)) %>%
+  #
+  grplot(aes(x = Quintile, y = prop_spending, fill = Category)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(aes(x = 5.5, y = label.y, label = label.text, color = Category),
+            hjust = 0, 
+            fontface = "bold",
+            size = 7.14,
+            vjust = 1) + 
+  annotate("blank",
+           x = 6.5, y = 0.01) +
+  scale_y_continuous(label=percent,
+                     expand = c(0,0),
+                     limits = c(0,0.2)) + 
+  theme(axis.title.x = element_text(hjust = 0.5))
+  
+@
+\Caption{Poorest households do not spend much more as a proportion of spending on exempt goods}{Proportion of spending, 2009-10}{fig:Spending_on_exempt_goods_by_hh_quintile}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Spending_on_exempt_goods_by_hh_quintile-1}
+\source{Housing Expenditure Survey}
+\end{figure}
+Overall, the differences are small: poorer households would lose about \$3 per \$1000 spent more than higher income households if the GST were broadened. 
+
+If the GST rate were raised but not broadened, poorer households would pay on average an extra \$25 per \$1000 spent, compared with the \$26 per \$1000 for high income households. Although there is substantial variation in spending patterns between people in a given income group (\cref{sec:higherWelfarePayments}). 
+
+Whether or not a tax is regressive because it takes a higher proportion of income from low income households, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][p.~37]{Daley2013}
+
+\section{Higher welfare payments}\label{sec:higherWelfarePayments}
+Governments can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
+
+Households at the bottom 20 per cent of the income distribution receive almost of all of their income via government payments -- including pensions, unemployment benefits and family allowances. The next poorest 20 per cent of households receive almost half of their incomes from these sources. Unsurprisingly, those further up the income distribution generate most of their income through employment, investments and super. These households receive little from government benefits (Figure 5). 
 
 \printbibliography[title=References]
 \end{document}
