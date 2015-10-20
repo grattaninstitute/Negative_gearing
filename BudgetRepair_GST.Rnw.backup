@@ -1,4 +1,9 @@
 \documentclass{grattan}
+<<MODELLING_PARAMETERS, echo=FALSE>>=
+percentage_of_revenue_to_transfers = 0.3
+@
+
+
 <<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
 my_emf <- function(file, width, height){
   devEMF::emf(file, width=width, height=height,
@@ -27,14 +32,19 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       ,fig.path = "figure_BudgetRepair_GST/"
                       ,cache=FALSE
                       ,cache.path = "cache_BudgetRepair_GST/"
-                      ,dev=c('my_pdf', 'my_emf', 'png')
-                      ,fig.ext = c("pdf", "emf", "png")
+                      ,dev=c('my_pdf', 'my_emf'
+                             #, 'png'
+                             )
+                      ,fig.ext = c("pdf", "emf"
+                                   #, "png"
+                                   )
 )
 @
 
 
 <<preamble>>=
 library(foreign)
+library(survey)
 library(readxl)
 library(readr)
 library(ggplot2)
@@ -79,6 +89,119 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
   out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
   return(out)
 }
+@
+
+<<HES_and_SIH_cleansing, cache=F>>=
+hes10hh_raw <- read.dta("./HES/hes10bh.dta")
+
+hes.sih.vars <- read_excel("./SIH/HES_and_SIH_variable_listing.xlsx") 
+
+# See page 21 of HES 2009-10 user guide
+# http://www.ausstats.abs.gov.au/ausstats/subscriber.nsf/0/1D03ACBBD40275ADCA257A3900173E85/$File/65030_1.pdf
+hes.sih.vars %<>%
+  mutate(Definition = ifelse(HES_basic_name == "COICEXP", paste0(Definition, "_COICOP"), Definition))
+
+hes.sih.vars %<>%
+  gather(GROUP, variable, -Definition) %>%
+  mutate(variable = gsub("[^A-Za-z0-9]", "", variable)) %>%
+  filter(complete.cases(.)) %>%
+  spread(GROUP, variable) %>%
+  mutate(
+    # replace all nonletters with _ unless they occur at the end of the name,
+    # in which case delete it
+    Definition_new = gsub("[^A-Za-z]+(?!$)", "_", Definition, perl = TRUE),
+    Definition_new = gsub("[^A-Za-z]+$", "", Definition_new)
+  )
+
+hes10hh.names <- 
+  hes.sih.vars$HES_basic_name[hes.sih.vars$HES_basic_name %in% names(hes10hh_raw)]
+hes10hh.newnames <-
+  hes.sih.vars$Definition_new[hes.sih.vars$HES_basic_name %in% names(hes10hh_raw)]
+
+hes10hh <-
+  hes10hh_raw %>%
+  # This omits some weights and PETTAX (hh consumption of fuel tax) for some reason
+  select_(.dots = hes10hh.names) %>%
+  data.table %>%
+  setnames(old = hes10hh.names, 
+           new = hes10hh.newnames)
+
+hes10hh %<>%
+  mutate(
+    Age_of_HH_reference_person = factor(gsub(" years",
+                                             "",
+                                             Age_of_HH_reference_person))
+  ) 
+
+disp.inc.percentiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Current_weekly_HH_disposable_income # disposable income
+              ,.
+              ,quantiles = c(0:100)/100)
+disp.inc.deciles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Current_weekly_HH_disposable_income 
+              ,.
+              , quantiles = c(0:10)/10)
+
+total.inc.percentiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
+              ,.
+              , quantiles = c(0:100)/100)
+
+total.inc.deciles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
+              ,.
+              , quantiles = c(0:10)/10)
+
+total.inc.quintiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Total_current_weekly_HH_income_from_all_sources 
+              ,.
+              #, quantiles = c(0:5)/5)
+              ,quantiles = c(0:5)/5)
+
+
+hes10hh %<>%
+  mutate(income.percentile = factor(as.numeric(cut(Current_weekly_HH_employee_income, 
+                                                   breaks = disp.inc.percentiles, 
+                                                   include.lowest = TRUE)))) 
+
+hes10_indiv_raw <- 
+  read.dta("./HES/hes10bp.dta")
+
+hes10hp.names <- 
+  hes.sih.vars$HES_basic_name[hes.sih.vars$HES_basic_name %in% names(hes10_indiv_raw)]
+hes10hp.newnames <-
+  hes.sih.vars$Definition_new[hes.sih.vars$HES_basic_name %in% names(hes10_indiv_raw)]
+
+hes10_indiv <- 
+  hes10_indiv_raw %>%
+  data.table %>%
+  select_(.dots = hes10hp.names) %>%
+  setnames(old = hes10hp.names, 
+           new = hes10hp.newnames)
+
+total.inc.deciles_indiv <- 
+  hes10_indiv_raw %>%
+  svydesign(~ABSPID, data = ., weights = ~HESPSWT) %>%
+  svyquantile(~INCTSCP8 # total weekly income from all sources
+              ,.
+              , quantiles = c(0:10)/10)
+
+total.inc.quintiles_indiv <- 
+  hes10_indiv_raw %>%
+  svydesign(~ABSPID, data = ., weights = ~HESPSWT) %>%
+  svyquantile(~INCTSCP8 # total weekly income from all sources
+              ,.
+              , quantiles = c(0:5)/5)
 @
 
 
@@ -295,7 +418,12 @@ And the public have come to expect that medicine will always arrive with a spoon
 %Broadcast: 22/09/2015 Reporter: Leigh Sales http://www.abc.net.au/7.30/content/2015/s4317759.htm
 But without revenue positive reforms, the budget pressures we outlined in our Fiscal Challenges paper will only continue to deteriorate. 
 
-Our proposed package balances the need for fiscal consolidation with fairness and efficiency. It overcompensates the bottom 20 per cent of the income distribution on average, mainly through higher welfare payments. So most of the poorest Australians will be no worse off, and the majority better off, in terms of their real purchasing power. Modest tax cuts focussed on the low and middle thresholds help maintain the incentives for work participation and ensure that most low and middle income earners are also better off. But importantly around 40 per cent of the additional revenue will be left over as revenue for state governments. This should make a sizeable dent in the hospital funding ``gap'', particularly if combined with sensible reforms to improve the cost-effectiveness of service delivery. 
+Our proposed package balances the need for fiscal consolidation with fairness and efficiency. It overcompensates the bottom 20 per cent of the income distribution on average, mainly through higher welfare payments. So most of the poorest Australians will be no worse off, and the majority better off, in terms of their real purchasing power. Modest tax cuts focussed on the low and middle thresholds help maintain the incentives for work participation and ensure that most low and middle income earners are also better off. Around 40 per cent of the additional revenue would be left over. This might:
+\begin{itemize}
+\item provide additional  revenue for state governments to reduce the hospital funding ``gap'';
+\item provide additional revenue for the Commonwealth government to reduce its substantial deficit;
+\item provide substitute revenue for further tax cuts, over and above the tax cuts focussed on the low and middle thresholds provided as part of the compensation package. 
+\end{itemize}
 
 \begin{bigbox*}{Buying reform -- the GST and CPRS compensation packages}{box:BuyingReform}
 The introduction of the GST in 2000 was accompanied by cuts to personal income tax and increases in welfare benefits. 
@@ -318,10 +446,306 @@ Around half the \$4 billion revenue from the first year of the CPRS was handed o
 The compensation package included higher family payments and pensions and tax cuts to all taxpayers earning up to \$80,000. The assistance package actively targeted households at the lower end of the income distribution, with the goal of fully offsetting the cost of living increases for low-income households and helping meet the increases in costs for middle-income households. 
 
 Around 90 per cent of households received some compensation. There was also a fund to ease transition costs for business and community sector organisations. Overall the package over-compensated households for the increases in living costs; with average assistance of \$10.10 per week compared to average cost increases of \$9.90. 
-
-
 \end{bigbox*}
+\section{The relative impacts of GST on low-income households}
+Many claim that the GST should not be increased because it would be unfair to low-income households.\footnote{For example, Labor Minister Tony Burke cited in \textcite{Hutchens2015}}
+The Government should seek to protect the welfare of the bottom 20 per cent of taxpayers. Governments have an obligation to protect the welfare of those that are most vulnerable.\footnote{See \textcite[p.~21]{Daley2013} for further discussion.}
 
+In \textbf{absolute amounts}, a GST collects far more from high-income households:\footcites{PublicFinance2014}{Freebairn2013}{Treasury2010}
+the exemption for fresh food, for example, saves the richest 20 per cent of households around \$1000 per year, compared to an average of \$400 per year for the poorest 20 per cent of households.\footnote{Grattan estimates based on \textcites{Treasury2015b}{ABS2013a}{ABS2015b}} 
+
+However, the fairness of a reform is often judged by looking at the percentage of a person's resources affected. 
+
+Poorer households pay more GST as a proportion of their income because they have lower savings rates than richer households.\footnote{Savings rates increase strongly with disposable income quintile. The bottom quintile spends around 40 per cent than they earn (dissavings), while the top quintile saves around 20 per cent of their income.} But considered in the context of lifetime consumption opportunities, consumption taxes tend to be less inequitable. Many households that are low income at a point in time -- students, retirees, short-term unemployed -- have much higher lifetime incomes. These people smooth their consumption by borrowing or drawing down on their savings when their income is low. Their consumption tax burden as a share of income will be high in these periods but much lower in others. The proportion of current consumption gives a better indication of the lifetime distributional effect of the tax.\footnote{\textcite{Treasury2010}; \textcite{PublicFinance2014} p.~34-36. If a household saves in net terms over their lifetime (ie, they pass on some assets) then some of the tax burden will be deferred until the money is spend by the next generation. 
+%Discussion of strange PC result (GST not regressive by income) and the reason -- based on private income not disposable income).
+} 
+
+As a percentage proportion of consumption, the GST has a similar effect on households across the income distribution.  Broadening the GST to include fresh food, and private spending on health and education would have a slightly larger effect on lower income households. Lower income households spend a little more on fresh food and health, which are currently exempt from GST. This outweighs their lower spending on education and childcare, the other major categories of expenditure currently exempt from GST, as shown in (\Vref{fig:Spending_on_exempt_goods_by_hh_quintile}).
+
+\begin{figure}
+<<Spending_on_exempt_goods_by_hh_quintile>>=
+read_excel("Spending_on_exempt_goods_by_hh_quintile.xlsx") %>%
+  setnames(1, "Category") %>%
+  mutate(Category = factor(Category, levels = c("Food", "Education", "Medical", "Childcare"), 
+                           labels =  c("Exempt food", "Education", "Medical", "Childcare"))) %>%
+  select(-All) %>%
+  gather(Quintile, prop_spending, -Category) %>%
+  filter(complete.cases(.)) %>%
+  group_by(Quintile) %>%
+  mutate(label.text = Category,
+         label.y = cumsum(prop_spending)) %>%
+  ungroup %>%
+  mutate(label.text = ifelse(Quintile == last(Quintile), as.character(Category), NA_character_)) %>%
+  #
+  grplot(aes(x = Quintile, y = prop_spending, fill = Category)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(aes(x = 5.5, y = label.y, label = label.text, color = Category),
+            hjust = 0, 
+            fontface = "bold",
+            size = 7.14,
+            vjust = 1) + 
+  annotate("blank",
+           x = 6.5, y = 0.01) +
+  scale_y_continuous(label=percent,
+                     expand = c(0,0),
+                     limits = c(0,0.2)) + 
+  theme(axis.title.x = element_text(hjust = 0.5))
+  
+@
+\Caption{Poorest households do not spend much more as a proportion of spending on exempt goods}{Proportion of spending, 2009-10}{fig:Spending_on_exempt_goods_by_hh_quintile}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Spending_on_exempt_goods_by_hh_quintile-1}
+\source{Housing Expenditure Survey}
+\end{figure}
+Overall, the differences are small: poorer households would lose about \$3 per \$1000 spent more than higher income households if the GST were broadened. 
+
+If the GST rate were raised but not broadened, poorer households would pay on average an extra \$25 per \$1000 spent, compared with the \$26 per \$1000 for high income households. Although there is substantial variation in spending patterns between people in a given income group (\cref{sec:higherWelfarePayments}). 
+
+Whether or not a tax is regressive because it takes a higher proportion of income from low income households, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][p.~37]{Daley2013}
+
+\section{Higher welfare payments}\label{sec:higherWelfarePayments}
+Governments can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
+
+Households at the bottom 20 per cent of the income distribution receive almost of all of their income via government payments -- including pensions, unemployment benefits and family allowances. The next poorest 20 per cent of households receive almost half of their incomes from these sources. Unsurprisingly, those further up the income distribution generate most of their income through employment, investments and super. These households receive little from government benefits (\Vref{fig:Sources_of_income_by_quintile}). 
+
+\begin{figure}
+<<Sources_of_income_by_quintile>>=
+read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
+  setnames(1, "income_category") %>%
+  mutate(income_category = factor(income_category, levels = c("Employee.income", "Investment.income", "Super.income", "Gov.benefits"))) %>%
+  gather(Quintile, prop, -income_category) %>%
+  arrange(Quintile, income_category) %>%
+  filter(complete.cases(.)) %>%
+  mutate(label.text = ifelse(Quintile == last(Quintile),
+                             gsub("\\.", "\n", as.character(income_category)),
+                             NA_character_
+                             )) %>%
+  group_by(Quintile) %>%
+  mutate(label.y = cumsum(prop),
+         label.y = pmax(0,label.y/max(label.y)-0.145),
+         vjust = 2 - rank(label.y)) %>%
+  grplot(aes(x = Quintile, 
+             y = prop,
+             fill = income_category,
+             order = income_category)) + 
+  
+  geom_bar(stat = "identity", position = "fill") + 
+  geom_text(aes(label = label.text,
+                x = 5.55,
+                color = income_category,
+                y = label.y,
+                vjust = vjust -0.5),
+            hjust = 0,
+            lineheight = 0.70,
+            fontface = "bold", 
+            size = 8.01
+  ) + 
+  annotate("blank", x = 6.65, y = 1.15)  +
+  scale_y_continuous(label=percent, expand = c(0,0), breaks = c(0,0.25, 0.50, 0.75, 1)) + 
+  theme(panel.grid = element_blank())
+  
+@
+\Caption{Poorest households receive most of their income from government benefits}{Proportion of income}{fig:Sources_of_income_by_quintile}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Sources_of_income_by_quintile-1}
+\end{figure}
+
+It follows that targeting compensation through the welfare system is the most direct way to compensate the poorest households. The poorest 20 per cent of households currently account for just over 9 per cent of total spending on the goods and services we have proposed for including in a broader GST or 12 per cent of the revenue from a higher GST.\footcite{ABS2013cx} If these households could be targeted directly, then spending 9-12 per cent of the revenues from the GST would be enough to ensure that they are no worse off on average after their higher expenses. Higher income households would bear most of the net burden of the tax increase.
+
+However, compensation through higher welfare payments would not be perfectly targeted in reality. Only 30 per cent of welfare payments go to the bottom of 20 per cent of households (Figure 6). To ensure that the poorest households are no worse off as a group requires welfare benefits that will benefit some richer households as well, and thus spending much more than 10 per cent of the increased GST collection.
+\begin{figure}
+<<Welfare_by_household_disposable_income>>=
+welfare.by.income.quintile <- 
+  hes10_indiv %>%
+  merge(hes10hh, by = "Unique_household_number", suffixes = c("indiv", "hh")) %>%
+  mutate(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                       breaks = total.inc.quintiles,  
+                                                       include.lowest = TRUE)))) %>%
+  select(Unique_household_number, Gross_income_quintile, 
+         Weight_Person_HES, 
+         Current_weekly_amount_of_Commonwealth_Rent_Assistance, 
+         Current_weekly_income_from_age_pension, 
+         Current_weekly_income_from_wife_pension, 
+         Current_weekly_income_from_carer_payment, 
+         Current_weekly_income_from_carer_allowance, 
+         Current_weekly_income_from_special_benefit, 
+         Current_weekly_income_from_widow_allowance, 
+         Current_weekly_income_from_youth_allowance, 
+         Current_weekly_income_from_Austudy_Abstudy, 
+         Current_weekly_income_from_parenting_payment, 
+         Current_weekly_income_from_Baby_Bonus_payment, 
+         Current_weekly_income_from_partner_allowance, 
+         Current_weekly_income_from_senior_supplement, 
+         Current_weekly_income_from_newstart_allowance, 
+         Current_weekly_income_from_pension_supplement, 
+         Current_weekly_income_from_sickness_allowance, 
+         Current_weekly_income_from_service_pension_DVA, 
+         Current_weekly_income_from_utilities_allowance, 
+         Current_weekly_income_from_disability_pension_DVA, 
+         Current_weekly_income_from_war_widows_pension_DVA, 
+         Current_weekly_income_from_disability_support_pension, 
+         Current_weekly_income_from_family_tax_benefits_modelled, 
+         Current_weekly_income_from_other_government_pensions_and_allowances) %>%
+  gather(Allowance, income, -Unique_household_number, -Gross_income_quintile, -Weight_Person_HES) %>%
+  data.table %>%
+  mutate(Allowance = gsub("Current_weekly_income_from_", "", Allowance, fixed = TRUE)) %>%
+  group_by(Gross_income_quintile, Allowance) %>%
+  summarise(total = sum(income * Weight_Person_HES)) %>%
+  ungroup %>% 
+  arrange(desc(total)) 
+
+
+welfare.by.income.quintile %>%
+  mutate(Allowance = factor(Allowance, levels = (welfare.by.income.quintile$Allowance), ordered = TRUE)) %>%
+  mutate(total = 52 * total/1e9) %>%
+  mutate(text = ifelse(Gross_income_quintile == 2 & total > 1, gsub("_", " ", Allowance, fixed = TRUE), NA_character_)) %>%
+  mutate(text = gsub("^([a-z]+)\\s([a-z]+)\\s(.*)$", "\\1 \\2\n\\3", text)) %>%
+  group_by(Gross_income_quintile) %>%
+  arrange(desc(total)) %>%
+  mutate(text.y = cumsum(total)) %>%
+  ggplot(aes(x = Gross_income_quintile, fill = Allowance, order = Allowance)) + 
+  geom_bar(aes(y = total), stat = "identity", position = "stack") + 
+  geom_text(aes(label = text, y = text.y), vjust = 1.1, fontface = "bold", size = 5.5) + 
+  scale_fill_manual(values = c(rep(RColorBrewer::brewer.pal(11, name="Spectral"), 2), "black")) + 
+  scale_y_continuous(label = grattan_dollar, expand = c(0,0), limits = c(0,30)) + 
+  xlab("Gross income quintile") + 
+  theme_light(base_size = 18) + 
+  theme(legend.position = "none")
+@
+\Caption{Higher welfare payments also benefit richer households}{Total spend in 2009-10}{fig:Welfare_by_household_disposable_income}
+\makebox[\linewidth][r]{\includegraphics[width=1.1\columnwidth]{figure_BudgetRepair_GST/Welfare_by_household_disposable_income-1}}
+
+
+\end{figure}
+
+<<GST_increase_to_15pc>>=
+if(!file.exists("GST_by_year.xlsx")){
+  GST_url <- "http://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/0e56ca39-832e-40ca-bc62-297a3fb552cf/download/taxstats2013gst1gstwetlctmultiyear.xlsx"
+  GET(GST_url, write_disk("GST_by_year.xlsx"))
+}
+GST.by.year.actual <-
+  read_excel("GST_by_year.xlsx", sheet = "GST Table 1", skip = 2) %>%
+  setnames(1:2, c("Selected_item", "unit")) %>% 
+  # en dash caution
+  setnames(old = names(.), new = gsub("([0-9]{4}).([0-9]{2})", "\\1-\\2", names(.))) %>%
+  gather(year, value, `2001-02`:`2013-14`) %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(complete.cases(.)) %>%
+  filter(grepl("Net.GST", Selected_item))
+
+EXTRA.WELFARE.SPENDING.PROPOSED <- 
+  last(GST.by.year.actual$value) * 0.5 * 0.30 / # millions
+  1e3 # bns
+@
+Spending around \$9 billion, or 30 per cent of revenues from increasing the GST rate to 15 per cent    on higher welfare benefits would ensure that the poorest households are generally more than compensated for the higher costs. A policy of overcompensation can also be justified because of the risk that compensation may be eroded over time (\Vref{box:WelfareErosion}).
+
+\begin{smallbox}{Will welfare benefits get eroded over time?}{box:WelfareErosion}
+Previous experience in both Australia and New Zealand highlights the risk that compensation can be eroded over time if benefits do not keep pace with inflation. Increases in welfare benefits to compensate for the introduction of New Zealand's GST were cut sharply after a change of government.\autocite{Davidson2000}  In Australia, despite increases in Newstart following the introduction of the GST in 2000, the single adult Newstart rate has been eroded by cost of living increases so that it now buys less than it did before the GST was introduced.\autocite{ACOSS2012}
+
+But recent budget proposals to index pensions at inflation rather than average weekly earnings met a hostile public reaction, and were abandoned in favour of tightening eligibility for those who need pensions least.\autocite{Morrison2015}  Indeed a series of decisions over the last decade to increase pensions above average weekly earnings  suggests that concerns about the longevity of compensation for pensioners may be exaggerated. 
+
+On the other hand, concerns about the value of Newstart are based on recurring political decisions to reduce payments relative to average wages.  These concerns might be addressed if increases to the GST were accompanied by a substantial real increase in Newstart. Even if it were eroded over time, a large increase would leave most of those on Newstart substantially better off for some time. This might be the political price for welfare groups to support increases to the GST.
+\end{smallbox}
+
+<<group_by_income_quintile>>=
+group_by.income_quintile <- function(.data, type = "Total_current_weekly_HH_income_from_all_sources"){
+  if(type == "Current_weekly_HH_disposable_income"){
+    group_by(.data, disposable_income_quintile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
+                                                            breaks = total.inc.quintiles, 
+                                                            include.lowest = TRUE)))) %>%
+      arrange(disposable_income_quintile)
+  } else {
+    if (type == "Total_current_weekly_HH_income_from_all_sources"){
+      group_by(.data, gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                            breaks = total.inc.quintiles, 
+                                                            include.lowest = TRUE)))) %>%
+      arrange(gross_income_quintile)
+    }
+  }
+}
+@
+
+<<welfare.by.income.quintile.total>>=
+gst_revenue.15pc.weekly <- 
+  hes10hh %$%
+  sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES)/2
+
+ratio.gst_welfare <- percentage_of_revenue_to_transfers
+
+welfare.by.income.quintile_total <-
+  welfare.by.income.quintile %>%
+  group_by(gross_income_quintile = Gross_income_quintile) %>%
+  summarise(total = sum(total)) %>%
+  ungroup %>%
+  mutate(prop_welfare = total/sum(total)) %>%
+  select(-total)
+@
+
+<<GST_compensation_by_quintile_and_threshold>>=
+hes_with_gst_compensation <- 
+  hes10hh %>%
+  group_by.income_quintile() %>%
+  ungroup %>%
+  data.table %>%
+  setkey(gross_income_quintile) %>%
+  merge(., welfare.by.income.quintile_total) %>%
+  group_by(gross_income_quintile) %>%
+  mutate(
+    new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+      prop_welfare / # amount to all households in that quintile
+      sum(Weight_HH_HES)
+  ) %>%
+  group_by(gross_income_quintile) %>%
+  summarise(comp_adequacy.75pc = weighted.mean(new_welfare > 0.75* Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
+            comp_adequacy.100pc = weighted.mean(new_welfare > Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
+            comp_adequacy.125pc = weighted.mean(new_welfare > 1.25*Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES)
+  ) %T>%
+  readr::write_csv(path = "./figure/GST_compensation_by_quintile_and_threshold.csv") %>%
+  gather(threshold, comp_adequacy, comp_adequacy.75pc:comp_adequacy.125pc) %>%
+  mutate(threshold = gsub("pc", "%", 
+                          gsub("^.*\\.", "", threshold)),
+         threshold = factor(threshold, levels = c("75%", "100%", "125%"), labels = c(">75%",
+                                                                                     ">100%",
+                                                                                     ">125%")))
+
+hes_with_gst_compensation %T>%
+  chart_data() %>%
+  mutate(`Gross income quintile` = gross_income_quintile) %>%
+  grplot(aes(x = `Gross income quintile`, fill = threshold, y = comp_adequacy)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  geom_text(aes(label = round(100*comp_adequacy))) + 
+  scale_y_continuous("Percent reaching threshold", label=percent,
+                     limits = c(0,1), 
+                     expand = c(0,0)) + 
+  guides(fill = guide_legend("Threshold of adeq.\ncompensation", label.theme = element_text(angle = 0, size = 23))) + 
+  theme(legend.position = c(0.7,0.7), 
+        legend.key.size = grid::unit(1.5, "lines"))
+@
+\begin{figure}
+\Caption{With 30\%\ of extra revenue to welfare transfers, most of the poorest households will be better off, some substantially so}{Proportion of each quintile compensated through increased welfare by the given amount relative to their excess burden due to a higher GST}{fig:GST_compensation_by_quintile_and_threshold}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/GST_compensation_by_quintile_and_threshold-1}
+\end{figure}
+
+And because low income people have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
+nearly  % ceiling
+\Sexpr{
+paste0(ceiling(100 * dplyr::filter(hes_with_gst_compensation, gross_income_quintile == 1, threshold == ">100%")$comp_adequacy), "\\%")
+}% 
+%70 per cent 
+~of households in the bottom income quintile are better off, with 
+nearly  % ceiling 
+\Sexpr{
+paste0(
+round(ceiling(100 * dplyr::filter(hes_with_gst_compensation, gross_income_quintile == 1, threshold == ">125%")$comp_adequacy)
+, -1L),
+"\\%")
+}% 
+~receiving back more than 125 per cent of their additional cost of living increases (\Vref{fig:GST_compensation_by_quintile_and_threshold}). 
+
+Providing a greater share of compensation spending via those payments which lower income earners receive relatively more of -- unemployment and disability benefits and pensions (\Vref{fig:Sources_of_income_by_quintile}) --  would improve average compensation levels further.
+
+But some poorer households will not be fully compensated. This is an unfortunate reality of any revenue positive tax reform. Increasing welfare payments to ensure that \emph{no-one} on low incomes is worse off (in terms of dollars in the pocket), would substantially increase the cost of the package.  
+
+But of course, those on lower incomes - just like others in the population - also stand to receive substantial benefits from higher state government spending on healthcare from higher GST collections. Improvements in access to or quality of health services will improve living standards for all Australians.\footcite{Deloitte2015}  
 
 \printbibliography[title=References]
 \end{document}
