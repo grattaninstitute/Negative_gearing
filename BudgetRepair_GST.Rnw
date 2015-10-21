@@ -1,4 +1,5 @@
 \documentclass{grattan}
+\usepackage{longtable}
 <<MODELLING_PARAMETERS, echo=FALSE>>=
 percentage_of_revenue_to_transfers = 0.3
 @
@@ -69,6 +70,7 @@ library(data.table)
 library(tidyr)
 library(dplyr)
 library(magrittr)
+library(xtable)
 
 weighted.var.se <- function(x, w, na.rm=FALSE){
   # Computes the variance of a weighted mean following Cochran 1977 definition
@@ -849,6 +851,40 @@ But if the purpose of GST reform is to help state governments fund rising health
 We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
 
 For example, using \$9~billion of the additional revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30 per cent.
+
+\onecolumn
+<<sessionInfo, results='asis'>>=
+addtorow          <- list()
+addtorow$pos      <- list()
+addtorow$pos[[1]] <- c(0)
+addtorow$command  <- c(paste("\\hline \n",
+                             "\\endhead \n",
+                             "\\hline \n",
+                             "{\\footnotesize Continued on next page} \n",
+                             "\\endfoot \n",
+                             "\\endlastfoot \n",sep=""))
+# x.big <- xtable(x, label = "tabbig", caption = "Example of longtable spanning several pages")
+
+
+devtools::session_info() %>%
+  extract("packages") %>% 
+  as.data.frame %>%
+  xtable %>%
+  print(., tabular.environment = "longtable", floating = FALSE,
+      include.rownames = FALSE,  # because addtorow will substitute the default row names 
+      add.to.row = addtorow,     # this is where you actually make the substitution
+      hline.after=c(-1))  
+@
+
+<<package_cite>>=
+# Select packages to cite:
+citPkgs <- names(sessionInfo()$otherPkgs)
+# Write the bibtex file:
+knitr::write_bib(citPkgs, file="bibliography2.bib")      
+package_cite_input <- paste0("\\nocite{", paste0(paste0("R-", citPkgs), collapse=","), "}")
+write(package_cite_input, file = "package_cite_input_GST.tex")
+@
+\input{package_cite_input_GST}
 
 \printbibliography[title=References]
 \end{document}
