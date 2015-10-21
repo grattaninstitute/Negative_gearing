@@ -2084,20 +2084,19 @@ new_tax_by_indiv <-
 
 GST compensation with welfare
 ```{r}
-hes_with_gst_compensation %T>%
-  chart_data() %>%
-  grplot(aes(fill = income_quintile, x = threshold, y = comp_adequacy)) + 
+hes_with_gst_compensation %>%
+  grplot(aes(x = income_quintile, fill = threshold, y = comp_adequacy)) + 
   geom_bar(stat = "identity",
            position = "dodge") + 
   scale_y_continuous("Percent reaching threshold", label=percent,
                      expand = c(0,0),
                      limits = c(0,1)) + 
-  guides(fill = guide_legend("Quintiles",
+  guides(fill = guide_legend("Comp/Burden",
                              direction = "horizontal",
                              label.position = "top",
                              label.hjust = 0.5
                              )) + 
-  xlab("Compensation relative to increased burden") + 
+  xlab("Quintile") + 
   theme(legend.position = c(0.7,0.8),
         axis.title.y = element_text(angle = 90))
   
@@ -2127,18 +2126,19 @@ hes_with_gst_and_tax_compensation <-
             comp_adequacy.125pc = weighted.mean(new_welfare + tax_diff_weekly > 1.25*Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES)
   )
 
-hes_with_gst_and_tax_compensation %>%
+hes_with_gst_and_tax_compensation %T>%
+  readr::write_csv("./figure/GST_compensation_and_tax_cuts_by_quintile_and_threshold.csv") %>%
   gather(threshold, comp_adequacy, comp_adequacy.75pc:comp_adequacy.125pc) %>%
   mutate(threshold = gsub("pc", "%", 
                         gsub("^.*\\.", "", threshold)),
          threshold = factor(threshold, levels = c("75%", "100%", "125%"))) %>%
-  grplot(aes(fill = income_quintile, x = threshold, y = comp_adequacy)) + 
+  grplot(aes(x = income_quintile, fill = threshold, y = comp_adequacy)) + 
   geom_bar(stat = "identity",
            position = "dodge") + 
   scale_y_continuous("Percent reaching threshold", label=percent,
                      expand = c(0,0),
                      limits = c(0,1)) + 
-  guides(fill = guide_legend("Quintiles",
+  guides(fill = guide_legend("Comp/burden",
                              direction = "horizontal",
                              label.position = "top",
                              label.hjust = 0.5
