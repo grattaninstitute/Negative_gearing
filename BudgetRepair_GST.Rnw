@@ -116,6 +116,12 @@ get_sample_file <- function(year = 2013){
 }
 @
 
+<<IND>>=
+IND <- function(x, min, max = Inf){
+  as.numeric(x >= min) * as.numeric(x < max)
+}
+@
+
 <<HES_and_SIH_cleansing, cache=F>>=
 hes10hh_raw <- read.dta("./HES/hes10bh.dta")
 
@@ -755,19 +761,7 @@ But some poorer households will not be fully compensated. This is an unfortunate
 But of course, those on lower incomes - just like others in the population - also stand to receive substantial benefits from higher state government spending on healthcare from higher GST collections. Improvements in access to or quality of health services will improve living standards for all Australians.\footcite{Deloitte2015}  
 
 \subsection{Structuring welfare payments to protect work incentives}
-Compensation can be structured so as not to reduce disincentives for work. If welfare payments are increased by a fixed amount, there will be no change in effective tax rates for current welfare participants (\Vref{box:ReduceWelfareDisincentives}). This will happen to some degree via current indexation of benefits -- increases in the general price level flow through to the base rate of payments. But if the intention is to overcompensate, additional top-ups to the base rate will likely also need to be legislated. 
-
-\begin{bigbox*}{Structuring welfare payments to reduce disincentives for work}{box:ReduceWelfareDisincentives}
-Means tested welfare payments reduce work incentives. If welfare recipients start earning income, they not only pay tax on each dollar of income earned but also face some withdrawal of their benefits. The impact on work incentives is moderated by a ``taper'' which reduces benefits gradually as incomes increase.
-
-Maintaining the same ``taper'' will ensure that higher welfare payments do not directly reduce incentives to work (the ``substitution effect''). Increasing welfare by a fixed dollar amount for all recipients (whether they are receiving a full or part benefit) maintains the taper. For almost all levels of income, the dollar value of payments withdrawn with each additional dollar earned is the same under the new compensation arrangements (Figure 8). 
-
-In contrast, a proportional increase in benefits would make the taper rate steeper, increasing effective tax rates for those in the relevant income range. But even with a fixed dollar increase in benefits, there will be some effects on incentives to work.  
-
-First, because higher welfare payments will increase real income for some recipients, this could reduce the attractiveness of working more (the ``income effect''). However, it is not clear this effect will be substantial given the relatively modest increases in overall income associated with the proposed increase in payments. 
-
-Second, some people will face higher EMTRs because they are brought into the welfare net.
-
+%
 <<Newstart_entrants>>=
 GST_by_year <-
   read_excel("GST_by_year.xlsx", sheet = "GST Table 1", skip = 2) %>%
@@ -813,21 +807,6 @@ ALLOWANCE.CUTOFF <-
 
 tax201213 <- get_sample_file()
 
-entrants <- 
-  tax201213 %>%
-  age_mutate_() %>%
-  filter(Tot_inc_amt >= ALLOWANCE.CUTOFF, 
-         Tot_inc_amt <= ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO,
-         Aust_govt_pnsn_allw_amt < 1,
-         !(Age %in% c("under\n20", "65\nto\n69", "70\nand\nover")))
-
-extants <- 
-  tax201213 %>%
-  age_mutate_() %>%
-  filter(Tot_inc_amt <= ALLOWANCE.CUTOFF, 
-         Aust_govt_pnsn_allw_amt > 0,
-         !(Age %in% c("under\n20", "65\nto\n69", "70\nand\nover")))
-
 # This underestimates extants...
 ## How many individuals of a certian income are on newstart
 # ====
@@ -836,11 +815,40 @@ NEWSTART.ENTRANTS <-
   sum(Taxable_Income >= ALLOWANCE.CUTOFF & 
         Taxable_Income <= ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO) * 52* 0.05
 @
+%
+Compensation can be structured so as not to reduce disincentives for work. If welfare payments are increased by a fixed amount, there will be no change in effective tax rates for current welfare participants (\Vref{box:ReduceWelfareDisincentives}). This will happen to some degree via current indexation of benefits -- increases in the general price level flow through to the base rate of payments. But if the intention is to overcompensate, additional top-ups to the base rate will likely also need to be legislated. 
 
+The main impact on work incentives will be for those people brought into the net for welfare benefits. These people will face higher effective marginal tax rates as any additional income they earn will see a withdrawal of some welfare benefits. However, our estimates suggest this group is relatively small -- it might add an  additional \Sexpr{texNum(NEWSTART.ENTRANTS,1)}Newstart recipients to the 680,000 who currently receive this payment (\Vref{box:ReduceWelfareDisincentives}).%
+\footnote{Grattan analysis. We assume that the increased welfare (approximately 5\%) flows uniformly to every payment category. Newstart entrants are those without welfare payments whose taxable income is between 100\%\ and  105\%\ of the current Newstart cutoff.}
 
-Specifically, people on incomes somewhat above the previous cut off point will now receive a (modest) welfare benefit (\Vref{fig:Sources_of_income_by_quintile}). This increases their effective tax rate because they will face withdrawal of this benefit as their income increases. However, the number of people affected is modest -- we estimate than an extra 10,000 people might qualify for some Newstart payment, very small in the context of the 680,000 or so that already receive that payment. 
+\begin{bigbox*}{Structuring welfare payments to reduce disincentives for work}{box:ReduceWelfareDisincentives}
+Means tested welfare payments reduce work incentives. If welfare recipients start earning income, they not only pay tax on each dollar of income earned but also face some withdrawal of their benefits. The impact on work incentives is moderated by a ``taper'' which reduces benefits gradually as incomes increase.
+
+Maintaining the same ``taper'' will ensure that higher welfare payments do not directly reduce incentives to work (the ``substitution effect''). Increasing welfare by a fixed dollar amount for all recipients (whether they are receiving a full or part benefit) maintains the taper. For almost all levels of income, the dollar value of payments withdrawn with each additional dollar earned is the same under the new compensation arrangements (Figure 8). 
+
+In contrast, a proportional increase in benefits would make the taper rate steeper, increasing effective tax rates for those in the relevant income range. But even with a fixed dollar increase in benefits, there will be some effects on incentives to work.  
+
+First, because higher welfare payments will increase real income for some recipients, this could reduce the attractiveness of working more (the ``income effect''). However, it is not clear this effect will be substantial given the relatively modest increases in overall income associated with the proposed increase in payments. 
+
+Second, some people will face higher EMTRs because they are brought into the welfare net.
+
+Specifically, people on incomes somewhat above the previous cut off point will now receive a (modest) welfare benefit (\Vref{fig:Sources_of_income_by_quintile}). This increases their effective tax rate because they will face withdrawal of this benefit as their income increases. However, the number of people affected is modest -- we estimate than an extra \Sexpr{texNum(NEWSTART.ENTRANTS,1)}people might qualify for some Newstart payment, very small in the context of the 680,000 or so that already receive that payment. 
 
 \end{bigbox*}
+
+\section{Income tax cuts}
+Modest income tax cuts should be part of any GST reform package. 
+
+Appropriately targeted income tax cuts will help to moderate the effect of a higher GST on work incentives. By increases prices of many good and services, a higher or broader GST, reduces the real purchasing power of take home pay. But tax cuts mean the size of workers' pay packets is larger. 
+
+This partial ``swap'' of income taxes for consumption taxes will provide an economic dividend. However, the economic gain will depend on the design of any income tax cuts: cuts targeted at middle income earners are likely to have a much bigger impact on participation than reductions in the top marginal rate only paid by a small number of taxpayers who usually work full time (\vref{chap:Chapter1}).
+
+But if the purpose of GST reform is to help state governments fund rising healthcare costs, there is a limit to the money available to fund income tax reductions. Given our proposed welfare package, spending any more than 30 per cent of the revenue on tax cuts will not leave state governments with enough funds to make a meaningful dent in their health funding ``gap''. 
+
+\subsection{The size of income tax cuts}
+We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
+
+For example, using \$9~billion of the additional revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30 per cent.
 
 \printbibliography[title=References]
 \end{document}

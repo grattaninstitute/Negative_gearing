@@ -10,18 +10,9 @@ my_emf <- function(file, width, height){
               family = "Arial")
 }
 
-# if(require(extrafont) && any(grepl("Arial", extrafont::fonts()))){
-#   font_import(pattern = "Arial")
-#   my_pdf <- function(file, width, height){
-#     pdf.options(family = "Arial")
-#     pdf(file = file, width = width, height = height)
-#   } 
-#   theme_hugh <- function(...) {theme_hugh(...) + theme(text = element_text(family = "Arial"))}
-# } else {
-  my_pdf <- function(file, width, height){
-    pdf(file = file, width, height = height)
-  }
-# }
+my_pdf <- function(file, width, height){
+  pdf(file = file, width, height = height)
+}
 
 # knitr chunk opts
 # fig.width must = out.width and same for *.height
@@ -88,6 +79,46 @@ weighted.var.se <- function(x, w, na.rm=FALSE){
   wbar = mean(w)
   out = n/((n-1)*sum(w)^2)*(sum((w*x-wbar*xWbar)^2)-2*xWbar*sum((w-wbar)*(w*x-wbar*xWbar))+xWbar^2*sum((w-wbar)^2))
   return(out)
+}
+@
+
+%% Functions
+<<group_by_income_quintile>>=
+group_by.income_quintile <- function(.data, type = "Total_current_weekly_HH_income_from_all_sources"){
+  if(type == "Current_weekly_HH_disposable_income"){
+    group_by(.data, disposable_income_quintile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
+                                                            breaks = total.inc.quintiles, 
+                                                            include.lowest = TRUE)))) %>%
+      arrange(disposable_income_quintile)
+  } else {
+    if (type == "Total_current_weekly_HH_income_from_all_sources"){
+      group_by(.data, gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                            breaks = total.inc.quintiles, 
+                                                            include.lowest = TRUE)))) %>%
+      arrange(gross_income_quintile)
+    }
+  }
+}
+@
+
+<<get_sample_file>>=
+sample_file_of <- function(year = 2013){
+  year <- min(2013, year)
+  fy.year <- paste0(year - 1, "-", formatC(year - 2000, flag = "0", width=2))
+  # List all files with sample in them that have csv or txt at the end.
+  list.of.files <- list.files(path = "./IndividualSampleFile", pattern = paste0("(s|S)ample.*((csv)|(txt))$"), recursive = TRUE, full.names = TRUE)
+  return(list.of.files[grepl(fy.year, list.of.files)])
+}
+
+get_sample_file <- function(year = 2013){
+  colClasses = sapply(fread(sample_file_of(year), nrows=50), class)
+  fread(sample_file_of(year), colClasses = colClasses, na.strings = "?")
+}
+@
+
+<<IND>>=
+IND <- function(x, min, max = Inf){
+  as.numeric(x >= min) * as.numeric(x < max)
 }
 @
 
@@ -645,24 +676,6 @@ But recent budget proposals to index pensions at inflation rather than average w
 On the other hand, concerns about the value of Newstart are based on recurring political decisions to reduce payments relative to average wages.  These concerns might be addressed if increases to the GST were accompanied by a substantial real increase in Newstart. Even if it were eroded over time, a large increase would leave most of those on Newstart substantially better off for some time. This might be the political price for welfare groups to support increases to the GST.
 \end{smallbox}
 
-<<group_by_income_quintile>>=
-group_by.income_quintile <- function(.data, type = "Total_current_weekly_HH_income_from_all_sources"){
-  if(type == "Current_weekly_HH_disposable_income"){
-    group_by(.data, disposable_income_quintile = factor(as.numeric(cut(Current_weekly_HH_disposable_income, 
-                                                            breaks = total.inc.quintiles, 
-                                                            include.lowest = TRUE)))) %>%
-      arrange(disposable_income_quintile)
-  } else {
-    if (type == "Total_current_weekly_HH_income_from_all_sources"){
-      group_by(.data, gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
-                                                            breaks = total.inc.quintiles, 
-                                                            include.lowest = TRUE)))) %>%
-      arrange(gross_income_quintile)
-    }
-  }
-}
-@
-
 <<welfare.by.income.quintile.total>>=
 gst_revenue.15pc.weekly <- 
   hes10hh %$%
@@ -746,6 +759,88 @@ Providing a greater share of compensation spending via those payments which lowe
 But some poorer households will not be fully compensated. This is an unfortunate reality of any revenue positive tax reform. Increasing welfare payments to ensure that \emph{no-one} on low incomes is worse off (in terms of dollars in the pocket), would substantially increase the cost of the package.  
 
 But of course, those on lower incomes - just like others in the population - also stand to receive substantial benefits from higher state government spending on healthcare from higher GST collections. Improvements in access to or quality of health services will improve living standards for all Australians.\footcite{Deloitte2015}  
+
+\subsection{Structuring welfare payments to protect work incentives}
+%
+<<Newstart_entrants>>=
+GST_by_year <-
+  read_excel("GST_by_year.xlsx", sheet = "GST Table 1", skip = 2) %>%
+  setnames(1:2, c("Selected_item", "unit")) %>% 
+  # en dash caution
+  setnames(old = names(.), new = gsub("([0-9]{4}).([0-9]{2})", "\\1-\\2", names(.))) %>%
+  gather(year, value, `2001-02`:`2013-14`) %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(complete.cases(.)) %>%
+  filter(grepl("Net.GST", Selected_item)) %>%
+  mutate(value = value * 1e6,
+         unit = "$")  # dollar units
+
+EXTRA.TRANSFER.AMT <- 
+  GST_by_year[GST_by_year$year == "2012-13", ]$value * 0.5 *  # 15 percent
+  0.3  # amount going to transfers
+
+EXTANT.TRANSFERS.201213 <- 131.6 * 10^9  # budget papers
+
+# New newstart / old newstart
+NEWSTART.ALLOWANCE.RATIO <- 
+  (EXTANT.TRANSFERS.201213 + EXTRA.TRANSFER.AMT) / EXTANT.TRANSFERS.201213
+
+# Assume newstart will increase by this ratio.
+allowance <- 
+  12807.60  # http://www.cpaaustralia.com.au/~/media/corporate/allfiles/document/professional-resources/financial-planning/tax-social-security-guide-2012-13.pdf
+
+allowance_with_income <- 
+  function(fortnightly.income){
+    fortnightly.income + max(0, 492.6 - (0.5 * (fortnightly.income - 62) * IND(fortnightly.income, min = 62, max = 250) +
+                                           IND(fortnightly.income, min = 250) * 0.6 * (fortnightly.income - 250)))
+  }
+
+for (i in 492:2000){
+  if (allowance_with_income(i) == i){
+    allowance_cutoff_fortnightly <- i
+    break
+  }
+}
+
+ALLOWANCE.CUTOFF <- 
+  allowance_cutoff_fortnightly * 26
+
+tax201213 <- get_sample_file()
+
+# This underestimates extants...
+## How many individuals of a certian income are on newstart
+# ====
+NEWSTART.ENTRANTS <- 
+  tax201213 %$%
+  sum(Taxable_Income >= ALLOWANCE.CUTOFF & 
+        Taxable_Income <= ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO) * 52* 0.05
+@
+%
+Compensation can be structured so as not to reduce disincentives for work. If welfare payments are increased by a fixed amount, there will be no change in effective tax rates for current welfare participants (\Vref{box:ReduceWelfareDisincentives}). This will happen to some degree via current indexation of benefits -- increases in the general price level flow through to the base rate of payments. But if the intention is to overcompensate, additional top-ups to the base rate will likely also need to be legislated. 
+
+The main impact on work incentives will be for those people brought into the net for welfare benefits. These people will face higher effective marginal tax rates as any additional income they earn will see a withdrawal of some welfare benefits. However, our estimates suggest this group is relatively small -- it might add an  additional \Sexpr{texNum(NEWSTART.ENTRANTS,1)}Newstart recipients to the 680,000 who currently receive this payment (\Vref{box:ReduceWelfareDisincentives}).%
+\footnote{Grattan analysis. We assume that the increased welfare (approximately 5\%) flows uniformly to every payment category. Newstart entrants are those without welfare payments whose taxable income is between 100\%\ and  105\%\ of the current Newstart cutoff.}
+
+\begin{bigbox*}{Structuring welfare payments to reduce disincentives for work}{box:ReduceWelfareDisincentives}
+Means tested welfare payments reduce work incentives. If welfare recipients start earning income, they not only pay tax on each dollar of income earned but also face some withdrawal of their benefits. The impact on work incentives is moderated by a ``taper'' which reduces benefits gradually as incomes increase.
+
+Maintaining the same ``taper'' will ensure that higher welfare payments do not directly reduce incentives to work (the ``substitution effect''). Increasing welfare by a fixed dollar amount for all recipients (whether they are receiving a full or part benefit) maintains the taper. For almost all levels of income, the dollar value of payments withdrawn with each additional dollar earned is the same under the new compensation arrangements (Figure 8). 
+
+In contrast, a proportional increase in benefits would make the taper rate steeper, increasing effective tax rates for those in the relevant income range. But even with a fixed dollar increase in benefits, there will be some effects on incentives to work.  
+
+First, because higher welfare payments will increase real income for some recipients, this could reduce the attractiveness of working more (the ``income effect''). However, it is not clear this effect will be substantial given the relatively modest increases in overall income associated with the proposed increase in payments. 
+
+Second, some people will face higher EMTRs because they are brought into the welfare net.
+
+Specifically, people on incomes somewhat above the previous cut off point will now receive a (modest) welfare benefit (\Vref{fig:Sources_of_income_by_quintile}). This increases their effective tax rate because they will face withdrawal of this benefit as their income increases. However, the number of people affected is modest -- we estimate than an extra \Sexpr{texNum(NEWSTART.ENTRANTS,1)}people might qualify for some Newstart payment, very small in the context of the 680,000 or so that already receive that payment. 
+
+\end{bigbox*}
+
+\section{Income tax cuts}
+Modest income tax cuts should be part of any GST reform package. 
+
+Appropriately targeted income tax cuts will help to moderate the effect of a higher GST on work incentives. By increases prices of many good and services, a higher or broader GST, reduces the real purchasing power of take home pay. But tax cuts mean the size of workers’ pay packets is larger. 
+
 
 \printbibliography[title=References]
 \end{document}

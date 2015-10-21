@@ -1,5 +1,5 @@
 ---
-title: "What to do with $43bn?"
+title: "Changing the income tax"
 author: "Hugh Parsonage"
 date: "4 September 2015"
 output: html_document

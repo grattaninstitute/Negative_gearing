@@ -90,7 +90,7 @@ sih11 %>%
 
 get_sample_file() %$%
   sum(Taxable_Income >= ALLOWANCE.CUTOFF & 
-        Taxable_Income <= ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO) * 52 / 1e6 * 0.05 / # percentage of 
+        Taxable_Income <= ALLOWANCE.CUTOFF * NEWSTART.ALLOWANCE.RATIO) * 52 / 1e6 * 0.05  
 
 
 hes10_indiv %>%
