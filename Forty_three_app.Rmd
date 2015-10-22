@@ -36,7 +36,7 @@ shinyApp( options = list(height = 1024),
     fluid = FALSE,
     sidebarPanel = sidebarPanel(
       selectInput("TargetFY", label = "Inflate values to", selected = "2012-13",
-                  choices = c("2012-13", "2013-14")),
+                  choices = c("2012-13", "2013-14", "2014-15")),
       textInput("cameo1", label = "Cameo 1 total income", value = 0),
       textInput("cameo2", label = "Cameo 2 total income", value = 0),
       sliderInput("rate_1", label = "marginal rate",
