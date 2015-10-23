@@ -1,11 +1,13 @@
 \documentclass{grattan}
-\usepackage{longtable}
+\usepackage{longtable,endnotes}
 
 \title{A higher or broader GST}
 \author{John Daley and Danielle Wood}
 
 \addbibresource{bibliography.bib}
-\addbibresource{bibliography2.bib} % r packages
+%\addbibresource{bibliography2.bib} % r packages
+
+\let\footnote=\endnote
 
 <<MODELLING_PARAMETERS, echo=FALSE>>=
 percentage_of_revenue_to_transfers = 0.3
@@ -1141,6 +1143,9 @@ write(package_cite_input, file = "package_cite_input_GST.tex")
 @
 \input{package_cite_input_GST}
 \twocolumn
-\nocite{*}
+%\nocite{*}
+{\raggedright
+\theendnotes % footnotes as endnotes 
+}
 \printbibliography[title=References]
 \end{document}
