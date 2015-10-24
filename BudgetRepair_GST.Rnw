@@ -1,5 +1,7 @@
 \documentclass{grattan}
 \usepackage{longtable,endnotes}
+\renewcommand\enoteformat{\rightskip=0pt \leftskip=0pt %\parindent=0em
+  \leavevmode\makeenmark\raggedright}
 
 \title{A higher or broader GST}
 \author{John Daley and Danielle Wood}
@@ -371,11 +373,13 @@ GST revenues are collected by the Commonwealth Government and are then distribut
 
 The GST raised \$54~billion in 2014-15.\footcite[p.~4-16]{Budget2015} This was around 12~per cent of government revenus in Australia -- well below the average of 20~per cent for all OECD countries.\footnote{The OECD average was 19.5 per cent in 2012 (See: \textcite{OECD2014})} \dots\ Indeed, Australia relies less on broad-based consumption tax to raise revenue than all but two OECD countries.\footnote{The exceptions are Japan and the United States (which does not have a broad-based consumption tax) \textcite[p~40]{OECD2014} }  Australia's GST only covers about 47 per cent of consumption, below the OECD average of 55 per cent, and well below New Zealand where the GST covers 96 per cent of all goods and services consumed.\footnote{\textcite[p.~95]{OECD2014} . The OECD calculates its consumption tax coverage ratio based on the difference between consumption tax revenue actually collected and what would be theoretically raised if consumption tax were applied at the standard rate to the potential tax base in a `pure' consumption tax regime.} 
 
-Not only are Australia's revenues from broad-based consumption taxes low by international standards, they are shrinking relative to the economy. In the decade to 2014-15, GST revenues fell from almost 4.0 to 3.4 per cent of GDP.  Households saved more of their incomes (\Vref{fig:Households_are_saving_more}), and spent more of their incomes on GST-exempt items, particularly housing (\Vref{fig:Spending_less_on_GST_liable}).
+Not only are Australia's revenues from broad-based consumption taxes low by international standards, they are shrinking relative to the economy. In the decade to 2014-15, GST revenues fell from almost 4.0 to 3.4 per cent of GDP.  Households saved more of their incomes, and spent more of their incomes on GST-exempt items, particularly housing (\Vrefrange{fig:Households_are_saving_more}{fig:Spending_less_on_GST_liable}).
 
-There is no obvious reason for these trends to reverse in the foreseeable future. Savings rates are now close to long-run averages with low savings rates in the early 1990s and 2000s looking like a historical anomaly (\Vref{fig:Households_are_saving_more}). The proportion of incomes spent on health is forecast continue to grow.  And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the "growth" tax the states were originally promised.\footcite{Costello2000}
+There is no obvious reason for these trends to reverse in the foreseeable future. Savings rates are now close to long-run averages with low savings rates in the early 1990s and 2000s looking like a historical anomaly (\Vref{fig:Households_are_saving_more}). The proportion of incomes spent on health is forecast continue to grow.\footcite[p.~28]{Daley2014} 
 
-\begin{figure}
+And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the "growth" tax the states were originally promised.\footcite{Costello2000}
+
+\begin{figure}[p]
 <<Households_are_saving_more>>=
 read_excel("Households_are_saving_more.xlsx") %>%
   setNames(c("Year", "prop_savings_by_HH_disp_inc")) %>%
@@ -395,7 +399,7 @@ read_excel("Households_are_saving_more.xlsx") %>%
 
 \source{}
 \end{figure}
-\begin{figure}
+\begin{figure}[p]
 <<Spending_less_on_GST_liable>>=
 read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet = "For_output") %>%
   gather(category, share_of_consumption, -Date) %>%
@@ -435,11 +439,11 @@ read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet
 
 
 \section{Why consumption taxes are less bad than many other taxes}
-Consumption taxes such as the GST are relatively efficient taxes. They are relatively difficult to avoid,\footcite[p.~274]{Treasury2010}  and they encourage saving more than personal income taxes.\footnote{A consumption tax treats current and future consumption equivalently so there is no distortion in savings decisions. In contrast, income tax places a higher burden on savers because households pay tax on their income (regardless of how much they save) and then taxes the capital income on savings again in the future. See: \textcite{Treasury2010} However, the tax rate on savings makes relatively little difference to savings decisions of high income earners who do most of the saving: see \textcite{DaleySuperannuation2015}}  They drag less on economic efficiency than many state government taxes including payroll taxes\footnote{While theoretically broad based payroll taxes and consumption taxes are equivalent, the range of exceptions and thresholds provided by state government for payroll taxes have considerably increased their efficiency costs.}  and stamp duties.\footcite{DaleyProperty2015} 
+Consumption taxes such as the GST are relatively efficient taxes. They are relatively difficult to avoid,\footcite[p.~274]{Treasury2010}  and they encourage saving more than personal income taxes.\footnote{A consumption tax treats current and future consumption equivalently so there is no distortion in savings decisions. In contrast, income tax places a higher burden on savers because households pay tax on their income (regardless of how much they save) and then taxes the capital income on savings again in the future. See: \textcite{Treasury2010} However, the tax rate on savings makes relatively little difference to savings decisions of high-income earners who do most of the saving: see \textcite{DaleySuperannuation2015}}  They drag less on economic efficiency than many state government taxes including payroll taxes\footnote{While theoretically broad based payroll taxes and consumption taxes are equivalent, the range of exceptions and thresholds provided by state government for payroll taxes have considerably increased their efficiency costs.}  and stamp duties.\footcite{DaleyProperty2015} 
 
 An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our Wealth of Generations report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
 
-Consumption taxes can affect incentives to work less than income taxes. The combination of income tax scales and the withdrawal of means tested welfare benefits can discourage working because they result in low rates of take home pay. The disincentives are larger for low income workers and those working part time Box 1).\footnote{\textcites{Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015} which recommended mechanisms to improve these incentives.}  Higher income tax rates as a result of bracket creep can materially reduce workforce participation of middle income part-time earners.\footcite[p.~6]{Daley2015} 
+Consumption taxes can affect incentives to work less than income taxes. The combination of income tax scales and the withdrawal of means tested welfare benefits can discourage working because they result in low rates of take home pay. The disincentives are larger for low-incomeworkers and those working part time (\Vref{box:labour_supply}).\footnote{\textcites{Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015} which recommended mechanisms to improve these incentives.}  Higher income tax rates as a result of bracket creep can materially reduce workforce participation of middle income part-time earners.\footcite[p.~6]{Daley2015} 
 
 Consumption taxes do discourage work to some extent, because wages buy less once the consumption tax is taken into account.\footcite{PicosSanchez2011}  However, consumption taxes may discourage working less than income taxes because their impact on spending power is less obvious. Consumption taxes are less salient: there is some experimental economics evidence that people notice nominal wages (due to income tax) more than lower real wages (due to a consumption tax).\footnote{\textcites{Blumkin2012}{SausgruberTyran2005}  This is because of the `money illusion': individuals tend to think in nominal rather than real terms.} 
 
@@ -450,7 +454,7 @@ And potential disincentives to work from higher welfare benefits to compensate p
 \begin{smallbox}{Impact of taxes on labour supply}{box:labour_supply}
 There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
 
-Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
+Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high-income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
 
 On the other hand, empirical studies invariably find that tax and welfare benefits have a much greater bearing on working decisions for women with young children, particularly single mothers -- affecting both the decision to work and the number of hours chosen.  
 
@@ -495,7 +499,7 @@ The Government has already announced proposed changes to the GST treatment of im
 
 The policy imposes a fixed cost on overseas retailers selling to Australians, as they would need to implement systems that apply specifically to any purchaser based in Australia. This impost would be relatively small for retailers that sell large volumes to Australians, like Amazon and Netflix. Some of these have already suggested they will register for the GST.\footnote{Netflix indicated they will continue to comply with local tax obligations. Apple already charges GST on its digital downloads in Australia. \url{http://www.afr.com/technology/web/joe-hockey-flags-netflix-tax-in-gst-extension-20150409-1mhhed}} However, it is not clear the legal recourse available to the government if overseas vendors do not choose to register.\footnote{The Low-Value Parcel Processing Taskforce that explored this issue in 2012 said that GST obligations imposed directly on international suppliers would ``likely be non-enforceable, and hence rely on voluntary cooperation by suppliers'' (Treasury (2012b), p. 139).} The former Treasurer Joe Hockey argued that ``global pressure'' would force retailers to comply. 
 
-Any system that requires Customs to verify GST compliance and charge consumers where the supplier is non-compliant will be expensive to administer. Previous reviews found inspecting packages at the border costs much more money than it raises in additional tax, particularly for low values of the threshold.  This is because most imports below the current \$1,000 threshold are low value items. Credit-card transaction data suggests that 90 per cent of imports of less than \$1000 cost less than \$100 and 49 per cent cost less than~\$10.\footcite[p.~1]{NAB2013}  
+Any system that requires Customs to verify GST compliance and charge consumers where the supplier is non-compliant will be expensive to administer. Previous reviews found inspecting packages at the border costs much more money than it raises in additional tax, particularly for low values of the threshold.  This is because most imports below the current \$1000 threshold are low value items. Credit-card transaction data suggests that 90 per cent of imports of less than \$1000 cost less than \$100 and 49 per cent cost less than~\$10.\footcite[p.~1]{NAB2013}  
 
 \subsection{Broadening the GST will make it simpler and more efficient}
 A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976}
@@ -538,7 +542,7 @@ As discussed above, consumption of GST exempt categories (particularly fresh foo
 For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
 
 \chapter{A targeted compensation package}
-Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low income households. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
+Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low-incomehouseholds. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
 
 But if the GST package is partly to provide revenue to State Governments to fund growing health and education spending,\footnote{The decision in the 2014-15 Commonwealth budget to withdraw from the National Health Reform Agreement and to no longer fund growth in hospital spending precipitated the current discussion (including the support from the NSW Government) for the government to increase the GST. \textcite[p.~18]{Daley2015}}
 then it must be revenue positive. Some people will need to pay higher net taxes. Even if the package is budget-neutral, the political need to over-compensate low-income households to protect disadvantaged will lead to some other households paying more tax in total.
@@ -587,7 +591,7 @@ the exemption for fresh food, for example, saves the richest 20 per cent of hous
 
 However, the fairness of a reform is often judged by looking at the percentage of a person's resources affected. 
 
-Poorer households pay more GST as a proportion of their income because they have lower savings rates than richer households.\footnote{Savings rates increase strongly with disposable income quintile. The bottom quintile spends around 40 per cent than they earn (dissavings), while the top quintile saves around 20 per cent of their income.} But considered in the context of lifetime consumption opportunities, consumption taxes tend to be less inequitable. Many households that are low income at a point in time -- students, retirees, short-term unemployed -- have much higher lifetime incomes. These people smooth their consumption by borrowing or drawing down on their savings when their income is low. Their consumption tax burden as a share of income will be high in these periods but much lower in others. The proportion of current consumption gives a better indication of the lifetime distributional effect of the tax.\footnote{\textcite{Treasury2010}; \textcite{PublicFinance2014} p.~34-36. If a household saves in net terms over their lifetime (ie, they pass on some assets) then some of the tax burden will be deferred until the money is spend by the next generation. 
+Poorer households pay more GST as a proportion of their income because they have lower savings rates than richer households.\footnote{Savings rates increase strongly with disposable income quintile. The bottom quintile spends around 40 per cent than they earn (dissavings), while the top quintile saves around 20 per cent of their income.} But considered in the context of lifetime consumption opportunities, consumption taxes tend to be less inequitable. Many households that are low-incomeat a point in time -- students, retirees, short-term unemployed -- have much higher lifetime incomes. These people smooth their consumption by borrowing or drawing down on their savings when their income is low. Their consumption tax burden as a share of income will be high in these periods but much lower in others. The proportion of current consumption gives a better indication of the lifetime distributional effect of the tax.\footnote{\textcite{Treasury2010}; \textcite{PublicFinance2014} p.~34-36. If a household saves in net terms over their lifetime (ie, they pass on some assets) then some of the tax burden will be deferred until the money is spend by the next generation. 
 %Discussion of strange PC result (GST not regressive by income) and the reason -- based on private income not disposable income).
 } 
 
@@ -663,9 +667,9 @@ Q5.extra.per.1000 <-
 
 Overall, the differences are small: poorer households would pay on average an extra \$\Sexpr{Q1.extra.per.1000}~per~\$1000 spent, compared with \$\Sexpr{Q5.extra.per.1000}~per~\$1000 for the top 20\%\ of households.
 
-If the GST rate were raised but not broadened, poorer households would pay on average an extra \$25 per \$1000 spent, compared with the \$26 per \$1000 for high income households. Although there is substantial variation in spending patterns between people in a given income group (\cref{sec:higherWelfarePayments}). 
+If the GST rate were raised but not broadened, poorer households would pay on average an extra \$25 per \$1000 spent, compared with the \$26 per \$1000 for high-income households. Although there is substantial variation in spending patterns between people in a given income group (\cref{sec:higherWelfarePayments}). 
 
-Whether or not a tax is regressive because it takes a higher proportion of income from low income households, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][p.~37]{Daley2013}
+Whether or not a tax is regressive because it takes a higher proportion of income from low-incomehouseholds, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][p.~37]{Daley2013}
 
 \section{Higher welfare payments}\label{sec:higherWelfarePayments}
 Governments can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
@@ -872,7 +876,7 @@ hes_with_gst_compensation %T>%
 \includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/GST_compensation_by_quintile_and_threshold-1}
 \end{figure}
 
-And because low income people have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
+And because low-incomepeople have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
 nearly  % ceiling
 \Sexpr{
 paste0(ceiling(100 * dplyr::filter(hes_with_gst_compensation, gross_income_quintile == 1, threshold == ">100%")$comp_adequacy), "\\%")
@@ -1106,8 +1110,39 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 
 @
 
+\begin{table}
+\caption{Budgetary impact of income tax rate changes}\label{tbl:tax_cuts}
+\begin{tabular}{lrr}
+\textbf{Tax bracket} & \textbf{Current tax rate} & \parbox[c]{0.4\columnwidth}{\bfseries Budgetary impact of 1\\ percentage point change}\\
+\hline
+\$0-\$18,200 & 0\% & \\
+\$18,201 - \$37,000 & 19\% & \$1.6\\
+\$37,001 - \$80,000 & 32.5\% & \$1.9\\
+\$80,001 - \$180,000& 37\% & \$1.0\\
+\$180,001 + & 45\% & \$0.5
+\lasthline
+\end{tabular}
 
-The temptation for politicians is to try to fully compensate all low and middle income households. But because of the wide distribution in GST incidence across households, ensuring there are no losers is an extremely expensive exercise. Tax cuts to at least fully compensate almost every household earning up to \$100,000 for a 5 per cent increase in the GST would have cost the 2012-13 budget approximately \$23.6 billion -- and this would be an underestimate of the budgetary impact today.  This is in addition to the \$9 billion in additional welfare payments required to compensate the most vulnerable (section 3.2). Together, the \$29 billion spend on compensation would exceed the additional \$27 billion in revenue collected. It is simply not possible to fully compensate this far up the income distribution and retain a revenue positive package.
+\notes{Excludes Temporary Budget Repair Levy (2\%\ for those earning over \$180,000 until 2016-17}
+
+\source{Grattan analysis ATO 2\%\ sample file (2013)}
+\end{table}
+
+
+Politicians might be tempted to try to fully compensate all low and middle income households. 
+But because GST affects different households in very different ways, it is extremely expensive to ensure there are \emph{no} losers.  
+Tax cuts to at least fully compensate almost every household earning up to \$100,000 for a 5 per cent increase in the GST would have cost the 2012-13 budget approximately \$23.6 billion -- and this would be an underestimate of the budgetary impact today.  This is in addition to the \$9 billion in additional welfare payments required to compensate the most vulnerable (section 3.2). Together, the \$29 billion spend on compensation would exceed the additional \$27 billion in revenue collected. It is simply not possible to fully compensate this far up the income distribution and retain a revenue positive package.
+
+\chapter{The uses of GST revenue}
+If the GST is broadened or raised, governments will have additional revenue of between \$7 to \$11 billion a year after paying for the compensation package we have proposed of welfare increases and tax reductions to lower and middle income earners. This additional revenue might:
+\begin{itemize}
+\item reduce the hospital funding ``gap'' of state governments;
+\item reduce the Commonwealth's substantial deficit;
+\item fund other tax cuts, over and above the income tax cuts focussed on the lower thresholds proposed as part of the compensation package.
+\end{itemize}
+
+The federal politics are likely to require that at least some of the GST revenue improves the net budget position of the States and Territories. Even then, it will be difficult to fashion a deal that will be acceptable to both Commonwealth and States. States are unlikely to be enthusiastic about surrendering the principle that all of the GST revenue is transferred to them. And as the Commonwealth will need to fund the compensation package, it will only be able to afford to transfer all of the GST revenue to the States if it also reduces tied grants, which is unlikely to be politically attractive.
+
 
 \onecolumn
 <<sessionInfo, results='asis'>>=
