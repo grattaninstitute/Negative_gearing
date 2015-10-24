@@ -1144,6 +1144,7 @@ If the GST is broadened or raised, governments will have additional revenue of b
 The federal politics are likely to require that at least some of the GST revenue improves the net budget position of the States and Territories. Even then, it will be difficult to fashion a deal that will be acceptable to both Commonwealth and States. States are unlikely to be enthusiastic about surrendering the principle that all of the GST revenue is transferred to them. And as the Commonwealth will need to fund the compensation package, it will only be able to afford to transfer all of the GST revenue to the States if it also reduces tied grants, which is unlikely to be politically attractive.
 
 
+\clearpage
 \onecolumn
 <<sessionInfo, results='asis'>>=
 addtorow          <- list()
