@@ -1113,14 +1113,16 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 \begin{table}
 \caption{Budgetary impact of income tax rate changes}\label{tbl:tax_cuts}
 \begin{tabular}{lrr}
-Tax bracket & Current tax rate & Budgetary impact of 1 percentage point change\\
+\textbf{Tax bracket} & \textbf{Current tax rate} & \parbox[c]{0.4\columnwidth}{\raggedright\bfseries Budgetary impact of 1\\ percentage point change}\\
 \hline
 \$0-\$18,200 & 0\% & \\
 \$18,201 - \$37,000 & 19\% & \$1.6\\
 \$37,001 - \$80,000 & 32.5\% & \$1.9\\
 \$80,001 - \$180,000& 37\% & \$1.0\\
-\$180,001 + & 45\% & \$0.5
+\$180,001 + & 45\% & \$0.5\\
+\lasthline
 \end{tabular}
+
 \notes{Excludes Temporary Budget Repair Levy (2\%\ for those earning over \$180,000 until 2016-17}
 
 \source{Grattan analysis ATO 2\%\ sample file (2013)}
@@ -1130,6 +1132,29 @@ Tax bracket & Current tax rate & Budgetary impact of 1 percentage point change\\
 Politicians might be tempted to try to fully compensate all low and middle income households. 
 But because GST affects different households in very different ways, it is extremely expensive to ensure there are \emph{no} losers.  
 Tax cuts to at least fully compensate almost every household earning up to \$100,000 for a 5 per cent increase in the GST would have cost the 2012-13 budget approximately \$23.6 billion -- and this would be an underestimate of the budgetary impact today.  This is in addition to the \$9 billion in additional welfare payments required to compensate the most vulnerable (section 3.2). Together, the \$29 billion spend on compensation would exceed the additional \$27 billion in revenue collected. It is simply not possible to fully compensate this far up the income distribution and retain a revenue positive package.
+
+\chapter{The uses of GST revenue}
+If the GST is broadened or raised, governments will have additional revenue of between \$7 to \$11 billion a year after paying for the compensation package we have proposed of welfare increases and tax reductions to lower and middle income earners. This additional revenue might:
+\begin{itemize}
+\item reduce the hospital funding ``gap'' of state governments;
+\item reduce the Commonwealth's substantial deficit;
+\item fund other tax cuts, over and above the income tax cuts focussed on the lower thresholds proposed as part of the compensation package.
+\end{itemize}
+
+The federal politics are likely to require that at least some of the GST revenue improves the net budget position of the States and Territories. Even then, it will be difficult to fashion a deal that will be acceptable to both Commonwealth and States. States are unlikely to be enthusiastic about surrendering the principle that all of the GST revenue is transferred to them. And as the Commonwealth will need to fund the compensation package, it will only be able to afford to transfer all of the GST revenue to the States if it also reduces tied grants, which is unlikely to be politically attractive.
+
+\section{GST increases could reduce the funding gap for hospitals}
+State and Territory governments are likely to view a net increase in funding of \$5 billion a year as the minimum price for their cooperation in substantial changes to the GST. This would consume a substantial portion of the additional revenue raised by changes to the GST, net of the compensation package.
+
+Government health spending in Australia -- and in developed countries around the world -- has consistently grown much faster than the economy over the last 20 years.\footcites[p.~25-27]{Daley2014}[p.~17]{Daley2014}  Under the COAG National Health Reform Agreement, the Commonwealth agreed to share the costs of growth in hospital activity (with an efficiency requirement) initially meeting 45 per cent of the cost growth, planned to rise to 50 per cent in 2017. In effect the Commonwealth committed to contributing to real increases in spending per person.
+
+However, under changes announced in the May 2014 budget, the Commonwealth announced that its support for State health spending would only grow in line with inflation and population, and would not keep pace with economic growth, let alone the expected growth in health spending above this level. State governments would have to fund all increases in real spending per person for hospitals.\footcite[BP~No.2, p.~126]{Budget2014}
+
+This decision will have a large and growing impact on State government budgets. The Commonwealth estimates that by 2024-25 the changed policy will reduce its real spending on hospitals by \$11 billion.\footnote{Health estimates based on \textcite{Hockey2015}. (See: \textcite[p.~16-18]{Daley2015}.}
+By 2054-55, the reduction in real spending for hospitals could be as large as \$78 billion.\footcite[p.~7]{Treasury2014a}
+Similar policy decisions in schools funding will reduce Commonwealth spending on schools by \$5 billion by 2024-25.\footnote{Estimates in 2014-15 dollars. Estimate calculated from nominal value of transfer provided in \textcite{Treasury2014a}.} 
+
+
 
 \onecolumn
 <<sessionInfo, results='asis'>>=

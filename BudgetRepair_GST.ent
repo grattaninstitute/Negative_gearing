@@ -1037,3 +1037,72 @@ cutoff.
 macro:->\url
 {https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}
 \@endanenote 
+\@doanenote {51}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxmcites
+{2}{}{}\blxmciteicmd
+{1}{footcite}{}{p.~25-27}{Daley2014}{}\multicitedelim
+\blxmciteicmd
+{2}{footcite}{}{p.~17}{Daley2014}{}\blxendmcites
+}}
+\@endanenote 
+\@doanenote {52}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{BP~No.2,
+p.~126}{Budget2014}{}}}
+\@endanenote 
+\@doanenote {53}
+macro:->Health
+estimates
+based
+on
+\textcite
+{Hockey2015}.
+(See:
+\textcite
+[p.~16-18]{Daley2015}.
+\@endanenote 
+\@doanenote {54}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{p.~7}{Treasury2014a}{}}}
+\@endanenote 
+\@doanenote {55}
+macro:->Estimates
+in
+2014-15
+dollars.
+Estimate
+calculated
+from
+nominal
+value
+of
+transfer
+provided
+in
+\textcite
+{Treasury2014a}.
+\@endanenote 
+\@doanenote {56}
+macro:->Section
+11
+of
+\textit
+{A
+New
+Tax
+System
+(Managing
+the
+GST
+Rate
+and
+Base)
+Act~1999}
+(Cth)
+\@endanenote 

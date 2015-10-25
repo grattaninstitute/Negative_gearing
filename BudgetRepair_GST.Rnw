@@ -1113,13 +1113,13 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 \begin{table}
 \caption{Budgetary impact of income tax rate changes}\label{tbl:tax_cuts}
 \begin{tabular}{lrr}
-\textbf{Tax bracket} & \textbf{Current tax rate} & \parbox[c]{0.4\columnwidth}{\bfseries Budgetary impact of 1\\ percentage point change}\\
+\textbf{Tax bracket} & \textbf{Current tax rate} & \parbox[c]{0.4\columnwidth}{\raggedright\bfseries Budgetary impact of 1\\ percentage point change}\\
 \hline
 \$0-\$18,200 & 0\% & \\
 \$18,201 - \$37,000 & 19\% & \$1.6\\
 \$37,001 - \$80,000 & 32.5\% & \$1.9\\
 \$80,001 - \$180,000& 37\% & \$1.0\\
-\$180,001 + & 45\% & \$0.5
+\$180,001 + & 45\% & \$0.5\\
 \lasthline
 \end{tabular}
 
@@ -1142,6 +1142,19 @@ If the GST is broadened or raised, governments will have additional revenue of b
 \end{itemize}
 
 The federal politics are likely to require that at least some of the GST revenue improves the net budget position of the States and Territories. Even then, it will be difficult to fashion a deal that will be acceptable to both Commonwealth and States. States are unlikely to be enthusiastic about surrendering the principle that all of the GST revenue is transferred to them. And as the Commonwealth will need to fund the compensation package, it will only be able to afford to transfer all of the GST revenue to the States if it also reduces tied grants, which is unlikely to be politically attractive.
+
+\section{GST increases could reduce the funding gap for hospitals}
+State and Territory governments are likely to view a net increase in funding of \$5 billion a year as the minimum price for their cooperation in substantial changes to the GST. This would consume a substantial portion of the additional revenue raised by changes to the GST, net of the compensation package.
+
+Government health spending in Australia -- and in developed countries around the world -- has consistently grown much faster than the economy over the last 20 years.\footcites[p.~25-27]{Daley2014}[p.~17]{Daley2014}  Under the COAG National Health Reform Agreement, the Commonwealth agreed to share the costs of growth in hospital activity (with an efficiency requirement) initially meeting 45 per cent of the cost growth, planned to rise to 50 per cent in 2017. In effect the Commonwealth committed to contributing to real increases in spending per person.
+
+However, under changes announced in the May 2014 budget, the Commonwealth announced that its support for State health spending would only grow in line with inflation and population, and would not keep pace with economic growth, let alone the expected growth in health spending above this level. State governments would have to fund all increases in real spending per person for hospitals.\footcite[BP~No.2, p.~126]{Budget2014}
+
+This decision will have a large and growing impact on State government budgets. The Commonwealth estimates that by 2024-25 the changed policy will reduce its real spending on hospitals by \$11 billion.\footnote{Health estimates based on \textcite{Hockey2015}. (See: \textcite[p.~16-18]{Daley2015}.}
+By 2054-55, the reduction in real spending for hospitals could be as large as \$78 billion.\footcite[p.~7]{Treasury2014a}
+Similar policy decisions in schools funding will reduce Commonwealth spending on schools by \$5 billion by 2024-25.\footnote{Estimates in 2014-15 dollars. Estimate calculated from nominal value of transfer provided in \textcite{Treasury2014a}.} 
+
+States are unlikely to cooperate with changes to the GST unless they receive more money from the proceeds than they have effectively lost from the Commonwealth's recent reduction in health funding. The GST legislation requires the consent of all States and Territories for amendments.  Although the GST legislation technically requires the consent of all States and Territories for amendments,\footnote{Section 11 of \textit{A New Tax System (Managing the GST Rate and Base) Act~1999} (Cth)}  the Commonwealth Parliament can avoid this requirement, by simply repealing the section requiring State and Territory consent.  Nonetheless, it would be politically unwise for the Commonwealth to pursue reforms without substantial State government support. Without some net contribution to their budgets, it is difficult to see why State governments would cooperate with the Commonwealth to increase the GST, with all the political costs such support would entail. 
 
 
 \clearpage
