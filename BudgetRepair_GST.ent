@@ -1106,3 +1106,9 @@ Base)
 Act~1999}
 (Cth)
 \@endanenote 
+\@doanenote {57}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{}{twomey2003federal}{}}}
+\@endanenote 
