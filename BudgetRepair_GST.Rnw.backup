@@ -7,9 +7,11 @@
 \author{John Daley and Danielle Wood}
 
 \addbibresource{bibliography.bib}
-%\addbibresource{bibliography2.bib} % r packages
+\addbibresource{bibliography2.bib} % r packages
 
 \let\footnote=\endnote
+\newcommand*\ie{\emph{i.e.}}
+\newcommand*\eg{\emph{e.g.}}
 
 <<MODELLING_PARAMETERS, echo=FALSE>>=
 percentage_of_revenue_to_transfers = 0.3
@@ -224,6 +226,16 @@ new_income_tax_outer0910 <- function(income0910, brackets = c(6000, 35000, 80000
     out
   }
   return(new_income_tax(income0910))
+}
+@
+
+<<latex_percent>>=
+latex_percent <- function(x, digits = 3){
+  if (length(x) == 0) 
+    return(character())
+  # x <- reshape::round_any(x, scales:::precision(x)/100)
+  x <- round(x, digits)
+  paste0(comma(x * 100), "\\%")
 }
 @
 
@@ -443,7 +455,7 @@ Consumption taxes such as the GST are relatively efficient taxes. They are relat
 
 An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our Wealth of Generations report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
 
-Consumption taxes can affect incentives to work less than income taxes. The combination of income tax scales and the withdrawal of means tested welfare benefits can discourage working because they result in low rates of take home pay. The disincentives are larger for low-incomeworkers and those working part time (\Vref{box:labour_supply}).\footnote{\textcites{Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015} which recommended mechanisms to improve these incentives.}  Higher income tax rates as a result of bracket creep can materially reduce workforce participation of middle income part-time earners.\footcite[p.~6]{Daley2015} 
+Consumption taxes can affect incentives to work less than income taxes. The combination of income tax scales and the withdrawal of means tested welfare benefits can discourage working because they result in low rates of take home pay. The disincentives are larger for low-income workers and those working part time (\Vref{box:labour_supply}).\footnote{\textcites{Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015} which recommended mechanisms to improve these incentives.}  Higher income tax rates as a result of bracket creep can materially reduce workforce participation of middle income part-time earners.\footcite[p.~6]{Daley2015} 
 
 Consumption taxes do discourage work to some extent, because wages buy less once the consumption tax is taken into account.\footcite{PicosSanchez2011}  However, consumption taxes may discourage working less than income taxes because their impact on spending power is less obvious. Consumption taxes are less salient: there is some experimental economics evidence that people notice nominal wages (due to income tax) more than lower real wages (due to a consumption tax).\footnote{\textcites{Blumkin2012}{SausgruberTyran2005}  This is because of the `money illusion': individuals tend to think in nominal rather than real terms.} 
 
@@ -542,7 +554,7 @@ As discussed above, consumption of GST exempt categories (particularly fresh foo
 For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
 
 \chapter{A targeted compensation package}
-Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low-incomehouseholds. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
+Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low-income households. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
 
 But if the GST package is partly to provide revenue to State Governments to fund growing health and education spending,\footnote{The decision in the 2014-15 Commonwealth budget to withdraw from the National Health Reform Agreement and to no longer fund growth in hospital spending precipitated the current discussion (including the support from the NSW Government) for the government to increase the GST. \textcite[p.~18]{Daley2015}}
 then it must be revenue positive. Some people will need to pay higher net taxes. Even if the package is budget-neutral, the political need to over-compensate low-income households to protect disadvantaged will lead to some other households paying more tax in total.
@@ -591,7 +603,7 @@ the exemption for fresh food, for example, saves the richest 20 per cent of hous
 
 However, the fairness of a reform is often judged by looking at the percentage of a person's resources affected. 
 
-Poorer households pay more GST as a proportion of their income because they have lower savings rates than richer households.\footnote{Savings rates increase strongly with disposable income quintile. The bottom quintile spends around 40 per cent than they earn (dissavings), while the top quintile saves around 20 per cent of their income.} But considered in the context of lifetime consumption opportunities, consumption taxes tend to be less inequitable. Many households that are low-incomeat a point in time -- students, retirees, short-term unemployed -- have much higher lifetime incomes. These people smooth their consumption by borrowing or drawing down on their savings when their income is low. Their consumption tax burden as a share of income will be high in these periods but much lower in others. The proportion of current consumption gives a better indication of the lifetime distributional effect of the tax.\footnote{\textcite{Treasury2010}; \textcite{PublicFinance2014} p.~34-36. If a household saves in net terms over their lifetime (ie, they pass on some assets) then some of the tax burden will be deferred until the money is spend by the next generation. 
+Poorer households pay more GST as a proportion of their income because they have lower savings rates than richer households.\footnote{Savings rates increase strongly with disposable income quintile. The bottom quintile spends around 40 per cent than they earn (dissavings), while the top quintile saves around 20 per cent of their income.} But considered in the context of lifetime consumption opportunities, consumption taxes tend to be less inequitable. Many households that are low-incomeat a point in time -- students, retirees, short-term unemployed -- have much higher lifetime incomes. These people smooth their consumption by borrowing or drawing down on their savings when their income is low. Their consumption tax burden as a share of income will be high in these periods but much lower in others. The proportion of current consumption gives a better indication of the lifetime distributional effect of the tax.\footnote{\textcite{Treasury2010}; \textcite{PublicFinance2014} p.~34-36. If a household saves in net terms over their lifetime (\ie, they pass on some assets) then some of the tax burden will be deferred until the money is spend by the next generation. 
 %Discussion of strange PC result (GST not regressive by income) and the reason -- based on private income not disposable income).
 } 
 
@@ -677,10 +689,28 @@ Governments can mitigate the effects of GST changes on lower income households -
 Households at the bottom 20 per cent of the income distribution receive almost of all of their income via government payments -- including pensions, unemployment benefits and family allowances. The next poorest 20 per cent of households receive almost half of their incomes from these sources. Unsurprisingly, those further up the income distribution generate most of their income through employment, investments and super. These households receive little from government benefits (\Vref{fig:Sources_of_income_by_quintile}). 
 
 \begin{figure}
-<<Sources_of_income_by_quintile>>=
+<<Sources_of_income_by_quintile, fig.width=12, out.width="12in">>=
+# Following to include in lieu of hardcoded original.  Note uses total income rather than disposable
+hes10hh %>% 
+  group_by.income_quintile(type = "Current_weekly_HH_disposable_income") %>%
+  summarise(Employee.income = weighted.mean(Current_weekly_HH_employee_income, Weight_HH_HES),
+            Gov.benefits = weighted.mean(Current_weekly_HH_income_from_government_pensions_and_allowances, Weight_HH_HES),
+            Investment.income = weighted.mean(Current_weekly_HH_income_from_investments, Weight_HH_HES),
+            Super.income = weighted.mean(Current_weekly_HH_income_from_superannuation_annuity_private_pension, Weight_HH_HES)
+            ) %>%
+  ungroup %>%
+  gather(income_category, income_amt, -disposable_income_quintile) %>%
+  mutate(income_category = factor(income_category, 
+                                  levels = c("Employee.income", "Investment.income", "Super.income", "Gov.benefits"), 
+                                  labels = c("Salary/wages", "Investments", "Super", "Welfare"))) %>%
+  grplot(aes(x = gross_income_quintile, y = income_amt, fill = income_category, order = income_category)) + 
+  geom_bar(stat = "identity", position = "fill")
+
 read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
   setnames(1, "income_category") %>%
-  mutate(income_category = factor(income_category, levels = c("Employee.income", "Investment.income", "Super.income", "Gov.benefits"))) %>%
+  mutate(income_category = factor(income_category, 
+                                  levels = c("Employee.income", "Investment.income", "Super.income", "Gov.benefits"), 
+                                  labels = c("Salary/wages", "Investments", "Super", "Welfare"))) %>%
   gather(Quintile, prop, -income_category) %>%
   arrange(Quintile, income_category) %>%
   filter(complete.cases(.)) %>%
@@ -689,9 +719,10 @@ read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
                              NA_character_
                              )) %>%
   group_by(Quintile) %>%
-  mutate(label.y = cumsum(prop),
-         label.y = pmax(0,label.y/max(label.y)-0.145),
-         vjust = 2 - rank(label.y)) %>%
+  mutate(prop2 = prop/sum(prop),
+         label.y = cumsum(lag(prop2, default = 0)) + prop2/2
+         ,vjust = ifelse(rank(label.y) == 4, -0.2, 0.5)
+         ) %>%
   grplot(aes(x = Quintile, 
              y = prop,
              fill = income_category,
@@ -702,22 +733,58 @@ read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
                 x = 5.55,
                 color = income_category,
                 y = label.y,
-                vjust = vjust -0.5),
+                vjust = vjust),
             hjust = 0,
             lineheight = 0.70,
             fontface = "bold", 
             size = 8.01
   ) + 
-  annotate("blank", x = 6.65, y = 1.15)  +
+  annotate("blank", x = 6.85, y = 1.10)  +
   scale_y_continuous(label=percent, expand = c(0,0), breaks = c(0,0.25, 0.50, 0.75, 1)) + 
   theme(panel.grid = element_blank())
   
 @
 \Caption{Poorest households receive most of their income from government benefits}{Proportion of income}{fig:Sources_of_income_by_quintile}
-\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Sources_of_income_by_quintile-1}
+\makebox[\textwidth][l]{\includegraphics[width=1.1\columnwidth]{figure_BudgetRepair_GST/Sources_of_income_by_quintile-1}}
 \end{figure}
 
-It follows that targeting compensation through the welfare system is the most direct way to compensate the poorest households. The poorest 20 per cent of households currently account for just over 9 per cent of total spending on the goods and services we have proposed for including in a broader GST or 12 per cent of the revenue from a higher GST.\footcite{ABS2013cx} If these households could be targeted directly, then spending 9-12 per cent of the revenues from the GST would be enough to ensure that they are no worse off on average after their higher expenses. Higher income households would bear most of the net burden of the tax increase.
+<<percent_of_GST_burden_by_quintile>>=
+GST.to.15.extra.gst.by.quintile <- 
+  hes10hh %>% 
+  group_by(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
+                                                         breaks = total.inc.quintiles,  
+                                                         include.lowest = TRUE)))) %>%
+  summarise(extra_gst = sum(Weekly_household_GST_on_all_goods_and_services_FIS * Weight_HH_HES) / 2) %>%
+  ungroup %>%
+  mutate(extra_gst.prop = extra_gst/sum(extra_gst)) %>%
+  select(-extra_gst)
+
+
+GST.broader.extra.gst.by.quintile <-
+  read_excel("Proportion of HH expenditure on exempt categories - by quintile.xlsx",
+             sheet = "Wkly_exp_by_gross_quintile") %>%
+  setnames(old = "All households", "All_households") %>%
+  select(-All_households) %>%
+  gather(Gross_income_quintile, expenditure, -Exemption_category) %>%
+  mutate(Gross_income_quintile = as.numeric(Gross_income_quintile)) %>%
+  group_by(Gross_income_quintile) %>%
+  summarise(extra_gst = sum(expenditure)) %>%
+  ungroup %>%
+  mutate(extra_gst.prop = extra_gst/sum(extra_gst))
+
+quintile.burden <- function(type, quintile){
+  stopifnot(type %in% c("broad", "to 15"))
+  if (type == "broad"){
+    return(GST.broader.extra.gst.by.quintile[GST.broader.extra.gst.by.quintile$Gross_income_quintile == quintile, ]$extra_gst.prop)
+  }
+  
+  if (type == "to 15"){
+    return(GST.to.15.extra.gst.by.quintile[GST.to.15.extra.gst.by.quintile$Gross_income_quintile == quintile, ]$extra_gst.prop)
+  }
+}
+@
+
+It follows that targeting compensation through the welfare system is the most direct way to compensate the poorest households. The poorest 20 per cent of households currently account for just over \Sexpr{latex_percent(quintile.burden("broad", 1))} of total spending on the goods and services we have proposed for including in a broader GST or \Sexpr{latex_percent(quintile.burden("to 15", 1))} per cent of the revenue from a higher GST.\footcite{ABS2013cx} If these households could be targeted directly, then spending \Sexpr{latex_percent(max(quintile.burden("broad", 1), quintile.burden("to 15", 1)))} of the revenues from the GST would be enough to ensure that they are no worse off on average after their higher expenses. Higher income households would bear most of the net burden of the tax increase.
 
 However, compensation through higher welfare payments would not be perfectly targeted in reality. Only 30 per cent of welfare payments go to the bottom of 20 per cent of households (\Vref{fig:Welfare_by_household_disposable_income}). To ensure that the poorest households are no worse off as a group requires welfare benefits that will benefit some richer households as well, and thus spending much more than 10 per cent of the increased GST collection.
 \begin{figure}
@@ -1154,8 +1221,12 @@ This decision will have a large and growing impact on State government budgets. 
 By 2054-55, the reduction in real spending for hospitals could be as large as \$78 billion.\footcite[p.~7]{Treasury2014a}
 Similar policy decisions in schools funding will reduce Commonwealth spending on schools by \$5 billion by 2024-25.\footnote{Estimates in 2014-15 dollars. Estimate calculated from nominal value of transfer provided in \textcite{Treasury2014a}.} 
 
+States are unlikely to cooperate with changes to the GST unless they receive more money from the proceeds than they have effectively lost from the Commonwealth's recent reduction in health funding. The GST legislation requires the consent of all States and Territories for amendments.  Although the GST legislation technically requires the consent of all States and Territories for amendments,\footnote{Section 11 of \textit{A New Tax System (Managing the GST Rate and Base) Act~1999} (Cth)}  the Commonwealth Parliament can avoid this requirement, by simply repealing the section requiring State and Territory consent.\footcite{twomey2003federal}  Nonetheless, it would be politically unwise for the Commonwealth to pursue reforms without substantial State government support. Without some net contribution to their budgets, it is difficult to see why State governments would cooperate with the Commonwealth to increase the GST, with all the political costs such support would entail. 
 
+\section{GST increases could reduce the Commonwealth's substantial deficit}
+Alternatively, the additional GST revenue could go to reducing the Commonwealth substantial deficit. The Commonwealth has posted structural deficits for the last 8 years.\footcite[p.~4]{daleywood2015fiscalchallenges} On current policies these deficits are likely to continue. Projections for these deficits to reduce quickly over the 4 years of the forward estimates seem optimistic.  Budget repair will almost certainly require both tax increases and spending reductions.\footcite[p.~8-14]{daleywood2015fiscalchallenges} Tax increases through the GST are likely to distort economic activity less than most of the alternatives, and definitely less than the bracket creep which is the dominant driver of the Commonwealth's planned return to surplus.\footcite{daleywood2015fiscalchallenges}  Half of the available additional revenue from raising the GST to 15 per cent -- $5 billion a year -- would only reduce the Commonwealth's budget deficit by around 15 per cent. 
 
+\clearpage
 \onecolumn
 <<sessionInfo, results='asis'>>=
 addtorow          <- list()
