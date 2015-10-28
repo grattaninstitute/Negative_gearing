@@ -1,16 +1,16 @@
-\@doanenote {1}
+\@doanenote {1}{1}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~12}{CommonwealthGrantsCommission2015}{}}}
 \@endanenote 
-\@doanenote {2}
+\@doanenote {2}{2}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~4-16}{Budget2015}{}}}
 \@endanenote 
-\@doanenote {3}
+\@doanenote {3}{3}
 macro:->The
 OECD
 average
@@ -24,7 +24,7 @@ in
 \textcite
 {OECD2014})
 \@endanenote 
-\@doanenote {4}
+\@doanenote {4}{4}
 macro:->The
 exceptions
 are
@@ -45,7 +45,7 @@ tax)
 [p~40]{OECD2014}
 
 \@endanenote 
-\@doanenote {5}
+\@doanenote {5}{5}
 macro:->\textcite
 [p.~95]{OECD2014}
 .
@@ -94,13 +94,13 @@ consumption
 tax
 regime.
 \@endanenote 
-\@doanenote {6}
+\@doanenote {6}{6}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~28}{Daley2014}{}}}
 \@endanenote 
-\@doanenote {7}
+\@doanenote {7}{7}
 macro:->Ultimately
 the
 path
@@ -129,19 +129,19 @@ demand.
 \textcite
 [p.~7]{RBA2014}
 \@endanenote 
-\@doanenote {8}
+\@doanenote {8}{8}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{Costello2000}{}}}
 \@endanenote 
-\@doanenote {9}
+\@doanenote {9}{9}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~274}{Treasury2010}{}}}
 \@endanenote 
-\@doanenote {10}
+\@doanenote {10}{10}
 macro:->A
 consumption
 tax
@@ -223,7 +223,7 @@ see
 \textcite
 {DaleySuperannuation2015}
 \@endanenote 
-\@doanenote {11}
+\@doanenote {11}{11}
 macro:->While
 theoretically
 broad
@@ -255,25 +255,25 @@ their
 efficiency
 costs.
 \@endanenote 
-\@doanenote {12}
+\@doanenote {12}{12}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
-{footcite}{}{}{DaleyProperty2015}{}}}
+{footcite}{}{}{DaleyCoates2015Property}{}}}
 \@endanenote 
-\@doanenote {13}
+\@doanenote {13}{13}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{Daley2014}{}}}
 \@endanenote 
-\@doanenote {14}
+\@doanenote {14}{14}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~27}{Daley2014}{}}}
 \@endanenote 
-\@doanenote {15}
+\@doanenote {15}{15}
 macro:->\textcites
 {Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015}
 which
@@ -284,19 +284,19 @@ improve
 these
 incentives.
 \@endanenote 
-\@doanenote {16}
+\@doanenote {16}{16}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
-{footcite}{}{p.~6}{Daley2015}{}}}
+{footcite}{}{p.~6}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {17}
+\@doanenote {17}{17}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{PicosSanchez2011}{}}}
 \@endanenote 
-\@doanenote {18}
+\@doanenote {18}{18}
 macro:->\textcites
 {Blumkin2012}{SausgruberTyran2005}
 This
@@ -317,7 +317,7 @@ than
 real
 terms.
 \@endanenote 
-\@doanenote {19}
+\@doanenote {19}{19}
 macro:->These
 include
 supplies
@@ -336,7 +336,7 @@ businesses.
 \textcite
 {Treasury2014}
 \@endanenote 
-\@doanenote {20}
+\@doanenote {20}{20}
 macro:->\textcite
 [p.~169]{Treasury2014}
 The
@@ -404,13 +404,13 @@ Treasury
 p.
 52.
 \@endanenote 
-\@doanenote {21}
+\@doanenote {21}{21}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~21}{OECD2014}{}}}
 \@endanenote 
-\@doanenote {22}
+\@doanenote {22}{22}
 macro:->In
 other
 words,
@@ -476,7 +476,7 @@ August
 \textcite
 {Hockey2015}.
 \@endanenote 
-\@doanenote {23}
+\@doanenote {23}{23}
 macro:->Netflix
 indicated
 they
@@ -501,7 +501,7 @@ Australia.
 \url
 {http://www.afr.com/technology/web/joe-hockey-flags-netflix-tax-in-gst-extension-20150409-1mhhed}
 \@endanenote 
-\@doanenote {24}
+\@doanenote {24}{24}
 macro:->The
 Low-Value
 Parcel
@@ -539,19 +539,19 @@ suppliers''
 p.
 139).
 \@endanenote 
-\@doanenote {25}
+\@doanenote {25}{25}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~1}{NAB2013}{}}}
 \@endanenote 
-\@doanenote {26}
+\@doanenote {26}{26}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{AtkinsonStiglitz1976}{}}}
 \@endanenote 
-\@doanenote {27}
+\@doanenote {27}{27}
 macro:->A
 recent
 poll
@@ -636,13 +636,13 @@ on
 low
 incomes.
 \@endanenote 
-\@doanenote {28}
+\@doanenote {28}{28}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{Mirlees2011}{}}}
 \@endanenote 
-\@doanenote {29}
+\@doanenote {29}{29}
 macro:->
 In
 these
@@ -667,7 +667,7 @@ simply
 raise
 money.
 \@endanenote 
-\@doanenote {30}
+\@doanenote {30}{30}
 macro:->For
 example,
 the
@@ -688,7 +688,7 @@ energy
 dense
 foods.
 \@endanenote 
-\@doanenote {31}
+\@doanenote {31}{31}
 macro:->A
 unpublished
 study
@@ -742,13 +742,13 @@ time.
 \textcite
 {Bonner2015}
 \@endanenote 
-\@doanenote {32}
+\@doanenote {32}{32}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{PublicFinance2014}{}}}
 \@endanenote 
-\@doanenote {33}
+\@doanenote {33}{33}
 macro:->While
 a
 higher
@@ -781,7 +781,7 @@ goods.
 \textcite
 {Econotech2011}
 \@endanenote 
-\@doanenote {34}
+\@doanenote {34}{34}
 macro:->The
 decision
 in
@@ -825,15 +825,15 @@ increase
 the
 GST.
 \textcite
-[p.~18]{Daley2015}
+[p.~18]{daleywood2015fiscalchallenges}
 \@endanenote 
-\@doanenote {35}
+\@doanenote {35}{35}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~80}{Megalogenis2010}{}}}
 \@endanenote 
-\@doanenote {36}
+\@doanenote {36}{36}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -843,7 +843,7 @@ macro:->\protecting
 {2}{footcite}{}{}{Henry730}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {37}
+\@doanenote {37}{37}
 macro:->For
 example,
 Labor
@@ -855,7 +855,7 @@ in
 \textcite
 {Hutchens2015}
 \@endanenote 
-\@doanenote {38}
+\@doanenote {38}{38}
 macro:->See
 \textcite
 [p.~21]{Daley2013}
@@ -863,7 +863,7 @@ for
 further
 discussion.
 \@endanenote 
-\@doanenote {39}
+\@doanenote {39}{39}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -875,7 +875,7 @@ macro:->\protecting
 {3}{footcite}{}{}{Treasury2010}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {40}
+\@doanenote {40}{40}
 macro:->Grattan
 estimates
 based
@@ -883,7 +883,7 @@ on
 \textcites
 {Treasury2015b}{ABS2013a}{ABS2015b}
 \@endanenote 
-\@doanenote {41}
+\@doanenote {41}{41}
 macro:->Savings
 rates
 increase
@@ -917,7 +917,7 @@ of
 their
 income.
 \@endanenote 
-\@doanenote {42}
+\@doanenote {42}{42}
 macro:->\textcite
 {Treasury2010};
 \textcite
@@ -933,7 +933,8 @@ terms
 over
 their
 lifetime
-(ie,
+(\ie
+,
 they
 pass
 on
@@ -959,43 +960,43 @@ next
 generation.
 
 \@endanenote 
-\@doanenote {43}
+\@doanenote {43}{43}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{See}{p.~37}{Daley2013}{}}}
 \@endanenote 
-\@doanenote {44}
+\@doanenote {44}{44}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{ABS2013cx}{}}}
 \@endanenote 
-\@doanenote {45}
+\@doanenote {45}{45}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {smartcite}{}{}{Davidson2000}{}}}
 \@endanenote 
-\@doanenote {46}
+\@doanenote {46}{46}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {smartcite}{}{}{ACOSS2012}{}}}
 \@endanenote 
-\@doanenote {47}
+\@doanenote {47}{47}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {smartcite}{}{}{Morrison2015}{}}}
 \@endanenote 
-\@doanenote {48}
+\@doanenote {48}{48}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{Deloitte2015}{}}}
 \@endanenote 
-\@doanenote {49}
+\@doanenote {49}{49}
 macro:->Grattan
 analysis.
 We
@@ -1033,11 +1034,11 @@ current
 Newstart
 cutoff.
 \@endanenote 
-\@doanenote {50}
+\@doanenote {50}{50}
 macro:->\url
 {https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}
 \@endanenote 
-\@doanenote {51}
+\@doanenote {51}{51}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -1047,14 +1048,14 @@ macro:->\protecting
 {2}{footcite}{}{p.~17}{Daley2014}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {52}
+\@doanenote {52}{52}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{BP~No.2,
 p.~126}{Budget2014}{}}}
 \@endanenote 
-\@doanenote {53}
+\@doanenote {53}{53}
 macro:->Health
 estimates
 based
@@ -1065,13 +1066,13 @@ on
 \textcite
 [p.~16-18]{Daley2015}.
 \@endanenote 
-\@doanenote {54}
+\@doanenote {54}{54}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~7}{Treasury2014a}{}}}
 \@endanenote 
-\@doanenote {55}
+\@doanenote {55}{55}
 macro:->Estimates
 in
 2014-15
@@ -1088,7 +1089,7 @@ in
 \textcite
 {Treasury2014a}.
 \@endanenote 
-\@doanenote {56}
+\@doanenote {56}{56}
 macro:->Section
 11
 of
@@ -1106,9 +1107,27 @@ Base)
 Act~1999}
 (Cth)
 \@endanenote 
-\@doanenote {57}
+\@doanenote {57}{57}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{twomey2003federal}{}}}
+\@endanenote 
+\@doanenote {58}{58}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{p.~4}{daleywood2015fiscalchallenges}{}}}
+\@endanenote 
+\@doanenote {59}{59}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{p.~8-14}{daleywood2015fiscalchallenges}{}}}
+\@endanenote 
+\@doanenote {60}{60}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 

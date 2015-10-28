@@ -148,6 +148,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
   \setlength{\parskip}{\currentparskip}% restore the value
  \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=justified,singlelinecheck=false}
  \caption{#1}\label{#2}%
+ \vspace{-1.5ex}
 }{%
   \end{multicols}\end{mdframed}
   \end@dblfloat
@@ -333,7 +334,7 @@ left=2.75cm,right=2.75cm
 
 
 \RequirePackage{epstopdf}
-\newcommand{\logoskip}{\par\vspace{16pt}}
+\newcommand{\logoskip}{\par\vspace{18pt}}
 \newcommand{\includegraphicsmaybe}[1]{\IfFileExists{#1}{\includegraphics{#1}}{\includegraphics{dummy.pdf}}}
 \newcommand{\noimage}{%
   \setlength{\fboxsep}{-\fboxrule}%
@@ -380,14 +381,20 @@ left=2.75cm,right=2.75cm
   \subsection*{Grattan Institute Support}
   %\begin{minipage}[t][0.7\textheight][t]{\columnwidth}
   \begin{minipage}{\columnwidth}
+  %
+  % This makes multicolumns equiwidth.  Of course, 
+  % variable widths are possible:
+  % http://tex.stackexchange.com/questions/89721/different-column-widths-using-multicol
   \begin{multicols}{2}
-  \textbf{\textcolor{theGrey}{Founding members}}\logoskip
+  \textbf{\textcolor{theGrey}{Founding members}}\par
   \begin{center}
   \includegraphics[width=4cm]{./logos/aus-gov-logo-stacked-black.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Vic_Gov_Logo.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/UOM-Pos_S_PMS.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Bhp.pdf}
   \end{center}
+  \vfill
+  \phantom{.}
   \columnbreak
   
   \textbf{\textcolor{theGrey}{Program support}}
