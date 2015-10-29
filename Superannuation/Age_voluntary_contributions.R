@@ -41,9 +41,17 @@ age_mutate_ <- function(.data){
                                          '65 to 69',
                                          '70 and over')),
                          ordered = T))
+}
 
 tax201213 <- get_sample_file(year = 2013)
+ten.thousand <- cpi_inflator(10e3, from_fy = "2012-13", to_fy = "2014-15")
 
 tax201213 %>%
   age_mutate_() %>%
-  mutate(`Voluntary contributions` = Non_emp_spr_amt + Rptbl_Empr_spr_cont_amt) %>%
+  mutate(Age_grouped = gsub("([0-9])([05])(.*)to(.*)([0-9])([49])", "\\10\\3to\\4\\59", Age)) %>%
+  mutate(`Voluntary contributions` = cpi_inflator(Non_emp_spr_amt + Rptbl_Empr_spr_cont_amt, from_fy = "2012-13", to_fy = "2014-15")) %>%
+  filter(`Voluntary contributions` > ten.thousand) %>%
+  group_by(Age_grouped) %>%
+  summarise(total_voluntary_contributions = sum(`Voluntary contributions`)) %>%
+  arrange(Age_grouped) %$%
+  pie(x = total_voluntary_contributions, labels = Age_grouped, clockwise = TRUE)
