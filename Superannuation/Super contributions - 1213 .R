@@ -12,6 +12,7 @@ require(car)
 require(Hmisc)
 require(reshape2)
 library(tidyr)
+library(data.table)
 
 # I know we should we using relative file paths but this will work for now
 setwd("..")
@@ -19,41 +20,27 @@ setwd("..")
 # Read in data - select key variables -------------------------------------
 
 # Read in the tax stats 2012-13 sample file
-taxstats13.df <- readr::read_csv("2013 ATO.csv")
+sample_file_of <- function(year = 2013){
+  year <- min(2013, year)
+  fy.year <- paste0(year - 1, "-", formatC(year - 2000, flag = "0", width=2))
+  # List all files with sample in them that have csv or txt at the end.
+  list.of.files <- list.files(path = "./IndividualSampleFile", pattern = paste0("(s|S)ample.*((csv)|(txt))$"), recursive = TRUE, full.names = TRUE)
+  return(list.of.files[grepl(fy.year, list.of.files)])
+}
 
-# Select the variables we care about
-variables <- c("Ind",
-               "Gender",
-               "age_range",
-               "Occ_code",
-               "Sw_amt",
-               "Aust_govt_pnsn_allw_amt", # Government pensions or allowances amount
-               "Taxable_Income", # Taxable income (total income less total deductions and allowable prior year losses)
-               "Taxed_othr_pnsn_amt", # Australian annuity or superannuation income stream - taxed
-               "Untaxed_othr_pnsn_amt", # Australian annuity or superannuation income stream - untaxed
-               "Non_emp_spr_amt", # Non-employer sponsored superannuation contribution deductions
-               "Rptbl_Empr_spr_cont_amt", # Reportable employer superannuation contributions - i.e. salary sacrificed super contributions beyond the SG
-               "Spouse_adjusted_taxable_inc", # Spouse adjusted taxable income
-               "Tot_inc_amt", # Total income
-               "Net_fincl_invstmt_lss_amt") # Net financial investment loss
+get_sample_file <- function(year = 2013){
+  colClasses = sapply(fread(sample_file_of(year), nrows=50), class)
+  fread(sample_file_of(year), colClasses = colClasses, na.strings = "?")
+}
 
-variables.names <- c("ID",
-                     "Sex",
-                     "Age",
-                     "Occ",
-                     "Wages",
-                     "Gov_pension",
-                     "Taxable_income",
-                     "Other_pension_taxed",
-                     "Other_pension_untaxed",
-                     "Non_emp_spr_deductions",
-                     "Rpt_emp_spr_deductions",
-                     "Spouse_adjusted",
-                     "Total.income")
+taxstats13.df <- get_sample_file()
 
 # Subset the data according the variables we care about
-taxstats13.df <- taxstats13.df[, variables]
-names(taxstats13.df) <- variables.names
+decoder <- fread("./Superannuation/BrendansSampleFileDecoder.csv")
+
+taxstats13.df %<>%
+  select_(.dots = decoder$old) %>%
+  setnames(old = decoder$old, new = decoder$new)
 
 # ================================================================================================================================
 # Create tax bases and generate necessary superannuation variables
@@ -113,6 +100,53 @@ taxstats13.df$Super.total.1213 <- taxstats13.df$Rpt_emp_spr_deductions + taxstat
 taxstats13.df$Taxable_income_s <- taxstats13.df$Taxable_income + taxstats13.df$Super.total
 
 # Alterations and new variables -------------------------------------------
+## Hugh:
+##
+age_mutate_ <- function(.data){
+  .data %>%
+    mutate(Age = car::recode(age_range, "0 = '70 and over';
+                             1 = '65 to 69';
+                             2 = '60 to 64';
+                             3 = '55 to 59';
+                             4 = '50 to 54';
+                             5 = '45 to 49';
+                             6 = '40 to 44';
+                             7 = '35 to 39';
+                             8 = '30 to 34';
+                             9 = '25 to 29';
+                             10 = '20 to 24';
+                             11 = 'under 20'")) %>%
+    mutate(Age =  factor(Age,
+                         levels = c("under 20",
+                                    '20 to 24',
+                                    '25 to 29',
+                                    '30 to 34',
+                                    '35 to 39',
+                                    '40 to 44',
+                                    '45 to 49',
+                                    '50 to 54',
+                                    '55 to 59',
+                                    '60 to 64',
+                                    '65 to 69',
+                                    '70 and over'),
+                         labels = gsub("\\s", "\n",
+                                       c("under 20",
+                                         '20 to 24',
+                                         '25 to 29',
+                                         '30 to 34',
+                                         '35 to 39',
+                                         '40 to 44',
+                                         '45 to 49',
+                                         '50 to 54',
+                                         '55 to 59',
+                                         '60 to 64',
+                                         '65 to 69',
+                                         '70 and over')),
+                         ordered = T))
+}
+
+taxstats13.df %>%
+  age_mutate_
 
 ## Need to create a 50 or over variable for differential super contribution caps
 taxstats13.df$Over.50 <- ifelse(taxstats13.df$Age <= 4, 1,0)
