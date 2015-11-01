@@ -242,6 +242,8 @@ library(tidyr)
 library(dplyr)
 library(magrittr)
 library(xtable)
+library(rattle)
+library(rpart)
 
 weighted.var.se <- function(x, w, na.rm=FALSE){
   # Computes the variance of a weighted mean following Cochran 1977 definition
@@ -292,6 +294,43 @@ get_sample_file <- function(year = 2013){
 <<IND>>=
 IND <- function(x, min, max = Inf){
   as.numeric(x >= min) * as.numeric(x < max)
+}
+@
+
+<<age_mutate>>=
+age_mutate <- function(.hes){
+  if("Age_of_HH_reference_person" %in% names(.hes)){
+    .hes %>%
+      mutate(
+        age_group = as.character(Age_of_HH_reference_person),
+        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group
+        )
+      ) %>%
+      return
+  }
+  
+  if("Age_of_person" %in% names(.hes)){
+    .hes %>%
+      mutate(
+        age_group = as.character(Age_of_person),
+        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group
+        )
+      ) %>%
+      return
+  }
+  
 }
 @
 
@@ -860,7 +899,7 @@ hes10hh %>%
   mutate(income_category = factor(income_category, 
                                   levels = c("Employee.income", "Investment.income", "Super.income", "Gov.benefits"), 
                                   labels = c("Salary/wages", "Investments", "Super", "Welfare"))) %>%
-  grplot(aes(x = gross_income_quintile, y = income_amt, fill = income_category, order = income_category)) + 
+  grplot(aes(x = disposable_income_quintile, y = income_amt, fill = income_category, order = income_category)) + 
   geom_bar(stat = "identity", position = "fill")
 
 read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
@@ -1382,6 +1421,106 @@ States are unlikely to cooperate with changes to the GST unless they receive mor
 
 \section{GST increases could reduce the Commonwealth's substantial deficit}
 Alternatively, the additional GST revenue could go to reducing the Commonwealth substantial deficit. The Commonwealth has posted structural deficits for the last 8 years.\footcite[p.~4]{daleywood2015fiscalchallenges} On current policies these deficits are likely to continue. Projections for these deficits to reduce quickly over the 4 years of the forward estimates seem optimistic.  Budget repair will almost certainly require both tax increases and spending reductions.\footcite[p.~8-14]{daleywood2015fiscalchallenges} Tax increases through the GST are likely to distort economic activity less than most of the alternatives, and definitely less than the bracket creep which is the dominant driver of the Commonwealth's planned return to surplus.\footcite{daleywood2015fiscalchallenges}  Half of the available additional revenue from raising the GST to 15 per cent -- \$5 billion a year -- would only reduce the Commonwealth's budget deficit by around 15 per cent. 
+
+<<BottomQuintileFallingThroughCracks>>=
+bottom.quintile.not.compensated <- 
+  hes10hh %>%
+  group_by.income_quintile() %>%
+  ungroup %>%
+  mutate(
+    age_group = as.character(Age_of_HH_reference_person),
+    age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                       ifelse(as.numeric(age_group) < 20,
+                              "20 or under",
+                              paste((as.numeric(age_group) %/% 5) * 5,
+                                    "to",
+                                    (as.numeric(age_group) %/% 5) * 5 + 4)),
+                       age_group
+    ),
+    age_group = factor(age_group, ordered = TRUE)
+  ) %>% 
+  data.table %>%
+  setkey(gross_income_quintile) %>%
+  merge(., welfare.by.income.quintile_total) %>%
+  group_by(gross_income_quintile) %>%
+  mutate(
+    new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+      prop_welfare / # amount to all households in that quintile
+      sum(Weight_HH_HES)
+  ) %>%
+  merge(new_tax_by_indiv, by = "Unique_household_number") %>%
+  mutate(tax_diff_weekly = tax_diff / 52) %>% 
+  group_by(gross_income_quintile) %>%
+  ungroup %>%
+  filter(gross_income_quintile == 1) %>%
+  mutate(not_compensated = new_welfare + tax_diff_weekly < Weekly_household_GST_on_all_goods_and_services_FIS/2) 
+
+bottom.quintile.not.compensated %>% 
+  group_by(age_group) %>%
+  summarise(not_compensated = weighted.mean(not_compensated, Weight_HH_HES)) %>%
+  arrange(age_group) %>%
+  grplot(aes(x = age_group, y = not_compensated)) + 
+  geom_bar(stat = "identity")
+
+bottom.quintile.not.compensated %>% 
+  group_by(Number_of_dependants_aged_under_years_in_household) %>%
+  summarise(not_compensated = weighted.mean(not_compensated, Weight_HH_HES)) %>%
+  arrange(Number_of_dependants_aged_under_years_in_household) %>%
+  mutate(Number_of_dependants_aged_under_years_in_household = gsub("dependent.*$", "", Number_of_dependants_aged_under_years_in_household)) %>%
+  grplot(aes(x = Number_of_dependants_aged_under_years_in_household, y = not_compensated)) + 
+  geom_bar(stat = "identity")
+
+bottom.quintile.not.compensated %>%
+  grplot(aes(x = not_compensated, y = Prev_fin_year_HH_disposable_income, fill = (age_group))) + 
+  geom_boxplot() + 
+  geom_text(aes(label = gsub("\\s", "\n", age_group), y = median(Prev_fin_year_HH_disposable_income)), position = position_dodge(width = 0.75)) + 
+  scale_fill_manual(values = rev(gpalx(length(unique(bottom.quintile.not.compensated$age_group))))) +
+  coord_cartesian(ylim = c(-1e3,100e3))
+
+vars.to.exclude <- 
+  c("new_welfare", 
+    "Age_of_HH_reference_person",
+    "tax_diff_weekly",
+    "Unique_household_number",
+    names(hes10hh)[grepl("(tax)|(expenditure)|(GST)", names(hes10hh))]
+  )
+
+indices.to.include <- which(!names(bottom.quintile.not.compensated) %in% vars.to.exclude)
+
+bottom.quintile.not.compensated <- bottom.quintile.not.compensated[,indices.to.include,with=FALSE]
+
+bottom.quintile.not.compensated %>%
+  mutate(
+    Year_purchased_dwelling_HH_ranged_numeric = gsub("^([0-9]{4}).*$", "\\1", Year_purchased_dwelling_HH_ranged),
+    Year_purchased_dwelling_HH_ranged_numeric = ifelse(grepl("before 1960"), "1955",
+                                                       ifelse(grepl("after 2008", "2009",
+                                                                    Year_purchased_dwelling_HH_ranged_numeric))),
+    
+  ) 
+
+bottom.quintile.not.compensated %>%
+  
+  party::ctree(factor(not_compensated) ~ ., data = bottom.quintile.not.compensated)
+
+training. <- sample(1:nrow(bottom.quintile.not.compensated), size = 0.7*nrow(bottom.quintile.not.compensated))
+rpart.cracks <- rpart(factor(not_compensated) ~ ., data = bottom.quintile.not.compensated, 
+                      weights = Weight_HH_HES,
+                      control = rpart.control(minbucket = 250), subset = training.)
+
+tree.cracks <- tree::tree(factor(not_compensated) ~ ., data = bottom.quintile.not.compensated, 
+                          weights = Weight_HH_HES, subset = training.)
+
+cv.cracks <- tree::cv.tree(tree.cracks)
+
+rpart.cracks.certain.features <- 
+  # aged under **15** years
+  rpart(factor(not_compensated) ~ Number_of_dependent_children_aged_under_years_in_household + Prev_fin_year_HH_disposable_income + Current_weekly_HH_disposable_income + age_group, weights = Weight_HH_HES, data = bottom.quintile.not.compensated, control = rpart.control(minbucket = 200))
+plot(rpart.cracks)
+text(rpart.cracks)
+fancyRpartPlot(rpart.cracks)
+
+
+@
 
 \clearpage
 \onecolumn
