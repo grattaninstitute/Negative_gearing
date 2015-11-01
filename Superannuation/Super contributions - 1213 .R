@@ -104,6 +104,7 @@ taxstats13.df$Taxable_income_s <- taxstats13.df$Taxable_income + taxstats13.df$S
 ##
 age_mutate_ <- function(.data){
   .data %>%
+    mutate(age_range = Age) %>%
     mutate(Age = car::recode(age_range, "0 = '70 and over';
                              1 = '65 to 69';
                              2 = '60 to 64';
@@ -145,12 +146,10 @@ age_mutate_ <- function(.data){
                          ordered = T))
 }
 
-taxstats13.df %>%
-  age_mutate_
 
-## Need to create a 50 or over variable for differential super contribution caps
-taxstats13.df$Over.50 <- ifelse(taxstats13.df$Age <= 4, 1,0)
-taxstats13.df$Over.50 <- as.factor(taxstats13.df$Over.50)
+taxstats13.df %<>%
+  age_mutate_ %>%
+  mutate(Over.50 = Age >= '50\nto\n54')
 
 # Recoding Age variables for clear labelling
 # But first we add an age variable that we can still filter on
@@ -171,6 +170,8 @@ taxstats13.df$Age <- recode(taxstats13.df$Age, "0 = '70 and over';
                             11 = 'under 20'")
 
 # We also create some more aggregated age groupings
+
+
 
 taxstats13.df$Age.group <- ifelse(taxstats13.df$Age == "under 20", "Under 30", 
                                   ifelse(taxstats13.df$Age == "20 to 24", "Under 30",
@@ -211,7 +212,7 @@ inflation.f <- 1.025^3
 no.inflation <- c("ID","Sex","Age","Occ","Over.50","Age.numeric", "Age.group")
 
 # Inflation adjusted data frame (inflating all not selected as no inflation variables)
-taxstats13.dfi <- cbind(taxstats13.df[,no.inflation], (taxstats13.df[,!names(taxstats13.df) %in% no.inflation])*inflation.f)
+taxstats13.dfi <- cbind(taxstats13.df[,no.inflation, with=FALSE], (taxstats13.df[,!names(taxstats13.df) %in% no.inflation, with=FALSE])*inflation.f)
 
 # Load an income tax function ---------------------------------------------
 # First need to load in a tax function (These are the 2014-15 tax rates - were the same in 2013-14 and 2012-13). We use the 2% medicare levy surcharge as thats the policy from 2014-15 onwards
@@ -861,11 +862,12 @@ close(clip)
 
 # Chart 16: Number of ppl making over $10k in voluntary concessional contributions from each decile and gender
 
-Chart16.df <- Chart3.df %>% group_by(Sex, Tax.inc.bin) %>% 
+Chart16.df <- Chart3.df %>% 
+  group_by(Sex, Tax.inc.bin) %>% 
   summarise(voluntary.over.10k = sum(Super.voluntary > 10000)*50,
             total.over.10k = sum(Super.total > 10000)*50,
-            additional.total = total.over.10k - voluntary.over.10k,
-            no.taxpayers = length(Super.voluntary > 10000) * 50)
+            no.taxpayers = length(Super.voluntary > 10000) * 50) %>%
+  mutate(additional.total = total.over.10k - voluntary.over.10k)
 
 write.table(Chart16.df, sep = "\t", file = clip <- pipe("pbcopy", "w"))
 close(clip)
