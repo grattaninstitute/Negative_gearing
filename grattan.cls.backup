@@ -309,19 +309,31 @@ left=2.75cm,right=2.75cm
 \pagestyle{scrheadings}
 
 %% Title pages
+%% For a full picture:
+% \RequirePackage{eso-pic}
+% \newcommand\BackgroundPic{%
+% \put(0,0){%
+% \parbox[b][\paperheight]{\paperwidth}{%
+% \vfill
+% \centering
+% % Amend
+% \includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
+% \vfill
+% }}}
+
+%% For a logo only:
 \RequirePackage{eso-pic}
-%\RequirePackage{svg}
 \newcommand\BackgroundPic{%
 \put(0,0){%
 \parbox[b][\paperheight]{\paperwidth}{%
-\vfill
-\centering
+\hfill
+%\includegraphics[width=0.2\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
 \vfill
 }}}
 
 
 \RequirePackage{epstopdf}
-\newcommand{\logoskip}{\par\vspace{16pt}}
+\newcommand{\logoskip}{\par\vspace{18pt}}
 \newcommand{\includegraphicsmaybe}[1]{\IfFileExists{#1}{\includegraphics{#1}}{\includegraphics{dummy.pdf}}}
 \newcommand{\noimage}{%
   \setlength{\fboxsep}{-\fboxrule}%
@@ -336,8 +348,12 @@ left=2.75cm,right=2.75cm
 
 \newcommand*{\titleTH}{\begingroup % Create the command for including the title page in the document
 \raggedleft % Right-align all text
+\vfill
 \phantom{.}%\vspace*{\baselineskip}
-\vfill % Whitespace at the top of the page
+\hfill 
+\includegraphics[width=0.225\paperwidth,keepaspectratio, trim = 0 0 5mm 0,clip]{./FrontPage/GrattanSVGLogo}
+\vspace{30pt}
+\vfil % Whitespace at the top of the page
 
 {\bfseries\textcolor{Orange}{\fontsize{30}{30}\selectfont \mytitle}}\\[\baselineskip] % Title page font size
 %% This is a working paper.
@@ -365,13 +381,15 @@ left=2.75cm,right=2.75cm
   %\begin{minipage}[t][0.7\textheight][t]{\columnwidth}
   \begin{minipage}{\columnwidth}
   \begin{multicols}{2}
-  \textbf{\textcolor{theGrey}{Founding members}}\logoskip
+  \textbf{\textcolor{theGrey}{Founding members}}\par
   \begin{center}
   \includegraphics[width=4cm]{./logos/aus-gov-logo-stacked-black.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Vic_Gov_Logo.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/UOM-Pos_S_PMS.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Bhp.pdf}
   \end{center}
+  \vfill
+  \phantom{.}
   \columnbreak
   
   \textbf{\textcolor{theGrey}{Program support}}
@@ -531,6 +549,7 @@ left=2.75cm,right=2.75cm
 \end{multicols}
 \clearpage
 \listoffigures
+\setcounter{tocdepth}{2}
 \listofboxes
 \twocolumn%
 }
