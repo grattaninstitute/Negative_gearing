@@ -1,6 +1,9 @@
-setwd("..")
+# setwd("..")
 
 # Functions present in other scripts
+require(grattan)
+require(data.table)
+require(dplyr) && require(magrittr)
 
 tax201213 <- get_sample_file()
 
@@ -15,9 +18,13 @@ tax201415 <-
 revenue_from_cap <- function(cap = 30000, div293 = TRUE, super.guarantee.rate = 0.095){
   .tax201415 <- 
     tax201415 %>%
-    mutate(lost_concession = pmax(30000, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
+    mutate(prev_cap = 30e3) %>%
+    mutate(super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - prev_cap),
+           
            new_concession = pmin(cap, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
-           new_Taxable_Income = Taxable_Income + Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - new_concession)
+           new_super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - cap),
+             
+           new_Taxable_Income = Taxable_Income - super_income_in_excess_of_cap + new_super_income_in_excess_of_cap)
   
   revenue.from.ordinary.income <- 
     .tax201415 %$%

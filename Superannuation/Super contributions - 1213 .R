@@ -1080,16 +1080,31 @@ thold.150k.taxtake <- taxstats13.dfic %>% filter(thold.150k.taxbase > 0) %>% sum
 hist(taxstats13.dfic[taxstats13.dfic$thold.150k.taxbase > 0,]$thold.150k.taxbase)
 
 # Alternative 3 - 125k threshold
-taxstats13.dfic$thold.125k.taxbase <- ifelse(taxstats13.dfic$thold.125k.incass.caps > 0, apply(cbind(max((taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped - 125000),0),taxstats13.dfic$Super.capped), 1, min),0)
+taxstats13.dfic$thold.125k.taxbase <- 
+  ifelse(taxstats13.dfic$thold.125k.incass.caps > 0, 
+         apply(cbind(max((taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped - 125000),0),
+                     taxstats13.dfic$Super.capped), 
+               1, 
+               min),
+         0)
 sum(taxstats13.dfic$thold.125k.taxbase)*50/10^9
 table(taxstats13.dfic$thold.125k.taxbase > 0)/length(taxstats13.dfic$thold.125k.taxbase) # 12 percent affected
-thold.125k.taxtake <- taxstats13.dfic %>% filter(thold.125k.taxbase > 0) %>% summarise(taxtake.thold.125k = (sum(thold.125k.taxbase) *0.15 * 50)/10^9) # Raises $3.9 billion
+
+thold.125k.taxtake <- taxstats13.dfic %>% 
+  filter(thold.125k.taxbase > 0) %>% 
+  summarise(taxtake.thold.125k = (sum(thold.125k.taxbase) *0.15 * 50)/10^9) # Raises $3.9 billion
+
 hist(taxstats13.dfic[taxstats13.dfic$thold.125k.taxbase > 0,]$thold.125k.taxbase)
 
 # Alternative 4 - 115k threshold
-taxstats13.dfic$thold.115k.taxbase <- ifelse(taxstats13.dfic$thold.115k.incass.caps > 0, apply(cbind(max((taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped - 115000),0),taxstats13.dfic$Super.capped), 1, min),0)
+taxstats13.dfic$thold.115k.taxbase <- ifelse(taxstats13.dfic$thold.115k.incass.caps > 0, 
+                                             apply(cbind(max((taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped - 115000),0),
+                                                         taxstats13.dfic$Super.capped), 1, min),
+                                             0)
 sum(taxstats13.dfic$thold.115k.taxbase)*50/10^9
+
 table(taxstats13.dfic$thold.115k.taxbase > 0)/length(taxstats13.dfic$thold.115k.taxbase) # 12 percent affected
+
 thold.115k.taxtake <- taxstats13.dfic %>% filter(thold.115k.taxbase > 0) %>% summarise(taxtake.thold.115k = (sum(thold.115k.taxbase) *0.15 * 50)/10^9) # Raises $4.5 billion
 hist(taxstats13.dfic[taxstats13.dfic$thold.115k.taxbase > 0,]$thold.115k.taxbase)
 
