@@ -15,7 +15,7 @@ tax201415 <-
          #
          Taxable_Income = Taxable_Income * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2)
          
-revenue_from_cap <- function(cap = 30000, div293 = TRUE, super.guarantee.rate = 0.095){
+revenue_from_cap <- function(cap = 30000, div293 = TRUE, div293.threshold = 300e3, super.guarantee.rate = 0.095){
   .tax201415 <- 
     tax201415 %>%
     mutate(prev_cap = 30e3) %>%
@@ -33,8 +33,11 @@ revenue_from_cap <- function(cap = 30000, div293 = TRUE, super.guarantee.rate = 
   if(div293){
     revenue.from.super.taxes <- 
       .tax201415 %$%
-      sum(ifelse(new_Taxable_Income < 300e3, new_concession * 0.15, new_concession * 0.30)) * 50 * lf_inflator(to_date = "2015-06-30")
+      sum(ifelse(new_Taxable_Income < div293.threshold, new_concession * 0.15, new_concession * 0.30)) * 50 * lf_inflator(to_date = "2015-06-30")
   } else {
+    if(!missing(div293.threshold))
+      warning("div293.threshold is provided, but div293 = FALSE")
+    
     revenue.from.super.taxes <- 
       .tax201415 %$%
       sum(new_concession * 0.15) * 50 * lf_inflator(to_date = "2015-06-30")
