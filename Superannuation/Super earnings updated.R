@@ -1132,7 +1132,8 @@ Chart1.df <- person.dfkvi %>% filter(Age.numeric >=22) %>%
 # We see that when we exclude super earnings from the calculation of our income deciles then we end up with lots of ppl with significant super earnings (but few other income streams) in the bottom income decile. This is because super earnings are not included in total income in the SIH as the earnings compound in the fund, rather than becoming available for consumption. Therefore we use Chart 2 instead, which includes super earnings in total income when calculating our total income deciles.
 
 # Chart 2 - Total income (including super earnings) of over 60s
-Chart2.df <- person.dfkvi %>% filter(Age.numeric >=22) %>% 
+Chart2.df <- person.dfkvi %>% 
+  filter(Age.numeric >= 22) %>% 
   filter(!is.na(tincome.decile)) %>%
   group_by(tincome.s.decile.range) %>% 
   summarise(Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights), 

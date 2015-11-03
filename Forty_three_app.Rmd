@@ -36,7 +36,7 @@ shinyApp( options = list(height = 1024),
     fluid = FALSE,
     sidebarPanel = sidebarPanel(
       selectInput("TargetFY", label = "Inflate values to", selected = "2012-13",
-                  choices = c("2012-13", "2013-14", "2014-15")),
+                  choices = c("2012-13", "2013-14", "2014-15", "2015-16")),
       textInput("cameo1", label = "Cameo 1 total income", value = 0),
       textInput("cameo2", label = "Cameo 2 total income", value = 0),
       sliderInput("rate_1", label = "marginal rate",
@@ -129,13 +129,33 @@ shinyApp( options = list(height = 1024),
         return(out)
       }
       
-      fread("Just_Taxable_Income.csv") %>% 
-        mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income),
-               diff = cpi_inflator(diff, from_fy = "2012-13", to_fy = input$TargetFY)) %$% 
-        {-1 * sum(diff)*50} %>%
-        grattan_dollar(.) ->
-        the_amount_remaining
-      
+      if (input$TargetFY != "2015-16"){
+        fread("Just_Taxable_Income.csv") %>%
+          mutate(Taxable_Income = as.integer(wage_inflator(Taxable_Income,
+                                                           from_fy = "2012-13", 
+                                                           to_fy = input$TargetFY))) %>%
+          mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income),
+                 diff = cpi_inflator(diff, from_fy = "2012-13", to_fy = input$TargetFY)) %$% 
+                 {-1 * sum(diff)* 50 * lf_inflator(to_date = as.character(fy2date(input$TargetFY)))} %>%
+          grattan_dollar(.) ->
+          the_amount_remaining
+      } else {
+        if (input$TargetFY == "2015-16"){
+          fread("Just_Taxable_Income.csv") %>%
+            mutate(Taxable_Income = wage_inflator(Taxable_Income,
+                                                  from_fy = "2012-13", 
+                                                  to_fy = "2014-15") * wage_inflator(from_fy = "2013-14",
+                                                                                     to_fy = "2014-15")) %>%
+            mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income),
+                   diff = cpi_inflator(diff, 
+                                       from_fy = "2012-13", 
+                                       to_fy = "2014-15") * cpi_inflator(from_fy = "2013-14",
+                                                                         to_fy = "2014-15")) %$% 
+                                                                         {-1 * sum(diff)* 50 * lf_inflator(to_date = as.character(fy2date(input$TargetFY)))} %>%
+            grattan_dollar(.) ->
+            the_amount_remaining
+        }
+      }
       # lm(Taxable_Income ~ Tot_inc_amt, data = get_sample_file(2013)) %>% coef %>% extract2(2)
       cameo1.Taxable_Income <- 0.96 * as.numeric(input$cameo1)
       cameo2.Taxable_Income <- 0.96 * as.numeric(input$cameo2)
@@ -159,7 +179,7 @@ shinyApp( options = list(height = 1024),
                paste0("$", prettyNum(c(input$bracket_1, input$bracket_2, input$bracket_3, input$bracket_4), big.mark = ","))
         )
       
-      data.frame(
+      data_frame(
         `Marginal rate of` = c(brackets,
                                "",
                           "Extra revenue", 
@@ -174,12 +194,12 @@ shinyApp( options = list(height = 1024),
                                the_amount_remaining,
                                grattan_dollar(new_income_tax(cpi_inflator(100e3, from_fy = "2012-13", to_fy = "2013-14"))),
                                grattan_dollar(cameo1_diff),
-                               grattan_dollar(cameo2_diff))), 
-        stringsAsFactors=FALSE) 
+                               grattan_dollar(cameo2_diff)))
+        ) 
       }) 
     
     chartValues <- reactive({
-            tax_rates <- 
+      tax_rates <- 
         data.table(
           brackets = c(0, input$bracket_1, input$bracket_2, input$bracket_3, input$bracket_4),
           rates = c(input$rate_1, 
