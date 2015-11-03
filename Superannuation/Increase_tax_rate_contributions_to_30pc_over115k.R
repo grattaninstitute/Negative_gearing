@@ -17,12 +17,12 @@ tax201415 <-
 
 old_tax <- 
   tax201415 %>%
-  mutate(income_tax = income_tax(Taxable_Income, fy.year = "2014-15"),
+  mutate(income_tax = income_tax(Taxable_Income, fy.year = "2017-18"),
          tax_on_contributions = ifelse(Taxable_Income > 300e3, 0.30, 0.15) * (Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + pmin(50e3, 0.095 * Sw_amt))) %$%
          {(sum(income_tax) + sum(tax_on_contributions)) * 50 * lf_inflator(to_date = "2015-06-30")}
 
 new_tax <-
   tax201415 %>%
-  mutate(income_tax = income_tax(Taxable_Income, fy.year = "2014-15"),
+  mutate(income_tax = income_tax(Taxable_Income, fy.year = "2017-18"),
          tax_on_contributions = ifelse(Taxable_Income > 115e3, 0.30, 0.15) * (Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + pmin(50e3, 0.095 * Sw_amt))) %$%
          {(sum(income_tax) + sum(tax_on_contributions)) * 50 * lf_inflator(to_date = "2015-06-30")}
