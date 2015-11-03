@@ -4,7 +4,34 @@ setwd("..")
 
 tax201213 <- get_sample_file()
 
-tax201415 <- tax201213 %>%
-  mutate(Sw_amt = wage_inflator(Sw_amt, from_fy = "2012-13", to_fy = "2013-14")^2,
+tax201415 <- 
+  tax201213 %>%
+  mutate(Sw_amt = Sw_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2,
+         Rptbl_Empr_spr_cont_amt = Rptbl_Empr_spr_cont_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2,
+         Non_emp_spr_amt = Non_emp_spr_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2,
+         #
+         Taxable_Income = Taxable_Income * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2)
          
-
+revenue_from_cap <- function(cap = 30000, div293 = TRUE, super.guarantee.rate = 0.095){
+  .tax201415 <- 
+    tax201415 %>%
+    mutate(lost_concession = pmax(30000, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
+           new_concession = pmin(cap, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
+           new_Taxable_Income = Taxable_Income + Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - new_concession)
+  
+  revenue.from.ordinary.income <- 
+    .tax201415 %$%
+    sum(income_tax(new_Taxable_Income) - income_tax(Taxable_Income)) * 50 * lf_inflator(to_date = "2015-06-30")
+  
+  if(div293){
+    revenue.from.super.taxes <- 
+      .tax201415 %$%
+      sum(ifelse(new_Taxable_Income < 300e3, new_concession * 0.15, new_concession * 0.30)) * 50 * lf_inflator(to_date = "2015-06-30")
+  } else {
+    revenue.from.super.taxes <- 
+      .tax201415 %$%
+      sum(new_concession * 0.15) * 50 * lf_inflator(to_date = "2015-06-30")
+  }
+  .tax201415 <<- .tax201415  # for debugging
+  return(revenue.from.ordinary.income)
+}
