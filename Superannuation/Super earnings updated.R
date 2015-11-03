@@ -1139,7 +1139,7 @@ Chart2.df <- person.dfkvi %>% filter(Age.numeric >=22) %>%
             Mean.tax.concession = sum(Super.concession.over60s * Weights) / sum(Weights))
 
 write.table(Chart2.df , sep = "\t", file = clip <- pipe("pbcopy", "w"))
-close(clip)0
+close(clip)
 
 # Chart 3 - Tax concession by income decile with a TF threshold, and under current arrangements
 Chart3.df <- person.dfkvi %>% filter(Age.numeric >=22) %>% 
