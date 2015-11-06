@@ -1422,7 +1422,10 @@ States are unlikely to cooperate with changes to the GST unless they receive mor
 \section{GST increases could reduce the Commonwealth's substantial deficit}
 Alternatively, the additional GST revenue could go to reducing the Commonwealth substantial deficit. The Commonwealth has posted structural deficits for the last 8 years.\footcite[p.~4]{daleywood2015fiscalchallenges} On current policies these deficits are likely to continue. Projections for these deficits to reduce quickly over the 4 years of the forward estimates seem optimistic.  Budget repair will almost certainly require both tax increases and spending reductions.\footcite[p.~8-14]{daleywood2015fiscalchallenges} Tax increases through the GST are likely to distort economic activity less than most of the alternatives, and definitely less than the bracket creep which is the dominant driver of the Commonwealth's planned return to surplus.\footcite{daleywood2015fiscalchallenges}  Half of the available additional revenue from raising the GST to 15 per cent -- \$5 billion a year -- would only reduce the Commonwealth's budget deficit by around 15 per cent. 
 
-<<BottomQuintileFallingThroughCracks>>=
+<<BottomQuintileFallingThroughCracks, eval=FALSE>>=
+library(party)
+library(glmnet)
+
 bottom.quintile.not.compensated <- 
   hes10hh %>%
   group_by.income_quintile() %>%
@@ -1453,7 +1456,10 @@ bottom.quintile.not.compensated <-
   group_by(gross_income_quintile) %>%
   ungroup %>%
   filter(gross_income_quintile == 1) %>%
-  mutate(not_compensated = new_welfare + tax_diff_weekly < Weekly_household_GST_on_all_goods_and_services_FIS/2) 
+  mutate(not_compensated = new_welfare + tax_diff_weekly < Weekly_household_GST_on_all_goods_and_services_FIS/2,
+         compensation_inadequacy = ifelse(not_compensated, 
+                                          Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly,
+                                          0)) 
 
 bottom.quintile.not.compensated %>% 
   group_by(age_group) %>%
@@ -1489,18 +1495,29 @@ indices.to.include <- which(!names(bottom.quintile.not.compensated) %in% vars.to
 
 bottom.quintile.not.compensated <- bottom.quintile.not.compensated[,indices.to.include,with=FALSE]
 
-bottom.quintile.not.compensated %>%
+bottom.quintile.not.compensated %<>%
   mutate(
     Year_purchased_dwelling_HH_ranged_numeric = gsub("^([0-9]{4}).*$", "\\1", Year_purchased_dwelling_HH_ranged),
-    Year_purchased_dwelling_HH_ranged_numeric = ifelse(grepl("before 1960"), "1955",
-                                                       ifelse(grepl("after 2008", "2009",
-                                                                    Year_purchased_dwelling_HH_ranged_numeric))),
-    
-  ) 
+    Year_purchased_dwelling_HH_ranged_numeric = ifelse(grepl("before 1960", Year_purchased_dwelling_HH_ranged_numeric), "1955",
+                                                       ifelse(grepl("2008", Year_purchased_dwelling_HH_ranged_numeric), "2008+",
+                                                              Year_purchased_dwelling_HH_ranged_numeric)),
+    Year_purchased_dwelling_HH_ranged_factor.ordered = factor(Year_purchased_dwelling_HH_ranged_numeric, ordered = TRUE)
+  ) %>% 
+  select(-Year_purchased_dwelling_HH_ranged)
 
-bottom.quintile.not.compensated %>%
-  
-  party::ctree(factor(not_compensated) ~ ., data = bottom.quintile.not.compensated)
+bottom.quintile.not.compensated_factors <-
+  bottom.quintile.not.compensated[, lapply(.SD, function(x) if(is.character(x)) as.factor(x) else x)]
+@
+
+<<trees, eval=FALSE>>=
+
+party.cracks <- 
+  party::ctree(factor(not_compensated) ~ Year_purchased_dwelling_HH_ranged_factor.ordered + Prev_fin_year_HH_disposable_income + Number_of_dependent_children_aged_under_years_in_household + age_group + Number_of_unemployed_persons_in_the_household + Net_wealth_of_household, 
+               controls = ctree_control(minbucket = 100e3),
+               weights = round(bottom.quintile.not.compensated_factors$Weight_HH_HES), 
+               data = bottom.quintile.not.compensated_factors)
+plot(party.cracks)
+dev.copy2pdf(file = "PartyCracks.pdf", width = 32, height = 20)
 
 training. <- sample(1:nrow(bottom.quintile.not.compensated), size = 0.7*nrow(bottom.quintile.not.compensated))
 rpart.cracks <- rpart(factor(not_compensated) ~ ., data = bottom.quintile.not.compensated, 
@@ -1520,6 +1537,57 @@ text(rpart.cracks)
 fancyRpartPlot(rpart.cracks)
 
 
+@
+
+<<BottomQuintileFallingThroughCracks, eval=FALSE>>=
+RF <- randomForest::randomForest(factor(not_compensated) ~ Year_purchased_dwelling_HH_ranged_factor.ordered + Prev_fin_year_HH_disposable_income + Number_of_dependent_children_aged_under_years_in_household + age_group + Number_of_unemployed_persons_in_the_household + Net_wealth_of_household, 
+                                 data = bottom.quintile.not.compensated_factors,
+                                 importance = TRUE)
+@
+
+<<BottomQuintileFallingThroughCracks, eval=FALSE>>=
+bottom.quintile.not.compensated_factors.noUniqueFactors <- 
+  bottom.quintile.not.compensated_factors %>%
+  select_(.dots = names(bottom.quintile.not.compensated_factors)[sapply(bottom.quintile.not.compensated_factors, function(x)length(unique(x))) > 1]) %>%
+  select(-income.percentile)
+
+x <- model.matrix(compensation_inadequacy ~ ., data = select(bottom.quintile.not.compensated_factors.noUniqueFactors, -not_compensated))
+y <- bottom.quintile.not.compensated_factors$compensation_inadequacy
+
+fit.lasso <- glmnet(x,y)
+# http://stackoverflow.com/questions/30560689/adding-labels-on-curves-in-glmnet-plot-in-r
+lbs_fun <- function(fit, ...) {
+        L <- length(fit$lambda)
+        x <- log(fit$lambda[L]) + 4
+        y <- fit$beta[, L]
+        labs <- names(y)
+        text(x, y, labels=labs, cex = 0.5)
+}
+plot(fit.lasso, xvar = "lambda")
+lbs_fun(fit.lasso)
+
+@
+
+<<Summary_of_cracks,eval=FALSE>>=
+bottom.quintile.not.compensated_factors.noUniqueFactors %>%
+  mutate(number_of_children = as.numeric(gsub("[^0-9]", "", Number_of_dependent_children_aged_under_years_in_household)),
+         number_of_unemployed = as.numeric(gsub("[^0-9]", "", Number_of_unemployed_persons_in_the_household)),
+         year_purchased_dwelling = as.numeric(as.character(Year_purchased_dwelling_HH_ranged_numeric)),
+         number_of_unemployed = ifelse(is.na(number_of_unemployed), 0, number_of_unemployed),
+         Age = as.numeric(gsub("^([0-9]{2}).*$", "\\1", as.character(age_group))) + 2.5) %>%
+  gather(variable, value, 
+         #Year_purchased_dwelling_HH_ranged_factor.ordered, 
+         Prev_fin_year_HH_disposable_income, 
+         number_of_children, 
+         year_purchased_dwelling,
+         Age, 
+        # number_of_unemployed, 
+         Net_wealth_of_household) %>%
+#   group_by(not_compensated, variable) %>%
+#   summarise(mean.value = mean(value)) %>%
+  grplot(aes(x = variable, y = value, fill = not_compensated)) + 
+  facet_wrap(~variable, scales = "free") + 
+  geom_boxplot()
 @
 
 \clearpage
