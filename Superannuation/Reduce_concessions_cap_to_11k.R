@@ -14,34 +14,55 @@ tax201415 <-
          Non_emp_spr_amt = Non_emp_spr_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2,
          #
          Taxable_Income = Taxable_Income * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2)
-         
+
+# ====         
 revenue_from_cap <- function(cap = 30000, div293 = TRUE, div293.threshold = 300e3, super.guarantee.rate = 0.095){
   .tax201415 <- 
     tax201415 %>%
-    mutate(prev_cap = 30e3) %>%
+    # 50 year olds and over get a cap of 35e3
+    mutate(prev_cap = ifelse(age_range <= 4, 35e3, 30e3)) %>%
     mutate(super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - prev_cap),
-           
-           new_concession = pmin(cap, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
+           prv_concess_contr_amt = pmin(prev_cap, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
+           new_concess_contr_amt = pmin(cap, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
            new_super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - cap),
              
-           new_Taxable_Income = Taxable_Income - super_income_in_excess_of_cap + new_super_income_in_excess_of_cap)
-  
-  revenue.from.ordinary.income <- 
-    .tax201415 %$%
-    sum(income_tax(new_Taxable_Income) - income_tax(Taxable_Income)) * 50 * lf_inflator(to_date = "2015-06-30")
+           new_Taxable_Income = Taxable_Income - super_income_in_excess_of_cap + new_super_income_in_excess_of_cap,
+           #
+           revenue_due_to_Taxable_Income = income_tax(new_Taxable_Income, fy.year = "2017-18") - income_tax(Taxable_Income, fy.year = "2017-18"))
   
   if(div293){
-    revenue.from.super.taxes <- 
-      .tax201415 %$%
-      sum(ifelse(new_Taxable_Income < div293.threshold, new_concession * 0.15, new_concession * 0.30)) * 50 * lf_inflator(to_date = "2015-06-30")
+      .tax201415 %<>%
+      mutate(
+        prv_tax_payable_on_concess_contr = 
+          ifelse(new_Taxable_Income + prv_concess_contr_amt < div293.threshold,
+                 new_concess_contr_amt * 0.15, 
+                 # This is probably not quite right yet.
+                 ifelse(new_Taxable_Income < div293.threshold, 
+                        0.15 * (div293.threshold - Taxable_Income) + 0.30 * (Taxable_Income + prv_concess_contr_amt - div293.threshold),
+                        new_concess_contr_amt * 0.30)),
+        
+        new_tax_payable_on_concess_contr = 
+          ifelse(new_Taxable_Income + prv_concess_contr_amt < div293.threshold,
+                 new_concess_contr_amt * 0.15, 
+                 # This is probably not quite right yet.
+                 ifelse(new_Taxable_Income < div293.threshold, 
+                        0.15 * (div293.threshold - new_Taxable_Income) + 0.30 * (new_Taxable_Income + new_concess_contr_amt - div293.threshold),
+                        new_concess_contr_amt * 0.30))) 
   } else {
     if(!missing(div293.threshold))
       warning("div293.threshold is provided, but div293 = FALSE")
     
-    revenue.from.super.taxes <- 
-      .tax201415 %$%
-      sum(new_concession * 0.15) * 50 * lf_inflator(to_date = "2015-06-30")
+    .tax201415 %<>%
+      mutate(prv_tax_payable_on_concess_contr = 0.15 * prv_concess_contr_amt,
+             new_tax_payable_on_concess_contr = 0.15 * new_concess_contr_amt)
   }
   .tax201415 <<- .tax201415  # for debugging
-  return(revenue.from.ordinary.income)
+  
+  .tax201415 %<>%
+    mutate(
+      diff = revenue_due_to_Taxable_Income + new_tax_payable_on_concess_contr - prv_tax_payable_on_concess_contr
+    )
+  
+  revenue <- sum(tax201415$diff) * 50 * lf_inflator(to_date = "2015-06-30")
+  return(revenue)
 }
