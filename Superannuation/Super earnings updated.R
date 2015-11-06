@@ -1143,7 +1143,9 @@ write.table(Chart2.df , sep = "\t", file = clip <- pipe("pbcopy", "w"))
 close(clip)
 
 # Chart 3 - Tax concession by income decile with a TF threshold, and under current arrangements
-Chart3.df <- person.dfkvi %>% filter(Age.numeric >=22) %>% 
+Chart3.df <- 
+  person.dfkvi %>% 
+  filter(Age.numeric >= 22) %>% 
   filter(!is.na(tincome.decile)) %>%
   group_by(tincome.s.decile.range) %>% 
   summarise(Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights),

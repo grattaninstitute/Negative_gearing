@@ -224,7 +224,7 @@ tax.function <- function(income, ML.lower, ML.upper){
   tax <- ifelse(income<18200, 0, 
                 ifelse(income<37000, (income-18200)*0.19, 
                        ifelse(income<80000, 3572 + (income-37000)*0.325,
-                              ifelse(income<180000, 17547 + (income-80000)*0.39, 54547 + 0.45*(income-180000)))))
+                              ifelse(income<180000, 17547 + (income-80000)*0.37, 54547 + 0.45*(income-180000)))))
   medicare.levy <- ifelse(income<ML.lower,0, 
                           ifelse(income < ML.upper, (income - ML.lower)*.1, 0.02*income))
   
@@ -1040,7 +1040,11 @@ sum(taxstats13.dfic$thold.125k.incass.caps)*50/10^9
 
 
 # 4th alternative threshold, of $115k threshold, which we'll call thold.115k
-taxstats13.dfic$thold.115k.incass.caps <- ifelse((taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped) > 115000, taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped, 0)
+taxstats13.dfic$thold.115k.incass.caps <- 
+  ifelse((taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped) > 115000, 
+         taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped, 
+         0)
+
 sum(taxstats13.dfic$thold.115k.incass.caps)*50/10^9
 
 # 5th alternative threshold, of $100k threshold, which we'll call thold.100k
@@ -1090,14 +1094,16 @@ taxstats13.dfic$thold.125k.taxbase <-
 sum(taxstats13.dfic$thold.125k.taxbase)*50/10^9
 table(taxstats13.dfic$thold.125k.taxbase > 0)/length(taxstats13.dfic$thold.125k.taxbase) # 12 percent affected
 
-thold.125k.taxtake <- taxstats13.dfic %>% 
+thold.125k.taxtake <- 
+  taxstats13.dfic %>% 
   filter(thold.125k.taxbase > 0) %>% 
   summarise(taxtake.thold.125k = (sum(thold.125k.taxbase) *0.15 * 50)/10^9) # Raises $3.9 billion
 
 hist(taxstats13.dfic[taxstats13.dfic$thold.125k.taxbase > 0,]$thold.125k.taxbase)
 
 # Alternative 4 - 115k threshold
-taxstats13.dfic$thold.115k.taxbase <- ifelse(taxstats13.dfic$thold.115k.incass.caps > 0, 
+taxstats13.dfic %>% 
+  mutate(thold.115k.taxbase = ifelse(taxstats13.dfic$thold.115k.incass.caps > 0, 
                                              apply(cbind(max((taxstats13.dfic$Taxable_income_s_30k35kcap + taxstats13.dfic$Super.capped - 115000),0),
                                                          taxstats13.dfic$Super.capped), 1, min),
                                              0)

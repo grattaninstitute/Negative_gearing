@@ -221,6 +221,13 @@ disp.inc.deciles <-
               ,.
               , quantiles = c(0:10)/10)
 
+disp.inc.quintiles <- 
+  hes10hh %>%
+  svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
+  svyquantile(~Current_weekly_HH_disposable_income 
+              ,.
+              , quantiles = c(0:5)/5)
+
 total.inc.percentiles <- 
   hes10hh %>%
   svydesign(~Unique_household_number, data = ., weights = ~Weight_HH_HES) %>%
@@ -1993,9 +2000,7 @@ new_income_tax <-
     }
 
 
-```
 
-```{r}
 new_income_tax_outer0910 <- function(income0910, brackets = c(6000, 35000, 80000, 180000), rates = c(0, 0.15, 0.30, 0.38, 0.45)){
   input <- 
     list(
