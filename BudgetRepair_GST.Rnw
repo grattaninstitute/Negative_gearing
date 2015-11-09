@@ -1,4 +1,12 @@
 \documentclass{grattan}
+<<MODELLING_PARAMETERS, echo=FALSE>>=
+percentage_of_revenue_to_transfers = 0.3
+new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
+
+# Please change the numbers to reflect final budget outcomes.
+
+@
+
 \usepackage{longtable,endnotes}
 \renewcommand\enoteformat{\rightskip=0pt \leftskip=0pt %\parindent=0em
   \leavevmode\makeenmark\raggedright}
@@ -170,10 +178,7 @@
 \newcommand*\ie{\emph{i.e.}}
 \newcommand*\eg{\emph{e.g.}}
 
-<<MODELLING_PARAMETERS, echo=FALSE>>=
-percentage_of_revenue_to_transfers = 0.3
-new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
-@
+
 
 
 <<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
