@@ -24,27 +24,35 @@ revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, d
     tax201415 %>%
     # 50 year olds and over get a cap of 35e3
     mutate(prev_cap = ifelse(age_range <= 4, 35e3, 30e3)) %>%
-    mutate(super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - prev_cap),
-           prv_concess_contr_amt = pmin(prev_cap, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
-           new_concess_contr_amt = pmin(ifelse(age_range <= 4, 
-                                               ifelse(age_based_cap, cap2, cap), 
-                                               cap), 
-                                        #
-                                        Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
-           new_super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - ifelse(age_range <= 4, ifelse(age_based_cap, cap2, cap), cap)),
-             
-           new_Taxable_Income = Taxable_Income - super_income_in_excess_of_cap + new_super_income_in_excess_of_cap,
-           #
-           revenue_due_to_Taxable_Income = income_tax(new_Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE) - income_tax(Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE))
+    mutate(
+      # Throughout we assume that the minimum amount of super guarantee contributions are made. 
+      super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - prev_cap),
+      # the minimum of the cap applicable or the contributions actually made
+      prv_concess_contr_amt = pmin(prev_cap, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
+      new_concess_contr_amt = pmin(ifelse(age_range <= 4, 
+                                          ifelse(age_based_cap, cap2, cap), 
+                                          cap), 
+                                   #
+                                   Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt),
+      new_super_income_in_excess_of_cap = pmax(0, Rptbl_Empr_spr_cont_amt + Non_emp_spr_amt + super.guarantee.rate * Sw_amt - ifelse(age_range <= 4, ifelse(age_based_cap, cap2, cap), cap)),
+      
+      new_Taxable_Income = Taxable_Income - super_income_in_excess_of_cap + new_super_income_in_excess_of_cap,
+      #
+      revenue_due_to_Taxable_Income = income_tax(new_Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE) - income_tax(Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE)
+      )
   
   if(div293){
       .tax201415 %<>%
       mutate(
+        prv_tax_payable_on_concess_contr = 0.15 * prv_concess_contr_amt,
+        new_tax_payable_on_concess_contr = 0.15 * new_concess_contr_amt,
+        
         # https://www.ato.gov.au/uploadedFiles/Content/TPALS/downloads/Division-293-scenario-table-v2.pdf
         # Technically the surchargeable income includes amounts on which family trust distribution tax has been paid. This has
         # been omitted, meaning that some individuals' div 293 tax burden is underestimated.
         prv_surchargeable_income293 = Taxable_Income + Net_fincl_invstmt_lss_amt - pmin(Net_rent_amt, 0) + Rep_frng_ben_amt,
-        prv_low_tax_contributions293 = prv_concess_contr_amt - super_income_in_excess_of_cap,
+        # We assume that low tax contributions cannot be negative.
+        prv_low_tax_contributions293 = pmax(0, prv_concess_contr_amt - super_income_in_excess_of_cap),
         prv_div293_income = prv_surchargeable_income293 + prv_low_tax_contributions293,
         prv_div293_tax = ifelse(prv_div293_income > 300e3, 
                                 0.15 * pmin(prv_low_tax_contributions293, 
@@ -52,7 +60,7 @@ revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, d
                                 0),
         
         new_surchargeable_income293 = new_Taxable_Income + Net_fincl_invstmt_lss_amt - pmin(Net_rent_amt, 0) + Rep_frng_ben_amt,
-        new__low_tax_contributions293 = new_concess_contr_amt - new_super_income_in_excess_of_cap,
+        new_low_tax_contributions293 = pmax(0, new_concess_contr_amt - new_super_income_in_excess_of_cap),
         new_div293_income = new_surchargeable_income293 + new_low_tax_contributions293,
         new_div293_tax = ifelse(new_div293_income > 300e3, 
                                 0.15 * pmin(new_low_tax_contributions293, 
@@ -65,22 +73,26 @@ revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, d
     
     .tax201415 %<>%
       mutate(prv_tax_payable_on_concess_contr = 0.15 * prv_concess_contr_amt,
-             new_tax_payable_on_concess_contr = 0.15 * new_concess_contr_amt)
+             new_tax_payable_on_concess_contr = 0.15 * new_concess_contr_amt,
+             prv_div293_tax = 0,
+             new_div293_tax = 0)
   }
     
   .tax201415 <- 
     .tax201415 %>%
     mutate(
-      diff = revenue_due_to_Taxable_Income + new_tax_payable_on_concess_contr - prv_tax_payable_on_concess_contr,
-      tax = income_tax(new_Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE) + new_tax_payable_on_concess_contr,
+      diff = revenue_due_to_Taxable_Income + new_tax_payable_on_concess_contr - prv_tax_payable_on_concess_contr + new_div293_tax - prv_div293_tax,
+      tax = income_tax(new_Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE) + new_tax_payable_on_concess_contr + new_div293_tax,
       
-      extra_tax_on_contr_if_no_concession = income_tax(new_Taxable_Income + new_concess_contr_amt,
-                                                       fy.year = "2015-16", 
-                                                       include.temp.budget.repair.levy = FALSE) - 
+      extra_tax_on_contr_if_no_concession = 
+        income_tax(new_Taxable_Income + new_concess_contr_amt,
+                   fy.year = "2015-16", 
+                   include.temp.budget.repair.levy = FALSE) - 
         income_tax(new_Taxable_Income, 
                    fy.year = "2015-16", 
                    include.temp.budget.repair.levy = FALSE) - 
-        new_tax_payable_on_concess_contr,
+        new_tax_payable_on_concess_contr - 
+        new_div293_tax,
       
       tax_on_concession = new_tax_payable_on_concess_contr
     )
@@ -91,7 +103,7 @@ revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, d
 }
 
 # ====
-revenue_from_cap()/1e9
+revenue_from_cap(age_based_cap = TRUE)/1e9
 nocap.taxstats <- .tax201415
 status_quo_tax_by_percentile <-
   .tax201415 %>%
@@ -136,5 +148,5 @@ bind_rows(nocap.taxstats, cap11k.taxstats, .id = "hascap") %>%
                      breaks = c(0, 20543, 37000,80000,180000,300000),
                      label = grattan_dollar,
                      limits = c(0,350e3))
-
-dev.copy2pdf(file = "Benefit_due_to_contributions_tax_concession_reduced.pdf", width = 27, height = 12)
+# ====
+dev.copy2pdf(file = paste0(Sys.Date(), "Benefit_due_to_contributions_tax_concession_reduced.pdf"), width = 27, height = 12)
