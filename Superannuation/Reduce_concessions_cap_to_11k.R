@@ -1,22 +1,5 @@
-# setwd("..")
 
-# Functions present in other scripts
-require(grattan)
-require(data.table)
-require(dplyr) && require(magrittr)
-
-tax201213 <- readr::read_csv("../IndividualSampleFile/2012-13/Sample_file_1213/2013 2% individuals sample file/2013_sample_file.csv")
-
-tax201415 <- 
-  tax201213 %>%
-  mutate(Sw_amt = Sw_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2,
-         Rptbl_Empr_spr_cont_amt = Rptbl_Empr_spr_cont_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2,
-         Non_emp_spr_amt = Non_emp_spr_amt * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2,
-         #
-         Taxable_Income = Taxable_Income * wage_inflator(from_fy = "2012-13", to_fy = "2013-14")^2) %>%
-  select(Sw_amt, Rptbl_Empr_spr_cont_amt, Non_emp_spr_amt, Taxable_Income,
-         age_range, Net_fincl_invstmt_lss_amt, Net_rent_amt, Rep_frng_ben_amt,
-         Net_PT_PP_dsn, Net_PT_NPP_dsn)
+just.function = TRUE
 
 # ====         
 revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, div293 = TRUE, div293.threshold = 300e3, super.guarantee.rate = 0.095){
@@ -60,7 +43,7 @@ revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, d
                                 0),
         
         new_surchargeable_income293 = new_Taxable_Income + Net_fincl_invstmt_lss_amt - pmin(Net_rent_amt, 0) + Rep_frng_ben_amt,
-        new_low_tax_contributions293 = pmax(0, new_concess_contr_amt - new_super_income_in_excess_of_cap),
+        new_low_tax_contributions293 = pmax(0, new_concess_contr_amt - 0*new_super_income_in_excess_of_cap),
         new_div293_income = new_surchargeable_income293 + new_low_tax_contributions293,
         new_div293_tax = ifelse(new_div293_income > 300e3, 
                                 0.15 * pmin(new_low_tax_contributions293, 
@@ -81,7 +64,11 @@ revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, d
   .tax201415 <- 
     .tax201415 %>%
     mutate(
-      diff = revenue_due_to_Taxable_Income + new_tax_payable_on_concess_contr - prv_tax_payable_on_concess_contr + new_div293_tax - prv_div293_tax,
+      diff = revenue_due_to_Taxable_Income + 
+        new_tax_payable_on_concess_contr - 
+        prv_tax_payable_on_concess_contr + 
+        new_div293_tax - 
+        prv_div293_tax,
       tax = income_tax(new_Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE) + new_tax_payable_on_concess_contr + new_div293_tax,
       
       extra_tax_on_contr_if_no_concession = 
@@ -94,20 +81,23 @@ revenue_from_cap <- function(cap = 30000, cap2 = 35000, age_based_cap = FALSE, d
         new_tax_payable_on_concess_contr - 
         new_div293_tax,
       
-      tax_on_concession = new_tax_payable_on_concess_contr
+      tax_on_concession = new_tax_payable_on_concess_contr + new_div293_tax
     )
   # for debugging
-  .tax201415 <<- .tax201415
+  .tax201415 <<- mutate(ungroup(.tax201415), txid = 1:n())
   revenue <- sum(.tax201415$diff) * 50 * lf_inflator(to_date = "2015-06-30")
   return(revenue)
 }
 
+if(!just.function){
 # ====
 revenue_from_cap(age_based_cap = TRUE)/1e9
 nocap.taxstats <- .tax201415
 status_quo_tax_by_percentile <-
-  .tax201415 %>%
-  group_by(taxable_income_percentile = ntile(Taxable_Income, 100)) %>%
+  nocap.taxstats %>%
+  mutate(taxable_income_percentile = ntile(Taxable_Income, 100)) %>%
+  filter(taxable_income_percentile %in% (c(0:9)*10) | taxable_income_percentile == 95 | taxable_income_percentile == 99) %>%
+  group_by(taxable_income_percentile) %>%
   summarise(mean_tax = mean(extra_tax_on_contr_if_no_concession))
 
 rm(.tax201415)
@@ -116,13 +106,18 @@ gc(1,1)
 revenue_from_cap(cap = 11000)/1e9
 cap11k.taxstats <- .tax201415
 cap11k_tax_by_percentile <- 
-  .tax201415 %>%
-  group_by(taxable_income_percentile = ntile(Taxable_Income, 100)) %>%
+  cap11k.taxstats %>%
+  mutate(taxable_income_percentile = ntile(Taxable_Income, 100)) %>%
+  filter(taxable_income_percentile %in% (c(0:9)*10) | taxable_income_percentile == 95 | taxable_income_percentile == 99) %>%
+  group_by(taxable_income_percentile) %>%
   summarise(mean_tax = mean(extra_tax_on_contr_if_no_concession))
 
 bind_rows(status_quo_tax_by_percentile, cap11k_tax_by_percentile, .id = "id") %>% 
-  grplot(aes(x = taxable_income_percentile, y = mean_tax, color = id)) + 
-  geom_line(aes(group = id)) + theme(legend.position = c(0.2,0.7))
+  grplot(aes(x = factor(taxable_income_percentile), y = mean_tax, color = id)) + 
+  # geom_line(aes(group = id)) + 
+  geom_bar(stat = "identity", aes(fill = id), 
+           position = "dodge") +
+  theme(legend.position = c(0.2,0.7))
 
 # ====
 bind_rows(nocap.taxstats, cap11k.taxstats, .id = "hascap") %>%
@@ -150,3 +145,4 @@ bind_rows(nocap.taxstats, cap11k.taxstats, .id = "hascap") %>%
                      limits = c(0,350e3))
 # ====
 dev.copy2pdf(file = paste0(Sys.Date(), "Benefit_due_to_contributions_tax_concession_reduced.pdf"), width = 27, height = 12)
+}
