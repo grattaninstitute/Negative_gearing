@@ -19,7 +19,6 @@ library(shiny)
 library(ggplot2)
 library(scales)
 library(grattan)
-library(VIM) # VIM::hotdeck used for imputation
 library(dplyr)
 library(data.table)
 library(readxl)
@@ -34,6 +33,10 @@ library(rsdmx)
 shinyApp( options = list(height = 1024),
   ui = sidebarLayout(
     fluid = FALSE,
+    mainPanel(
+      tableOutput("values"),
+      plotOutput("chart")
+    ),
     sidebarPanel = sidebarPanel(
       selectInput("TargetFY", label = "Inflate values to", selected = "2012-13",
                   choices = c("2012-13", "2013-14", "2014-15", "2015-16")),
@@ -57,11 +60,8 @@ shinyApp( options = list(height = 1024),
                   min = 0, max = 250e3, value = 180000, step = 100),
       sliderInput("rate_5", label = "marginal rate",
                   min = 0, max = 0.6, value = 0.45, step = 0.005)
-    ),
-    mainPanel(
-      tableOutput("values"),
-      plotOutput("chart")
     )
+    
   )
   ,
   #####################################
@@ -130,32 +130,77 @@ shinyApp( options = list(height = 1024),
       }
       
       if (input$TargetFY != "2015-16"){
-        fread("Just_Taxable_Income.csv") %>%
-          mutate(Taxable_Income = as.integer(wage_inflator(Taxable_Income,
-                                                           from_fy = "2012-13", 
-                                                           to_fy = input$TargetFY))) %>%
-          mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income),
-                 diff = cpi_inflator(diff, from_fy = "2012-13", to_fy = input$TargetFY)) %$% 
-                 {-1 * sum(diff)* 50 * lf_inflator(to_date = as.character(fy2date(input$TargetFY)))} %>%
+        cpi.inflator <- cpi_inflator(from_fy = "2012-13", to_fy = input$TargetFY)
+        wage.inflator <- wage_inflator(from_fy = "2012-13", to_fy = input$TargetFY)
+        lf.inflator <- lf_inflator(to_date = as.character(fy2date(input$TargetFY)))
+        
+        temp <- 
+          fread("Just_Taxable_Income.csv") %>%
+          mutate(Taxable_Income = as.integer(wage.inflator * Taxable_Income)) %>%
+          mutate(tax_payable = income_tax(Taxable_Income),
+                 new_tax_payable = new_income_tax(Taxable_Income)) %>%
+          mutate(diff = tax_payable - new_tax_payable,
+                 diff = diff * cpi.inflator)
+        
+        temp %$% 
+        {-1 * sum(diff)* 50 * lf.inflator} %>%
           grattan_dollar(.) ->
           the_amount_remaining
+        
+        total_revenue <-
+            temp %$%
+            sum(tax_payable) * 50 * lf.inflator
+          
+        total_revenue <- grattan_dollar(total_revenue)
+        
+        new_revenue <- 
+          temp %$%
+          sum(tax_payable) * 50 * lf.inflator
+        
+        new_revenue <- grattan_dollar(new_revenue)
+          
       } else {
         if (input$TargetFY == "2015-16"){
-          fread("Just_Taxable_Income.csv") %>%
-            mutate(Taxable_Income = wage_inflator(Taxable_Income,
-                                                  from_fy = "2012-13", 
-                                                  to_fy = "2014-15") * wage_inflator(from_fy = "2013-14",
-                                                                                     to_fy = "2014-15")) %>%
-            mutate(diff = income_tax(Taxable_Income) - new_income_tax(Taxable_Income),
-                   diff = cpi_inflator(diff, 
-                                       from_fy = "2012-13", 
+          cpi.inflator <- cpi_inflator(from_fy = "2012-13",                                         
                                        to_fy = "2014-15") * cpi_inflator(from_fy = "2013-14",
-                                                                         to_fy = "2014-15")) %$% 
-                                                                         {-1 * sum(diff)* 50 * lf_inflator(to_date = as.character(fy2date(input$TargetFY)))} %>%
+                                                                         to_fy = "2014-15")
+          wage.inflator <- wage_inflator(from_fy = "2012-13", 
+                                         to_fy = "2014-15") * wage_inflator(from_fy = "2013-14",
+                                                                            to_fy = "2014-15")
+          lf.inflator <- lf_inflator(from_date = "2012-06-30", 
+                                     to_date = "2015-06-30")
+          
+          temp <- 
+            fread("Just_Taxable_Income.csv") %>%
+            mutate(Taxable_Income = as.integer(wage.inflator * Taxable_Income)) %>%
+            mutate(tax_payable = income_tax(Taxable_Income),
+                   new_tax_payable = new_income_tax(Taxable_Income)) %>%
+            mutate(diff = tax_payable - new_tax_payable,
+                   diff = diff * cpi.inflator)
+          
+          total_revenue <-
+            temp %$%
+            sum(tax_payable) * 50 * lf.inflator
+          
+          total_revenue <- grattan_dollar(total_revenue)
+          
+          new_revenue <- 
+            temp %$%
+            sum(new_tax_payable) * 50 * lf.inflator
+          
+          new_revenue <- grattan_dollar(new_revenue)
+          
+          temp %$% 
+          {-1 * sum(diff)* 50 * lf.inflator} %>%
             grattan_dollar(.) ->
             the_amount_remaining
         }
       }
+      
+      
+      
+      # Changing total income to taxable income. We assume a linear relationship and
+      # a persistent one across years. 
       # lm(Taxable_Income ~ Tot_inc_amt, data = get_sample_file(2013)) %>% coef %>% extract2(2)
       cameo1.Taxable_Income <- 0.96 * as.numeric(input$cameo1)
       cameo2.Taxable_Income <- 0.96 * as.numeric(input$cameo2)
@@ -182,15 +227,19 @@ shinyApp( options = list(height = 1024),
       data_frame(
         `Marginal rate of` = c(brackets,
                                "",
-                          "Extra revenue", 
-                          "$100,000",
-                          paste("Cameo 1 saving", input$cameo1),
-                          paste("Cameo 2 saving", input$cameo2)),
+                               "Old revenue",
+                               "New revenue",
+                               "Extra revenue", 
+                               "$100,000",
+                               paste("Cameo 1 saving", input$cameo1),
+                               paste("Cameo 2 saving", input$cameo2)),
         Value = as.character(c(input$rate_1, 
                                input$rate_2,
                                input$rate_3,
                                input$rate_4,
                                input$rate_5,
+                               total_revenue,
+                               new_revenue,
                                the_amount_remaining,
                                grattan_dollar(new_income_tax(cpi_inflator(100e3, from_fy = "2012-13", to_fy = "2013-14"))),
                                grattan_dollar(cameo1_diff),
