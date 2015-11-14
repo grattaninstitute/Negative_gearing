@@ -1,4 +1,6 @@
 
+just.function = TRUE
+
 .income_tax <- function(Taxable_Income){
   income_tax(Taxable_Income, fy.year = "2015-16", include.temp.budget.repair.levy = FALSE)
 }
@@ -51,7 +53,7 @@ henry_coster <- function(marginal_rate_subtractor = 0.20, super.guarantee.rate =
   .tax201415 %<>%
     mutate(
       total_tax = new_tax - rebate,
-      extra_tax_on_contr_if_no_concession = new_tax - .income_tax(Taxable_Income) -  prv_tax_payable_on_concess_contr - prv_div293_tax,
+      extra_tax_on_contr_if_no_concession = .income_tax(Taxable_Income + super_pretax_contributions) - total_tax,
       extra_tax_liability = new_tax - previous_tax - rebate - prv_tax_payable_on_concess_contr - prv_div293_tax
     )
   
@@ -62,4 +64,11 @@ henry_coster <- function(marginal_rate_subtractor = 0.20, super.guarantee.rate =
   return(difference)
 }
 
-.tax201415 %>% group_by(TXD = ntile(Taxable_Income, 10)) %>% summarise(mean.etl = mean(extra_tax_on_contr_if_no_concession)) %>% grplot(aes(x = factor(TXD), y = mean.etl)) + geom_bar(stat = "identity")
+if(!just.function){
+.tax201415 %>% 
+  group_by(taxable_income_percentile = ntile(Taxable_Income, 100)) %>% 
+  summarise(mean.etl = mean(extra_tax_on_contr_if_no_concession)) %>% 
+  
+  grplot(aes(x = factor(TXD), y = mean.etl)) + 
+  geom_bar(stat = "identity")
+}
