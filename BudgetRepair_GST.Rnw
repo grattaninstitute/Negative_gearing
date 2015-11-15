@@ -1105,6 +1105,18 @@ welfare.by.income.quintile_total <-
   select(-total)
 @
 
+<<amount_of_quintile_on_welfare>>=
+amount_of_quintile_on_welfare <- 
+  hes10hh %>%
+  group_by.income_quintile() %>%
+  group_by(has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0, 
+           gross_income_quintile) %>%
+  summarise(n_on_welfare = sum(Weight_HH_HES)) %>%
+  group_by(gross_income_quintile) %>%
+  mutate(prop_on_welfare = n_on_welfare/sum(n_on_welfare)) %>%
+  filter(has_welfare)
+@
+
 <<GST_compensation_by_quintile_and_threshold>>=
 hes_with_gst_compensation <- 
   hes10hh %>%
