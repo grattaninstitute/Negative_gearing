@@ -1125,12 +1125,17 @@ hes_with_gst_compensation <-
   data.table %>%
   setkey(gross_income_quintile) %>%
   merge(., welfare.by.income.quintile_total) %>%
-  group_by(gross_income_quintile) %>%
+  merge(., amount_of_quintile_on_welfare) %>% 
+  group_by(gross_income_quintile,
+           has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0) %>%
   mutate(
-    new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
-      prop_welfare / # amount to all households in that quintile
-      sum(Weight_HH_HES)
-  ) %>%
+    new_welfare = 
+      ifelse(has_welfare,
+             gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+               prop_welfare / # amount to all households in that quintile
+               sum(Weight_HH_HES),
+             0)
+  ) %>% 
   group_by(gross_income_quintile) %>%
   summarise(comp_adequacy.75pc = weighted.mean(new_welfare > 0.75* Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
             comp_adequacy.100pc = weighted.mean(new_welfare > Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
