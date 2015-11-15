@@ -198,7 +198,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
                       ,fig.path = "figure_BudgetRepair_GST/"
-                      ,cache=TRUE
+                      ,cache=F
                       ,cache.path = "cache_BudgetRepair_GST/"
                       ,dev=c('my_pdf', 'my_emf'
                              #, 'png'
@@ -1126,6 +1126,12 @@ hes_with_gst_compensation <-
   setkey(gross_income_quintile) %>%
   merge(., welfare.by.income.quintile_total) %>%
   merge(., amount_of_quintile_on_welfare) %>% 
+  group_by(gross_income_quintile) %>%
+  mutate(
+    new_welfare2 = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+      prop_welfare / # amount to all households in that quintile
+      sum(Weight_HH_HES)
+  ) %>%
   group_by(gross_income_quintile,
            has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0) %>%
   mutate(
@@ -1312,11 +1318,22 @@ hes_with_gst_and_tax_compensation <-
   data.table %>%
   setkey(gross_income_quintile) %>%
   merge(., welfare.by.income.quintile_total) %>%
+  merge(., amount_of_quintile_on_welfare) %>% 
   group_by(gross_income_quintile) %>%
   mutate(
-    new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+    new_welfare2 = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
       prop_welfare / # amount to all households in that quintile
       sum(Weight_HH_HES)
+  ) %>%
+  group_by(gross_income_quintile,
+           has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0) %>%
+  mutate(
+    new_welfare = 
+      ifelse(has_welfare,
+             gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
+               prop_welfare / # amount to all households in that quintile
+               sum(Weight_HH_HES),
+             0)
   ) %>%
   merge(new_tax_by_indiv, by = "Unique_household_number") %>%
   mutate(tax_diff_weekly = tax_diff / 52) %>% 
@@ -1336,7 +1353,9 @@ hes_with_gst_and_tax_compensation %T>%
   grplot(aes(x = `Gross income quintile`, fill = threshold, y = comp_adequacy)) + 
   geom_bar(stat = "identity",
            position = "dodge") + 
-  scale_y_continuous("Percent reaching threshold", label=percent,
+  scale_y_continuous("Percent reaching threshold", 
+                     label=percent,
+                     breaks = (0:10)/10,
                      expand = c(0,0),
                      limits = c(0,1)) + 
   geom_hline(yintercept = 0.50, linetype = 2) + 
