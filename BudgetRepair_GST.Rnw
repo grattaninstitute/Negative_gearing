@@ -148,6 +148,7 @@ IND <- function(x, min, max = Inf){
 
 <<age_mutate>>=
 age_mutate <- function(.hes){
+  stopifnot("Age_of_HH_reference_person" %in% names(.hes) || "Age_of_person" %in% names(.hes))
   if("Age_of_HH_reference_person" %in% names(.hes)){
     out <- 
     .hes %>%
@@ -1297,31 +1298,31 @@ States are unlikely to cooperate with changes to the GST unless they receive mor
 \section{GST increases could reduce the Commonwealth's substantial deficit}
 Alternatively, the additional GST revenue could go to reducing the Commonwealth substantial deficit. The Commonwealth has posted structural deficits for the last 8 years.\footcite[p.~4]{daleywood2015fiscalchallenges} On current policies these deficits are likely to continue. Projections for these deficits to reduce quickly over the 4 years of the forward estimates seem optimistic.  Budget repair will almost certainly require both tax increases and spending reductions.\footcite[p.~8-14]{daleywood2015fiscalchallenges} Tax increases through the GST are likely to distort economic activity less than most of the alternatives, and definitely less than the bracket creep which is the dominant driver of the Commonwealth's planned return to surplus.\footcite{daleywood2015fiscalchallenges}  Half of the available additional revenue from raising the GST to 15 per cent -- \$5 billion a year -- would only reduce the Commonwealth's budget deficit by around 15 per cent. 
 
-<<BottomQuintileFallingThroughCracks2, eval=FALSE>>=
+<<BottomQuintileFallingThroughCracks2, eval=TRUE>>=
 library(party)
 library(glmnet)
 
 bottom.quintile.not.compensated <- 
   hes_with_gst_and_tax_compensation %>%
-  tbl_df %>%
   age_mutate(.) %>%
   filter(gross_income_quintile == 1)
 
 bottom.quintile.not.compensated <- 
   bottom.quintile.not.compensated %>%
   mutate(not_compensated = new_welfare + tax_diff_weekly < Weekly_household_GST_on_all_goods_and_services_FIS/2,
-         has_welfare = factor(Current_weekly_HH_income_from_government_pensions_and_allowances > 0),
+         has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0,
          compensation_inadequacy = ifelse(not_compensated, 
                                           Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly,
                                           0),
-         compensation_rel_adequate = Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly) %>%
+         compensation_rel_adequate = -1 * (Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly)) %>%
   mutate(number_dependent_children = as.numeric(gsub("([0-9]) dependent.*$",
                                           "\\1",
                                           Number_of_dependent_children_aged_under_years_in_household)),
          number_dependent_children = ifelse(is.na(number_dependent_children),
                                             0,
                                             number_dependent_children),
-         has_children = number_dependent_children > 0)
+         has_children = number_dependent_children > 0,
+         is_self_funded_retiree = (!has_welfare) & age_group >= "60 to 64")
 
 vars.to.exclude <- 
   c("new_welfare", 
@@ -1343,28 +1344,134 @@ bottom.quintile.not.compensated %<>%
                                                               Year_purchased_dwelling_HH_ranged_numeric)),
     Year_purchased_dwelling_HH_ranged_factor.ordered = factor(Year_purchased_dwelling_HH_ranged_numeric, ordered = TRUE)
   ) %>% 
-  age_mutate %>%
   select(-Year_purchased_dwelling_HH_ranged)
 
 bottom.quintile.not.compensated_factors <-
   bottom.quintile.not.compensated[, lapply(.SD, function(x) if(is.character(x)) as.factor(x) else x)]
+
+bottom.quintile.not.compensated_factors %<>%
+  mutate(age_group_orderedF = factor(age_group, ordered = TRUE))
+@
+
+<<selfFundedRetirees>>=
+bottom.quintile.not.compensated_factors %>%
+  group_by(not_compensated, is_self_funded_retiree) %>%
+  summarise(n = sum(Weight_HH_HES)) %>%
+  ungroup %>%
+  mutate(prop = n/sum(n)) %>%
+  arrange(not_compensated, is_self_funded_retiree)
+@
+
+<<UnderCompensationbyAgeandWelfareStatus>>=
+bottom.quintile.not.compensated_factors %>%
+  group_by(not_compensated, has_welfare, age_group) %>%
+  summarise(n = sum(Weight_HH_HES)) %>%
+  ungroup %>% filter(not_compensated) %>%
+  mutate(prop = n/sum(n))  %>% 
+  arrange( has_welfare, age_group) %>% 
+  mutate(age_group = gsub("\\s", "\n", age_group)) %>%
+  grplot(aes(x = age_group, y = prop)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
+                                                               axis.title.x = element_blank()) + 
+  scale_y_continuous(label=percent)
+@
+\begin{figure}
+\Caption{}{Proportion of undercompensated households in lowest quintile}{fig:UnderCompensationbyAgeandWelfareStatus}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/UnderCompensationbyAgeandWelfareStatus-1}
+\source{Analysis of HES 2009-10}
+\end{figure}
+
+<<UnderCompensationbyChildren>>=
+bottom.quintile.not.compensated_factors %>%
+  group_by(not_compensated, has_welfare, number_dependent_children) %>%
+  summarise(n = sum(Weight_HH_HES)) %>%
+  ungroup %>% 
+  filter(not_compensated) %>%
+  mutate(prop = n/sum(n))  %>% 
+  grplot(aes(x = factor(number_dependent_children), y = prop)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
+                                                               axis.title.x = element_blank()) + 
+  scale_y_continuous(label=percent)
+@
+
+<<UnderCompensationbyPrevYrIncome>>=
+bottom.quintile.not.compensated_factors %>%
+  mutate(Prev_yr_HH_disp_income_factors = cut(Prev_fin_year_HH_disposable_income,
+                                              breaks = c(0:5)*10e3, include.lowest = TRUE,
+                                              dig.lab = 6)) %>%
+  group_by(not_compensated, has_welfare, Prev_yr_HH_disp_income_factors) %>%
+  summarise(n = sum(Weight_HH_HES)) %>%
+  ungroup %>% 
+  filter(not_compensated) %>%
+  mutate(prop = n/sum(n))  %>% 
+  grplot(aes(x = factor(Prev_yr_HH_disp_income_factors), y = prop)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
+                                                               axis.title.x = element_blank()) + 
+  scale_y_continuous(label=percent)
+@
+
+<<UnderCompensationbyNetWealth>>=
+bottom.quintile.not.compensated_factors %>%
+  mutate(Net_wealth_of_household_factors = cut(Net_wealth_of_household,
+                                              breaks = c(-Inf, 0, 100e3, 200e3, 300e3, 400e3, 500e3, Inf), 
+                                              include.lowest = TRUE,
+                                              dig.lab = 6)) %>%
+  group_by(not_compensated, has_welfare, Net_wealth_of_household_factors) %>%
+  summarise(n = sum(Weight_HH_HES)) %>%
+  ungroup %>% 
+  filter(not_compensated) %>%
+  mutate(prop = n/sum(n))  %>% 
+  grplot(aes(x = factor(Net_wealth_of_household_factors), y = prop)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
+                                                               axis.title.x = element_blank()) + 
+  scale_y_continuous(label=percent)
+@
+
+<<UnderCompensationbyConsumption>>=
+hes_with_gst_and_tax_compensation %>%
+  mutate(not_compensated = Weekly_household_GST_on_all_goods_and_services_FIS/2 > new_welfare + tax_diff_weekly) %>%
+  mutate(Weekly_GST = cut(Weekly_household_GST_on_all_goods_and_services_FIS,
+                          breaks = c(-Inf, 0, 10, 20, 30, 40, 50, 100, 200, Inf), 
+                          include.lowest = TRUE)) %>%
+  group_by(not_compensated, has_welfare, Weekly_GST) %>%
+  summarise(n = sum(Weight_HH_HES)) %>%
+  ungroup %>% 
+  filter(not_compensated) %>%
+  mutate(prop = n/sum(n))  %>% 
+  grplot(aes(x = factor(Weekly_GST), y = prop)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
+                                                               axis.title.x = element_blank()) + 
+  scale_y_continuous(label=percent)
 @
 
 <<trees, eval=FALSE>>=
-training. <- sample(1:nrow(bottom.quintile.not.compensated), size = 0.7*nrow(bottom.quintile.not.compensated))
+training. <- sample(1:nrow(bottom.quintile.not.compensated), size = 0.7 * nrow(bottom.quintile.not.compensated))
+train.data <- bottom.quintile.not.compensated_factors[training., ]
+test.data <- bottom.quintile.not.compensated_factors[!training., ]
 
-party.cracks.1 <- 
-  party::ctree(factor(not_compensated) ~ Year_purchased_dwelling_HH_ranged_factor.ordered + Prev_fin_year_HH_disposable_income + number_dependent_children + has_children + age_group + Number_of_unemployed_persons_in_the_household + Net_wealth_of_household + has_welfare, 
-               controls = ctree_control(minbucket = 100e3),
-               weights = round(bottom.quintile.not.compensated_factors$Weight_HH_HES), 
-               data = bottom.quintile.not.compensated_factors)
+buckets <- seq(from = 00e3, to = 500e3, by = 10e3)
+party.errors <- numeric(length(buckets))
+
+for (b in seq_along(buckets)){
+  party.cracks.1 <- 
+    party::ctree(factor(not_compensated) ~ Year_purchased_dwelling_HH_ranged_factor.ordered + Prev_fin_year_HH_disposable_income + number_dependent_children + has_children + age_group_orderedF + has_welfare +  Number_of_unemployed_persons_in_the_household + Net_wealth_of_household + is_self_funded_retiree, 
+                 controls = ctree_control(minbucket = buckets[b]),
+                 weights = round(train.data$Weight_HH_HES), 
+                 data = train.data)
+  pred.1 <- predict(party.cracks.1, newdata = test.data)
+  cm <- confusionMatrix(pred.1, test.data$not_compensated)
+  
+  party.errors[b] = cm$overall['Accuracy']
+}
+
 
 party.cracks.2 <-
-  party::ctree(factor(not_compensated) ~ Year_purchased_dwelling_HH_ranged_factor.ordered + Prev_fin_year_HH_disposable_income + Number_of_dependent_children_aged_under_years_in_household + age_group + Number_of_unemployed_persons_in_the_household + Net_wealth_of_household + has_welfare, 
-               controls = ctree_control(minbucket = 150e3),
-               weights = round(bottom.quintile.not.compensated_factors$Weight_HH_HES), 
-               data = bottom.quintile.not.compensated_factors)
-plot(party.cracks)
+    party::ctree(factor(not_compensated) ~ Year_purchased_dwelling_HH_ranged_factor.ordered + Prev_fin_year_HH_disposable_income + number_dependent_children + has_children + age_group_orderedF + has_welfare +  Number_of_unemployed_persons_in_the_household + Net_wealth_of_household + is_self_funded_retiree, 
+                 controls = ctree_control(minbucket = 100e3),
+                 weights = round(train.data$Weight_HH_HES), 
+                 data = train.data)
+plot(party.cracks.2)
+
 dev.copy2pdf(file = "PartyCracks.pdf", width = 32, height = 20)
 
 training. <- sample(1:nrow(bottom.quintile.not.compensated), size = 0.7*nrow(bottom.quintile.not.compensated))
