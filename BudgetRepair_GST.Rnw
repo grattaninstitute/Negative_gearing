@@ -8,164 +8,7 @@ new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
 @
 
 \usepackage{longtable,endnotes}
-\renewcommand\enoteformat{\rightskip=0pt \leftskip=0pt %\parindent=0em
-  \leavevmode\makeenmark\raggedright}
-%%% hyperendnotes.sty
-\makeatletter
-\newif\ifenotelinks
-\newcounter{Hendnote}
-% Redefining portions of endnotes-package:
-\let\savedhref\href
-\let\savedurl\url
-\def\endnotemark{%
-\@ifnextchar[\@xendnotemark{%
-\stepcounter{endnote}%
-\protected@xdef\@theenmark{\theendnote}%
-\protected@xdef\@theenvalue{\number\c@endnote}%
-\@endnotemark
-}%
-}%
-\def\@xendnotemark[#1]{%
-\begingroup\c@endnote#1\relax
-\unrestored@protected@xdef\@theenmark{\theendnote}%
-\unrestored@protected@xdef\@theenvalue{\number\c@endnote}%
-\endgroup
-\@endnotemark
-}%
-\def\endnotetext{%
-\@ifnextchar[\@xendnotenext{%
-\protected@xdef\@theenmark{\theendnote}%
-\protected@xdef\@theenvalue{\number\c@endnote}%
-\@endnotetext
-}%
-}%
-\def\@xendnotenext[#1]{%
-\begingroup
-\c@endnote=#1\relax
-\unrestored@protected@xdef\@theenmark{\theendnote}%
-\unrestored@protected@xdef\@theenvalue{\number\c@endnote}%
-\endgroup
-\@endnotetext
-}%
-\def\endnote{%
-\@ifnextchar[\@xendnote{%
-\stepcounter{endnote}%
-\protected@xdef\@theenmark{\theendnote}%
-\protected@xdef\@theenvalue{\number\c@endnote}%
-\@endnotemark\@endnotetext
-}%
-}%
-\def\@xendnote[#1]{%
-\begingroup
-\c@endnote=#1\relax
-\unrestored@protected@xdef\@theenmark{\theendnote}%
-\unrestored@protected@xdef\@theenvalue{\number\c@endnote}%
-\show\@theenvalue
-\endgroup
-\@endnotemark\@endnotetext
-}%
-\def\@endnotemark{%
-\leavevmode
-\ifhmode
-\edef\@x@sf{\the\spacefactor}\nobreak
-\fi
-\ifenotelinks
-\expandafter\@firstofone
-\else
-\expandafter\@gobble
-\fi
-{%
-\Hy@raisedlink{%
-\hyper@@anchor{Hendnotepage.\@theenvalue}{\empty}%
-}%
-}%
-\hyper@linkstart{link}{Hendnote.\@theenvalue}%
-\makeenmark
-\hyper@linkend
-\ifhmode
-\spacefactor\@x@sf
-\fi
-\relax
-}%
-\long\def\@endnotetext#1{%
-\if@enotesopen
-\else
-\@openenotes
-\fi
-\immediate\write\@enotes{%
-\@doanenote{\@theenmark}{\@theenvalue}%
-}%
-\begingroup
-\def\next{#1}%
-\newlinechar='40
-\immediate\write\@enotes{\meaning\next}%
-\endgroup
-\immediate\write\@enotes{%
-\@endanenote
-}%
-}%
-\def\theendnotes{%
-\immediate\closeout\@enotes
-\global\@enotesopenfalse
-\begingroup
-\makeatletter
-\edef\@tempa{`\string>}%
-\ifnum\catcode\@tempa=12
-\let\@ResetGT\relax
-\else
-\edef\@ResetGT{\noexpand\catcode\@tempa=\the\catcode\@tempa}%
-\@makeother\>%
-\fi
-\def\@doanenote##1##2##3>{%
-\def\@theenmark{##1}%
-\def\@theenvalue{##2}%
-\par
-\smallskip %<-small vertical gap between endnotes
-\begingroup
-\def\href{\expandafter\savedhref}%
-\def\url{\expandafter\savedurl}%
-\@ResetGT
-\edef\@currentlabel{\csname p@endnote\endcsname\@theenmark}%
-\enoteformat
-}%
-\def\@endanenote{%
-\par\endgroup
-}%
-% Redefine, how numbers are formatted in the endnotes-section:
-\renewcommand*\@makeenmark{%
-\hbox{\normalfont\@theenmark~}%
-}%
-% header of endnotes-section
-\enoteheading
-% font-size of endnotes
-\enotesize
-\input{\jobname.ent}%
-\endgroup
-}%
-\def\enoteformat{%
-\rightskip\z@
-\leftskip1.8em
-\parindent\z@
-\leavevmode\llap{%
-\setcounter{Hendnote}{\@theenvalue}%
-\addtocounter{Hendnote}{-1}%
-\refstepcounter{Hendnote}%
-\ifenotelinks
-\expandafter\@secondoftwo
-\else
-\expandafter\@firstoftwo
-\fi
-{\@firstofone}%
-{\hyperlink{Hendnotepage.\@theenvalue}}%
-{\makeenmark}%
-}%
-}%
-% stop redefining portions of endnotes-package:
-\makeatother
-% Toggle switch in order to turn on/off back-links in the
-% endnote-section:
-\enotelinkstrue
-%\enotelinksfalse
+\input{footnoteToEndnote.tex}
   
 
 \title{A higher or broader GST}
@@ -306,6 +149,7 @@ IND <- function(x, min, max = Inf){
 <<age_mutate>>=
 age_mutate <- function(.hes){
   if("Age_of_HH_reference_person" %in% names(.hes)){
+    out <- 
     .hes %>%
       mutate(
         age_group = as.character(Age_of_HH_reference_person),
@@ -317,11 +161,11 @@ age_mutate <- function(.hes){
                                         (as.numeric(age_group) %/% 5) * 5 + 4)),
                            age_group
         )
-      ) %>%
-      return
+      ) 
   }
   
   if("Age_of_person" %in% names(.hes)){
+    out <- 
     .hes %>%
       mutate(
         age_group = as.character(Age_of_person),
@@ -333,10 +177,9 @@ age_mutate <- function(.hes){
                                         (as.numeric(age_group) %/% 5) * 5 + 4)),
                            age_group
         )
-      ) %>%
-      return
+      ) 
   }
-  
+  out
 }
 @
 
@@ -1141,7 +984,10 @@ hes_with_gst_compensation <-
                prop_welfare / # amount to all households in that quintile
                sum(Weight_HH_HES),
              0)
-  ) %>% 
+  ) 
+
+welfare_compensation_adequacy <-
+  hes_with_gst_compensation %>%
   group_by(gross_income_quintile) %>%
   summarise(comp_adequacy.75pc = weighted.mean(new_welfare > 0.75* Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
             comp_adequacy.100pc = weighted.mean(new_welfare > Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
@@ -1155,7 +1001,7 @@ hes_with_gst_compensation <-
                                                                                      ">100%",
                                                                                      ">125%")))
 
-hes_with_gst_compensation %T>%
+welfare_compensation_adequacy %T>%
   chart_data() %>%
   mutate(`Gross income quintile` = gross_income_quintile) %>%
   grplot(aes(x = `Gross income quintile`, fill = threshold, y = comp_adequacy)) + 
@@ -1177,14 +1023,14 @@ hes_with_gst_compensation %T>%
 And because low-incomepeople have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
 nearly  % ceiling
 \Sexpr{
-paste0(ceiling(100 * dplyr::filter(hes_with_gst_compensation, gross_income_quintile == 1, threshold == ">100%")$comp_adequacy), "\\%")
+paste0(ceiling(100 * dplyr::filter(welfare_compensation_adequacy, gross_income_quintile == 1, threshold == ">100%")$comp_adequacy), "\\%")
 }% 
 %70 per cent 
 ~of households in the bottom income quintile are better off, with 
 nearly  % ceiling 
 \Sexpr{
 paste0(
-round(ceiling(100 * dplyr::filter(hes_with_gst_compensation, gross_income_quintile == 1, threshold == ">125%")$comp_adequacy)
+round(ceiling(100 * dplyr::filter(welfare_compensation_adequacy, gross_income_quintile == 1, threshold == ">125%")$comp_adequacy)
 , -1L),
 "\\%")
 }% 
@@ -1312,38 +1158,19 @@ new_tax_by_indiv <-
   summarise(tax_diff = sum(tax_diff))
 
 hes_with_gst_and_tax_compensation <- 
-  hes10hh %>%
-  group_by.income_quintile() %>%
-  ungroup %>%
-  data.table %>%
-  setkey(gross_income_quintile) %>%
-  merge(., welfare.by.income.quintile_total) %>%
-  merge(., amount_of_quintile_on_welfare) %>% 
-  group_by(gross_income_quintile) %>%
-  mutate(
-    new_welfare2 = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
-      prop_welfare / # amount to all households in that quintile
-      sum(Weight_HH_HES)
-  ) %>%
-  group_by(gross_income_quintile,
-           has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0) %>%
-  mutate(
-    new_welfare = 
-      ifelse(has_welfare,
-             gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
-               prop_welfare / # amount to all households in that quintile
-               sum(Weight_HH_HES),
-             0)
-  ) %>%
+  hes_with_gst_compensation %>%
   merge(new_tax_by_indiv, by = "Unique_household_number") %>%
-  mutate(tax_diff_weekly = tax_diff / 52) %>% 
+  mutate(tax_diff_weekly = tax_diff / 52) 
+
+welfare_and_tax_compensation_adequacy <- 
+  hes_with_gst_and_tax_compensation %>% 
   group_by(gross_income_quintile) %>%
   summarise(comp_adequacy.75pc = weighted.mean(new_welfare + tax_diff_weekly > 0.75* Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
             comp_adequacy.100pc = weighted.mean(new_welfare + tax_diff_weekly > Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES),
             comp_adequacy.125pc = weighted.mean(new_welfare + tax_diff_weekly > 1.25*Weekly_household_GST_on_all_goods_and_services_FIS/2, Weight_HH_HES)
   )
 
-hes_with_gst_and_tax_compensation %T>%
+welfare_and_tax_compensation_adequacy %T>%
   readr::write_csv("./figure/GST_compensation_and_tax_cuts_by_quintile_and_threshold.csv") %>%
   gather(threshold, comp_adequacy, comp_adequacy.75pc:comp_adequacy.125pc) %>%
   mutate(threshold = gsub("pc", "%", 
@@ -1376,14 +1203,14 @@ hes_with_gst_and_tax_compensation %T>%
 \end{figure}
 
 <<Are_bottom_40pc_compensated>>=
-hes_with_gst_and_tax_compensation %>% 
+welfare_and_tax_compensation_adequacy %>% 
   filter(gross_income_quintile %in% 1:2) %$% 
   all(comp_adequacy.100pc > 0.5) ->
   bottom40pc.overcompensated.on.avg
 @
 
 <<Third_and_fourth_quintile_compensation_adequacy>>=
-hes_with_gst_and_tax_compensation %>% 
+welfare_and_tax_compensation_adequacy %>% 
   filter(gross_income_quintile %in% 3:4) %$%
   all(comp_adequacy.75pc > 0.5) ->
   middle40pc.compensated.by.75pc
@@ -1475,34 +1302,9 @@ library(party)
 library(glmnet)
 
 bottom.quintile.not.compensated <- 
-  hes10hh %>%
-  group_by.income_quintile() %>%
-  ungroup %>%
-  mutate(
-    age_group = as.character(Age_of_HH_reference_person),
-    age_group = ifelse(grepl("^[0-9]+$", age_group), 
-                       ifelse(as.numeric(age_group) < 20,
-                              "20 or under",
-                              paste((as.numeric(age_group) %/% 5) * 5,
-                                    "to",
-                                    (as.numeric(age_group) %/% 5) * 5 + 4)),
-                       age_group
-    ),
-    age_group = factor(age_group, ordered = TRUE)
-  ) %>% 
-  data.table %>%
-  setkey(gross_income_quintile) %>%
-  merge(., welfare.by.income.quintile_total) %>%
-  group_by(gross_income_quintile) %>%
-  mutate(
-    new_welfare = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
-      prop_welfare / # amount to all households in that quintile
-      sum(Weight_HH_HES)
-  ) %>%
-  merge(new_tax_by_indiv, by = "Unique_household_number") %>%
-  mutate(tax_diff_weekly = tax_diff / 52) %>% 
-  group_by(gross_income_quintile) %>%
-  ungroup %>%
+  hes_with_gst_and_tax_compensation %>%
+  tbl_df %>%
+  age_mutate(.) %>%
   filter(gross_income_quintile == 1)
 
 bottom.quintile.not.compensated <- 
@@ -1512,7 +1314,6 @@ bottom.quintile.not.compensated <-
          compensation_inadequacy = ifelse(not_compensated, 
                                           Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly,
                                           0),
-         has_welfare = new_welfare > 0,
          compensation_rel_adequate = Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly) %>%
   mutate(number_dependent_children = as.numeric(gsub("([0-9]) dependent.*$",
                                           "\\1",
@@ -1542,6 +1343,7 @@ bottom.quintile.not.compensated %<>%
                                                               Year_purchased_dwelling_HH_ranged_numeric)),
     Year_purchased_dwelling_HH_ranged_factor.ordered = factor(Year_purchased_dwelling_HH_ranged_numeric, ordered = TRUE)
   ) %>% 
+  age_mutate %>%
   select(-Year_purchased_dwelling_HH_ranged)
 
 bottom.quintile.not.compensated_factors <-
@@ -1549,6 +1351,7 @@ bottom.quintile.not.compensated_factors <-
 @
 
 <<trees, eval=FALSE>>=
+training. <- sample(1:nrow(bottom.quintile.not.compensated), size = 0.7*nrow(bottom.quintile.not.compensated))
 
 party.cracks.1 <- 
   party::ctree(factor(not_compensated) ~ Year_purchased_dwelling_HH_ranged_factor.ordered + Prev_fin_year_HH_disposable_income + number_dependent_children + has_children + age_group + Number_of_unemployed_persons_in_the_household + Net_wealth_of_household + has_welfare, 
