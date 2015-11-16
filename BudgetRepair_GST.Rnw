@@ -1444,6 +1444,20 @@ hes_with_gst_and_tax_compensation %>%
   scale_y_continuous(label=percent)
 @
 
+<<UnderCompensationbyMainIncome>>=
+bottom.quintile.not.compensated_factors %>%
+  group_by(not_compensated, has_welfare, Main_source_of_current_HH_income) %>%
+  summarise(n = sum(Weight_HH_HES)) %>%
+  ungroup %>% 
+  filter(not_compensated) %>%
+  mutate(prop = n/sum(n))  %>% 
+  grplot(aes(x = factor(Main_source_of_current_HH_income), y = prop)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + 
+  theme(legend.position = c(0.15, 0.7),
+        axis.title.x = element_blank()) + 
+  scale_y_continuous(label=percent)
+@
+
 <<trees, eval=FALSE>>=
 training. <- sample(1:nrow(bottom.quintile.not.compensated), size = 0.7 * nrow(bottom.quintile.not.compensated))
 train.data <- bottom.quintile.not.compensated_factors[training., ]
