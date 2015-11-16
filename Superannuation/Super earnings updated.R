@@ -1,9 +1,3 @@
-# Superannuation earnings charts
-# The cost of changes to superannuation earnings taxation is done in a seperate spreadsheet
-
-# Here I am using SIH2011-12 to examine incomes for those over 60 and their super earnings + tax effect
-# Will also have a look at this by wealth
-
 
 # ======================================================================================================== #
 # Super model for Budget Repair report ============================================================================ #
@@ -18,7 +12,7 @@
 # (1) We should inflate all our variables forward to 2015-16, including super balances- DONE for inflation, but we could grow income forward by nominal wages (eg. use the ABS wage price index for this)
 # (2) Check our estimate for super earnings - standard benchmark used in Treasury and the OECD appears to be 7 per cent after fees (but before tax)
 # (3) Adjust tax rates for super earnings to account for (a) 10% CGT for super; and (b) dividend imputation. Estimates from Mercer suggest an effective tax rate of around 8-9 per cent is reasonable
-# (4) Generate a more nuanced taxable income variable (i.e. better than SIH total income) to use when estimate value of super earnings tax concession against personal income tax benchmark
+# (4) Generate a more nuanced taxable income variable (i.e. better than SIH total income) to use when estimating value of super earnings tax concession against personal income tax benchmark
 # (5) Should we be substracting any super income streams from our total income (including super earnings)? If we're including super earnings in income, then we shouldnt be including drawdowns on super as income at the same time to avoid double counting
 # (6) Better define those in the drawdown phase as those aged over 60 drawing an income stream from a super fund - DONE 
 # (7) Introducing a different earnings rate in the accumulation and drawdown phases - DONE
@@ -48,6 +42,7 @@ library(car)
 library(gam)
 library(lattice)
 library(ggplot2)
+library(magrittr)
 
 # ======================================================================================================== 
 # Pulling in the data
@@ -124,6 +119,8 @@ person.dfkv$Income.disp <- person.dfkv$Total.income - person.dfkv$Tax
 # For now we just take off super income streams which are tax free. 
 
 person.dfkv$Taxable.income <- person.dfkv$Total.income - person.dfkv$Super.income 
+person.dfkv$Total.income <- person.dfkv$Total.income - person.dfkv$Super.income 
+person.dfkv$Total.income.inc.wdls <- person.dfkv$Total.income + person.dfkv$Super.income
 
 person.dfkv$Taxable.income <- ifelse(person.dfkv$Taxable.income < 0, 0, person.dfkv$Taxable.income)
 
@@ -153,9 +150,9 @@ y <- sum((person.dfkv$Total.super <= 0)*person.dfkv$Weights)
 # Some basic calculations to adjust for inflation 
 
 # We want to cost this for the 2015-16 budget 
-# For now I'll just inflate at the inflation rate - in the future it may be better to inflate  variables by 10 year averages of inflation and wages, dependiong on the variable
+# For now I'll just inflate at the inflation rate - in the future it may be better to inflate  variables by 10 year averages of inflation and wages, depending on the variable
 
-# This also maintains the real value of super balances (and therefore also super earnings on those balances) over the years to 2015-16. More realistically super balances will compound on average since more $$$ are being added to the system each year in contributions and investment earnings, than are being taken out via drawdowns. Therefore, in this sense, our costings are relatively conservative as they are based off smaller super balances.
+# We dont inflate super balances at this stage since we adjust them separately below. This is because (a) balances compound over time at a rate faster than inflation - ore $$$ are being added to the system each year in contributions and investment earnings, than are being taken out via drawdowns; and (b) the survey data is likely to underreport aggregate super balances 
 
 # Assume 2.5 per cent inflation rate
 
@@ -164,24 +161,41 @@ years = 4
 inflation.f <- 1.025^years
 
 # List of variables that do not need to be adjusted
-no.inflation <- c("HH.pos","Age","Sex","LFS","HHID","Weights", "PID", "Fam.type")
+no.inflation <- c("HH.pos","Age","Sex","LFS","HHID","Weights", "PID", "Fam.type", "Total.super", "Gov.super", "Non.gov.super")
 
 # Inflation adjusting the data frame (inflating all not selected as no inflation variables)
 person.dfkvi <- cbind(person.dfkv[,no.inflation], (person.dfkv[,!names(person.dfkv) %in% no.inflation])*inflation.f)
 
 #===================================================================================
-# Investigating super balances
+# Grow forward super account balances
+
 
 # We have total super balances, before inflating, of $1.14 trillion
 
-sum(person.dfkv$Total.super * person.dfkv$Weights) / 10^9
-
-# We have total super balances, after inflating, of $1.26 trillion
-
 sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9
 
-# By comparison, APRA reports total funds under management of $2 trillion as of end March 2015
-# http://www.apra.gov.au/Super/Publications/Documents/1505-QSP-March2015.pdf
+sum(person.dfkvi$Gov.super * person.dfkvi$Weights) / 10^9 # $300 billion
+sum(person.dfkvi$Non.gov.super * person.dfkvi$Weights) / 10^9 # $840 billion
+
+# By comparison, APRA reports total funds under management of $2 trillion as of end June 2015
+# http://www.apra.gov.au/Super/Publications/Documents/1508-QSP-June2015.pdf
+
+# So we inflate forward our super account balances by a factor of 2/1.14. This way our weighted survey sample has total account balances equal to the aggregate account balances nationally, and we assume that the distribution of super balances across our survey sample holds across the whole population 
+
+# Let x be our growth factor
+x <- 2/1.14
+
+# Inflating super balances by x
+person.dfkvi$Gov.super <- person.dfkvi$Gov.super * x
+person.dfkvi$Non.gov.super <- person.dfkvi$Non.gov.super * x
+person.dfkvi$Total.super <- person.dfkvi$Total.super * x
+
+sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # $2 trillion in total super balances
+
+#===================================================================================
+# Investigating actual distribution of super balances - using uninflated dataset
+
+# This recreates some of the ASFA work on those with very high account balances
 
 # Number of people with balances of over $1 million in 2011-12 is 110,000, or 0.6% of individuals, with total funds of $181 billion
 
@@ -215,7 +229,15 @@ person.dfkvi %>% group_by(Total.super < 2500000) %>%
   ungroup %>%
   mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
 
-#===================================================================================
+# Number of people with a super account of some value is 
+
+person.dfkv %>% group_by(Total.super>0) %>% 
+  summarise(No.individuals = sum(Weights), 
+            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
+  ungroup %>%
+  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
+
+# ===================================================================================
 # Adding in extra tax policy variables
 
 # We add these in afterwards as they are from 2014-15, so we dont want to inflate them up from 2012-13
@@ -272,7 +294,7 @@ person.dfkvi$LITO.max <- rep(445, length(person.dfkvi$Age))
 
 # We start by defining a 'drawdown' variable, where we need Age as a numeric variable to filter on it 
 person.dfkvi$Age.numeric <- as.numeric(person.dfkvi$Age)
-person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 21, 0, ifelse(person.dfkvi$Super.income > 0, 1, 0))
+person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 22, 0, ifelse(person.dfkvi$Super.income > 0, 1, 0))
 
 # Now we see how many of those that are over 60, and have a super balance, are in the drawdown phase
 
@@ -350,13 +372,15 @@ Super.return.rate.ddown <- 0.05 # 5 per cent return in the drawdown phase
 
 # So super earnings will depend upon whether super account holders are in the accumulation or drawdown phases
 
-person.dfkvi$Super.earnings <- ifelse(person.dfkvi$Super.ddown == 1, Super.return.rate.ddown*person.dfkvi$Total.super, Super.return.rate.acc*person.dfkvi$Total.super)
+person.dfkvi$Super.earnings <- ifelse(person.dfkvi$Super.ddown == 1, 
+                                      Super.return.rate.ddown*person.dfkvi$Total.super, 
+                                      Super.return.rate.acc*person.dfkvi$Total.super)
 summary(person.dfkvi$Super.earnings)
 
-sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # We estimate total super balances of $1.26 trillion
-sum(person.dfkvi$Super.earnings * person.dfkvi$Weights) / 10^9 # With annual super earnings of $81 billion
+sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # We estimate total super balances of $2 trillion
+sum(person.dfkvi$Super.earnings * person.dfkvi$Weights) / 10^9 # With annual super earnings of $128 billion
 
-# By comparison, APRA Supperannuation Bulletin Statistics report total funds under management of $1.19 trillion as at June 2011, rising to $1.34 billion as at June 2012 and to $2 trillion . Funds reported investment earnings of $106 billion in 2010-11, and $24 billion in 2011-12, or an average of $65 billion across the 2 years. So our numbers probably stack up okay.
+# Funds reported investment earnings of $137 billion in 2013-14, and $117 billion in 2014-15. So our numbers probably stack up okay.
 hist(person.dfkvi$Super.earnings, breaks = 200, xlim = c(0,50000))
 
 # Need to redo these for over 60
@@ -437,15 +461,38 @@ income.table.60 <- person.dfkvi.60 %>% group_by(Age, Disp.income.quintile) %>% s
 
 person.dfkvi$Total.income.annual <- person.dfkvi$Total.income * 52
 person.dfkvi$Taxable.income.annual <- person.dfkvi$Taxable.income * 52
+person.dfkv$Total.income.inc.wdls.annual <- person.dfkv$Total.income.inc.wdls * 52
+person.dfkvi$Total.income.inc.wdls.annual <- person.dfkvi$Total.income.inc.wdls * 52
 
 # We create a new variable that adds in an estimate of the earnings from superannuation fund balances, which are not captured in the SIH 11-12. What the SIH includes on super is the value of any benefits paid  from a superannuation fund, such as a pension or a lump sum withdrawals.
 
-# We also also assuming that all withdrawals from super (pension or lump sum) are not included in estimates of total income. 
+# We've also assumed that all withdrawals from super (pension or lump sum) are not included in estimates of total income. This isa comprehensive income tax base so withdrawals are not included - same as withdrawing $$$ from a bank account isnt counted as income
 
 person.dfkvi$Total.income.annual.s <- person.dfkvi$Total.income.annual + person.dfkvi$Super.earnings
 person.dfkvi$Taxable.income.annual.s <- person.dfkvi$Taxable.income.annual + person.dfkvi$Super.earnings
 
 # Source: SIH Questionairre: Module 3.12 (Super), http://www.ausstats.abs.gov.au/Ausstats/subscriber.nsf/0/7EAA6F8CC80D5855CA257BD60010E895/$File/sih%202011-12%20paper%20questionnaire.pdf
+
+# Before we write our various tax functions, we first set up a test module so that we can run a range of taxable incomes over them to make sure that they work property
+
+Simulation.df <- data_frame("Taxable.income.annual" = seq(10000,100000, by = 5000),
+                            "Age.numeric" = 28,
+                            "Single" = 1, # Change this to simulate TF threshold for couples (0) or singles (1)
+                            "SAPTO.lower.indiv" = 32279, 
+                            "SAPTO.upper.indiv" = 50119, 
+                            "SAPTO.max.indiv" = 2230, 
+                            "SAPTO.lower.cpl" = 57948, 
+                            "SAPTO.upper.cpl" = 83580, 
+                            "SAPTO.max.cpl" = 1602, 
+                            "ML.lower" = 21418.4, 
+                            "ML.upper" = 26773 , 
+                            "ML.lower.senior" = 33870.1 , 
+                            "ML.upper.senior" = 42337.62, 
+                            "LITO.lower" = 37000, 
+                            "LITO.upper" = 66666, 
+                            "LITO.max" = 445)
+
+# View(Simulation.df)
 
 # Now we write a quick tax function - we include the Medicare Levy, SAPTO and LITO
 
@@ -454,9 +501,16 @@ tax.function <- function(income){
   tax <- ifelse(income<18200, 0, 
                 ifelse(income<37000, (income-18200)*0.19, 
                        ifelse(income<80000, 3572 + (income-37000)*0.325,
-                              ifelse(income<180000, 17547 + (income-80000)*0.37, 54547 + 0.47*(income-180000)))))
+                              ifelse(income<180000, 17547 + (income-80000)*0.37, 54547 + 0.45*(income-180000)))))
   tax
 }
+
+# We test it out on our practice function
+
+Simulation.df$Tax.liability <- tax.function(Simulation.df$Taxable.income.annual)
+
+# # View(Simulation.df)
+
 
 # We also write a function for the Medicare Levy
 
@@ -475,6 +529,17 @@ ML.function <- function(income,
   Medicare.levy  
 
 }
+
+Simulation.df$Medicare.levy <- ML.function(Simulation.df$Taxable.income.annual,
+                                           Simulation.df$ML.lower, 
+                                           Simulation.df$ML.upper, 
+                                           Simulation.df$ML.lower.senior, 
+                                           Simulation.df$ML.upper.senior, 
+                                           Simulation.df$Age.numeric)
+
+Simulation.df$Tax.liability.tot <- Simulation.df$Tax.liability + Simulation.df$Medicare.levy
+
+# # View(Simulation.df)
 
 # And a function for SAPTO entitlement
 # Here we distingush between the entitlements for individuals and couples, as well as by age. We don't however, currently allow couples to share their SAPTO entitlements between them (as can happen) and so we will underestimate the degree to which SAPTO reduces personal income tax paid at the aggregate. If we have time we'll add this in.
@@ -497,14 +562,30 @@ SAPTO.function <- function(income,
                                 ifelse(income < SAPTO.upper.indiv, 
                                        (SAPTO.upper.indiv - income) * 0.125, 
                                        0)), 
-                         ifelse(income < SAPTO.lower.cpl, 
+                         ifelse(income < SAPTO.lower.cpl / 2 , 
                                 SAPTO.max.cpl,
-                                ifelse(income < SAPTO.upper.cpl, 
-                                       (SAPTO.upper.cpl - income) * 0.125, 
+                                ifelse(income < SAPTO.upper.cpl / 2, 
+                                       (SAPTO.upper.cpl / 2 - income) * 0.125, 
                                        0))))
                                   
   SAPTO
 }
+
+Simulation.df$SAPTO <- SAPTO.function(Simulation.df$Taxable.income.annual,
+                                      Simulation.df$Age.numeric,
+                                      Simulation.df$Single,
+                                      Simulation.df$SAPTO.lower.indiv, 
+                                      Simulation.df$SAPTO.upper.indiv, 
+                                      Simulation.df$SAPTO.max.indiv, 
+                                      Simulation.df$SAPTO.lower.cpl, 
+                                      Simulation.df$SAPTO.upper.cpl, 
+                                      Simulation.df$SAPTO.max.cpl)
+
+Simulation.df$Tax.liability.tot <- ifelse(Simulation.df$Tax.liability.tot < Simulation.df$SAPTO, 0, 
+                                          Simulation.df$Tax.liability.tot - Simulation.df$SAPTO)
+
+# # View(Simulation.df)
+
 
 # And a function for LITO entitlement
 
@@ -513,6 +594,17 @@ LITO.function <- function(income, LITO.lower, LITO.upper, LITO.max) {
   LITO <- ifelse(income < LITO.lower, LITO.max, 
                  ifelse(income < LITO.upper, (LITO.upper - income) * 0.015, 0))
 }
+
+Simulation.df$LITO <- LITO.function(Simulation.df$Taxable.income.annual, 
+                                    Simulation.df$LITO.lower, 
+                                    Simulation.df$LITO.upper, 
+                                    Simulation.df$LITO.max)
+
+Simulation.df$Tax.liability.tot <- ifelse(Simulation.df$Tax.liability.tot < Simulation.df$LITO, 0, 
+                                          Simulation.df$Tax.liability.tot - Simulation.df$LITO)
+
+
+# # View(Simulation.df)
 
 # We also define an 'unused' tax free threshold function, which we will pick up later when we consider behavioural change in response to the reintroduction of taxes on super earnings in the drawdown phase 
 
@@ -523,13 +615,17 @@ TF.unused.function <- function(income) {
 }
 
 
+Simulation.df$Unused.TF <- TF.unused.function(Simulation.df$Taxable.income.annual)
+
+# View(Simulation.df)
+
 # And we estimate each person's tax liability
 
 person.dfkvi$Tax.estimate <- tax.function(person.dfkvi$Taxable.income.annual) 
 
-sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights)/10^9 # $199.8 billion
+sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights)/10^9 # $188 billion
 
-# We alo estimate their Medicare Levy liability - this uses taxable income for the income test 
+# We also estimate their Medicare Levy liability - this uses taxable income for the income test 
 
 person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual,
                                           person.dfkvi$ML.lower, 
@@ -540,9 +636,9 @@ person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual,
 
 person.dfkvi$Tax.estimate <- person.dfkvi$Tax.estimate + person.dfkvi$Medicare.levy
 
-sum(person.dfkvi$Medicare.levy * person.dfkvi$Weights)/10^9 # ML raises $17.4 billion
+sum(person.dfkvi$Medicare.levy * person.dfkvi$Weights)/10^9 # ML raises $15.8 billion
 
-sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights)/10^9 # $199.8 billion once ML included
+sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights)/10^9 # $203 billion once ML included
 
 # Neither SAPTO or LITO are refundable tax offsets, so we only apply them to reduce tax if the individual actually has a tax liability up to this point
 
@@ -583,17 +679,17 @@ sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights)/10^9 # $199.8 billion
 # We compare this against the ABS-derived tax estimate in the SIH 11-12, which used the PIT tax scales for that year, including a 1.5% Medicare Levy
 
 person.dfkvi$Tax.annual <- person.dfkvi$Tax * 52
-(sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) - sum(person.dfkvi$Tax.annual * person.dfkvi$Weights)) / 10 ^ 9 # 52.8 billion difference
+(sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) - sum(person.dfkvi$Tax.annual * person.dfkvi$Weights)) / 10 ^ 9 # 55 billion difference
 sum(person.dfkvi$Tax.annual * person.dfkvi$Weights) / 10^9 # ABS estimates PIT of $147 billion for 2011-12
-sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) / 10^9 # We estimate PIT of $199.8 billion for 2015-16. 
+sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) / 10^9 # We estimate PIT of $202 billion for 2015-16. 
 
-# There is clearly a difference in the taxable income base we use. ATO Revenue Statistics reports total personal income tax revenues of $149.8 billion in 2011-12, but our figures are based on different tax settings, and are inflated ot 2015-16. The CW Budget projects personal income tax receipts of $176.6 billion in 2015-16, which is what we should really be aiming for. So our taxable income is still too high   
+# There is clearly a difference in the taxable income base we use. ATO Revenue Statistics reports total personal income tax revenues of $149.8 billion in 2011-12, but our figures are based on different tax settings, and are inflated ot 2015-16. The CW Budget projects personal income tax receipts of $176.6 billion in 2015-16, which is what we should really be aiming for. So our taxable income is still too high but may not matter much in this context   
 
 # We also generate an estimate of the tax collected if super earnings were taxed as part of regular income 
 
 person.dfkvi$Tax.estimate.s <- tax.function(person.dfkvi$Taxable.income.annual.s) 
 
-sum(person.dfkvi$Tax.estimate.s * person.dfkvi$Weights)/10^9 # $226.4 billion
+sum(person.dfkvi$Tax.estimate.s * person.dfkvi$Weights)/10^9 # $230 billion
 
 # We alo estimate their Medicare Levy liability
 
@@ -606,9 +702,9 @@ person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual.s,
 
 person.dfkvi$Tax.estimate.s <- person.dfkvi$Tax.estimate.s + person.dfkvi$Medicare.levy
 
-sum(person.dfkvi$Medicare.levy * person.dfkvi$Weights)/10^9 # ML raises $17.4 billion
+sum(person.dfkvi$Medicare.levy * person.dfkvi$Weights)/10^9 # ML raises $18.4 billion
 
-sum(person.dfkvi$Tax.estimate.s * person.dfkvi$Weights)/10^9 # $243.8 billion once ML included
+sum(person.dfkvi$Tax.estimate.s * person.dfkvi$Weights)/10^9 # $248 billion once ML included
 
 # Neither SAPTO or LITO are refundable tax offsets, so we only apply them to reduce tax if the individual actually has a tax liability up to this point
 
@@ -639,7 +735,7 @@ person.dfkvi$SAPTO.entitlement <- SAPTO.function(person.dfkvi$Taxable.income.ann
 person.dfkvi$Tax.estimate.s <- ifelse(person.dfkvi$Tax.estimate.s < person.dfkvi$SAPTO.entitlement, 0, 
                                     person.dfkvi$Tax.estimate.s - person.dfkvi$SAPTO.entitlement)
 
-sum(person.dfkvi$Tax.estimate.s * person.dfkvi$Weights) / 10^9 # Taxing super earnings at PIT marginal rates, we estimate total PIT of $243.8 billion
+sum(person.dfkvi$Tax.estimate.s * person.dfkvi$Weights) / 10^9 # Taxing super earnings at PIT marginal rates, we estimate total PIT of $246 billion
 
 
 
@@ -661,7 +757,7 @@ person.dfkvi$super.earnings.tax.current <- ifelse(person.dfkvi$Super.ddown == 1,
 
 sum(person.dfkvi$super.earnings.tax.current * person.dfkvi$Weights) / 10^9
 
-# So we estimate that current super taxes on earnings raise $7.9 billion annually
+# So we estimate that current super taxes on earnings raise $12.6 billion annually
 
 # Total taxes on super funds averaged $7.3 billion between 2004-05 and 2013-14, and were $7.9 billion in 2011-12. However this also includes taxes paid on concessional contributions. 
 
@@ -685,6 +781,31 @@ sum(person.dfkvi$Super.concession * person.dfkvi$Weights) / 10^9 # $18.7 billion
 person.dfkvi$Super.concession.over60s <- (person.dfkvi$Super.earnings * tax.rate.ddown) - person.dfkvi$super.earnings.tax.current 
 
 sum(person.dfkvi$Super.concession.over60s * person.dfkvi$Weights) / 10^9 # Concession is worth $3.4 billion, as per costing below
+
+# What assets are in the drawdown phase by this definition?
+
+super.bal.ddown.df <- person.dfkvi %>% group_by(Super.ddown == 1) %>%
+  summarise(total.assets = sum(Total.super * Weights) / 10^9, 
+            total.people = sum(Weights))
+
+# So we find that $533 billion in assets are in the drawdown phase
+
+# What super assets are held by over 60s in general?
+
+super.bal.over60.df <- person.dfkvi %>% group_by(Age.numeric > 21) %>%
+  summarise(total.assets = sum(Total.super * Weights) / 10^9, 
+            total.people = sum(Weights))
+
+# $752 billion in assets are held by over 60s
+
+# What proportion of the super balances of over 60s are in drawdown phase?
+
+share.over60s.bal.ddown <- person.dfkvi %>% filter(Age.numeric > 21) %>%
+  group_by((Super.ddown == 1)) %>%
+  summarise(total.assets = sum(Total.super * Weights) / 10^9) %>% ungroup %>%
+  mutate(prop.assets = total.assets / sum(total.assets))
+
+# So 70 per cent of the assets of over 60s are in the drawdown phase
 
 # ==================================================================================
 # Exploring reform options - no behaviour change
@@ -710,7 +831,8 @@ sum(person.dfkvi$super.earnings.tax.opt1 * person.dfkvi$Weights) / 10^9
   
 # Size of super earnings tax expenditure post reform is $17.9 billion
 
-person.dfkvi$Super.concession.opt1 <- person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.opt1
+person.dfkvi$Super.concession.opt1 <- 
+  person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.opt1
 
 sum(person.dfkvi$Super.concession.opt1 * person.dfkvi$Weights) / 10^9
 
@@ -723,7 +845,8 @@ sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.curr
 
 person.dfkvi$super.earnings.tax.20000tf <- ifelse(person.dfkvi$Super.ddown == 1,
                                                   ifelse(person.dfkvi$Super.earnings - 20000 >= 0,
-                                                         (person.dfkvi$Super.earnings-20000) *tax.rate.ddown, 0), 
+                                                         (person.dfkvi$Super.earnings - 20000) * tax.rate.ddown, 
+                                                         0), 
                                                   person.dfkvi$Super.earnings * tax.rate.acc)
 
 # Value of the tax concession, relative to a personal income tax benchmark, becomes:
@@ -785,7 +908,7 @@ person.dfkvi$Super.concession.ALP <- person.dfkvi$Tax.estimate.s - person.dfkvi$
 
 sum(person.dfkvi$Super.concession.ALP * person.dfkvi$Weights) / 10^9 # Total concession is $18.5 billion
 
-# How much does it save compared to the current tax concessions on super earnings - $0.2 billion
+# How much does it save compared to the current tax concessions on super earnings - $0.6 billion
 
 sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 
@@ -804,6 +927,8 @@ sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.curre
 
 # ==================================================================================
 # (a) Reintroduce a 15% tax rate on super for over 60s
+
+# First we set our earnings tax rate, dependig on whether they're in the drowdown phase or not (to reflect fact that ppl make more conservative investment decisions in retirement that yield fewer capital gains, hence higher effective tax rate in the ddown phase)
 
 person.dfkvi$super.earnings.tax.opt1 <- ifelse(person.dfkvi$Super.ddown == 1, 
                                                person.dfkvi$Super.earnings * tax.rate.acc, 
@@ -824,12 +949,66 @@ person.dfkvi$marginal.tax.rate <- cut2(person.dfkvi$Taxable.income.annual.s, cut
 levels(person.dfkvi$marginal.tax.rate) <- c(0,0,0.19,0.345,0.39,0.47)
 person.dfkvi$TF.threshold <- rep(18200, length(person.dfkvi$Age))
 
-# The unused taxfree threshold, in terms of tax paid, is the some of any SAPTO and LITO entitlements of an individual, plus any unused portion of the 18200 TF threshold, multiplied by the tax rate on earnings in the drawdown phase
+# The unused taxfree threshold, in terms of tax paid, is the sum of any SAPTO and LITO entitlements of an individual, plus any unused portion of the 18200 TF threshold multiplied by the tax rate on earnings in the drawdown phase
 
-person.dfkvi$Excess.TF.income.threshold <- ifelse(person.dfkvi$Super.ddown == 1, 
-                                                  TF.unused.function(person.dfkvi$Taxable.income.annual) * tax.rate.ddown + 
-                                                    (person.dfkvi$SAPTO.entitlement + 
-                                                       person.dfkvi$LITO.entitlement), 0) 
+# This is the unused tax free entitlements in terms of tax that can be avoided, not income
+
+# THIS IS WRONG - we're including the SAPTO and LITO entitlements here even when they are being used
+
+# We need to write a different function instead that only accounts for SAPTO and LITO entitlement WHEN they are actually unused. It works in the simulation below
+
+Simulation.df$Excess.TF.income.threshold <- ifelse(Simulation.df$Taxable.income.annual < 18200, 
+                                                   TF.unused.function(Simulation.df$Taxable.income.annual) * tax.rate.ddown +
+                                                     Simulation.df$SAPTO + Simulation.df$LITO,
+                                                   ifelse((Simulation.df$Tax.liability + 
+                                                            Simulation.df$Medicare.levy - 
+                                                            Simulation.df$SAPTO - 
+                                                            Simulation.df$LITO) < 0, 
+                                                          Simulation.df$SAPTO + Simulation.df$LITO -
+                                                            Simulation.df$Tax.liability - 
+                                                            Simulation.df$Medicare.levy,
+                                                          0))
+                                                   
+
+person.dfkvi %<>%
+  mutate(Excess.TF.income.threshold = ifelse(Super.ddown == 1, 
+                                             ifelse(Taxable.income.annual < 18200,
+                                                    TF.unused.function(Taxable.income.annual) * tax.rate.ddown + SAPTO.entitlement + LITO.entitlement,
+                                                    ifelse(Tax.estimate + Medicare.levy - SAPTO.entitlement - LITO.entitlement < 0,
+                                                           SAPTO.entitlement + LITO.entitlement - Tax.estimate - Medicare.levy,
+                                                           0)),
+                                             0))
+
+# # View(person.dfkvi)
+
+# We check what's the max income of someone that has tax credits left. It should only be circa $33k
+
+ddown.max.income.df <- person.dfkvi %>% filter(Excess.TF.income.threshold > 0)
+
+summary(ddown.max.income.df$Taxable.income.annual)
+
+# Ok so the max income of someone with  is $33,160, which is pretty spot on with the maximum effective tax free threshold for an individual of Age Pension age
+
+summary(ddown.max.income.df$Total.income.annual.s)
+
+# But there are people with very high super earnings that still qualify for tax credits from SAPTO and LITO that they can use to reduce their taxes on super earnings
+
+# How many unused tax credits are there among those in the ddown phase?
+
+sum(person.dfkvi$Excess.TF.income.threshold * person.dfkvi$Weights) / 10^9
+
+# $1.85 billion in unused tax credits among those in the drawdown phase. That may be a little low? Lets check against other characteristics of this population group, as it is a pretty small group overall.
+
+ddown.group.df <- person.dfkvi %>% filter(Super.ddown == 1) %>%
+  summarise(Total.income = sum(Taxable.income.annual * Weights) / 10^9,
+            Average.income = weighted.mean(x = Taxable.income.annual, w = Weights), 
+            Total.tax = sum(Tax.estimate * Weights) / 10^9, 
+            Average.tax = weighted.mean(x = Tax.estimate, w = Weights),
+            Total.unused.entitlements = sum(Excess.TF.income.threshold * Weights), 
+            Average.unused.entitlements = weighted.mean(x = Excess.TF.income.threshold, w = Weights),
+            No.individuals = sum(Weights))
+
+2700 * 10^6 / 10^9 # The maximum possible tax credits from LITO and SPTO that could be expected from this group would be around $2.7 billion. Given that the average income is $26,000, unused entitlements that average $1800 seems reasonable, leading to a total unused entitlement from this group of $1.8 billion. This means that the maximum revenue lost through behavioural change is going to be $1.8 million from any reforms to super earnings taxes for over 60s.
 
 # So now we know how much tax ppl can avoid by shifting their earnings out of super to make the most of any remaining TF threshold and SAPTO / LITO entitlements outside of the super system
 
@@ -841,21 +1020,27 @@ person.dfkvi$super.earnings.tax.opt1.behav <- ifelse(person.dfkvi$super.earnings
 
 person.dfkvi$super.earnings.tax.opt1.foregone <- person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.opt1.behav
 
-sum(person.dfkvi$super.earnings.tax.opt1.foregone * person.dfkvi$Weights)/10^9
+sum(person.dfkvi$super.earnings.tax.opt1.foregone * person.dfkvi$Weights) / 10^9
 
-# So only lose $1 billion via behavioural change
+# So only lose $0.9 billion via behavioural change
 
 # We compare the two super tax reform outcomes to make sure the function has worked properly
 
 beffect.opt1.df <- data_frame(Total.income.s = person.dfkvi$Total.income.annual.s,
+                              Total.income = person.dfkvi$Total.income.annual,
                                Super.earnings.untaxed = person.dfkvi$Super.earnings,
                                Super.earnings.tax.opt1 = person.dfkvi$super.earnings.tax.opt1,
                                Opt1.no.behav = person.dfkvi$super.earnings.tax.opt1,
                                Opt1.w.behav = person.dfkvi$super.earnings.tax.opt1.behav,
                                Opt1.b.change = person.dfkvi$super.earnings.tax.opt1.foregone,
                                TF.outside = person.dfkvi$Excess.TF.income.threshold,
-                               Super.ddown = person.dfkvi$Super.ddown) %>% filter(Super.ddown == 1) 
-View(beffect.opt1.df)
+                               Super.ddown = person.dfkvi$Super.ddown) %>% filter(Super.ddown == 1)
+
+# # View(beffect.opt1.df)
+
+cross.check <- beffect.opt1.df %>% filter (Super.ddown == 1) %>% ggplot(aes(x = Total.income, y = TF.outside))+ geom_point()
+
+summary(cross.check$Age.numeric)
 
 # What proportion of those in the drawdown phase reduce their tax liability through behavioural change?
 
@@ -870,10 +1055,10 @@ Behav.effect.opt1.df <- person.dfkvi %>% filter(Super.ddown ==1) %>%
          Prop.earnings = Total.earnings / sum(Total.earnings), 
          Prop.earnings.tax.foregone = Total.super.tax.fgone / sum(Total.extra.tax.no.behav))
 
-View(Behav.effect.opt1.df)
+# # View(Behav.effect.opt1.df)
 
 
-# So 70% of those affected could reduce their tax liability by shifting $$ from super, and we lose 25% of the potential extra super earnings tax
+# So 70% of those affected could reduce their tax liability by shifting $$ from super, and we lose 30% of the potential extra super earnings tax
 
 # Total super earnings tax raised - $10 billion
 
@@ -885,11 +1070,11 @@ person.dfkvi$Super.concession.opt1.behav <- person.dfkvi$Tax.estimate.s - person
 
 sum(person.dfkvi$Super.concession.opt1.behav * person.dfkvi$Weights) / 10^9
 
-# Budget saving from reintroducing the 15% tax on super earnings for over 60s - $2.1 billion
+# Budget saving from reintroducing the 15% tax on super earnings for over 60s - $3.9 billion
 
 sum((person.dfkvi$super.earnings.tax.opt1.behav - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9
 
-# What does behavioural change cost us? $1 billion
+# What does behavioural change cost us? $0.9 billion
 
 sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.opt1.behav) * person.dfkvi$Weights) / 10^9
 
@@ -928,7 +1113,7 @@ beffect.20kTF.df <- data_frame(Total.income.s = person.dfkvi$Total.income.annual
                                Opt2.20kTF.b.change = person.dfkvi$super.earnings.tax.20000tf.foregone,
                                TF.outside = person.dfkvi$Excess.TF.income.threshold,
                                Super.ddown = person.dfkvi$Super.ddown) %>% filter(Super.ddown == 1) 
-View(beffect.20kTF.df)
+# # View(beffect.20kTF.df)
 
 # What proportion of those in the drawdown phase reduce their tax liability through behavioural change?
 
@@ -944,9 +1129,9 @@ Behav.effect.20kTF.df <- person.dfkvi %>% filter(Super.ddown ==1) %>%
          Prop.earnings = Total.earnings / sum(Total.earnings), 
          Prop.earnings.tax.foregone = Total.super.tax.fgone / sum(Total.extra.tax.no.behav))
 
-View(Behav.effect.20kTF.df)
+# View(Behav.effect.20kTF.df)
 
-# So 10 percent of those in the drawdown phase have an incentive to change behaviour when we re-introduce the super earnings tax with the 20k TF threshold, and revenue leakage from behaviour change is only equal to 6 per cent of the taxable super earnings in the drawdown phase. This is because most of those that would have had an incentive to withdraw $$$ from super to make the most of unused tax free income entitlements in the PIT system no longer have a reason to, as their earnings are exampt within super. In other words, there is a strong correlation between having a low super balance, and having unused TF income entitlements in the PIT system.    
+# So 25 percent of those in the drawdown phase have an incentive to change behaviour when we re-introduce the super earnings tax with the 20k TF threshold, affecting 44 per cent of earning, and revenue leakage from behaviour change is only equal to 17 per cent of the taxable super earnings in the drawdown phase. This is because most of those that would have had an incentive to withdraw $$$ from super to make the most of unused tax free income entitlements in the PIT system no longer have a reason to, as their earnings are exampt within super. In other words, there is a strong correlation between having a low super balance, and having unused TF income entitlements in the PIT system.    
 
 # Value of the tax concession, relative to a personal income tax benchmark, becomes:
 
@@ -958,17 +1143,17 @@ sum(person.dfkvi$super.earnings.tax.20000tf.behav * person.dfkvi$Weights)/10^9
 
 sum(person.dfkvi$Super.concession.20000tf.behav * person.dfkvi$Weights) / 10^9 # Total concession is $17.8 billion
 
-# How much does it save - $0.7 billion
+# How much does it save - $1.6 billion
 
 sum((person.dfkvi$super.earnings.tax.20000tf.behav - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 
-# How much do we sacrifice by including a tax free threshold for over 60s of 20000, compared to no TF threshold - $1.4 billion. 
+# How much do we sacrifice by including a tax free threshold for over 60s of 20000, compared to no TF threshold - $2.3 billion. 
 
 sum((person.dfkvi$super.earnings.tax.opt1.behav - person.dfkvi$super.earnings.tax.20000tf.behav) * person.dfkvi$Weights) / 10^9 
 
 # So we lose roughly half the revenue with a TF thresold, but less than before we account for behavioural change. This is because most of those that can avoid the tax via by taking $$ out of super and benefit from TF thresholds under PIT are all helped by making the first 20k of super earnings tax free.
 
-# Incidentally the revenue leakage due to behavioural change under this proposal is just $60 million
+# Incidentally the revenue leakage due to behavioural change under this proposal is $340 million
 
 sum((person.dfkvi$super.earnings.tax.20000tf.foregone * person.dfkvi$Weights)) / 10^9
 
@@ -1003,7 +1188,7 @@ beffect.ALP.df <- data_frame(Total.income.s = person.dfkvi$Total.income.annual.s
                                Opt2.ALP.b.change = person.dfkvi$super.earnings.tax.ALP.foregone,
                                TF.outside = person.dfkvi$Excess.TF.income.threshold,
                                Super.ddown = person.dfkvi$Super.ddown) %>% filter(Super.ddown == 1) %>% filter(Super.earnings.untaxed > 75000)
-View(beffect.ALP.df)
+# View(beffect.ALP.df)
 
 # What proportion of those in the drawdown phase reduce their tax liability through behavioural change?
 
@@ -1019,8 +1204,9 @@ Behav.effect.ALP.df <- person.dfkvi %>% filter(Super.ddown ==1) %>%
          Prop.earnings = Total.earnings / sum(Total.earnings), 
          Prop.earnings.tax.foregone = Total.super.tax.fgone / sum(Total.extra.tax.no.behav))
 
-View(Behav.effect.ALP.df)
+# View(Behav.effect.ALP.df)
 
+# Behavioural change affects 4 per cent of individuals, and 15 per cent of taxable earnings
 
 Ddown.stats <- person.dfkvi %>% filter(Age.numeric > 26) %>% group_by(Super.ddown == 1) %>%
   summarise(no.individuals = sum(Weights), 
@@ -1034,11 +1220,11 @@ person.dfkvi$Super.concession.ALP <- person.dfkvi$Tax.estimate.s - person.dfkvi$
 
 sum(person.dfkvi$Super.concession.ALP * person.dfkvi$Weights) / 10^9 # Total concession is $20.8 billion
 
-# How much does it save compared to the current tax concessions on super earnings - $0.18 billion
+# How much does it save compared to the current tax concessions on super earnings - $0.513 billion
 
 sum((person.dfkvi$super.earnings.tax.ALP.behav - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 
-# This estimate is much lower than the PBO's costing of a policy for David L, in a request to the PBO which sought to replicate the ALP's proposed (but unpublished) policy. That costing estimated a revenue impact of $600 million in 2018-19. 
+# This estimate is marginally lower than the PBO's costing of a policy for David L, in a request to the PBO which sought to replicate the ALP's proposed (but unpublished) policy. That costing estimated a revenue impact of $600 million in 2018-19. 
 
 # ==================================================================================
 # Distributional analysis: super earnings and tax concessions by total income (both with and without super earnings)
@@ -1064,6 +1250,8 @@ person.dfkvi$Total.income.annual <- ifelse(person.dfkvi$Total.income.annual < 0,
 
 person.dfkvi$Total.income.annual.s <- ifelse(person.dfkvi$Total.income.annual.s < 0, 0, person.dfkvi$Total.income.annual.s)
 
+person.dfkvi$Total.income.inc.wdls.annual <- ifelse(person.dfkvi$Total.income.inc.wdls.annual < 0, 0, person.dfkvi$Total.income.inc.wdls.annual)
+
 # Then we define a survey object (you need the survey pkg for this)
 
 SIHP.svy <- svydesign(id=~PID, weights= ~Weights, fpc=NULL, data = person.dfkvi)
@@ -1085,38 +1273,97 @@ person.dfkvi$tincome.s.decile <- cut(person.dfkvi$Total.income.annual.s, breaks 
 person.dfkvi$tincome.s.decile.range <- cut(person.dfkvi$Total.income.annual.s, breaks = SIHP.tincome.s.10)
 
 # ==================================================================================
+# Income deciles for over 60s only
+# ================================================================================== #
+
+# Then we define a survey object (you need the survey pkg for this)
+
+person.dfkvi.over60 <- person.dfkvi %>% filter(Age.numeric > 21)
+
+SIHP.svy.over60 <- svydesign(id=~PID, weights= ~Weights, fpc=NULL, data = person.dfkvi.over60)
+
+# Then we use this to define survey weighted quintiles and deciles
+
+# Deciles for total income (excluding super) and total income (including super) and total income including super withdrawals but not super earnings
+SIHP.tincome.10.over60 <- svyquantile(~Total.income.annual, SIHP.svy.over60,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+SIHP.tincome.s.10.over60 <- svyquantile(~Total.income.annual.s, SIHP.svy.over60,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+SIHP.tincome.w.10.over60 <- svyquantile(~Total.income.inc.wdls.annual, SIHP.svy.over60,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+
+# So now we use cut to break up the dataset along the deciles specified in the survey object
+
+# Total income (excluding super) 
+person.dfkvi$tincome.decile.over60 <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.tincome.10.over60) %>% as.numeric()
+person.dfkvi$tincome.decile.over60.range <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.tincome.10.over60) 
+
+# Total income (including super)
+person.dfkvi$tincome.s.decile.over60 <- cut(person.dfkvi$Total.income.annual.s, breaks = SIHP.tincome.s.10.over60) %>% as.numeric()
+person.dfkvi$tincome.s.decile.over60.range <- cut(person.dfkvi$Total.income.annual.s, breaks = SIHP.tincome.s.10.over60)
+
+# Total income (including super withdrawals, but not earnings)
+
+person.dfkvi$tincome.w.decile.over60 <- cut(person.dfkvi$Total.income.inc.wdls.annual, breaks = SIHP.tincome.w.10.over60) %>% as.numeric()
+person.dfkvi$tincome.w.decile.over60.range <- cut(person.dfkvi$Total.income.inc.wdls.annual, breaks = SIHP.tincome.w.10.over60)
+
+# ==================================================================================
+# Income deciles for over 60s only in the drawdown phase
+# ================================================================================== #
+
+# Then we define a survey object (you need the survey pkg for this)
+
+person.dfkvi.over60.ddown <- person.dfkvi %>% filter(Age.numeric > 21) %>% filter(Super.ddown == 1)
+
+SIHP.svy.over60.ddown <- svydesign(id=~PID, weights= ~Weights, fpc=NULL, data = person.dfkvi.over60.ddown)
+
+# Then we use this to define survey weighted quintiles and deciles
+
+# Deciles for total income (excluding super) and total income (including super)
+SIHP.tincome.10.over60.ddown <- svyquantile(~Total.income.annual, SIHP.svy.over60.ddown,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+SIHP.tincome.s.10.over60.ddown <- svyquantile(~Total.income.annual.s, SIHP.svy.over60.ddown,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+
+# So now we use cut to break up the dataset along the deciles specified in the survey object
+
+# Total income (excluding super) 
+person.dfkvi$tincome.decile.over60.ddown <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.tincome.10.over60.ddown) %>% as.numeric()
+person.dfkvi$tincome.decile.over60.ddown.range <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.tincome.10.over60.ddown) 
+
+# Total income (including super)
+person.dfkvi$tincome.s.decile.over60.ddown <- cut(person.dfkvi$Total.income.annual.s, breaks = SIHP.tincome.s.10.over60.ddown) %>% as.numeric()
+person.dfkvi$tincome.s.decile.over60.ddown.range <- cut(person.dfkvi$Total.income.annual.s, breaks = SIHP.tincome.s.10.over60.ddown)
+
+# ==================================================================================
 # Final outputs for super chapter in budget repair report - figures, charts and tables
 # ==================================================================================
 
 # ==================================================================================
 # Our final costings for the reform options, without behavioural change, which are cited in the chapter, are:
 
-# (a) Budget saving from reintroducing the 15% tax on super earnings for over 60s - $3.2 billion
+# (a) Budget saving from reintroducing the 15% tax on super earnings for over 60s - $4.87 billion
 sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9
 
-# (b) 20000  - tax free threshold for over 60s in super drawdown phase - $1 billion
+# (b) 20000  - tax free threshold for over 60s in super drawdown phase - $1.97 billion
 sum((person.dfkvi$super.earnings.tax.20000tf - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 
-# (c) a tax free threshold of 75,000 for under 60s, tax free super earnings for over 60s, consistent with proposed ALP policy - $0.2 billion
+# (c) a tax free threshold of 75,000 for under 60s, tax free super earnings for over 60s, consistent with proposed ALP policy - $0.56 billion
 sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 # Note: we might not end up using this last one in the chapter
 
 # ==================================================================================
 # Our final costings for the reform options, with behavioural change, which are cited in the chapter, are:
 
-# (a) Budget saving from reintroducing the 15% tax on super earnings for over 60s - $2.1 billion
+# (a) Budget saving from reintroducing the 15% tax on super earnings for over 60s - $3.94 billion
 sum((person.dfkvi$super.earnings.tax.opt1.behav - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9
 
-# (b) 20000  - tax free threshold for over 60s in super drawdown phase - $0.7 billion
+# (b) 20000  - tax free threshold for over 60s in super drawdown phase - $1.6 billion
 sum((person.dfkvi$super.earnings.tax.20000tf.behav - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 
-# (c) a tax free threshold of 75,000 for under 60s, tax free super earnings for over 60s, consistent with proposed ALP policy - $0.2 billion
+# (c) a tax free threshold of 75,000 for under 60s, tax free super earnings for over 60s, consistent with proposed ALP policy - $0.56 billion
 sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 # Note: we might not end up using this last one in the chapter
 
 #==================================================================================
 # Investigating non-concessional super contributions 
 
+# This analysis has switched to HILDA which is a more likely data source
 
 #==================================================================================
 # Our final charts for the chapter are:
@@ -1132,8 +1379,7 @@ Chart1.df <- person.dfkvi %>% filter(Age.numeric >=22) %>%
 # We see that when we exclude super earnings from the calculation of our income deciles then we end up with lots of ppl with significant super earnings (but few other income streams) in the bottom income decile. This is because super earnings are not included in total income in the SIH as the earnings compound in the fund, rather than becoming available for consumption. Therefore we use Chart 2 instead, which includes super earnings in total income when calculating our total income deciles.
 
 # Chart 2 - Total income (including super earnings) of over 60s
-Chart2.df <- person.dfkvi %>% 
-  filter(Age.numeric >= 22) %>% 
+Chart2.df <- person.dfkvi %>% filter(Age.numeric >=22) %>% 
   filter(!is.na(tincome.decile)) %>%
   group_by(tincome.s.decile.range) %>% 
   summarise(Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights), 
@@ -1142,15 +1388,73 @@ Chart2.df <- person.dfkvi %>%
 write.table(Chart2.df , sep = "\t", file = clip <- pipe("pbcopy", "w"))
 close(clip)
 
-# Chart 3 - Tax concession by income decile with a TF threshold, and under current arrangements
-Chart3.df <- 
-  person.dfkvi %>% 
-  filter(Age.numeric >= 22) %>% 
-  filter(!is.na(tincome.decile)) %>%
-  group_by(tincome.s.decile.range) %>% 
+# Chart 3a- Tax concession by income decile with and without a tax free threshold
+
+# Chart 3a: No behaviour change
+
+Chart3a.df <- person.dfkvi %>% filter(Super.ddown == 1) %>% 
+  filter(!is.na(tincome.s.decile.over60)) %>%
+  group_by(tincome.s.decile.over60.range) %>% 
   summarise(Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights),
-            Mean.tax.concession.current = sum(Super.concession.over60s * Weights) / sum(Weights), 
-            Mean.tax.concession.20000tf = sum(Super.concession.20000tf.over60s * Weights) / sum(Weights))
+            Extra.tax.opt1 = sum((super.earnings.tax.opt1 -
+                                    super.earnings.tax.current) * Weights) / sum(Weights), 
+            Extra.tax.tf20000 = sum((super.earnings.tax.20000tf -
+                                super.earnings.tax.current) * Weights) / sum(Weights),
+            no.individuals = sum(Weights), 
+            Ave.account.balance = weighted.mean(x = Total.super, w = Weights), 
+            Ave.super.withdrawal = weighted.mean(x = Super.income * 52, w = Weights))
+
+write.table(Chart3a.df , sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
+
+# View(Chart3a.df)
+
+# Chart 3b: And with behavioural change
+
+Chart3b.df <- person.dfkvi %>% filter(Super.ddown == 1) %>% 
+  filter(!is.na(tincome.s.decile.over60)) %>%
+  group_by(tincome.s.decile.over60.range) %>% 
+  summarise(Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights),
+            Extra.tax.opt1 = sum((super.earnings.tax.opt1.behav - 
+                                    super.earnings.tax.current) * Weights) / sum(Weights), 
+            Extra.tax.20000tf = sum((super.earnings.tax.20000tf.behav - 
+                                       super.earnings.tax.current) * Weights) / sum(Weights),
+            no.individuals = sum(Weights), 
+            Ave.account.balance = weighted.mean(x = Total.super, w = Weights),
+            No.datapoints = length(Total.super),
+            Ave.income.inc.super = weighted.mean(x = Total.income.annual.s, w = Weights),
+            Ave.super.withdrawal = weighted.mean(x = Super.income * 52, w = Weights))
+
+write.table(Chart3b.df , sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
+# View(Chart3b.df)
+
+# Chart 3c: Comparing behavioural change and not - without including super in income deciles
+
+Chart3c.df <- person.dfkvi %>% filter(Super.ddown == 1) %>% 
+  filter(!is.na(tincome.decile.over60)) %>%
+  group_by(tincome.decile.over60.range) %>% 
+  summarise(Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights),
+            Extra.tax.opt1.nobh = sum((super.earnings.tax.opt1 -
+                                    super.earnings.tax.current) * Weights) / sum(Weights), 
+                        Extra.tax.opt1.wbh = sum((super.earnings.tax.opt1.behav - 
+                                    super.earnings.tax.current) * Weights) / sum(Weights), 
+            Extra.tax.tf20000.no.bh = sum((super.earnings.tax.20000tf -
+                                             super.earnings.tax.current) * Weights) / sum(Weights),
+            Extra.tax.20000tf.wbh = sum((super.earnings.tax.20000tf.behav - 
+                                       super.earnings.tax.current) * Weights) / sum(Weights),
+            no.individuals = sum(Weights), 
+            No.datapoints = length(Total.super),
+            Ave.account.balance = weighted.mean(x = Total.super, w = Weights))
+
+# View(Chart3c.df)
+
+write.table(Chart3a.df , sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
+
 
 # Chart 4 - Value of super earnings tax concessions under current arrangements and reform proposals compared to personal income tax benchmark
 
@@ -1169,6 +1473,9 @@ Chart5.df <- data_frame(Reform.15percent.tax.on.everyone = sum((person.dfkvi$sup
                         Reform.15percent.tax.20000tf = sum((person.dfkvi$super.earnings.tax.20000tf - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9, 
                         Reform.15percent.tax.75000tf = sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9)
 
+write.table(Chart5.df , sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
 # Chart 6 - Summary costing of earnings tax concession reforms - comparing pre- and post behavioural change
 
 Chart6.df <- data_frame(Reform.15percent.tax.on.everyone = sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9, 
@@ -1178,23 +1485,78 @@ Chart6.df <- data_frame(Reform.15percent.tax.on.everyone = sum((person.dfkvi$sup
                         Reform.15percent.tax.20000tf.bchange = sum((person.dfkvi$super.earnings.tax.20000tf.behav - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9, 
                         Reform.15percent.tax.75000tf.bchange = sum((person.dfkvi$super.earnings.tax.ALP.behav - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9)
 
-# (a) Budget saving from reintroducing the 15% tax on super earnings for over 60s - $3.2 billion
+write.table(Chart6.df, sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
+# # View(Chart6.df)
+
+# (a) Budget saving from reintroducing the 15% tax on super earnings for over 60s - $4.9 billion
 sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9
 
-# (b) 20000  - tax free threshold for over 60s in super drawdown phase - $1 billion
+# (b) 20000  - tax free threshold for over 60s in super drawdown phase - $2 billion
 sum((person.dfkvi$super.earnings.tax.20000tf - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 
-# (c) a tax free threshold of 75,000 for under 60s, tax free super earnings for over 60s, consistent with proposed ALP policy - $0.2 billion
+# (c) a tax free threshold of 75,000 for under 60s, tax free super earnings for over 60s, consistent with proposed ALP policy - $0.57 billion
 sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
 
-# Chart 6 - Summary costing of ASFA proposal - limit concessions to those earning more than 
+# Chart 7 - Average incomes of retirees 
 
+# Chart 8 - Average super benefits recieved by income decile and gender
+
+# We cut this by income including super withdrawals
+
+Chart8.df <- person.dfkvi %>% filter(Age.numeric > 21) %>% 
+  filter(!is.na(tincome.w.decile.over60)) %>%
+  group_by(Sex, tincome.w.decile.over60.range) %>% 
+  summarise(Ave.super.withdrawal = weighted.mean(x = Super.income * 52, w = Weights),
+            Ave.income.excl.withdrawals = weighted.mean(x = Total.income.annual, w = Weights),
+            Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights),
+            no.individuals = sum(Weights), 
+            Ave.account.balance = weighted.mean(x = Total.super, w = Weights),
+            No.datapoints = length(Total.super))
+
+View(Chart8.df)
+
+write.table(Chart8.df, sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
+
+# What's the average super benefit of someone aged over 65 depending on whether they're a man or a woman?
+
+Chart9.df <- person.dfkvi %>% filter(Age.numeric > 21) %>% 
+  group_by(Sex) %>% 
+  summarise(Ave.super.withdrawal = weighted.mean(x = Super.income * 52, w = Weights),
+            Ave.income.excl.withdrawals = weighted.mean(x = Total.income.annual, w = Weights),
+            Ave.pension.income = weighted.mean(x = Age.pension * 52, w = Weights),
+            Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights),
+            no.individuals = sum(Weights), 
+            Ave.account.balance = weighted.mean(x = Total.super, w = Weights),
+            No.datapoints = length(Total.super))
+
+View(Chart9.df)
+
+# Average incomes and balances by age - for men and women
+
+Chart10.df <- person.dfkvi %>% filter(Age.numeric > 21) %>% 
+  filter(!is.na(tincome.w.decile.over60)) %>%
+  group_by(Sex, Age) %>% 
+  summarise(Ave.super.withdrawal = weighted.mean(x = Super.income * 52, w = Weights),
+            Ave.income.excl.withdrawals = weighted.mean(x = Total.income.annual, w = Weights),
+            Mean.super.earnings =  sum(Super.earnings * Weights) / sum(Weights),
+            no.individuals = sum(Weights), 
+            Ave.account.balance = weighted.mean(x = Total.super, w = Weights),
+            No.datapoints = length(Total.super))
+
+View(Chart10.df)
+
+write.table(Chart8.df, sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
 
 # ==================================================================================
 # BT / ASFA proposal a tax free threshold of 150,000 for over 60s in the drawdown phase
 # ================================================================================== #
 
-# We dont bother with behavioural change when ew're talking about a TF threshold of 150k
+# We dont bother with behavioural change when ww're talking about a TF threshold of 150k
 
 person.dfkvi$super.earnings.tax.BT <- ifelse(person.dfkvi$Super.ddown == 1, ifelse(person.dfkvi$Super.earnings >= 150000,((person.dfkvi$Super.earnings-150000) * tax.rate.ddown), 0), person.dfkvi$Super.earnings * tax.rate.acc)
 
@@ -1204,20 +1566,232 @@ person.dfkvi$Super.concession.BT <- person.dfkvi$Tax.estimate.s - person.dfkvi$T
 
 sum(person.dfkvi$Super.concession.BT * person.dfkvi$Weights) / 10^9 # Total concession is $18.6 billion
 
-# How much does it save compared to the current tax concessions on super earnings - $112 million in 2015-16
+# How much does it save compared to the current tax concessions on super earnings - $186 million in 2015-16
 
 sum((person.dfkvi$super.earnings.tax.BT - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
+
+# How many people are affected?
+
+BT.affected.df <- person.dfkvi %>% filter(Super.ddown == 1) %>% 
+  group_by(super.earnings.tax.BT == super.earnings.tax.current) %>%
+  summarise(total.affected = sum(Weights)) %>% ungroup %>%
+  mutate(prop.affected = total.affected / sum(total.affected))
+
+# So 10,947 people are affected by the ASFA proposal (i.e. they have super incomes of at least $150,000, or total balances of more than $2.5 million)
+
+# ==================================================================================
+# BT / ASFA proposal a tax free threshold of 150,000 for over 60s in the drawdown phase
+# ================================================================================== #
+
+# We dont bother with behavioural change when we're talking about a TF threshold of 150k
+
+person.dfkvi$super.earnings.tax.1mil.cap <- ifelse(person.dfkvi$Super.ddown == 1, ifelse(person.dfkvi$Super.earnings >= 60000,((person.dfkvi$Super.earnings-60000) * tax.rate.ddown), 0), person.dfkvi$Super.earnings * tax.rate.acc)
+
+# Value of the tax concession becomes:
+
+person.dfkvi$Super.concession.1mil.cap <- person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.BT
+
+sum(person.dfkvi$Super.concession.1mil.cap * person.dfkvi$Weights) / 10^9 # Total concession is $18.6 billion
+
+
+
+# How much does it save compared to the current tax concessions on super earnings - $754 million in 2015-16
+
+sum((person.dfkvi$super.earnings.tax.1mil.cap - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9 
+
+# How many people are affected?
+
+Onemilcap.affected.df <- person.dfkvi %>% group_by(super.earnings.tax.1mil.cap == super.earnings.tax.current) %>%
+  summarise(total.affected = sum(Weights))
+
+# So 108,296 people are affected by the $1 million cap proposal (i.e. they have super incomes of at least $60,000, or total balances of more than $1 million)
+
 
 #==================================================================================
 # Stats quoted in super chapter
 
 # IF WE NEED TO CALCULATE ANY STATS THAT ARE CITED IN THE CHAPTER TEXT - DO THEM HERE
 
-# JD media request
 
-data.df <- person.dfkvi %>% group_by(tincome.decile) %>% summarise(Total.income = sum(Total.income * Weights))
 
-data2.df <- person.dfkvi %>% group_by(tincome.decile) %>% summarise(Total.income = sum(Total.income * Weights))
+# ===================================================================================
+# Analyzing super contributions in SIH 11-12 ========================================= #
+
+# The SIH includes two variables on superannuation contributions, which can be used to link (concessional) contributions behaviour to wealth, income, age and superannuation account balances
+
+# INSSCP - Current weekly benefit from employer provided superannuation (above min - non salary sacrifice)
+# ISSSCP - Current weekly employee income salary sacrificed for superannuation
+
+# These are renamed as:
+
+# Super.cont.non.ss 
+# Super.cont.ss 
+
+# So first lets look at some summary statistics to see what data we have to play with
+
+sum(person.dfkv$Super.cont.non.ss * person.dfkv$Weights) * 52 / 10^9 # So 3.2 billion in non salary sacrificed contributions - what is this variable really? For now we'll just focus on the salary sacrifice contributions
+
+sum(person.dfkv$Super.cont.ss * person.dfkv$Weights) * 52 / 10^9 # 9.6 billion in salary sacrificed contributions
+
+# We write an annualised total income variable
+person.dfkv$Total.income.annual <- person.dfkv$Total.income * 52
+
+# We create our survey weighted deciles for income, wealth and super account balances - using the original (uninflated) dataset
+SIHP.orig.svy <- svydesign(id=~PID, weights= ~Weights, fpc=NULL, data = person.dfkv)
+
+# Then we use this to define survey weighted quintiles and deciles
+
+# Quintiles for total income (annual)
+SIHP.orig.tincome.5 <- svyquantile(~Total.income.annual, SIHP.orig.svy,c(0, .2, .4, .6, .8, 1), ci = FALSE)
+
+# Quintiles for super balances
+SIHP.orig.supbal.5 <- svyquantile(~Total.super, SIHP.orig.svy,c(0, .2, .4, .6, .8, 1), ci = FALSE)
+
+# Deciles for total income (annual)
+SIHP.orig.tincome.10 <- svyquantile(~Total.income.annual, SIHP.orig.svy,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+
+# Deciles for super balances
+SIHP.orig.supbal.10 <- svyquantile(~Total.super, SIHP.orig.svy,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+
+# So now we use cut to break up the dataset along the deciles specified in the survey object
+
+# Total income - deciles
+person.dfkv$tincome.decile <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.orig.tincome.10) %>% as.numeric()
+person.dfkv$tincome.decile.range <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.orig.tincome.10) 
+
+# Total income - quintiles
+person.dfkv$tincome.quintile <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.orig.tincome.5) %>% as.numeric()
+person.dfkv$tincome.quintile.range <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.orig.tincome.5) 
+
+# Super balances - dont work because no super balances until the fourth quintile
+# person.dfkv$supbal.decile <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.orig.supbal.10) %>% as.numeric()
+# person.dfkv$tincome.decile.range <- cut(person.dfkvi$Total.income.annual, breaks = SIHP.orig.supbal.10) 
+
+# We get a handle on the different levels in the Age Variable, for each decade
+
+person.dfkv$Age.numeric <- as.numeric(person.dfkv$Age)
+
+levels(person.dfkv$Age)
+
+person.dfkv$Age.group <- ifelse(person.dfkv$Age.numeric < 12, "Under 30",
+                                 ifelse(person.dfkv$Age.numeric < 16, "30 to 49",
+                                        ifelse(person.dfkv$Age.numeric < 17, "50 to 54",
+                                               ifelse(person.dfkv$Age.numeric < 22, "55 to 59",
+                                                      ifelse(person.dfkv$Age.numeric < 27, "60 to 64",
+                                                             ifelse(person.dfkv$Age.numeric < 28, "65 to 69","70 and over"))))))
+
+
+
+# Quintiles - by income and age (only those s.s.ing)
+Super.ss.age.df <- person.dfkv %>% filter(Super.cont.ss > 0) %>% 
+  group_by(Age.group, tincome.quintile.range) %>% 
+  summarise(Super.cont.ss.mean = weighted.mean(x = Super.cont.ss * 52, w = Weights), 
+            no.individals = sum(Weights))
+
+# Deciles - by income and age (only those s.s.ing)
+Super.ss.income.10.age.df <- person.dfkv %>% filter(Super.cont.ss > 0) %>% 
+  group_by(Age.group, tincome.decile.range) %>% 
+  summarise(Super.cont.ss.mean = weighted.mean(x = Super.cont.ss * 52, w = Weights), 
+            no.individals = sum(Weights))
+
+# Deciles - by income only (all individuals)
+Super.ss.income.10.df <- person.dfkv %>% filter(!is.na(tincome.decile)) %>% 
+  group_by(tincome.decile) %>% 
+  summarise(Super.cont.ss.mean = weighted.mean(x = Super.cont.ss * 52, w = Weights), 
+            no.individals = sum(Weights))
+
+# Deciles - by income and age (all individuals)
+Super.ss.income.age.10.df <- person.dfkv %>% filter(!is.na(tincome.decile)) %>% 
+  group_by(tincome.decile, Age.group) %>% 
+  summarise(Super.cont.ss.mean = weighted.mean(x = Super.cont.ss * 52, w = Weights), 
+            no.individals = sum(Weights))
+
+# Quinriles - by income only (all individuals)
+Super.ss.income.5.df <- person.dfkv %>% filter(!is.na(tincome.quintile)) %>% 
+  group_by(tincome.quintile) %>% 
+  summarise(Super.cont.ss.mean = weighted.mean(x = Super.cont.ss * 52, w = Weights), 
+            no.individals = sum(Weights))
+
+# Quintiles - by income and age (all individuals)
+Super.ss.income.age.5.df <- person.dfkv %>% filter(!is.na(tincome.quintile)) %>% 
+  group_by(tincome.quintile, Age.group) %>% 
+  summarise(Super.cont.ss.mean = weighted.mean(x = Super.cont.ss * 52, w = Weights),
+            Super.cont.ss.prop = weighted.mean(x = Super.cont.ss / Total.income * 100, w = Weights),
+            no.individals = sum(Weights))
+
+
+
+# ===================================================================================
+# Super recycling to reduce tax liabilities ========================================= #
+
+# The recent PC research report into Superannuation policy for post-retirement notes that most individuals using transition to retirement provisions (i.e. aged 55 to 64) are located in the top two wealth quartiles
+
+# Yet this is a subset of a broader problem beyond TTR where workers aged over 60, and therefore elegible for tax-free super withdrawals, are able to recycle wage income through their superannuation fund in order to 
+
+# We look further intp
+
+# ===================================================================================
+# Distribution of those with super income streams aged over 60 ========================================= #
+  
+  person.dfkvi.over60 <- person.dfkvi %>% filter (Age.numeric > 21)
+  
+  # Then we define a survey object (you need the survey pkg for this)
+  
+  SIHP.over60.svy <- svydesign(id=~PID, weights= ~Weights, fpc=NULL, data = person.dfkvi.over60)
+  
+  # Then we use this to define survey weighted quintiles and deciles
+  
+  # Deciles for total income (excluding super) and total income (including super)
+  SIHP.tincome.10.over60 <- svyquantile(~Total.income.annual, SIHP.over60.svy,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+  SIHP.tincome.s.10.over60 <- svyquantile(~Total.income.annual.s, SIHP.over60.svy,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+  
+  # So now we use cut to break up the dataset along the deciles specified in the survey object
+  
+  # Total income (excluding super) 
+  person.dfkvi.over60$tincome.decile.over60 <- cut(person.dfkvi.over60$Total.income.annual, breaks = SIHP.tincome.10.over60) %>% as.numeric()
+  person.dfkvi.over60$tincome.decile.range.over60 <- cut(person.dfkvi.over60$Total.income.annual, breaks = SIHP.tincome.10.over60) 
+  
+  
+# Share of the proportion of over 60s that draw a super income stream by total income decile
+  
+  Share.over60s.super.income <- person.dfkvi.over60 %>% 
+    group_by(tincome.decile.over60, Super.ddown) %>% filter(!is.na(tincome.decile.over60)) %>%
+    summarise(No.ddown = sum(Weights)) %>%
+    ungroup %>%
+    group_by(tincome.decile.over60) %>%
+    mutate(prop.ddown = No.ddown / sum(No.ddown)) %>%
+    filter(Super.ddown == 1)
+  
+  write.table(Share.over60s.super.income, sep = "\t", file = clip <- pipe("pbcopy", "w"))
+  close(clip)
+  
+# Average annual income of those that draw a super income stream beyond 60 years of age  
+
+  person.dfkvi.over60$Super.income.annual <- person.dfkvi.over60$Super.income * 52   
+  
+Average.over60s.super.income <- person.dfkvi.over60 %>% 
+  group_by(tincome.decile.over60) %>% filter(Super.ddown == 1) %>% 
+  filter(!is.na(tincome.decile.over60)) %>%
+  summarise(Average = weighted.mean(x = Super.income.annual, w = Weights))
+
+write.table(Average.over60s.super.income, sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
+# What proportion of those aged 60 and over with super are drawing an income stream by income decile?
+
+Share.over60s.super.income.of.earnings <- person.dfkvi.over60 %>% 
+  filter(Super.earnings > 0) %>%
+  group_by(tincome.decile.over60, Super.ddown) %>% filter(!is.na(tincome.decile.over60)) %>%
+  summarise(No.ddown = sum(Weights)) %>%
+  ungroup %>%
+  group_by(tincome.decile.over60) %>%
+  mutate(prop.ddown = No.ddown / sum(No.ddown)) %>%
+  filter(Super.ddown == 1)
+
+write.table(Share.over60s.super.income.of.earnings, sep = "\t", file = clip <- pipe("pbcopy", "w"))
+close(clip)
+
+
 
 #==================================================================================
 # Cutting room floor
