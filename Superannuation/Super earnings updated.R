@@ -609,7 +609,6 @@ Simulation.df$Tax.liability.tot <- ifelse(Simulation.df$Tax.liability.tot < Simu
 # We also define an 'unused' tax free threshold function, which we will pick up later when we consider behavioural change in response to the reintroduction of taxes on super earnings in the drawdown phase 
 
 TF.unused.function <- function(income) {
-  
   TF.unused <- ifelse(income < 0, 18200, 
                       ifelse(income<18200, (18200 - income), 0))
 }
