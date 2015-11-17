@@ -464,7 +464,7 @@ left=2.75cm,right=2.75cm
 % Bibliography
 \RequirePackage[british]{babel}
 \RequirePackage{csquotes}
-\RequirePackage[backend=biber,style=authoryear-ibid,ibidtracker=strict, autocite=footnote]{biblatex}
+\RequirePackage[backend=biber,style=authoryear-ibid,ibidpage,loccittracker=context, autocite=footnote]{biblatex}
 \renewcommand*{\bibfont}{\raggedright}
 \DeclareLanguageMapping{british}{british-apa}
 

@@ -8,23 +8,6 @@ new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
 
 @
 
-\usepackage{longtable,endnotes}
-\input{footnoteToEndnote.tex}
-  
-
-\title{A higher or broader GST}
-\author{John Daley and Danielle Wood}
-
-\addbibresource{bibliography.bib}
-\addbibresource{bibliography2.bib} % r packages
-
-\let\footnote=\endnote
-\newcommand*\ie{\emph{i.e.}}
-\newcommand*\eg{\emph{e.g.}}
-
-
-
-
 <<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
 my_emf <- function(file, width, height){
   devEMF::emf(file, width=width, height=height,
@@ -53,6 +36,19 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
 )
 @
 
+\usepackage{longtable,endnotes}
+\input{footnoteToEndnote.tex}
+  
+
+\title{A higher or broader GST}
+\author{John Daley and Danielle Wood}
+
+\addbibresource{bibliography.bib}
+\addbibresource{bibliography2.bib} % r packages
+
+\let\footnote=\endnote
+\newcommand*\ie{\emph{i.e.}}
+\newcommand*\eg{\emph{e.g.}}
 
 <<preamble>>=
 library(foreign)
@@ -413,9 +409,9 @@ total.inc.quintiles_indiv <-
 \contentspage
 
 \begin{summary}
-Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Given the Commonwealth Government's revenue problems and the looming challenges for state governments in funding growing healthcare costs, it is unsurprising people are once again looking to the GST as a way to boost government revenues. 
+Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
 
-Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the coverage of the tax would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best if broadening the base is politically too hard.
+Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the coverage of the tax would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
 
 \textbf{Extending the GST} to cover many of the categories currently exempt could raise almost \textbf{\$20~billion} per year. While \textbf{increasing the rate to 15 per cent} would generate around \textbf{\$27~billion}. 
 
