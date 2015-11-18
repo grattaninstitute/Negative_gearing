@@ -554,8 +554,6 @@ tax_all_super_earnings_over60_at <- function(rate = 0.15,
            Prop.earnings = Total.earnings / sum(Total.earnings), 
            Prop.earnings.tax.foregone = Total.super.tax.fgone / sum(Total.extra.tax.no.behav))
   
-  View(Behav.effect.opt1.df)
-  
   
   # So 70% of those affected could reduce their tax liability by shifting $$ from super, and we lose 25% of the potential extra super earnings tax
   
