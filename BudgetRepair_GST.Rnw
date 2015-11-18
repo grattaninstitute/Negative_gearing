@@ -1335,6 +1335,7 @@ vars.to.exclude <-
 
 indices.to.include <- which(!names(bottom.quintile.not.compensated) %in% vars.to.exclude)
 
+bottom.quintile.not.compensated.all.vars <- bottom.quintile.not.compensated
 bottom.quintile.not.compensated <- bottom.quintile.not.compensated[,indices.to.include,with=FALSE]
 
 bottom.quintile.not.compensated %<>%
