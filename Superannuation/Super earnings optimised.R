@@ -436,7 +436,6 @@ SAPTO.function <- function(income,
 # And a function for LITO entitlement
 
 LITO.function <- function(income, LITO.lower, LITO.upper, LITO.max) {
-  
   LITO <- ifelse(income < LITO.lower, LITO.max, 
                  ifelse(income < LITO.upper, (LITO.upper - income) * 0.015, 0))
 }
@@ -444,93 +443,9 @@ LITO.function <- function(income, LITO.lower, LITO.upper, LITO.max) {
 # We also define an 'unused' tax free threshold function, which we will pick up later when we consider behavioural change in response to the reintroduction of taxes on super earnings in the drawdown phase 
 
 TF.unused.function <- function(income) {
-  
   TF.unused <- ifelse(income < 0, 18200, 
                       ifelse(income<18200, (18200 - income), 0))
 }
-
-# ==================================================================================
-# Checking our tax functions using a simulated dataset - no need to QC this
-# =================================================================================#
-
-# Before we write our various tax functions, we first set up a test module so that we can run a range of taxable incomes over them to make sure that they work property
-
-Simulation.df <- data_frame("Taxable.income.annual" = seq(10000,100000, by = 5000),
-                            "Age.numeric" = 28,
-                            "Single" = 1, # Change this to simulate TF threshold for couples (0) or singles (1)
-                            "SAPTO.lower.indiv" = 32279, 
-                            "SAPTO.upper.indiv" = 50119, 
-                            "SAPTO.max.indiv" = 2230, 
-                            "SAPTO.lower.cpl" = 57948, 
-                            "SAPTO.upper.cpl" = 83580, 
-                            "SAPTO.max.cpl" = 1602, 
-                            "ML.lower" = 21418.4, 
-                            "ML.upper" = 26773 , 
-                            "ML.lower.senior" = 33870.1 , 
-                            "ML.upper.senior" = 42337.62, 
-                            "LITO.lower" = 37000, 
-                            "LITO.upper" = 66666, 
-                            "LITO.max" = 445)
-
-# Testing tax function
-
-Simulation.df$Tax.liability <- tax.function(Simulation.df$Taxable.income.annual)
-
-# Testing Medicare Levy
-
-Simulation.df$Medicare.levy <- ML.function(Simulation.df$Taxable.income.annual,
-                                           Simulation.df$ML.lower, 
-                                           Simulation.df$ML.upper, 
-                                           Simulation.df$ML.lower.senior, 
-                                           Simulation.df$ML.upper.senior, 
-                                           Simulation.df$Age.numeric)
-
-# Summing tax liabilities (before offsets)
-
-Simulation.df$Tax.liability.tot <- Simulation.df$Tax.liability + Simulation.df$Medicare.levy
-
-# Testing SAPTO function
-
-Simulation.df$SAPTO <- SAPTO.function(Simulation.df$Taxable.income.annual,
-                                      Simulation.df$Age.numeric,
-                                      Simulation.df$Single,
-                                      Simulation.df$SAPTO.lower.indiv, 
-                                      Simulation.df$SAPTO.upper.indiv, 
-                                      Simulation.df$SAPTO.max.indiv, 
-                                      Simulation.df$SAPTO.lower.cpl, 
-                                      Simulation.df$SAPTO.upper.cpl, 
-                                      Simulation.df$SAPTO.max.cpl)
-
-# Summing tax liabilities (including SAPTO offset)
-
-Simulation.df$Tax.liability.tot <- ifelse(Simulation.df$Tax.liability.tot < Simulation.df$SAPTO, 0, 
-                                          Simulation.df$Tax.liability.tot - Simulation.df$SAPTO)
-
-# Testing LITO function
-
-Simulation.df$LITO <- LITO.function(Simulation.df$Taxable.income.annual, 
-                                    Simulation.df$LITO.lower, 
-                                    Simulation.df$LITO.upper, 
-                                    Simulation.df$LITO.max)
-
-# Summing tax liabilities (including SAPTO and LITO offsets)
-
-Simulation.df$Tax.liability.tot <- ifelse(Simulation.df$Tax.liability.tot < Simulation.df$LITO, 0, 
-                                          Simulation.df$Tax.liability.tot - Simulation.df$LITO)
-
-# Testing unused TF threshold function
-
-Simulation.df$Unused.TF <- TF.unused.function(Simulation.df$Taxable.income.annual)
-
-# View(Simulation.df)
-
-# We export the Simulation dataset to Excel and inspect visually to make sure it's all hunky dory
-
-# The Excel file is:
-
-# Macintosh HD:Users:bcoates:Dropbox:Grattan Dropbox:Budget Repair Report:Data and analysis:Superannuation:Spreadsheets:[Cross checking behavioural change module.xlsx]Sheet1
-
-# Now that our simulation function works we can move onto using it for the whole ATO sample file
 
 # ==================================================================================
 # Establishing a no tax concession counterfactual for super earnings - PIT collected excluding super income
