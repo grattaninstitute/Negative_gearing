@@ -31,7 +31,7 @@
 # http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/6541.0.30.0012011-12?OpenDocument
 # Basic cross tabs are also here and can be used for QC
 
-rm(list=ls())
+# rm(list=ls())
 
 # Load packages
 
@@ -59,10 +59,8 @@ library(magrittr)
 # Pulling in the data
 # ======================================================================================================== #
 
-# I know we should we using relative file paths but this will work for now
-setwd("~/Desktop/Budget Policy/Basic exploration and setup")
 
-person.df <- read.dta("sih11bp.dta")
+person.df <- read.dta("../SIH/sih11bp.dta")
 
 # List of variables we need for the analysis
 key.vars <- c("HHPOS", # Position in the household (publication definition)
@@ -192,54 +190,8 @@ person.dfkvi$Gov.super <- person.dfkvi$Gov.super * x
 person.dfkvi$Non.gov.super <- person.dfkvi$Non.gov.super * x
 person.dfkvi$Total.super <- person.dfkvi$Total.super * x
 
-sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # $2 trillion in total super balances
-
-
 #===================================================================================
-# Investigating actual distribution of super balances - using uninflated dataset - No need to QC
-#===================================================================================#
 
-# This recreates some of the ASFA work on those with very high account balances. We use some of these numbers in the chapter, and in various op eds and such
-
-# Number of people with balances of over $1 million in 2011-12 is 110,000, or 0.6% of individuals, with total funds of $181 billion
-
-person.dfkv %>% group_by(Total.super<10^6) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Inflating forward, we estimate that 130,000 would now have balances of more than $1 million, or 0.7% of individuals, with total funds of $220 billion
-
-person.dfkvi %>% group_by(Total.super<10^6) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9)  %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Number of people with balances over $2.5 million is 13,480, with total funds of $50 billion
-
-person.dfkv %>% group_by(Total.super < 2500000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Inflating forward, we estimate that around 16,000 would now have balances of more than $2.5 million, with total balances of $61.6 billion
-
-person.dfkvi %>% group_by(Total.super < 2500000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Number of people with a super account of some value is 12.5 million
-
-person.dfkv %>% group_by(Total.super>0) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
 
 # ===================================================================================
 # Adding in extra tax policy variables
