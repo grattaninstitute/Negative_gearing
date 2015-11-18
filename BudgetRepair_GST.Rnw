@@ -8,6 +8,42 @@ new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
 
 @
 
+<<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
+my_emf <- function(file, width, height){
+  devEMF::emf(file, width=width, height=height,
+              family = "Arial")
+}
+
+my_pdf <- function(file, width, height){
+  pdf(file = file, width, height = height)
+}
+
+# knitr chunk opts
+# fig.width must = out.width and same for *.height
+.name.of.file <- knitr:::knit_concord$get("infile")
+atlas <- "figure_BudgetRepair_GST/"
+knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                      out.width="11.000in", out.height="7.00in", 
+                      fig.show='hide',echo=FALSE,
+                      message=FALSE, warning=FALSE
+                      ,fig.path = atlas
+                      ,cache=F
+                      ,cache.path = "cache_BudgetRepair_GST/"
+                      ,dev=c('my_pdf', 'my_emf'
+                             #, 'png'
+                             )
+                      ,fig.ext = c("pdf", "emf"
+                                   #, "png"
+                                   )
+)
+chart_data <- NULL
+chart_data <- function(.data){
+  current_chunk_label <- opts_current$get(name = "label")
+  atlas <- atlas
+  readr::write_csv(.data, paste0(atlas, "/", current_chunk_label, ".csv"))
+}
+@
+
 \usepackage{longtable,endnotes}
 \input{footnoteToEndnote.tex}
   
@@ -21,38 +57,6 @@ new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
 \let\footnote=\endnote
 \newcommand*\ie{\emph{i.e.}}
 \newcommand*\eg{\emph{e.g.}}
-
-
-
-
-<<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
-my_emf <- function(file, width, height){
-  devEMF::emf(file, width=width, height=height,
-              family = "Arial")
-}
-
-my_pdf <- function(file, width, height){
-  pdf(file = file, width, height = height)
-}
-
-# knitr chunk opts
-# fig.width must = out.width and same for *.height
-knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
-                      out.width="11.000in", out.height="7.00in", 
-                      fig.show='hide',echo=FALSE,
-                      message=FALSE, warning=FALSE
-                      ,fig.path = "figure_BudgetRepair_GST/"
-                      ,cache=F
-                      ,cache.path = "cache_BudgetRepair_GST/"
-                      ,dev=c('my_pdf', 'my_emf'
-                             #, 'png'
-                             )
-                      ,fig.ext = c("pdf", "emf"
-                                   #, "png"
-                                   )
-)
-@
-
 
 <<preamble>>=
 library(foreign)
@@ -413,9 +417,9 @@ total.inc.quintiles_indiv <-
 \contentspage
 
 \begin{summary}
-Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Given the Commonwealth Government's revenue problems and the looming challenges for state governments in funding growing healthcare costs, it is unsurprising people are once again looking to the GST as a way to boost government revenues. 
+Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
 
-Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the coverage of the tax would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best if broadening the base is politically too hard.
+Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the coverage of the tax would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
 
 \textbf{Extending the GST} to cover many of the categories currently exempt could raise almost \textbf{\$20~billion} per year. While \textbf{increasing the rate to 15 per cent} would generate around \textbf{\$27~billion}. 
 
@@ -431,7 +435,12 @@ Beyond their immediate hip pocket, most Australians benefit from better governme
 \end{summary}
 
 \chapter{Australia should raise more from the GST}\label{chap:Chapter1}
-\section{GST in context}
+Commonwealth and state government budgets are under pressure.\footcite{daleywood2015fiscalchallenges}  The Commonwealth Government has run deficits for six years, with another four forecast. And state governments face looming pressures because spending in health and education is growing faster than GDP.
+
+Tax changes that increase revenue collections will need to be part of the solution. In this context, Grattan is releasing a series of papers outlining revenue measures that government should adopt to improve their fiscal position.  Increasing revenues from the GST, if well executed, would be a fair way to increase revenue collections without too much drag on the economy. 
+
+
+\section{Australia's GST is low relative to overseas}
 The GST is a 10 per cent consumption tax levied on final consumption of all goods and services other than fresh food, health, education, water, childcare, financial services, rent and a few other smaller expenditure categories. 
 
 GST revenues are collected by the Commonwealth Government and are then distributed to State Governments as untied grants. The GST is distributed according to determinations of the Commonwealth Grants Commission, which tries to ensure that States have resources to provide services at them same standard as each other.\footcite[p.~12]{CommonwealthGrantsCommission2015}
@@ -972,6 +981,8 @@ hes_with_gst_compensation <-
   merge(., welfare.by.income.quintile_total) %>%
   merge(., amount_of_quintile_on_welfare) %>% 
   group_by(gross_income_quintile) %>%
+  # Originally, we assumed that everyone in a quintile received the 
+  # quintile's share of compensation...
   mutate(
     new_welfare2 = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
       prop_welfare / # amount to all households in that quintile
@@ -979,6 +990,11 @@ hes_with_gst_compensation <-
   ) %>%
   group_by(gross_income_quintile,
            has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0) %>%
+  # Now we assume that only the set of people currently on welfare in a quintile receive
+  # that quintile's share of welfare.  Each entry represents a single household, and the 
+  # number of households in a quintile is determined by sum(Weight_HH_HES).  So to determine
+  # an entry's share of compensation we allocate the amount of compensation in total, divide 
+  # this among the quintiles, then within each quintile, divide by the number of households.
   mutate(
     new_welfare = 
       ifelse(has_welfare,
@@ -1355,6 +1371,30 @@ bottom.quintile.not.compensated_factors %<>%
   mutate(age_group_orderedF = factor(age_group, ordered = TRUE))
 @
 
+<<degreeOfUndecompensation>>=
+temp.chessboard <- 
+  data.table::CJ(
+    Unique_household_number = hes_with_gst_and_tax_compensation$Unique_household_number,
+    comp_threshold.wk = seq.int(from = -10L, to = 10L, by = 1L)
+  ) %>%
+  data.table::setkey(Unique_household_number)
+
+hes_with_gst_and_tax_compensation %>%
+  setkey(Unique_household_number) %>%
+  data.table:::merge.data.table(temp.chessboard) %>%
+  group_by.income_quintile() %>%
+  group_by(gross_income_quintile, comp_threshold.wk) %>%
+  summarise(
+    pc.comp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly > comp_threshold.wk, Weight_HH_HES)
+  ) %>%
+  ungroup %>%
+  filter(gross_income_quintile == 1) %>%
+  grplot(aes(x = comp_threshold.wk,
+             y = pc.comp)) + 
+  geom_bar(stat = "identity")
+  
+@
+
 <<selfFundedRetirees>>=
 bottom.quintile.not.compensated_factors %>%
   group_by(not_compensated, is_self_funded_retiree) %>%
@@ -1369,8 +1409,10 @@ bottom.quintile.not.compensated_factors %>%
   group_by(not_compensated, has_welfare, age_group) %>%
   summarise(n = sum(Weight_HH_HES)) %>%
   ungroup %>% filter(not_compensated) %>%
-  mutate(prop = n/sum(n))  %>% 
-  arrange( has_welfare, age_group) %>% 
+  mutate(prop = n/sum(n),
+         gross_income_quintile = 1)  %>% 
+  arrange(has_welfare, age_group) %T>% 
+  chart_data %>%
   mutate(age_group = gsub("\\s", "\n", age_group)) %>%
   grplot(aes(x = age_group, y = prop)) + 
   geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
@@ -1412,22 +1454,37 @@ bottom.quintile.not.compensated_factors %>%
   scale_y_continuous(label=percent)
 @
 
-<<UnderCompensationbyNetWealth>>=
+<<UnderCompensationbyNetWealthAbbrev>>=
 bottom.quintile.not.compensated_factors %>%
   mutate(Net_wealth_of_household_factors = cut(Net_wealth_of_household,
-                                              breaks = c(-Inf, 0, 100e3, 200e3, 300e3, 400e3, 500e3, Inf), 
+                                              breaks = cpi_inflator(c(-Inf, 0, 100e3, 200e3, 300e3, 400e3, 500e3, Inf), 
+                                                                    to_fy = "2009-10",
+                                                                    from_fy = "2014-15") * cpi_inflator(from_fy = "2013-14",
+                                                                                                        to_fy = "2014-15"),
+                                              labels = c("< $0", "\n$0-$100", 
+                                                         "$100-$200", "\n$200-$300", 
+                                                         "$300-$400", "\n$400-$500", 
+                                                         "$500+"),
                                               include.lowest = TRUE,
                                               dig.lab = 6)) %>%
   group_by(not_compensated, has_welfare, Net_wealth_of_household_factors) %>%
   summarise(n = sum(Weight_HH_HES)) %>%
   ungroup %>% 
   filter(not_compensated) %>%
-  mutate(prop = n/sum(n))  %>% 
+  mutate(prop = n/sum(n),
+         gross_income_quintile = 1) %T>% 
+  chart_data %>%
   grplot(aes(x = factor(Net_wealth_of_household_factors), y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
-                                                               axis.title.x = element_blank()) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + 
+  theme(legend.position = c(0.15, 0.7)) + 
+  xlab("Net wealth of household (2014-15 dollars / 1000)") +
   scale_y_continuous(label=percent)
 @
+\begin{figure}
+\caption{Percentage of undercompensated households in lowest quintile}\label{fig:UnderCompensationbyNetWealthAbbrev}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/UnderCompensationbyNetWealthAbbrev-1}
+\source{Analysis of HES 2009-10}
+\end{figure}
 
 <<UnderCompensationbyConsumption>>=
 hes_with_gst_and_tax_compensation %>%
