@@ -453,7 +453,7 @@ There is no obvious reason for these trends to reverse in the foreseeable future
 
 And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the "growth" tax the states were originally promised.\footcite{Costello2000}
 
-\begin{figure}[p]
+\begin{figure}
 <<Households_are_saving_more>>=
 read_excel("Households_are_saving_more.xlsx") %>%
   setNames(c("Year", "prop_savings_by_HH_disp_inc")) %>%
@@ -473,7 +473,7 @@ read_excel("Households_are_saving_more.xlsx") %>%
 
 \source{}
 \end{figure}
-\begin{figure}[p]
+\begin{figure}
 <<Spending_less_on_GST_liable>>=
 read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet = "For_output") %>%
   gather(category, share_of_consumption, -Date) %>%
@@ -512,18 +512,25 @@ read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet
 \end{figure}
 
 
-\section{Why consumption taxes are less bad than many other taxes}
+\section{Consumption taxes are less bad than many other taxes}
 Consumption taxes such as the GST are relatively efficient taxes. They are relatively difficult to avoid,\footcite[p.~274]{Treasury2010}  and they encourage saving more than personal income taxes.\footnote{A consumption tax treats current and future consumption equivalently so there is no distortion in savings decisions. In contrast, income tax places a higher burden on savers because households pay tax on their income (regardless of how much they save) and then taxes the capital income on savings again in the future. See: \textcite{Treasury2010} However, the tax rate on savings makes relatively little difference to savings decisions of high-income earners who do most of the saving: see \textcite{DaleySuperannuation2015}}  They drag less on economic efficiency than many state government taxes including payroll taxes\footnote{While theoretically broad based payroll taxes and consumption taxes are equivalent, the range of exceptions and thresholds provided by state government for payroll taxes have considerably increased their efficiency costs.}  and stamp duties.\footcite{DaleyCoates2015Property} 
 
 An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our Wealth of Generations report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
+
+Income taxes can affect the incentives to work more than consumption 
+taxes. The combination of income tax scales and the withdrawal of means 
+tested welfare benefits can discourage working because they result in 
+low rates of take home pay. The disincentives are larger for low-income 
+workers and those working part time (\Vref{box:labour_supply). Higher income tax rates as 
+a result of bracket creep can materially reduce workforce participation 
+of middle income part-time earners.
 
 Consumption taxes can affect incentives to work less than income taxes. The combination of income tax scales and the withdrawal of means tested welfare benefits can discourage working because they result in low rates of take home pay. The disincentives are larger for low-income workers and those working part time (\Vref{box:labour_supply}).\footnote{\textcites{Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015} which recommended mechanisms to improve these incentives.}  Higher income tax rates as a result of bracket creep can materially reduce workforce participation of middle income part-time earners.\footcite[p.~6]{daleywood2015fiscalchallenges} 
 
 Consumption taxes do discourage work to some extent, because wages buy less once the consumption tax is taken into account.\footcite{PicosSanchez2011}  However, consumption taxes may discourage working less than income taxes because their impact on spending power is less obvious. Consumption taxes are less salient: there is some experimental economics evidence that people notice nominal wages (due to income tax) more than lower real wages (due to a consumption tax).\footnote{\textcites{Blumkin2012}{SausgruberTyran2005}  This is because of the `money illusion': individuals tend to think in nominal rather than real terms.} 
 
-Overall, higher consumption taxes should cause fewer problems than higher income taxes. Overall incentives to work can be improved if income tax cuts introduced with the GST are targeted at low and middle brackets (Box 1). 
-
-And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (section 3). 
+Overall, higher consumption taxes should cause fewer problems than higher income taxes. Overall incentives to work can be improved if income tax cuts introduced with the GST are targeted at low and middle brackets (\Vref{box:labour_supply}). 
+And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (\Vref{chap:targeted_comp_pkg}). 
 
 \begin{smallbox}{Impact of taxes on labour supply}{box:labour_supply}
 There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
@@ -533,15 +540,17 @@ Almost all the relevant studies find that men's hours of work are relatively unr
 On the other hand, empirical studies invariably find that tax and welfare benefits have a much greater bearing on working decisions for women with young children, particularly single mothers -- affecting both the decision to work and the number of hours chosen.  
 
 Taken together, the studies suggests that the people whose labour supply decisions are most responsive to changes are those on low and middle incomes deciding whether to work or whether to increase their hours of work. If one objective of tax reform is to increase workforce participation, then tax cuts should focus on the low to middle brackets.
-
 \end{smallbox}
+
+
 \chapter{A broader base, or a higher rate?}
 GST revenue collections can be increased either by broadening the range of items that are subject to the tax (`broadening the base') or by increasing the rate above the current 10 per cent. Broadening the base is generally favoured on pure policy grounds because it is simpler and more efficient. But increasing the rate could be a satisfactory `second best'; if it is too politically difficult to broaden the base. 
 
-\section{Broadening the GST}
+\section{The GST could be broadened to several categories}
 Australia's GST covers just over 40 per cent of the potential consumption base. This is well below the OECD average of 55~per~cent (\Cref{chap:Chapter1}).
 
-There are a range of expenditure categories currently exempt from the GST. Broadening the base to include fresh food, education, health, water and sewerage could raise almost \$20 billion (Figure 3).This figure takes into account the effects of changes in consumer behaviour due to the increased prices in these categories. 
+There are a range of expenditure categories currently exempt from the GST.\footnote{The OECD draws a distinction between goods and services taxed at reduced rates, including a zero rate, and goods which are exempt (input-taxed). Under this classification, in Australia, health, education, fresh food, water and childcare are taxed at a reduced (zero) rate and financial services and housing are exempt (see text for further discussion of input taxation).}
+Broadening the base to include fresh food, education, health, water and sewerage could raise almost \$20 billion (\Vref{fig:GST_revenue_of_excluded_items1415}). This figure takes into account the effects of changes in consumer behaviour due to the increased prices in these categories. 
 \begin{figure}
 <<GST_revenue_of_excluded_items1415>>=
 gst.expenditures <- read_excel("GST_expenditures1415.xlsx")
@@ -569,11 +578,16 @@ This would leave exemptions in place for financial services, existing residentia
 
 Taxing the full value added by these services would be complex. It is not easy to determine the appropriate margin on which to calculate the tax. For these reasons, these categories are excluded from value added tax in almost every OECD country.\footcite[p.~21]{OECD2014}
 
+For financial services, the South Australian Government has proposed a ``financial institutions duty'' which is broadly equivalent to the GST but easier to implement.\footnote{\textcite{Evans2015}. See also \textcite{Weatherill2015}}  The duty is a supplementary tax on the margins between the rates charged by financial institutions and the rates at which they borrow. There remains some administrative complexity -- for example, determining the best way to exclude business banking -- but it is worthy of consideration as a way to tax the ``value added'' from financial services.
+
 The Government has already announced proposed changes to the GST treatment of imports from 1 July 2017. Imports worth less than \$1000 are currently exempt from the GST. Under the new policies, GST will apply to all imported digital goods and services and physical goods.\footnote{In other words, the value threshold is set at zero. The measure to include GST on cross-border supplies of digital goods and services was included in the May 2015 Budget \textcite[p.~20]{Budget2015}. The Government announced a policy to charge GST on cross-border supplies of physical goods under \$1000 following agreement with the State and Territory treasurers at a meeting in August 2015. \textcite{Hockey2015}.}  The requirement to collect and remit GST will be imposed on the overseas vendor. As for domestically produced goods and services, only vendors with an Australian turnover of \$75,000 will need to register for and charge the GST. 
 
 The policy imposes a fixed cost on overseas retailers selling to Australians, as they would need to implement systems that apply specifically to any purchaser based in Australia. This impost would be relatively small for retailers that sell large volumes to Australians, like Amazon and Netflix. Some of these have already suggested they will register for the GST.\footnote{Netflix indicated they will continue to comply with local tax obligations. Apple already charges GST on its digital downloads in Australia. \url{http://www.afr.com/technology/web/joe-hockey-flags-netflix-tax-in-gst-extension-20150409-1mhhed}} However, it is not clear the legal recourse available to the government if overseas vendors do not choose to register.\footnote{The Low-Value Parcel Processing Taskforce that explored this issue in 2012 said that GST obligations imposed directly on international suppliers would ``likely be non-enforceable, and hence rely on voluntary cooperation by suppliers'' (Treasury (2012b), p. 139).} The former Treasurer Joe Hockey argued that ``global pressure'' would force retailers to comply. 
 
-Any system that requires Customs to verify GST compliance and charge consumers where the supplier is non-compliant will be expensive to administer. Previous reviews found inspecting packages at the border costs much more money than it raises in additional tax, particularly for low values of the threshold.  This is because most imports below the current \$1000 threshold are low value items. Credit-card transaction data suggests that 90 per cent of imports of less than \$1000 cost less than \$100 and 49 per cent cost less than~\$10.\footcite[p.~1]{NAB2013}  
+Any system that requires Customs to verify GST compliance and charge consumers where the supplier is non-compliant will be expensive to administer. Previous reviews found inspecting packages at the border costs much more money than it raises in additional tax, particularly for low values of the threshold.  This is because most imports below the current \$1000 threshold are low value items. Credit-card transaction data suggests that 90 per cent of imports of less than \$1000 cost less than \$100 and 49 per cent cost less than~\$10.\footcite[p.~1]{NAB2013} 
+
+\subsection{Increasing the GST rate}
+
 
 \subsection{Broadening the GST will make it simpler and more efficient}
 A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976}
@@ -615,7 +629,7 @@ As discussed above, consumption of GST exempt categories (particularly fresh foo
 
 For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
 
-\chapter{A targeted compensation package}
+\chapter{A targeted compensation package}\label{chap:targeted_comp_pkg}
 Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low-income households. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
 
 But if the GST package is partly to provide revenue to State Governments to fund growing health and education spending,\footnote{The decision in the 2014-15 Commonwealth budget to withdraw from the National Health Reform Agreement and to no longer fund growth in hospital spending precipitated the current discussion (including the support from the NSW Government) for the government to increase the GST. \textcite[p.~18]{daleywood2015fiscalchallenges}}

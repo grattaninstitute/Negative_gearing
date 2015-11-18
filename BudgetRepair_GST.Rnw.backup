@@ -20,11 +20,13 @@ my_pdf <- function(file, width, height){
 
 # knitr chunk opts
 # fig.width must = out.width and same for *.height
+.name.of.file <- knitr:::knit_concord$get("infile")
+atlas <- "figure_BudgetRepair_GST/"
 knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,fig.path = "figure_BudgetRepair_GST/"
+                      ,fig.path = atlas
                       ,cache=F
                       ,cache.path = "cache_BudgetRepair_GST/"
                       ,dev=c('my_pdf', 'my_emf'
@@ -34,6 +36,12 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                                    #, "png"
                                    )
 )
+chart_data <- NULL
+chart_data <- function(.data){
+  current_chunk_label <- opts_current$get(name = "label")
+  atlas <- atlas
+  readr::write_csv(.data, paste0(atlas, "/", current_chunk_label, ".csv"))
+}
 @
 
 \usepackage{longtable,endnotes}
@@ -427,6 +435,11 @@ Beyond their immediate hip pocket, most Australians benefit from better governme
 \end{summary}
 
 \chapter{Australia should raise more from the GST}\label{chap:Chapter1}
+Commonwealth and state government budgets are under pressure.\footcite{daleywood2015fiscalchallenges}  The Commonwealth Government has run deficits for six years, with another four forecast. And state governments face looming pressures because spending in health and education is growing faster than GDP.
+
+Tax changes that increase revenue collections will need to be part of the solution. In this context, Grattan is releasing a series of papers outlining revenue measures that government should adopt to improve their fiscal position.  Increasing revenues from the GST, if well executed, would be a fair way to increase revenue collections without too much drag on the economy. 
+
+
 \section{Australia's GST is low relative to overseas}
 The GST is a 10 per cent consumption tax levied on final consumption of all goods and services other than fresh food, health, education, water, childcare, financial services, rent and a few other smaller expenditure categories. 
 
@@ -440,7 +453,7 @@ There is no obvious reason for these trends to reverse in the foreseeable future
 
 And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the "growth" tax the states were originally promised.\footcite{Costello2000}
 
-\begin{figure}[p]
+\begin{figure}
 <<Households_are_saving_more>>=
 read_excel("Households_are_saving_more.xlsx") %>%
   setNames(c("Year", "prop_savings_by_HH_disp_inc")) %>%
@@ -460,7 +473,7 @@ read_excel("Households_are_saving_more.xlsx") %>%
 
 \source{}
 \end{figure}
-\begin{figure}[p]
+\begin{figure}
 <<Spending_less_on_GST_liable>>=
 read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet = "For_output") %>%
   gather(category, share_of_consumption, -Date) %>%
@@ -499,18 +512,25 @@ read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet
 \end{figure}
 
 
-\section{Why consumption taxes are less bad than many other taxes}
+\section{Consumption taxes are less bad than many other taxes}
 Consumption taxes such as the GST are relatively efficient taxes. They are relatively difficult to avoid,\footcite[p.~274]{Treasury2010}  and they encourage saving more than personal income taxes.\footnote{A consumption tax treats current and future consumption equivalently so there is no distortion in savings decisions. In contrast, income tax places a higher burden on savers because households pay tax on their income (regardless of how much they save) and then taxes the capital income on savings again in the future. See: \textcite{Treasury2010} However, the tax rate on savings makes relatively little difference to savings decisions of high-income earners who do most of the saving: see \textcite{DaleySuperannuation2015}}  They drag less on economic efficiency than many state government taxes including payroll taxes\footnote{While theoretically broad based payroll taxes and consumption taxes are equivalent, the range of exceptions and thresholds provided by state government for payroll taxes have considerably increased their efficiency costs.}  and stamp duties.\footcite{DaleyCoates2015Property} 
 
 An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our Wealth of Generations report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
+
+Income taxes can affect the incentives to work more than consumption 
+taxes. The combination of income tax scales and the withdrawal of means 
+tested welfare benefits can discourage working because they result in 
+low rates of take home pay. The disincentives are larger for low-income 
+workers and those working part time (\Vref{box:labour_supply). Higher income tax rates as 
+a result of bracket creep can materially reduce workforce participation 
+of middle income part-time earners.
 
 Consumption taxes can affect incentives to work less than income taxes. The combination of income tax scales and the withdrawal of means tested welfare benefits can discourage working because they result in low rates of take home pay. The disincentives are larger for low-income workers and those working part time (\Vref{box:labour_supply}).\footnote{\textcites{Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015} which recommended mechanisms to improve these incentives.}  Higher income tax rates as a result of bracket creep can materially reduce workforce participation of middle income part-time earners.\footcite[p.~6]{daleywood2015fiscalchallenges} 
 
 Consumption taxes do discourage work to some extent, because wages buy less once the consumption tax is taken into account.\footcite{PicosSanchez2011}  However, consumption taxes may discourage working less than income taxes because their impact on spending power is less obvious. Consumption taxes are less salient: there is some experimental economics evidence that people notice nominal wages (due to income tax) more than lower real wages (due to a consumption tax).\footnote{\textcites{Blumkin2012}{SausgruberTyran2005}  This is because of the `money illusion': individuals tend to think in nominal rather than real terms.} 
 
-Overall, higher consumption taxes should cause fewer problems than higher income taxes. Overall incentives to work can be improved if income tax cuts introduced with the GST are targeted at low and middle brackets (Box 1). 
-
-And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (section 3). 
+Overall, higher consumption taxes should cause fewer problems than higher income taxes. Overall incentives to work can be improved if income tax cuts introduced with the GST are targeted at low and middle brackets (\Vref{box:labour_supply}). 
+And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (\Vref{chap:targeted_comp_pkg}). 
 
 \begin{smallbox}{Impact of taxes on labour supply}{box:labour_supply}
 There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
@@ -520,15 +540,17 @@ Almost all the relevant studies find that men's hours of work are relatively unr
 On the other hand, empirical studies invariably find that tax and welfare benefits have a much greater bearing on working decisions for women with young children, particularly single mothers -- affecting both the decision to work and the number of hours chosen.  
 
 Taken together, the studies suggests that the people whose labour supply decisions are most responsive to changes are those on low and middle incomes deciding whether to work or whether to increase their hours of work. If one objective of tax reform is to increase workforce participation, then tax cuts should focus on the low to middle brackets.
-
 \end{smallbox}
+
+
 \chapter{A broader base, or a higher rate?}
 GST revenue collections can be increased either by broadening the range of items that are subject to the tax (`broadening the base') or by increasing the rate above the current 10 per cent. Broadening the base is generally favoured on pure policy grounds because it is simpler and more efficient. But increasing the rate could be a satisfactory `second best'; if it is too politically difficult to broaden the base. 
 
-\section{Broadening the GST}
+\section{The GST could be broadened to several categories}
 Australia's GST covers just over 40 per cent of the potential consumption base. This is well below the OECD average of 55~per~cent (\Cref{chap:Chapter1}).
 
-There are a range of expenditure categories currently exempt from the GST. Broadening the base to include fresh food, education, health, water and sewerage could raise almost \$20 billion (Figure 3).This figure takes into account the effects of changes in consumer behaviour due to the increased prices in these categories. 
+There are a range of expenditure categories currently exempt from the GST.\footnote{The OECD draws a distinction between goods and services taxed at reduced rates, including a zero rate, and goods which are exempt (input-taxed). Under this classification, in Australia, health, education, fresh food, water and childcare are taxed at a reduced (zero) rate and financial services and housing are exempt (see text for further discussion of input taxation).}
+Broadening the base to include fresh food, education, health, water and sewerage could raise almost \$20 billion (\Vref{fig:GST_revenue_of_excluded_items1415}). This figure takes into account the effects of changes in consumer behaviour due to the increased prices in these categories. 
 \begin{figure}
 <<GST_revenue_of_excluded_items1415>>=
 gst.expenditures <- read_excel("GST_expenditures1415.xlsx")
@@ -602,7 +624,7 @@ As discussed above, consumption of GST exempt categories (particularly fresh foo
 
 For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
 
-\chapter{A targeted compensation package}
+\chapter{A targeted compensation package}\label{chap:targeted_comp_pkg}
 Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low-income households. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
 
 But if the GST package is partly to provide revenue to State Governments to fund growing health and education spending,\footnote{The decision in the 2014-15 Commonwealth budget to withdraw from the National Health Reform Agreement and to no longer fund growth in hospital spending precipitated the current discussion (including the support from the NSW Government) for the government to increase the GST. \textcite[p.~18]{daleywood2015fiscalchallenges}}
@@ -1338,6 +1360,7 @@ vars.to.exclude <-
 
 indices.to.include <- which(!names(bottom.quintile.not.compensated) %in% vars.to.exclude)
 
+bottom.quintile.not.compensated.all.vars <- bottom.quintile.not.compensated
 bottom.quintile.not.compensated <- bottom.quintile.not.compensated[,indices.to.include,with=FALSE]
 
 bottom.quintile.not.compensated %<>%
@@ -1357,6 +1380,30 @@ bottom.quintile.not.compensated_factors %<>%
   mutate(age_group_orderedF = factor(age_group, ordered = TRUE))
 @
 
+<<degreeOfUndecompensation>>=
+temp.chessboard <- 
+  data.table::CJ(
+    Unique_household_number = hes_with_gst_and_tax_compensation$Unique_household_number,
+    comp_threshold.wk = seq.int(from = -10L, to = 10L, by = 1L)
+  ) %>%
+  data.table::setkey(Unique_household_number)
+
+hes_with_gst_and_tax_compensation %>%
+  setkey(Unique_household_number) %>%
+  data.table:::merge.data.table(temp.chessboard) %>%
+  group_by.income_quintile() %>%
+  group_by(gross_income_quintile, comp_threshold.wk) %>%
+  summarise(
+    pc.comp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS/2 - new_welfare - tax_diff_weekly > comp_threshold.wk, Weight_HH_HES)
+  ) %>%
+  ungroup %>%
+  filter(gross_income_quintile == 1) %>%
+  grplot(aes(x = comp_threshold.wk,
+             y = pc.comp)) + 
+  geom_bar(stat = "identity")
+  
+@
+
 <<selfFundedRetirees>>=
 bottom.quintile.not.compensated_factors %>%
   group_by(not_compensated, is_self_funded_retiree) %>%
@@ -1371,8 +1418,10 @@ bottom.quintile.not.compensated_factors %>%
   group_by(not_compensated, has_welfare, age_group) %>%
   summarise(n = sum(Weight_HH_HES)) %>%
   ungroup %>% filter(not_compensated) %>%
-  mutate(prop = n/sum(n))  %>% 
-  arrange( has_welfare, age_group) %>% 
+  mutate(prop = n/sum(n),
+         gross_income_quintile = 1)  %>% 
+  arrange(has_welfare, age_group) %T>% 
+  chart_data %>%
   mutate(age_group = gsub("\\s", "\n", age_group)) %>%
   grplot(aes(x = age_group, y = prop)) + 
   geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
@@ -1414,22 +1463,37 @@ bottom.quintile.not.compensated_factors %>%
   scale_y_continuous(label=percent)
 @
 
-<<UnderCompensationbyNetWealth>>=
+<<UnderCompensationbyNetWealthAbbrev>>=
 bottom.quintile.not.compensated_factors %>%
   mutate(Net_wealth_of_household_factors = cut(Net_wealth_of_household,
-                                              breaks = c(-Inf, 0, 100e3, 200e3, 300e3, 400e3, 500e3, Inf), 
+                                              breaks = cpi_inflator(c(-Inf, 0, 100e3, 200e3, 300e3, 400e3, 500e3, Inf), 
+                                                                    to_fy = "2009-10",
+                                                                    from_fy = "2014-15") * cpi_inflator(from_fy = "2013-14",
+                                                                                                        to_fy = "2014-15"),
+                                              labels = c("< $0", "\n$0-$100", 
+                                                         "$100-$200", "\n$200-$300", 
+                                                         "$300-$400", "\n$400-$500", 
+                                                         "$500+"),
                                               include.lowest = TRUE,
                                               dig.lab = 6)) %>%
   group_by(not_compensated, has_welfare, Net_wealth_of_household_factors) %>%
   summarise(n = sum(Weight_HH_HES)) %>%
   ungroup %>% 
   filter(not_compensated) %>%
-  mutate(prop = n/sum(n))  %>% 
+  mutate(prop = n/sum(n),
+         gross_income_quintile = 1) %T>% 
+  chart_data %>%
   grplot(aes(x = factor(Net_wealth_of_household_factors), y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
-                                                               axis.title.x = element_blank()) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare)) + 
+  theme(legend.position = c(0.15, 0.7)) + 
+  xlab("Net wealth of household (2014-15 dollars / 1000)") +
   scale_y_continuous(label=percent)
 @
+\begin{figure}
+\caption{Percentage of undercompensated households in lowest quintile}\label{fig:UnderCompensationbyNetWealthAbbrev}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/UnderCompensationbyNetWealthAbbrev-1}
+\source{Analysis of HES 2009-10}
+\end{figure}
 
 <<UnderCompensationbyConsumption>>=
 hes_with_gst_and_tax_compensation %>%
