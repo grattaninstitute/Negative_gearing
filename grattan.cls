@@ -205,6 +205,9 @@ singlelinecheck=false}
 \addtokomafont{subsection}{\bfseries\normalsize}
 \addtokomafont{subsubsection}{\normalsize}
 
+%\RequirePackage{titlesec}
+%\titleformat{\chapter}{\bfseries\Large}{\thechapter}{2ex}{\phantomsection}
+
 % Spacing
 \RedeclareSectionCommand[
   beforeskip=1.5\baselineskip,
