@@ -987,10 +987,50 @@ Newstart
 cutoff.
 \@endanenote 
 \@doanenote {51}{51}
+macro:->Grattan
+Insitute
+calculations.
+For
+impact
+of
+bracket
+creep,
+see
+\textcite
+[p.~6]{daleywood2015fiscalchallenges}.
+\@endanenote 
+\@doanenote {52}{52}
 macro:->\url
 {https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}
 \@endanenote 
-\@doanenote {52}{52}
+\@doanenote {53}{53}
+macro:->This
+was
+the
+maximum
+income
+placing
+the
+household
+in
+the
+bottom
+40
+per
+cent
+of
+household
+incomes
+in
+2013/14.
+ABS
+Survey
+of
+Income
+and
+Housing
+\@endanenote 
+\@doanenote {54}{54}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -1000,14 +1040,14 @@ macro:->\protecting
 {2}{footcite}{}{p.~17}{Daley2014}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {53}{53}
+\@doanenote {55}{55}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{BP~No.2,
 p.~126}{Budget2014}{}}}
 \@endanenote 
-\@doanenote {54}{54}
+\@doanenote {56}{56}
 macro:->Health
 estimates
 based
@@ -1018,13 +1058,13 @@ on
 \textcite
 [p.~16-18]{Daley2015}.
 \@endanenote 
-\@doanenote {55}{55}
+\@doanenote {57}{57}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~7}{Treasury2014a}{}}}
 \@endanenote 
-\@doanenote {56}{56}
+\@doanenote {58}{58}
 macro:->Estimates
 in
 2014-15
@@ -1041,7 +1081,7 @@ in
 \textcite
 {Treasury2014a}.
 \@endanenote 
-\@doanenote {57}{57}
+\@doanenote {59}{59}
 macro:->Section
 11
 of
@@ -1059,25 +1099,25 @@ Base)
 Act~1999}
 (Cth)
 \@endanenote 
-\@doanenote {58}{58}
+\@doanenote {60}{60}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{twomey2003federal}{}}}
 \@endanenote 
-\@doanenote {59}{59}
+\@doanenote {61}{61}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~4}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {60}{60}
+\@doanenote {62}{62}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~8-14}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {61}{61}
+\@doanenote {63}{63}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd

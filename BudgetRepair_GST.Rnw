@@ -1153,15 +1153,20 @@ Specifically, people on incomes somewhat above the previous cut off point will n
 
 \end{bigbox*}
 
-\section{Income tax cuts}
+\section{Income tax cuts can compensate the average lower income household}
 Modest income tax cuts should be part of any GST reform package. 
 
-Appropriately targeted income tax cuts will help to moderate the effect of a higher GST on work incentives. By increases prices of many good and services, a higher or broader GST, reduces the real purchasing power of take home pay. But tax cuts mean the size of workers' pay packets is larger. 
+Appropriately targeted income tax cuts will help to moderate the effect of a higher GST on work incentives. By increases prices of many good and services, a higher or broader GST, reduces the real purchasing power of take home pay. But tax cuts mean the size of workers' pay packets is larger. But income tax cuts mean that workers will have bigger pay packets. 
 
 This partial ``swap'' of income taxes for consumption taxes will provide an economic dividend. However, the economic gain will depend on the design of any income tax cuts: cuts targeted at middle income earners are likely to have a much bigger impact on participation than reductions in the top marginal rate only paid by a small number of taxpayers who usually work full time (\vref{chap:Chapter1}).
 
-But if the purpose of GST reform is to help state governments fund rising healthcare costs, there is a limit to the money available to fund income tax reductions. Given our proposed welfare package, spending any more than 30 per cent of the revenue on tax cuts will not leave state governments with enough funds to make a meaningful dent in their health funding ``gap''. 
+But if the purpose of GST reform is to help state governments fund rising healthcare costs, there is a limit to the money available to fund income tax reductions. Given our proposed welfare package, spending any more than 30 per cent of the revenue on tax cuts will not leave state governments with enough funds to make a meaningful dent in their health funding ``gap'', or deficit reduction. 
 
+We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
+
+For example, using \$8 billion of the additional \$27 billion of revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30.5 per cent. If, instead the GST is broadened, 30 per cent of the revenue from a broader GST would supports cuts to approximately 18 per cent and 31 per cent for the same brackets. To put these tax cuts into context, they have a similar impact on average tax rates as 4 years of bracket creep.\footnote{Grattan Insitute calculations. For impact of bracket creep, see \textcite[p.~6]{daleywood2015fiscalchallenges}.}  Households higher up the income scale would receive substantial benefit from these tax changes. 
+
+\Vref{fig:GST_compensation_and_tax_cuts_by_quintile_and_threshold} shows the combined effect of a higher GST but lower income tax rates and higher welfare payments proposed under our package. 
 \subsection{The size of income tax cuts}
 We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
 
@@ -1170,6 +1175,8 @@ For example, using \$9~billion of the additional revenue from a 15 per cent GST 
 While 30 per cent of the revenue from a broader GST would support cuts to around 18 per cent and 30.5 per cent for those same brackets. 
 
 After tax cuts, households higher up the income scale receive some compensation for the increase in their cost of living. \Vref{fig:GST_compensation_with_tax_cuts} shows levels of compensation for a higher GST after the tax cuts and welfare payments proposed under an increase of the GST under the current base to 15\%. 
+
+The bottom 40 per cent of households -- those with incomes up to \$63,000 annually\footnote{This was the maximum income placing the household in the bottom 40 per cent of household incomes in 2013/14. ABS Survey of Income and Housing}  -- on average would come out in front. Higher up the income distribution, households on average would come out behind, although most households in the third and fourth quintiles would not go backwards by much: for them lower income taxes would offset three quarters or more of the effects of a higher GST.
 
 
 

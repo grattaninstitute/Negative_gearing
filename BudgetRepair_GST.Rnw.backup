@@ -521,7 +521,7 @@ Income taxes can affect the incentives to work more than consumption
 taxes. The combination of income tax scales and the withdrawal of means 
 tested welfare benefits can discourage working because they result in 
 low rates of take home pay. The disincentives are larger for low-income 
-workers and those working part time (\Vref{box:labour_supply). Higher income tax rates as 
+workers and those working part time (\Vref{box:labour_supply}). Higher income tax rates as 
 a result of bracket creep can materially reduce workforce participation 
 of middle income part-time earners.
 
@@ -593,9 +593,14 @@ Increasing the rate of the tax from 10 to 15 per cent could raise as much as \$2
 
 
 \subsection{Broadening the GST will make it simpler and more efficient}
-A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976}
+A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976} This is particularly true when different tax treatment is applied to goods or services that are substitutes. For example, remedial massage attracts GST while both osteopathy and chiropractic services are GST free.  Broadening the GST would remove these distortions.  
 
-There are other reasons to favour a broad based tax. Exemptions create administrative costs for business that deal with both exempt and non-exempt goods. And grey lines create opportunities for tax avoidance and lobbying to exclude particular goods.\footnote{A recent poll of the 49 senior economists on the National Economic Panel found that more than half favoured broadening the base of the GST over than increasing the rate. Most were in favour of the efficiency and simplicity gains from this approach. In contrast, the one third that disagreed (the balance were undecided) were either sceptical about the net efficiency gains and/or doubts that compensation would be adequate to address the effects of a more comprehensive GST for those on low incomes.}
+There are other reasons to favour a broad based tax. Exemptions create administrative costs for businesses that deal with both exempt and non-exempt goods. And grey lines create opportunities for tax avoidance and lobbying to exclude particular goods.\footnote{}  While arguably a lot of these costs have already been sunk, new fronts in the debate open up from time-to-time.  
+
+A majority of senior Australian economists favoured broadening the base of the GST rather than increasing the rate. Most thought it would increase efficiency and simplicity. In contrast, the one third that disagreed (the balance were undecided) were either sceptical about the net efficiency gains or had doubts that compensation would be adequate to address the effects of a more comprehensive GST for those on low incomes. 
+
+Including spending on education and health in the GST will also help address the problem of ``base erosion.'' Spending on health in particular is expected to rise faster than income (section 1.1). Including health and education in the GST base will ensure revenues from the tax better keep pace with economic growth, as well as aligning more closely with state government expenditures. 
+
 
 \subsection{Social purposes of existing exemptions could be served better by other means}
 
@@ -624,13 +629,13 @@ Treasury's elasticity estimate for private education services is close to one bu
 
 \end{bigbox*}
 
-\section{Increasing the GST rate}
-An alternative to broadening the base of the GST is to increase the rate. Australia's 10 per cent rate is low by international standards. It is the fourth lowest value added tax rate in the OECD, and considerably below the OECD average of 19 per cent.\footcite{PublicFinance2014}
-
-Increasing the rate of the tax from 10 to 15 per cent could raise as much as \$27 billion. This does not factor in behavioural change, although revenue leakage from substitution to exempt categories is likely to be limited.\footnote{While a higher GST will lead to some distortion in economic activity because of substitution to exempt categories this will be limited because the tax applies to most goods. \textcite{Econotech2011}}
-As discussed above, consumption of GST exempt categories (particularly fresh food, health and education) is not affected much by their price relative to other goods and services.
-
-For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
+% \section{Increasing the GST rate}
+% An alternative to broadening the base of the GST is to increase the rate. Australia's 10 per cent rate is low by international standards. It is the fourth lowest value added tax rate in the OECD, and considerably below the OECD average of 19 per cent.\footcite{PublicFinance2014}
+% 
+% Increasing the rate of the tax from 10 to 15 per cent could raise as much as \$27 billion. This does not factor in behavioural change, although revenue leakage from substitution to exempt categories is likely to be limited.\footnote{While a higher GST will lead to some distortion in economic activity because of substitution to exempt categories this will be limited because the tax applies to most goods. \textcite{Econotech2011}}
+% As discussed above, consumption of GST exempt categories (particularly fresh food, health and education) is not affected much by their price relative to other goods and services.
+% 
+% For the efficiency and simplicity reasons discussed above broadening the base would be better than raising the rate. 
 
 \chapter{A targeted compensation package}\label{chap:targeted_comp_pkg}
 Opposition to increasing Australia's GST is often motivated by concerns about the impacts on low-income households. If we are to protect the disadvantaged, compensation is required to ensure that low-income people are not significantly out of pocket. The package should also maintain incentives for workforce participation, particularly for low and middle income earners who are most responsive to changes in effective tax rates. This means a combination of tax cuts and higher welfare payments. 
@@ -642,14 +647,9 @@ This will be difficult for governments that have been accustomed to being able t
 And the public have come to expect that medicine will always arrive with a spoonful of sugar.\footcites{Megalogenis2010}{Henry730}
 %Ken Henry, 7.30 report. Australian Broadcasting Corporation
 %Broadcast: 22/09/2015 Reporter: Leigh Sales http://www.abc.net.au/7.30/content/2015/s4317759.htm
-But without revenue positive reforms, the budget pressures we outlined in our Fiscal Challenges paper will only continue to deteriorate. 
+But without revenue positive reforms, the budget pressures we outlined in our \emph{Fiscal Challenges} paper will only continue to deteriorate. 
 
-Our proposed package balances the need for fiscal consolidation with fairness and efficiency. It overcompensates the bottom 20 per cent of the income distribution on average, mainly through higher welfare payments. So most of the poorest Australians will be no worse off, and the majority better off, in terms of their real purchasing power. Modest tax cuts focussed on the low and middle thresholds help maintain the incentives for work participation and ensure that most low and middle income earners are also better off. Around 40 per cent of the additional revenue would be left over. This might:
-\begin{itemize}
-\item provide additional  revenue for state governments to reduce the hospital funding ``gap'';
-\item provide additional revenue for the Commonwealth government to reduce its substantial deficit;
-\item provide substitute revenue for further tax cuts, over and above the tax cuts focussed on the low and middle thresholds provided as part of the compensation package. 
-\end{itemize}
+Our proposed package balances the need for fiscal consolidation with fairness and efficiency. It overcompensates the bottom 20 per cent of the income distribution on average, mainly through higher welfare payments. So most of the poorest Australians will be no worse off, and the majority better off, in terms of their real purchasing power. Modest tax cuts focussed on the low and middle thresholds would maintain or improve the incentives for work participation and ensure that most low and middle income earners are also better off. Around 40 per cent of the additional revenue would be left over. The potential uses of this are discussed in \Vref{chap:UsesOfGSTRevenue}. 
 
 \begin{bigbox*}{Buying reform -- the GST and CPRS compensation packages}{box:BuyingReform}
 The introduction of the GST in 2000 was accompanied by cuts to personal income tax and increases in welfare benefits. 
@@ -1153,15 +1153,18 @@ Specifically, people on incomes somewhat above the previous cut off point will n
 
 \end{bigbox*}
 
-\section{Income tax cuts}
+\section{Income tax cuts can compensate the average lower income household}
 Modest income tax cuts should be part of any GST reform package. 
 
-Appropriately targeted income tax cuts will help to moderate the effect of a higher GST on work incentives. By increases prices of many good and services, a higher or broader GST, reduces the real purchasing power of take home pay. But tax cuts mean the size of workers' pay packets is larger. 
+Appropriately targeted income tax cuts will help to moderate the effect of a higher GST on work incentives. By increases prices of many good and services, a higher or broader GST, reduces the real purchasing power of take home pay. But tax cuts mean the size of workers' pay packets is larger. But income tax cuts mean that workers will have bigger pay packets. 
 
 This partial ``swap'' of income taxes for consumption taxes will provide an economic dividend. However, the economic gain will depend on the design of any income tax cuts: cuts targeted at middle income earners are likely to have a much bigger impact on participation than reductions in the top marginal rate only paid by a small number of taxpayers who usually work full time (\vref{chap:Chapter1}).
 
-But if the purpose of GST reform is to help state governments fund rising healthcare costs, there is a limit to the money available to fund income tax reductions. Given our proposed welfare package, spending any more than 30 per cent of the revenue on tax cuts will not leave state governments with enough funds to make a meaningful dent in their health funding ``gap''. 
+But if the purpose of GST reform is to help state governments fund rising healthcare costs, there is a limit to the money available to fund income tax reductions. Given our proposed welfare package, spending any more than 30 per cent of the revenue on tax cuts will not leave state governments with enough funds to make a meaningful dent in their health funding ``gap'', or deficit reduction. 
 
+We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
+
+For example, using \$8 billion of the additional \$27 billion of revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30.5 per cent. If, instead the GST is broadened, 30 per cent of the revenue from a broader GST would supports cuts to approximately 18 per cent and 31 per cent for the same brackets. To put these tax cuts into context, they have a similar impact on average tax rates as 4 years of bracket creep.\footnote{Grattan Insitute calculations. For impact of bracket creep, see }  Households higher up the income scale would receive substantial benefit from these tax changes. 
 \subsection{The size of income tax cuts}
 We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
 
