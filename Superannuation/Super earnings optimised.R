@@ -301,37 +301,14 @@ person.dfkvi %<>%
     Super.ddown = age_group >= "60 to 64" & Super.income > 0
   ) 
 
-# Now we see how many of those that are over 60, and have a super balance, are in the drawdown phase
-
-person.dfkvi %>% filter(Age.numeric>21) %>% 
-  group_by(Super.ddown) %>% 
-  summarise(total.super = sum((Total.super * Weights) / 10^9)) 
-
 # So roughly 70 per cent of the super assets of over 60s are in the drawdown phase. So it's important that we distinguish between super assets of over 60s that are in the drawdown phase, and those that are not.
 
 # Now we generate out drawdown subset which we use for our earnings analysis
 
-person.dfkvi.ddown <- person.dfkvi %>% filter(Age.numeric>21, Super.ddown == 1)
-
-#===================================================================================
-# Investigating those drawing down on super - using inflated dataset - No need to QC
-#===================================================================================#
-
-# Number of people with balances of over $1 million in 2011-12 is 67,000, or 6.8% of those in the drawdown phase, with total funds of $113 billion
-
-person.dfkvi.ddown %>% group_by(Total.super<1000000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9)  %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Number of people with balances over $2.5 million is 7,125, or 0.7 per cent of those in the drawdown phase, with total funds of $28 billion
-
-person.dfkvi.ddown %>% group_by(Total.super < 2500000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
+# person.dfkvi.ddown <- person.dfkvi %>% filter(Age.numeric>21, Super.ddown == 1)
+person.dfkvi.ddown <- 
+  person.dfkvi %>%
+  filter(Super.ddown)
 
 # =======================================================================================================
 # Estimate super earnings        
@@ -352,18 +329,26 @@ Super.return.rate.ddown <- 0.05 # 5 per cent return in the drawdown phase
 
 # So super earnings will depend upon whether super account holders are in the accumulation or drawdown phases
 
-person.dfkvi$Super.earnings <- ifelse(person.dfkvi$Super.ddown == 1, Super.return.rate.ddown*person.dfkvi$Total.super, Super.return.rate.acc*person.dfkvi$Total.super)
-summary(person.dfkvi$Super.earnings)
+# person.dfkvi$Super.earnings <- ifelse(person.dfkvi$Super.ddown == 1, Super.return.rate.ddown*person.dfkvi$Total.super, Super.return.rate.acc*person.dfkvi$Total.super)
 
-sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # We estimate total super balances of $2 trillion
-sum(person.dfkvi$Super.earnings * person.dfkvi$Weights) / 10^9 # With annual super earnings of $130 billion
+person.dfkvi %<>%
+  mutate(Super.earnings = ifelse(Super.ddown, 
+                                 Total.super * Super.return.rate.ddown, 
+                                 Total.super * Super.return.rate.acc),
+         # Finally, we write two new identities for taxable and total income that account for super earnings in the member's super fund. 
+         # We use these when we include each members super fund earnings in taxable income to do the costing
+         Total.income.annual.s = Total.income.annual + Super.earnings,
+         Taxable.income.annual.s = Taxable.income.annual + Super.earnings)
 
-# Funds reported investment earnings of $137 billion in 2013-14, and $117 billion in 2014-15. So our numbers probably stack up okay.
+# sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # We estimate total super balances of $2 trillion
+# sum(person.dfkvi$Super.earnings * person.dfkvi$Weights) / 10^9 # With annual super earnings of $130 billion
+# 
+# # Funds reported investment earnings of $137 billion in 2013-14, and $117 billion in 2014-15. So our numbers probably stack up okay.
 
-# Finally, we write two new identities for taxable and total income that account for super earnings in the member's super fund. We use these when we include each members super fund earnings in taxable income to do the costing
 
-person.dfkvi$Total.income.annual.s <- person.dfkvi$Total.income.annual + person.dfkvi$Super.earnings
-person.dfkvi$Taxable.income.annual.s <- person.dfkvi$Taxable.income.annual + person.dfkvi$Super.earnings
+
+# person.dfkvi$Total.income.annual.s <- person.dfkvi$Total.income.annual + person.dfkvi$Super.earnings
+# person.dfkvi$Taxable.income.annual.s <- person.dfkvi$Taxable.income.annual + person.dfkvi$Super.earnings
 
 # =======================================================================================================
 # Effective tax rate on super earnings 
@@ -377,7 +362,10 @@ person.dfkvi$Taxable.income.annual.s <- person.dfkvi$Taxable.income.annual + per
 tax.rate.acc <- 0.125 # For the accumulation phase
 tax.rate.ddown <- 0.14 # For the drawdown phase
 
-person.dfkvi$super.earnings.tax <- ifelse(person.dfkvi$Super.ddown == 1, person.dfkvi$Super.earnings*tax.rate.ddown, person.dfkvi$Super.earnings*tax.rate.acc) 
+person.dfkvi %<>%
+  mutate(super.earnings.tax = ifelse(Super.ddown, 
+                                     Super.earnings * tax.rate.ddown, 
+                                     Super.earnings * tax.rate.acc)) 
 
 # ==================================================================================
 # Setting up our personal income tax functions
