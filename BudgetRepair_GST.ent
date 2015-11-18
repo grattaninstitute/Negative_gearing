@@ -734,45 +734,6 @@ time.
 {Bonner2015}
 \@endanenote 
 \@doanenote {35}{35}
-macro:->\protecting
-{\blxmkbibnote
-{foot}{\blxciteicmd
-{footcite}{}{}{PublicFinance2014}{}}}
-\@endanenote 
-\@doanenote {36}{36}
-macro:->While
-a
-higher
-GST
-will
-lead
-to
-some
-distortion
-in
-economic
-activity
-because
-of
-substitution
-to
-exempt
-categories
-this
-will
-be
-limited
-because
-the
-tax
-applies
-to
-most
-goods.
-\textcite
-{Econotech2011}
-\@endanenote 
-\@doanenote {37}{37}
 macro:->The
 decision
 in
@@ -818,13 +779,13 @@ GST.
 \textcite
 [p.~18]{daleywood2015fiscalchallenges}
 \@endanenote 
-\@doanenote {38}{38}
+\@doanenote {36}{36}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~80}{Megalogenis2010}{}}}
 \@endanenote 
-\@doanenote {39}{39}
+\@doanenote {37}{37}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -834,7 +795,7 @@ macro:->\protecting
 {2}{footcite}{}{}{Henry730}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {40}{40}
+\@doanenote {38}{38}
 macro:->For
 example,
 Labor
@@ -846,7 +807,7 @@ in
 \textcite
 {Hutchens2015}
 \@endanenote 
-\@doanenote {41}{41}
+\@doanenote {39}{39}
 macro:->See
 \textcite
 [p.~21]{Daley2013}
@@ -854,7 +815,7 @@ for
 further
 discussion.
 \@endanenote 
-\@doanenote {42}{42}
+\@doanenote {40}{40}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -866,7 +827,7 @@ macro:->\protecting
 {3}{footcite}{}{}{Treasury2010}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {43}{43}
+\@doanenote {41}{41}
 macro:->Grattan
 estimates
 based
@@ -874,7 +835,7 @@ on
 \textcites
 {Treasury2015b}{ABS2013a}{ABS2015b}
 \@endanenote 
-\@doanenote {44}{44}
+\@doanenote {42}{42}
 macro:->Savings
 rates
 increase
@@ -908,7 +869,7 @@ of
 their
 income.
 \@endanenote 
-\@doanenote {45}{45}
+\@doanenote {43}{43}
 macro:->\textcite
 {Treasury2010};
 \textcite
@@ -951,43 +912,43 @@ next
 generation.
 
 \@endanenote 
-\@doanenote {46}{46}
+\@doanenote {44}{44}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{See}{p.~37}{Daley2013}{}}}
 \@endanenote 
-\@doanenote {47}{47}
+\@doanenote {45}{45}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{ABS2013cx}{}}}
 \@endanenote 
-\@doanenote {48}{48}
+\@doanenote {46}{46}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {smartcite}{}{}{Davidson2000}{}}}
 \@endanenote 
-\@doanenote {49}{49}
+\@doanenote {47}{47}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {smartcite}{}{}{ACOSS2012}{}}}
 \@endanenote 
-\@doanenote {50}{50}
+\@doanenote {48}{48}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {smartcite}{}{}{Morrison2015}{}}}
 \@endanenote 
-\@doanenote {51}{51}
+\@doanenote {49}{49}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{Deloitte2015}{}}}
 \@endanenote 
-\@doanenote {52}{52}
+\@doanenote {50}{50}
 macro:->Grattan
 analysis.
 We
@@ -1025,11 +986,11 @@ current
 Newstart
 cutoff.
 \@endanenote 
-\@doanenote {53}{53}
+\@doanenote {51}{51}
 macro:->\url
 {https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}
 \@endanenote 
-\@doanenote {54}{54}
+\@doanenote {52}{52}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -1039,14 +1000,14 @@ macro:->\protecting
 {2}{footcite}{}{p.~17}{Daley2014}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {55}{55}
+\@doanenote {53}{53}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{BP~No.2,
 p.~126}{Budget2014}{}}}
 \@endanenote 
-\@doanenote {56}{56}
+\@doanenote {54}{54}
 macro:->Health
 estimates
 based
@@ -1057,13 +1018,13 @@ on
 \textcite
 [p.~16-18]{Daley2015}.
 \@endanenote 
-\@doanenote {57}{57}
+\@doanenote {55}{55}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~7}{Treasury2014a}{}}}
 \@endanenote 
-\@doanenote {58}{58}
+\@doanenote {56}{56}
 macro:->Estimates
 in
 2014-15
@@ -1080,7 +1041,7 @@ in
 \textcite
 {Treasury2014a}.
 \@endanenote 
-\@doanenote {59}{59}
+\@doanenote {57}{57}
 macro:->Section
 11
 of
@@ -1098,25 +1059,25 @@ Base)
 Act~1999}
 (Cth)
 \@endanenote 
-\@doanenote {60}{60}
+\@doanenote {58}{58}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{twomey2003federal}{}}}
 \@endanenote 
-\@doanenote {61}{61}
+\@doanenote {59}{59}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~4}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {62}{62}
+\@doanenote {60}{60}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~8-14}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {63}{63}
+\@doanenote {61}{61}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
