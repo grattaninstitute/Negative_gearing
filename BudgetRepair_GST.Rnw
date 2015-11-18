@@ -587,6 +587,9 @@ The policy imposes a fixed cost on overseas retailers selling to Australians, as
 Any system that requires Customs to verify GST compliance and charge consumers where the supplier is non-compliant will be expensive to administer. Previous reviews found inspecting packages at the border costs much more money than it raises in additional tax, particularly for low values of the threshold.  This is because most imports below the current \$1000 threshold are low value items. Credit-card transaction data suggests that 90 per cent of imports of less than \$1000 cost less than \$100 and 49 per cent cost less than~\$10.\footcite[p.~1]{NAB2013} 
 
 \subsection{Increasing the GST rate}
+An alternative to broadening the base of the GST is to increase the rate. Australia's 10 per cent rate is low by international standards. It is the fourth lowest value added tax rate in the OECD, and considerably below the OECD average of 19 per cent. 
+
+Increasing the rate of the tax from 10 to 15 per cent could raise as much as \$27 billion, based on GST collections in 2014-15. This does not factor in behavioural change, although it is unlikely that much revenue will be lost because people shift their spending towards goods and services in exempt categories.  As discussed in \Vref{box:ChangeInConsumerChoices}, consumption of GST exempt categories (particularly fresh food, health and education) is not affected much by their price relative to other goods and services.
 
 
 \subsection{Broadening the GST will make it simpler and more efficient}
