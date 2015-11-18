@@ -200,8 +200,6 @@ person.dfkvi$Total.super <- person.dfkvi$Total.super * x
 # We add these in afterwards as they are from 2014-15, so we dont want to inflate them up from 2012-13
 
 # We map a new variable for individuals based on whether they are (a) indiv; or (b) couple
-
-person.dfkvi$Fam.type.numeric <- as.numeric(person.dfkvi$Fam.type)
 person.dfkvi$Single <- ifelse(person.dfkvi$Fam.type.numeric > 9 | person.dfkvi$Fam.type.numeric < 2, 1, 0)
 
 # ======
