@@ -228,11 +228,11 @@ person.dfkvi$ML.upper.senior <- 41305*1.025
 # We add in the income thresholds and maximum offsets for SAPTO - we only use the individual thresholds for now. These are the figures for 2014-15. I dont think these thresholds are indexed - they've stayed the same over 2012-13, 2013-14 and 2014-15 - so we use the same ones in 2015-16
 
 person.dfkvi$SAPTO.lower.indiv <- 32279
-person.dfkvi$SAPTO.upper.indiv <- rep(50119, length(person.dfkvi$Age))
-person.dfkvi$SAPTO.max.indiv <- rep(2230, length(person.dfkvi$Age)) 
-person.dfkvi$SAPTO.lower.cpl <- rep(57948, length(person.dfkvi$Age))
-person.dfkvi$SAPTO.upper.cpl <- rep(83580, length(person.dfkvi$Age))
-person.dfkvi$SAPTO.max.cpl <- rep(1602, length(person.dfkvi$Age)) 
+person.dfkvi$SAPTO.upper.indiv <-50119
+person.dfkvi$SAPTO.max.indiv <- 2230
+person.dfkvi$SAPTO.lower.cpl <- 57948
+person.dfkvi$SAPTO.upper.cpl <- 83580
+person.dfkvi$SAPTO.max.cpl <- 1602
 
 # ======
 # LITO - income thresholds are unindexed
