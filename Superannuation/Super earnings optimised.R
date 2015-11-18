@@ -249,8 +249,57 @@ person.dfkvi$LITO.max <- 445
 # Where Age >= 22 we know they are over 60
 # Where Super.income > 0, we know they are in the drawdown phase
 
+
+
+## Age mutate by Hugh
+age_mutate <- function(.hes){
+  stopifnot("Age_of_HH_reference_person" %in% names(.hes) || "Age_of_person" %in% names(.hes))
+  if("Age_of_HH_reference_person" %in% names(.hes)){
+    out <- 
+      .hes %>%
+      mutate(
+        age_group = as.character(Age_of_HH_reference_person),
+        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group
+        )
+      ) 
+  }
+  
+  if("Age_of_person" %in% names(.hes)){
+    out <- 
+      .hes %>%
+      mutate(
+        age_group = as.character(Age_of_person),
+        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group
+        )
+      ) 
+  }
+  out
+}
+
+person.dfkvi %<>%
+  mutate(Age_of_person = Age) %>%
+  age_mutate
+
 # We start by defining a 'drawdown' variable, where we need Age as a numeric variable to filter on it 
 person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 22, 0, ifelse(person.dfkvi$Super.income > 0, 1, 0))
+
+person.dfkvi %<>%
+  data.table::data.table() %>%
+  mutate(
+    Super.ddown = age_group >= "60 to 64" & Super.income > 0
+  ) 
 
 # Now we see how many of those that are over 60, and have a super balance, are in the drawdown phase
 
