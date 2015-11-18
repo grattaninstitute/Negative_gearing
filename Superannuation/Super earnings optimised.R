@@ -200,7 +200,7 @@ person.dfkvi$Total.super <- person.dfkvi$Total.super * x
 # We add these in afterwards as they are from 2014-15, so we dont want to inflate them up from 2012-13
 
 # We map a new variable for individuals based on whether they are (a) indiv; or (b) couple
-person.dfkvi$Single <- ifelse(person.dfkvi$Fam.type.numeric > 9 | person.dfkvi$Fam.type.numeric < 2, 1, 0)
+person.dfkvi$Single <- !grepl("Couple", person.dfkvi$Fam.type)
 
 # ======
 # Medicare Levy
@@ -210,10 +210,10 @@ person.dfkvi$Single <- ifelse(person.dfkvi$Fam.type.numeric > 9 | person.dfkvi$F
 # Need to check what year this are from, to make sure we're indexing them in the right way. At present we're indexing them as if they are the thresholds in 2012-13.
 
 # Individuals
-person.dfkvi$ML.lower <- rep(20896*1.025,length(person.dfkvi$Age))
-person.dfkvi$ML.upper <- rep(26120*1.025,length(person.dfkvi$Age))
-person.dfkvi$ML.lower.senior <- rep(33044*1.025,length(person.dfkvi$Age))
-person.dfkvi$ML.upper.senior <- rep(41305*1.025,length(person.dfkvi$Age))
+person.dfkvi$ML.lower <- 20896*1.025
+person.dfkvi$ML.upper <- 26120*1.025
+person.dfkvi$ML.lower.senior <- 33044*1.025
+person.dfkvi$ML.upper.senior <- 41305*1.025
 
 # Families - these thresholds are for family taxable income for the couple
 # person.dfkvi$ML.lower.cpl <- rep(20896,length(person.dfkvi$Age))
@@ -227,7 +227,7 @@ person.dfkvi$ML.upper.senior <- rep(41305*1.025,length(person.dfkvi$Age))
 
 # We add in the income thresholds and maximum offsets for SAPTO - we only use the individual thresholds for now. These are the figures for 2014-15. I dont think these thresholds are indexed - they've stayed the same over 2012-13, 2013-14 and 2014-15 - so we use the same ones in 2015-16
 
-person.dfkvi$SAPTO.lower.indiv <- rep(32279, length(person.dfkvi$Age))
+person.dfkvi$SAPTO.lower.indiv <- 32279
 person.dfkvi$SAPTO.upper.indiv <- rep(50119, length(person.dfkvi$Age))
 person.dfkvi$SAPTO.max.indiv <- rep(2230, length(person.dfkvi$Age)) 
 person.dfkvi$SAPTO.lower.cpl <- rep(57948, length(person.dfkvi$Age))
