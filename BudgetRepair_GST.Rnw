@@ -521,7 +521,7 @@ Income taxes can affect the incentives to work more than consumption
 taxes. The combination of income tax scales and the withdrawal of means 
 tested welfare benefits can discourage working because they result in 
 low rates of take home pay. The disincentives are larger for low-income 
-workers and those working part time (\Vref{box:labour_supply). Higher income tax rates as 
+workers and those working part time (\Vref{box:labour_supply}). Higher income tax rates as 
 a result of bracket creep can materially reduce workforce participation 
 of middle income part-time earners.
 
@@ -593,9 +593,14 @@ Increasing the rate of the tax from 10 to 15 per cent could raise as much as \$2
 
 
 \subsection{Broadening the GST will make it simpler and more efficient}
-A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976}
+A broader base for consumption taxes minimise distortions in decision making. By taxing purchases of all goods and services at the same rate, people consume whichever goods and services that provide them with the most value. When differential tax rates apply then there are welfare losses; people are induced to consume relatively more of the lower taxed goods and less of the higher taxed goods than they would otherwise prefer.\footcite{AtkinsonStiglitz1976} This is particularly true when different tax treatment is applied to goods or services that are substitutes. For example, remedial massage attracts GST while both osteopathy and chiropractic services are GST free.  Broadening the GST would remove these distortions.  
 
-There are other reasons to favour a broad based tax. Exemptions create administrative costs for business that deal with both exempt and non-exempt goods. And grey lines create opportunities for tax avoidance and lobbying to exclude particular goods.\footnote{A recent poll of the 49 senior economists on the National Economic Panel found that more than half favoured broadening the base of the GST over than increasing the rate. Most were in favour of the efficiency and simplicity gains from this approach. In contrast, the one third that disagreed (the balance were undecided) were either sceptical about the net efficiency gains and/or doubts that compensation would be adequate to address the effects of a more comprehensive GST for those on low incomes.}
+There are other reasons to favour a broad based tax. Exemptions create administrative costs for businesses that deal with both exempt and non-exempt goods. And grey lines create opportunities for tax avoidance and lobbying to exclude particular goods.\footnote{}  While arguably a lot of these costs have already been sunk, new fronts in the debate open up from time-to-time.  
+
+A majority of senior Australian economists favoured broadening the base of the GST rather than increasing the rate. Most thought it would increase efficiency and simplicity. In contrast, the one third that disagreed (the balance were undecided) were either sceptical about the net efficiency gains or had doubts that compensation would be adequate to address the effects of a more comprehensive GST for those on low incomes. 
+
+Including spending on education and health in the GST will also help address the problem of ``base erosion.'' Spending on health in particular is expected to rise faster than income (section 1.1). Including health and education in the GST base will ensure revenues from the tax better keep pace with economic growth, as well as aligning more closely with state government expenditures. 
+
 
 \subsection{Social purposes of existing exemptions could be served better by other means}
 
