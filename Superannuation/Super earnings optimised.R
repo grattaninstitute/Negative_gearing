@@ -237,9 +237,9 @@ person.dfkvi$SAPTO.max.cpl <- 1602
 # ======
 # LITO - income thresholds are unindexed
 
-person.dfkvi$LITO.lower <- rep(37000, length(person.dfkvi$Age))
-person.dfkvi$LITO.upper <- rep(66666, length(person.dfkvi$Age))
-person.dfkvi$LITO.max <- rep(445, length(person.dfkvi$Age))
+person.dfkvi$LITO.lower <- 37000
+person.dfkvi$LITO.upper <- 66666
+person.dfkvi$LITO.max <- 445
 
 
 # ==================================================================================
