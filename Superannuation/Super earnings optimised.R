@@ -250,7 +250,6 @@ person.dfkvi$LITO.max <- 445
 # Where Super.income > 0, we know they are in the drawdown phase
 
 # We start by defining a 'drawdown' variable, where we need Age as a numeric variable to filter on it 
-person.dfkvi$Age.numeric <- as.numeric(person.dfkvi$Age)
 person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 22, 0, ifelse(person.dfkvi$Super.income > 0, 1, 0))
 
 # Now we see how many of those that are over 60, and have a super balance, are in the drawdown phase
