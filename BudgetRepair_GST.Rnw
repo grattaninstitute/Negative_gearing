@@ -968,6 +968,8 @@ hes_with_gst_compensation <-
   merge(., welfare.by.income.quintile_total) %>%
   merge(., amount_of_quintile_on_welfare) %>% 
   group_by(gross_income_quintile) %>%
+  # Originally, we assumed that everyone in a quintile received the 
+  # quintile's share of compensation...
   mutate(
     new_welfare2 = gst_revenue.15pc.weekly * percentage_of_revenue_to_transfers *
       prop_welfare / # amount to all households in that quintile
@@ -975,6 +977,11 @@ hes_with_gst_compensation <-
   ) %>%
   group_by(gross_income_quintile,
            has_welfare = Current_weekly_HH_income_from_government_pensions_and_allowances > 0) %>%
+  # Now we assume that only the set of people currently on welfare in a quintile receive
+  # that quintile's share of welfare.  Each entry represents a single household, and the 
+  # number of households in a quintile is determined by sum(Weight_HH_HES).  So to determine
+  # an entry's share of compensation we allocate the amount of compensation in total, divide 
+  # this among the quintiles, then within each quintile, divide by the number of households.
   mutate(
     new_welfare = 
       ifelse(has_welfare,
