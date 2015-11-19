@@ -258,8 +258,8 @@ age_mutate <- function(.hes){
     out <- 
       .hes %>%
       mutate(
-        age_group = as.character(Age_of_HH_reference_person),
-        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+        age_group = gsub(" years", "", as.character(Age_of_HH_reference_person)),
+        age_group = ifelse(!is.na(as.numeric(age_group)), 
                            ifelse(as.numeric(age_group) < 20,
                                   "20 or under",
                                   paste((as.numeric(age_group) %/% 5) * 5,
@@ -274,26 +274,33 @@ age_mutate <- function(.hes){
     out <- 
       .hes %>%
       mutate(
-        age_group = as.character(Age_of_person),
-        age_group = ifelse(grepl("^[0-9]+$", age_group), 
+        age_group = gsub("years.*$", "", as.character(Age_of_person)),
+        age_group = ifelse(!is.na(as.numeric(age_group)),
                            ifelse(as.numeric(age_group) < 20,
                                   "20 or under",
                                   paste((as.numeric(age_group) %/% 5) * 5,
                                         "to",
                                         (as.numeric(age_group) %/% 5) * 5 + 4)),
-                           age_group
-        )
+                           age_group),
+        age_group = factor(age_group, ordered = TRUE)
+        
       ) 
   }
   out
 }
 
 person.dfkvi %<>%
+  mutate(age_group = NULL,
+         Age_of_person = NULL)
+
+person.dfkvi %<>%
   mutate(Age_of_person = Age) %>%
   age_mutate
 
 # We start by defining a 'drawdown' variable, where we need Age as a numeric variable to filter on it 
-person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 22, 0, ifelse(person.dfkvi$Super.income > 0, 1, 0))
+# person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 22, 
+#                                    0, 
+#                                    ifelse(person.dfkvi$Super.income > 0, 1, 0))
 
 person.dfkvi %<>%
   data.table::data.table() %>%
@@ -392,15 +399,29 @@ ML.function <- function(income,
                         ML.upper, 
                         ML.lower.senior, 
                         ML.upper.senior,
-                        Age.numeric){
+                        #Age.numeric
+                        age_group
+                        ){
   
-  Medicare.levy <- ifelse(Age.numeric < 27,ifelse(income < ML.lower, 0, 
-                                                  ifelse(income < ML.upper, (income - ML.lower) * 0.1, 0.02 * income)), 
-                          ifelse(income<ML.lower.senior, 0, 
-                                 ifelse(income < ML.upper.senior, (income - ML.lower.senior) * 0.1, 0.02 * income)))
+  Medicare.levy <- 
+    ifelse(
+      #Age.numeric < 27,
+      age_group < "65 to 69",
+      
+      #
+      ifelse(income < ML.lower, 
+             0, 
+             ifelse(income < ML.upper, 
+                    (income - ML.lower) * 0.1, 
+                    0.02 * income)), 
+      #
+      ifelse(income < ML.lower.senior, 
+             0, 
+             ifelse(income < ML.upper.senior, 
+                    (income - ML.lower.senior) * 0.1, 
+                    0.02 * income)))
   
   Medicare.levy  
-  
 }
 
 # And a function for SAPTO entitlement
@@ -415,10 +436,9 @@ SAPTO.function <- function(income,
                            SAPTO.lower.cpl, 
                            SAPTO.upper.cpl, 
                            SAPTO.max.cpl) {
-  
-  SAPTO <- ifelse(Age.numeric < 27, 
+  SAPTO <- ifelse(age_group < "65 to 69", 
                   0, 
-                  ifelse(Single == 1, 
+                  ifelse(Single, 
                          ifelse(income < SAPTO.lower.indiv, 
                                 SAPTO.max.indiv,
                                 ifelse(income < SAPTO.upper.indiv, 
