@@ -1308,10 +1308,82 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 \source{Grattan analysis ATO 2\%\ sample file (2013). See \url{https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}}
 \end{table}
 
+<<GST_by_welfare_type, results = 'asis'>>=
+hes_with_gst_and_tax_compensation_indiv <-
+  hes_with_gst_and_tax_compensation %>%
+  merge(hes10_indiv, by = "Unique_household_number", suffixes = c("hh", "indiv")) 
+
+hes_with_gst_and_tax_compensation_indiv %>%
+  group_by(Unique_household_number) %>%
+  mutate(Household_type = ifelse(sum(Current_weekly_income_from_age_pension) > 0 & 
+                                   # on the full age pension for a couple (approximately)
+                                   between(sum(Current_weekly_income_from_age_pension), 230, 245) & 
+                                   # is a couple
+                                   grepl("Couple", Family_type) & 
+                                   # Own their own home
+                                   Year_purchased_dwelling_HH_ranged != "Not applicable",
+                                 "Age pension; no other income, couple, home-owners",
+                                 ifelse(sum(Current_weekly_income_from_newstart_allowance) > 0 &
+                                          between(sum(Current_weekly_income_from_age_pension), 227, 251) &
+                                          # Is single
+                                          !grepl("Couple", Family_type) &
+                                          # Is renting
+                                          Weekly_rent_payments_HH > 0,
+                                        "Newstart; Single, no other income, renter",
+                                        ifelse(sum(Current_weekly_income_from_newstart_allowance) > 0 &
+                                                 grepl("Couple", Family_type) & 
+                                                 # 2 children under 15
+                                                 grepl("^2", Number_of_dependent_children_aged_under_years_in_household) & 
+                                                 # Other salary
+                                                 sum(Current_weekly_HH_employee_income) > 0 &
+                                                 # is renting
+                                                 Weekly_rent_payments_HH > 0,
+                                               "Newstart; Couple, 2 children, on salary income, renting",
+                                               ifelse(sum(Current_weekly_income_from_disability_support_pension) > 0 &
+                                                        !grepl("Couple", Family_type) &
+                                                        sum(Current_weekly_HH_employee_income) < 1 & 
+                                                        Weekly_rent_payments_HH > 0,
+                                                      "Disability; Single, no other income, renter",
+                                                      #
+                                                      #
+                                                      "Other")
+                                        )
+                                 )
+  )) %>%
+  group_by(Household_type) %>%
+  summarise(new_benefit = weighted.mean(new_welfare + tax_diff_weekly, Weight_HH_HES),
+            GST_burden = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2, Weight_HH_HES),
+            `zcomp.over.burden` = weighted.mean((new_welfare + tax_diff_weekly) / (Weekly_household_GST_on_all_goods_and_services_FIS / 2),
+                                           Weight_HH_HES),
+            prop_undercomp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+                                           Weight_HH_HES)) %>%
+  # cosmetic changes:
+  mutate(
+    `Household type` = Household_type,
+    `New benefit` = paste0("\\", grattan_dollar(new_benefit)),
+    `GST burden` = paste0("\\", grattan_dollar(GST_burden)),
+    `Comp / Burden` = latex_percent(`zcomp.over.burden`),
+    `prop undercomp` = latex_percent(prop_undercomp)
+  ) %>%
+  select(-contains("_"), -starts_with("zc")) %>%
+  xtable(align = "lp{0.3\\columnwidth}rrrr") %>%
+  print(tabular.environment = "tabularx", 
+        width = "1.4\\columnwidth", 
+        include.rownames = FALSE,
+        floating.environment = "table*",
+        table.placement = "tp",
+        sanitize.text.function = function(x)x) 
+@
+
+
 
 Politicians might be tempted to try to fully compensate all low and middle income households. 
 But because GST affects different households in very different ways, it is extremely expensive to ensure there are \emph{no} losers.  
 Tax cuts to at least fully compensate almost every household earning up to \$100,000 for a 5 per cent increase in the GST would have cost the 2012-13 budget approximately \$23.6 billion -- and this would be an underestimate of the budgetary impact today.  This is in addition to the \$9 billion in additional welfare payments required to compensate the most vulnerable (section 3.2). Together, the \$29 billion spend on compensation would exceed the additional \$27 billion in revenue collected. It is simply not possible to fully compensate this far up the income distribution and retain a revenue positive package.
+
+
+
+
 
 \chapter{The uses of GST revenue}
 If the GST is broadened or raised, governments will have additional revenue of between \$7 to \$11 billion a year after paying for the compensation package we have proposed of welfare increases and tax reductions to lower and middle income earners. This additional revenue might:
