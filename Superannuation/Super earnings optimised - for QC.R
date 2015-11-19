@@ -31,7 +31,7 @@
 # http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/6541.0.30.0012011-12?OpenDocument
 # Basic cross tabs are also here and can be used for QC
 
-rm(list=ls())
+# rm(list=ls())
 
 # Load packages
 
@@ -59,10 +59,8 @@ library(magrittr)
 # Pulling in the data
 # ======================================================================================================== #
 
-# I know we should we using relative file paths but this will work for now
-setwd("~/Desktop/Budget Policy/Basic exploration and setup")
 
-person.df <- read.dta("sih11bp.dta")
+person.df <- read.dta("../SIH/sih11bp.dta")
 
 # List of variables we need for the analysis
 key.vars <- c("HHPOS", # Position in the household (publication definition)
@@ -192,54 +190,8 @@ person.dfkvi$Gov.super <- person.dfkvi$Gov.super * x
 person.dfkvi$Non.gov.super <- person.dfkvi$Non.gov.super * x
 person.dfkvi$Total.super <- person.dfkvi$Total.super * x
 
-sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # $2 trillion in total super balances
-
-
 #===================================================================================
-# Investigating actual distribution of super balances - using uninflated dataset - No need to QC
-#===================================================================================#
 
-# This recreates some of the ASFA work on those with very high account balances. We use some of these numbers in the chapter, and in various op eds and such
-
-# Number of people with balances of over $1 million in 2011-12 is 110,000, or 0.6% of individuals, with total funds of $181 billion
-
-person.dfkv %>% group_by(Total.super<10^6) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Inflating forward, we estimate that 130,000 would now have balances of more than $1 million, or 0.7% of individuals, with total funds of $220 billion
-
-person.dfkvi %>% group_by(Total.super<10^6) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9)  %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Number of people with balances over $2.5 million is 13,480, with total funds of $50 billion
-
-person.dfkv %>% group_by(Total.super < 2500000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Inflating forward, we estimate that around 16,000 would now have balances of more than $2.5 million, with total balances of $61.6 billion
-
-person.dfkvi %>% group_by(Total.super < 2500000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Number of people with a super account of some value is 12.5 million
-
-person.dfkv %>% group_by(Total.super>0) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
 
 # ===================================================================================
 # Adding in extra tax policy variables
@@ -248,9 +200,7 @@ person.dfkv %>% group_by(Total.super>0) %>%
 # We add these in afterwards as they are from 2014-15, so we dont want to inflate them up from 2012-13
 
 # We map a new variable for individuals based on whether they are (a) indiv; or (b) couple
-
-person.dfkvi$Fam.type.numeric <- as.numeric(person.dfkvi$Fam.type)
-person.dfkvi$Single <- ifelse(person.dfkvi$Fam.type.numeric > 9 | person.dfkvi$Fam.type.numeric < 2, 1, 0)
+person.dfkvi$Single <- !grepl("Couple", person.dfkvi$Fam.type)
 
 # ======
 # Medicare Levy
@@ -260,10 +210,10 @@ person.dfkvi$Single <- ifelse(person.dfkvi$Fam.type.numeric > 9 | person.dfkvi$F
 # Need to check what year this are from, to make sure we're indexing them in the right way. At present we're indexing them as if they are the thresholds in 2012-13.
 
 # Individuals
-person.dfkvi$ML.lower <- rep(20896*1.025,length(person.dfkvi$Age))
-person.dfkvi$ML.upper <- rep(26120*1.025,length(person.dfkvi$Age))
-person.dfkvi$ML.lower.senior <- rep(33044*1.025,length(person.dfkvi$Age))
-person.dfkvi$ML.upper.senior <- rep(41305*1.025,length(person.dfkvi$Age))
+person.dfkvi$ML.lower <- 20896*1.025
+person.dfkvi$ML.upper <- 26120*1.025
+person.dfkvi$ML.lower.senior <- 33044*1.025
+person.dfkvi$ML.upper.senior <- 41305*1.025
 
 # Families - these thresholds are for family taxable income for the couple
 # person.dfkvi$ML.lower.cpl <- rep(20896,length(person.dfkvi$Age))
@@ -277,19 +227,19 @@ person.dfkvi$ML.upper.senior <- rep(41305*1.025,length(person.dfkvi$Age))
 
 # We add in the income thresholds and maximum offsets for SAPTO - we only use the individual thresholds for now. These are the figures for 2014-15. I dont think these thresholds are indexed - they've stayed the same over 2012-13, 2013-14 and 2014-15 - so we use the same ones in 2015-16
 
-person.dfkvi$SAPTO.lower.indiv <- rep(32279, length(person.dfkvi$Age))
-person.dfkvi$SAPTO.upper.indiv <- rep(50119, length(person.dfkvi$Age))
-person.dfkvi$SAPTO.max.indiv <- rep(2230, length(person.dfkvi$Age)) 
-person.dfkvi$SAPTO.lower.cpl <- rep(57948, length(person.dfkvi$Age))
-person.dfkvi$SAPTO.upper.cpl <- rep(83580, length(person.dfkvi$Age))
-person.dfkvi$SAPTO.max.cpl <- rep(1602, length(person.dfkvi$Age)) 
+person.dfkvi$SAPTO.lower.indiv <- 32279
+person.dfkvi$SAPTO.upper.indiv <-50119
+person.dfkvi$SAPTO.max.indiv <- 2230
+person.dfkvi$SAPTO.lower.cpl <- 57948
+person.dfkvi$SAPTO.upper.cpl <- 83580
+person.dfkvi$SAPTO.max.cpl <- 1602
 
 # ======
 # LITO - income thresholds are unindexed
 
-person.dfkvi$LITO.lower <- rep(37000, length(person.dfkvi$Age))
-person.dfkvi$LITO.upper <- rep(66666, length(person.dfkvi$Age))
-person.dfkvi$LITO.max <- rep(445, length(person.dfkvi$Age))
+person.dfkvi$LITO.lower <- 37000
+person.dfkvi$LITO.upper <- 66666
+person.dfkvi$LITO.max <- 445
 
 
 # ==================================================================================
@@ -299,41 +249,73 @@ person.dfkvi$LITO.max <- rep(445, length(person.dfkvi$Age))
 # Where Age >= 22 we know they are over 60
 # Where Super.income > 0, we know they are in the drawdown phase
 
+
+
+## Age mutate by Hugh
+age_mutate <- function(.hes){
+  stopifnot("Age_of_HH_reference_person" %in% names(.hes) || "Age_of_person" %in% names(.hes))
+  if("Age_of_HH_reference_person" %in% names(.hes)){
+    out <- 
+      .hes %>%
+      mutate(
+        age_group = gsub(" years", "", as.character(Age_of_HH_reference_person)),
+        age_group = ifelse(!is.na(as.numeric(age_group)), 
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group
+        )
+      ) 
+  }
+  
+  if("Age_of_person" %in% names(.hes)){
+    out <- 
+      .hes %>%
+      mutate(
+        age_group = gsub("years.*$", "", as.character(Age_of_person)),
+        age_group = ifelse(!is.na(as.numeric(age_group)),
+                           ifelse(as.numeric(age_group) < 20,
+                                  "20 or under",
+                                  paste((as.numeric(age_group) %/% 5) * 5,
+                                        "to",
+                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
+                           age_group),
+        age_group = factor(age_group, ordered = TRUE)
+        
+      ) 
+  }
+  out
+}
+
+person.dfkvi %<>%
+  mutate(age_group = NULL,
+         Age_of_person = NULL)
+
+person.dfkvi %<>%
+  mutate(Age_of_person = Age) %>%
+  age_mutate
+
 # We start by defining a 'drawdown' variable, where we need Age as a numeric variable to filter on it 
-person.dfkvi$Age.numeric <- as.numeric(person.dfkvi$Age)
-person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 22, 0, ifelse(person.dfkvi$Super.income > 0, 1, 0))
+# person.dfkvi$Super.ddown <- ifelse(person.dfkvi$Age.numeric < 22, 
+#                                    0, 
+#                                    ifelse(person.dfkvi$Super.income > 0, 1, 0))
 
-# Now we see how many of those that are over 60, and have a super balance, are in the drawdown phase
-
-person.dfkvi %>% filter(Age.numeric>21) %>% 
-  group_by(Super.ddown) %>% 
-  summarise(total.super = sum((Total.super * Weights) / 10^9)) 
+person.dfkvi %<>%
+  data.table::data.table() %>%
+  mutate(
+    Super.ddown = age_group >= "60 to 64" & Super.income > 0
+  ) 
 
 # So roughly 70 per cent of the super assets of over 60s are in the drawdown phase. So it's important that we distinguish between super assets of over 60s that are in the drawdown phase, and those that are not.
 
 # Now we generate out drawdown subset which we use for our earnings analysis
 
-person.dfkvi.ddown <- person.dfkvi %>% filter(Age.numeric>21, Super.ddown == 1)
-
-#===================================================================================
-# Investigating those drawing down on super - using inflated dataset - No need to QC
-#===================================================================================#
-
-# Number of people with balances of over $1 million in 2011-12 is 67,000, or 6.8% of those in the drawdown phase, with total funds of $113 billion
-
-person.dfkvi.ddown %>% group_by(Total.super<1000000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9)  %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
-
-# Number of people with balances over $2.5 million is 7,125, or 0.7 per cent of those in the drawdown phase, with total funds of $28 billion
-
-person.dfkvi.ddown %>% group_by(Total.super < 2500000) %>% 
-  summarise(No.individuals = sum(Weights), 
-            Total.funds = sum(Total.super * Weights) / 10^9) %>% 
-  ungroup %>%
-  mutate(Prop.individuals = No.individuals / sum(No.individuals) * 100)
+# person.dfkvi.ddown <- person.dfkvi %>% filter(Age.numeric>21, Super.ddown == 1)
+person.dfkvi.ddown <- 
+  person.dfkvi %>%
+  filter(Super.ddown)
 
 # =======================================================================================================
 # Estimate super earnings        
@@ -354,18 +336,26 @@ Super.return.rate.ddown <- 0.05 # 5 per cent return in the drawdown phase
 
 # So super earnings will depend upon whether super account holders are in the accumulation or drawdown phases
 
-person.dfkvi$Super.earnings <- ifelse(person.dfkvi$Super.ddown == 1, Super.return.rate.ddown*person.dfkvi$Total.super, Super.return.rate.acc*person.dfkvi$Total.super)
-summary(person.dfkvi$Super.earnings)
+# person.dfkvi$Super.earnings <- ifelse(person.dfkvi$Super.ddown == 1, Super.return.rate.ddown*person.dfkvi$Total.super, Super.return.rate.acc*person.dfkvi$Total.super)
 
-sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # We estimate total super balances of $2 trillion
-sum(person.dfkvi$Super.earnings * person.dfkvi$Weights) / 10^9 # With annual super earnings of $130 billion
+person.dfkvi %<>%
+  mutate(Super.earnings = ifelse(Super.ddown, 
+                                 Total.super * Super.return.rate.ddown, 
+                                 Total.super * Super.return.rate.acc),
+         # Finally, we write two new identities for taxable and total income that account for super earnings in the member's super fund. 
+         # We use these when we include each members super fund earnings in taxable income to do the costing
+         Total.income.annual.s = Total.income.annual + Super.earnings,
+         Taxable.income.annual.s = Taxable.income.annual + Super.earnings)
 
-# Funds reported investment earnings of $137 billion in 2013-14, and $117 billion in 2014-15. So our numbers probably stack up okay.
+# sum(person.dfkvi$Total.super * person.dfkvi$Weights) / 10^9 # We estimate total super balances of $2 trillion
+# sum(person.dfkvi$Super.earnings * person.dfkvi$Weights) / 10^9 # With annual super earnings of $130 billion
+# 
+# # Funds reported investment earnings of $137 billion in 2013-14, and $117 billion in 2014-15. So our numbers probably stack up okay.
 
-# Finally, we write two new identities for taxable and total income that account for super earnings in the member's super fund. We use these when we include each members super fund earnings in taxable income to do the costing
 
-person.dfkvi$Total.income.annual.s <- person.dfkvi$Total.income.annual + person.dfkvi$Super.earnings
-person.dfkvi$Taxable.income.annual.s <- person.dfkvi$Taxable.income.annual + person.dfkvi$Super.earnings
+
+# person.dfkvi$Total.income.annual.s <- person.dfkvi$Total.income.annual + person.dfkvi$Super.earnings
+# person.dfkvi$Taxable.income.annual.s <- person.dfkvi$Taxable.income.annual + person.dfkvi$Super.earnings
 
 # =======================================================================================================
 # Effective tax rate on super earnings 
@@ -379,7 +369,10 @@ person.dfkvi$Taxable.income.annual.s <- person.dfkvi$Taxable.income.annual + per
 tax.rate.acc <- 0.125 # For the accumulation phase
 tax.rate.ddown <- 0.14 # For the drawdown phase
 
-person.dfkvi$super.earnings.tax <- ifelse(person.dfkvi$Super.ddown == 1, person.dfkvi$Super.earnings*tax.rate.ddown, person.dfkvi$Super.earnings*tax.rate.acc) 
+person.dfkvi %<>%
+  mutate(super.earnings.tax = ifelse(Super.ddown, 
+                                     Super.earnings * tax.rate.ddown, 
+                                     Super.earnings * tax.rate.acc)) 
 
 # ==================================================================================
 # Setting up our personal income tax functions
@@ -406,15 +399,29 @@ ML.function <- function(income,
                         ML.upper, 
                         ML.lower.senior, 
                         ML.upper.senior,
-                        Age.numeric){
+                        #Age.numeric
+                        age_group
+){
   
-  Medicare.levy <- ifelse(Age.numeric < 27,ifelse(income < ML.lower, 0, 
-                                                  ifelse(income < ML.upper, (income - ML.lower) * 0.1, 0.02 * income)), 
-                          ifelse(income<ML.lower.senior, 0, 
-                                 ifelse(income < ML.upper.senior, (income - ML.lower.senior) * 0.1, 0.02 * income)))
+  Medicare.levy <- 
+    ifelse(
+      #Age.numeric < 27,
+      age_group < "65 to 69",
+      
+      #
+      ifelse(income < ML.lower, 
+             0, 
+             ifelse(income < ML.upper, 
+                    (income - ML.lower) * 0.1, 
+                    0.02 * income)), 
+      #
+      ifelse(income < ML.lower.senior, 
+             0, 
+             ifelse(income < ML.upper.senior, 
+                    (income - ML.lower.senior) * 0.1, 
+                    0.02 * income)))
   
   Medicare.levy  
-  
 }
 
 # And a function for SAPTO entitlement
@@ -429,10 +436,9 @@ SAPTO.function <- function(income,
                            SAPTO.lower.cpl, 
                            SAPTO.upper.cpl, 
                            SAPTO.max.cpl) {
-  
-  SAPTO <- ifelse(Age.numeric < 27, 
+  SAPTO <- ifelse(age_group < "65 to 69", 
                   0, 
-                  ifelse(Single == 1, 
+                  ifelse(Single, 
                          ifelse(income < SAPTO.lower.indiv, 
                                 SAPTO.max.indiv,
                                 ifelse(income < SAPTO.upper.indiv, 
@@ -450,101 +456,11 @@ SAPTO.function <- function(income,
 # And a function for LITO entitlement
 
 LITO.function <- function(income, LITO.lower, LITO.upper, LITO.max) {
-  
   LITO <- ifelse(income < LITO.lower, LITO.max, 
                  ifelse(income < LITO.upper, (LITO.upper - income) * 0.015, 0))
 }
 
-# We also define an 'unused' tax free threshold function, which we will pick up later when we consider behavioural change in response to the reintroduction of taxes on super earnings in the drawdown phase 
-
-TF.unused.function <- function(income) {
-  
-  TF.unused <- ifelse(income < 0, 18200, 
-                      ifelse(income<18200, (18200 - income), 0))
-}
-
-# ==================================================================================
-# Checking our tax functions using a simulated dataset - no need to QC this
-# =================================================================================#
-
-# Before we write our various tax functions, we first set up a test module so that we can run a range of taxable incomes over them to make sure that they work property
-
-Simulation.df <- data_frame("Taxable.income.annual" = seq(10000,100000, by = 5000),
-                            "Age.numeric" = 28,
-                            "Single" = 1, # Change this to simulate TF threshold for couples (0) or singles (1)
-                            "SAPTO.lower.indiv" = 32279, 
-                            "SAPTO.upper.indiv" = 50119, 
-                            "SAPTO.max.indiv" = 2230, 
-                            "SAPTO.lower.cpl" = 57948, 
-                            "SAPTO.upper.cpl" = 83580, 
-                            "SAPTO.max.cpl" = 1602, 
-                            "ML.lower" = 21418.4, 
-                            "ML.upper" = 26773 , 
-                            "ML.lower.senior" = 33870.1 , 
-                            "ML.upper.senior" = 42337.62, 
-                            "LITO.lower" = 37000, 
-                            "LITO.upper" = 66666, 
-                            "LITO.max" = 445)
-
-# Testing tax function
-
-Simulation.df$Tax.liability <- tax.function(Simulation.df$Taxable.income.annual)
-
-# Testing Medicare Levy
-
-Simulation.df$Medicare.levy <- ML.function(Simulation.df$Taxable.income.annual,
-                                           Simulation.df$ML.lower, 
-                                           Simulation.df$ML.upper, 
-                                           Simulation.df$ML.lower.senior, 
-                                           Simulation.df$ML.upper.senior, 
-                                           Simulation.df$Age.numeric)
-
-# Summing tax liabilities (before offsets)
-
-Simulation.df$Tax.liability.tot <- Simulation.df$Tax.liability + Simulation.df$Medicare.levy
-
-# Testing SAPTO function
-
-Simulation.df$SAPTO <- SAPTO.function(Simulation.df$Taxable.income.annual,
-                                      Simulation.df$Age.numeric,
-                                      Simulation.df$Single,
-                                      Simulation.df$SAPTO.lower.indiv, 
-                                      Simulation.df$SAPTO.upper.indiv, 
-                                      Simulation.df$SAPTO.max.indiv, 
-                                      Simulation.df$SAPTO.lower.cpl, 
-                                      Simulation.df$SAPTO.upper.cpl, 
-                                      Simulation.df$SAPTO.max.cpl)
-
-# Summing tax liabilities (including SAPTO offset)
-
-Simulation.df$Tax.liability.tot <- ifelse(Simulation.df$Tax.liability.tot < Simulation.df$SAPTO, 0, 
-                                          Simulation.df$Tax.liability.tot - Simulation.df$SAPTO)
-
-# Testing LITO function
-
-Simulation.df$LITO <- LITO.function(Simulation.df$Taxable.income.annual, 
-                                    Simulation.df$LITO.lower, 
-                                    Simulation.df$LITO.upper, 
-                                    Simulation.df$LITO.max)
-
-# Summing tax liabilities (including SAPTO and LITO offsets)
-
-Simulation.df$Tax.liability.tot <- ifelse(Simulation.df$Tax.liability.tot < Simulation.df$LITO, 0, 
-                                          Simulation.df$Tax.liability.tot - Simulation.df$LITO)
-
-# Testing unused TF threshold function
-
-Simulation.df$Unused.TF <- TF.unused.function(Simulation.df$Taxable.income.annual)
-
-# View(Simulation.df)
-
-# We export the Simulation dataset to Excel and inspect visually to make sure it's all hunky dory
-
-# The Excel file is:
-
-# Macintosh HD:Users:bcoates:Dropbox:Grattan Dropbox:Budget Repair Report:Data and analysis:Superannuation:Spreadsheets:[Cross checking behavioural change module.xlsx]Sheet1
-
-# Now that our simulation function works we can move onto using it for the whole ATO sample file
+##### QC checkpoint.
 
 # ==================================================================================
 # Establishing a no tax concession counterfactual for super earnings - PIT collected excluding super income
