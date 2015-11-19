@@ -468,32 +468,44 @@ LITO.function <- function(income, LITO.lower, LITO.upper, LITO.max) {
 
 # We estimate each person's tax liability
 
-person.dfkvi$Tax.estimate <- tax.function(person.dfkvi$Taxable.income.annual) 
-
-sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights)/10^9 # $187 billion
+# person.dfkvi$Tax.estimate <- tax.function(person.dfkvi$Taxable.income.annual) 
 
 # We also estimate their Medicare Levy liability - this uses taxable income for the income test 
 
-person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual,
-                                          person.dfkvi$ML.lower, 
-                                          person.dfkvi$ML.upper, 
-                                          person.dfkvi$ML.lower.senior, 
-                                          person.dfkvi$ML.upper.senior, 
-                                          person.dfkvi$Age.numeric)
+# person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual,
+#                                           person.dfkvi$ML.lower, 
+#                                           person.dfkvi$ML.upper, 
+#                                           person.dfkvi$ML.lower.senior, 
+#                                           person.dfkvi$ML.upper.senior, 
+#                                           age_group = person.dfkvi$age_group)
 
-person.dfkvi$Tax.estimate <- person.dfkvi$Tax.estimate + person.dfkvi$Medicare.levy
+person.dfkvi %<>%
+  mutate(#Tax.estimate = tax.function(Taxable.income.annual),
+         Medicare.levy = ML.function(income = Taxable.income.annual,
+                                     ML.upper = ML.upper,
+                                     ML.lower = ML.lower,
+                                     ML.lower.senior = ML.lower.senior,
+                                     ML.upper.senior = ML.upper.senior,
+                                     age_group = age_group),
+         LITO.entitlement = LITO.function(income = Taxable.income.annual,
+                                          LITO.lower = LITO.lower,
+                                          LITO.upper = LITO.upper,
+                                          LITO.max = LITO.max),
+         Tax.estimate = pmax(0, tax.function(Tax.estimate) + Medicare.levy - LITO.entitlement))
+
+# person.dfkvi$Tax.estimate <- person.dfkvi$Tax.estimate + person.dfkvi$Medicare.levy
 
 # Neither SAPTO or LITO are refundable tax offsets, so we only apply them to reduce tax if the individual actually has a tax liability up to this point
 
 # LITO
 
-person.dfkvi$LITO.entitlement <- LITO.function(person.dfkvi$Taxable.income.annual, 
-                                               person.dfkvi$LITO.lower, 
-                                               person.dfkvi$LITO.upper, 
-                                               person.dfkvi$LITO.max)
+# person.dfkvi$LITO.entitlement <- LITO.function(person.dfkvi$Taxable.income.annual, 
+#                                                person.dfkvi$LITO.lower, 
+#                                                person.dfkvi$LITO.upper, 
+#                                                person.dfkvi$LITO.max)
 
-person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$LITO.entitlement, 0,
-                                    person.dfkvi$Tax.estimate - person.dfkvi$LITO.entitlement)
+# person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$LITO.entitlement, 0,
+#                                     person.dfkvi$Tax.estimate - person.dfkvi$LITO.entitlement)
 
 
 # SAPTO 
