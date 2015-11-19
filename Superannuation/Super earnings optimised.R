@@ -484,7 +484,7 @@ person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual,
                                           person.dfkvi$ML.upper, 
                                           person.dfkvi$ML.lower.senior, 
                                           person.dfkvi$ML.upper.senior, 
-                                          person.dfkvi$Age.numeric)
+                                          age_group = person.dfkvi$age_group)
 
 person.dfkvi$Tax.estimate <- person.dfkvi$Tax.estimate + person.dfkvi$Medicare.levy
 
@@ -497,7 +497,8 @@ person.dfkvi$LITO.entitlement <- LITO.function(person.dfkvi$Taxable.income.annua
                                                person.dfkvi$LITO.upper, 
                                                person.dfkvi$LITO.max)
 
-person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$LITO.entitlement, 0,
+person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$LITO.entitlement, 
+                                    0,
                                     person.dfkvi$Tax.estimate - person.dfkvi$LITO.entitlement)
 
 
@@ -508,7 +509,7 @@ person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$LIT
 # For now, we're just going to use taxable income since we dont know most of these things. As a result, we're going to be more generous in providing SAPTO entitlements to individuals than the ATO will be
 
 person.dfkvi$SAPTO.entitlement <- SAPTO.function(person.dfkvi$Taxable.income.annual,
-                                                 person.dfkvi$Age.numeric,
+                                                 person.dfkvi$age_group,
                                                  person.dfkvi$Single,
                                                  person.dfkvi$SAPTO.lower.indiv, 
                                                  person.dfkvi$SAPTO.upper.indiv, 
@@ -525,7 +526,6 @@ person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$SAP
 # We compare this against the ABS-derived tax estimate in the SIH 11-12, which used the PIT tax scales for that year, including a 1.5% Medicare Levy
 
 person.dfkvi$Tax.annual <- person.dfkvi$Tax * 52
-(sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) - sum(person.dfkvi$Tax.annual * person.dfkvi$Weights)) / 10 ^ 9 # 55 billion difference
 sum(person.dfkvi$Tax.annual * person.dfkvi$Weights) / 10^9 # ABS estimates PIT of $147 billion for 2011-12
 sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) / 10^9 # We estimate PIT of $199 billion for 2015-16 
 
