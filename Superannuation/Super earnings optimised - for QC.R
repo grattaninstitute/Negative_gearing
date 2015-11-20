@@ -545,45 +545,68 @@ person.dfkvi %<>%
 
 # We also generate an estimate of the tax collected if super earnings were taxed as part of regular income 
 
-person.dfkvi$Tax.estimate.s <- tax.function(person.dfkvi$Taxable.income.annual.s) 
+# person.dfkvi$Tax.estimate.s <- tax.function(person.dfkvi$Taxable.income.annual.s) 
+# 
+# # We alo estimate their Medicare Levy liability
+# 
+# person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual.s,
+#                                           person.dfkvi$ML.lower, 
+#                                           person.dfkvi$ML.upper, 
+#                                           person.dfkvi$ML.lower.senior, 
+#                                           person.dfkvi$ML.upper.senior, 
+#                                           person.dfkvi$Age.numeric)
+# 
+# person.dfkvi$Tax.estimate.s <- person.dfkvi$Tax.estimate.s + person.dfkvi$Medicare.levy
+# 
+# # Neither SAPTO or LITO are refundable tax offsets, so we only apply them to reduce tax if the individual actually has a tax liability up to this point
+# 
+# # LITO
+# 
+# person.dfkvi$LITO.entitlement <- LITO.function(person.dfkvi$Taxable.income.annual.s, 
+#                                                person.dfkvi$LITO.lower, 
+#                                                person.dfkvi$LITO.upper, 
+#                                                person.dfkvi$LITO.max)
+# 
+# person.dfkvi$Tax.estimate.s <- ifelse(person.dfkvi$Tax.estimate.s < person.dfkvi$LITO.entitlement, 0,
+#                                       person.dfkvi$Tax.estimate.s - person.dfkvi$LITO.entitlement)
+# 
+# # SAPTO
+# 
+# person.dfkvi$SAPTO.entitlement <- SAPTO.function(person.dfkvi$Taxable.income.annual.s,
+#                                                  person.dfkvi$Age.numeric,
+#                                                  person.dfkvi$Single,
+#                                                  person.dfkvi$SAPTO.lower.indiv, 
+#                                                  person.dfkvi$SAPTO.upper.indiv, 
+#                                                  person.dfkvi$SAPTO.max.indiv, 
+#                                                  person.dfkvi$SAPTO.lower.cpl, 
+#                                                  person.dfkvi$SAPTO.upper.cpl, 
+#                                                  person.dfkvi$SAPTO.max.cpl)
+# 
+# person.dfkvi$Tax.estimate.s <- ifelse(person.dfkvi$Tax.estimate.s < person.dfkvi$SAPTO.entitlement, 0, 
+#                                       person.dfkvi$Tax.estimate.s - person.dfkvi$SAPTO.entitlement)
 
-# We alo estimate their Medicare Levy liability
-
-person.dfkvi$Medicare.levy <- ML.function(person.dfkvi$Taxable.income.annual.s,
-                                          person.dfkvi$ML.lower, 
-                                          person.dfkvi$ML.upper, 
-                                          person.dfkvi$ML.lower.senior, 
-                                          person.dfkvi$ML.upper.senior, 
-                                          person.dfkvi$Age.numeric)
-
-person.dfkvi$Tax.estimate.s <- person.dfkvi$Tax.estimate.s + person.dfkvi$Medicare.levy
-
-# Neither SAPTO or LITO are refundable tax offsets, so we only apply them to reduce tax if the individual actually has a tax liability up to this point
-
-# LITO
-
-person.dfkvi$LITO.entitlement <- LITO.function(person.dfkvi$Taxable.income.annual.s, 
-                                               person.dfkvi$LITO.lower, 
-                                               person.dfkvi$LITO.upper, 
-                                               person.dfkvi$LITO.max)
-
-person.dfkvi$Tax.estimate.s <- ifelse(person.dfkvi$Tax.estimate.s < person.dfkvi$LITO.entitlement, 0,
-                                      person.dfkvi$Tax.estimate.s - person.dfkvi$LITO.entitlement)
-
-# SAPTO
-
-person.dfkvi$SAPTO.entitlement <- SAPTO.function(person.dfkvi$Taxable.income.annual.s,
-                                                 person.dfkvi$Age.numeric,
-                                                 person.dfkvi$Single,
-                                                 person.dfkvi$SAPTO.lower.indiv, 
-                                                 person.dfkvi$SAPTO.upper.indiv, 
-                                                 person.dfkvi$SAPTO.max.indiv, 
-                                                 person.dfkvi$SAPTO.lower.cpl, 
-                                                 person.dfkvi$SAPTO.upper.cpl, 
-                                                 person.dfkvi$SAPTO.max.cpl)
-
-person.dfkvi$Tax.estimate.s <- ifelse(person.dfkvi$Tax.estimate.s < person.dfkvi$SAPTO.entitlement, 0, 
-                                      person.dfkvi$Tax.estimate.s - person.dfkvi$SAPTO.entitlement)
+person.dfkvi %<>%
+  mutate(#Tax.estimate = tax.function(Taxable.income.annual),
+    Medicare.levy = ML.function(income = Taxable.income.annual.s,
+                                ML.upper = ML.upper,
+                                ML.lower = ML.lower,
+                                ML.lower.senior = ML.lower.senior,
+                                ML.upper.senior = ML.upper.senior,
+                                age_group = age_group),
+    LITO.entitlement = LITO.function(income = Taxable.income.annual.s,
+                                     LITO.lower = LITO.lower,
+                                     LITO.upper = LITO.upper,
+                                     LITO.max = LITO.max),
+    SAPTO.entitlement = SAPTO.function(income = Taxable.income.annual.s,
+                                       age_group = age_group,
+                                       Single = Single,
+                                       SAPTO.upper.indiv = SAPTO.upper.indiv,
+                                       SAPTO.max.indiv = SAPTO.max.indiv,
+                                       SAPTO.lower.cpl = SAPTO.lower.cpl,
+                                       SAPTO.lower.indiv = SAPTO.lower.indiv,
+                                       SAPTO.upper.cpl = SAPTO.upper.cpl,
+                                       SAPTO.max.cpl = SAPTO.max.cpl),
+    Tax.estimate.s = pmax(0, tax.function(Taxable.income.annual.s) + Medicare.levy - LITO.entitlement - SAPTO.entitlement))
 
 # ==================================================================================
 # Establishing a base case for current taxation arrangements for super
@@ -596,8 +619,6 @@ person.dfkvi$Tax.estimate.s <- ifelse(person.dfkvi$Tax.estimate.s < person.dfkvi
 # So we establish a base case treatment of super earnings taxation under the current arrangements
 
 # First we convert Age into a numeric varible upon which we can filter for different tax treatments of super by Age
-person.dfkvi$Age.numeric <- as.factor(person.dfkvi$Age)
-person.dfkvi$Age.numeric <- as.numeric(person.dfkvi$Age.numeric)
 
 # We now assign super earnings tax liability, excluding those that are aged over 60 and in the drawdown phase. 
 
