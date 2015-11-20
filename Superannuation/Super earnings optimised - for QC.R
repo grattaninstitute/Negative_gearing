@@ -622,11 +622,18 @@ person.dfkvi %<>%
 
 # We now assign super earnings tax liability, excluding those that are aged over 60 and in the drawdown phase. 
 
-person.dfkvi$super.earnings.tax.current <- ifelse(person.dfkvi$Super.ddown == 1, 0, person.dfkvi$Super.earnings * tax.rate.acc)
-
+# person.dfkvi$super.earnings.tax.current <- ifelse(person.dfkvi$Super.ddown == 1, 0, person.dfkvi$Super.earnings * tax.rate.acc)
 # So the current value of the tax concession for each taxpayer, relative to a personal income tax benchmark, is:
 
-person.dfkvi$Super.concession <- person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.current
+# person.dfkvi$Super.concession <- person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.current
+person.dfkvi %<>%
+  mutate(super.earnings.tax.current = ifelse(Super.ddown,
+                                             0,
+                                             Super.earnings * tax.rate.acc),
+         Super.concession = Tax.estimate.s - Tax.estimate - super.earnings.tax.current)
+
+
+
 
 # ==================================================================================
 # Establishing the value of tax free super for over 60s, compared to a 15% super earnings tax on everyone
@@ -638,9 +645,14 @@ person.dfkvi$Super.earnings.tax.everyone <- ifelse(person.dfkvi$Super.ddown == 1
                                                    person.dfkvi$Super.earnings * tax.rate.ddown, 
                                                    person.dfkvi$Super.earnings * tax.rate.acc)
 
-person.dfkvi$Super.concession.over60s <- person.dfkvi$Super.earnings.tax.everyone - person.dfkvi$super.earnings.tax.current 
+person.dfkvi %<>% 
+  mutate(Super.earnings.tax.everyone = Super.earnings * ifelse(Super.ddown, 
+                                                               tax.rate.ddown, 
+                                                               tax.rate.acc))
 
-sum(person.dfkvi$Super.concession.over60s * person.dfkvi$Weights) / 10^9  # Tax concession is worth $3.7 billion - this should align with the costing for abolishing tax-free super earnings in the ddown phase (without behaviuour change)
+# person.dfkvi$Super.concession.over60s <- person.dfkvi$Super.earnings.tax.everyone - person.dfkvi$super.earnings.tax.current 
+# 
+# sum(person.dfkvi$Super.concession.over60s * person.dfkvi$Weights) / 10^9  # Tax concession is worth $3.7 billion - this should align with the costing for abolishing tax-free super earnings in the ddown phase (without behaviuour change)
 
 # ==================================================================================
 # Cross checking our estimates super balances in drawdown against APRA - No need to QC
@@ -696,6 +708,8 @@ person.dfkvi$Super.concession.opt1 <- person.dfkvi$Tax.estimate.s - person.dfkvi
 sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9
 
 # Option (a) saves $4.9 billion before behavioural change
+
+# QC 
 
 # ==================================================================================
 # (b) 20000  - tax free threshold for over 60s in super drawdown phase
