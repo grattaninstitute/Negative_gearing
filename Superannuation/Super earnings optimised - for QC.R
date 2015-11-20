@@ -698,14 +698,15 @@ share.over60s.bal.ddown <- person.dfkvi %>% filter(Age.numeric > 21) %>%
 # ==================================================================================
 # (a) Reintroduce a 15% tax rate on super for over 60s
 
-person.dfkvi$super.earnings.tax.opt1 <- ifelse(person.dfkvi$Age.numeric < 27, 
-                                               person.dfkvi$Super.earnings * tax.rate.acc, 
-                                               person.dfkvi$Super.earnings * tax.rate.ddown)
+# person.dfkvi$super.earnings.tax.opt1 <- ifelse(person.dfkvi$Age.numeric < 27, 
+#                                                person.dfkvi$Super.earnings * tax.rate.acc, 
+#                                                person.dfkvi$Super.earnings * tax.rate.ddown)
 
 
-person.dfkvi$Super.concession.opt1 <- person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.opt1
-
-sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.current) * person.dfkvi$Weights) / 10^9
+COSTING_15pc_all_earnings_no_behav <- 
+  person.dfkvi %>% 
+  # filter(age_group >= '60 to 64') %$% 
+  sum((Super.earnings.tax.everyone - super.earnings.tax.current) * Weights)
 
 # Option (a) saves $4.9 billion before behavioural change
 
@@ -714,14 +715,26 @@ sum((person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$super.earnings.tax.curr
 # ==================================================================================
 # (b) 20000  - tax free threshold for over 60s in super drawdown phase
 
-person.dfkvi$super.earnings.tax.20000tf <- ifelse(person.dfkvi$Super.ddown == 1,
-                                                  ifelse(person.dfkvi$Super.earnings - 20000 >= 0,
-                                                         (person.dfkvi$Super.earnings-20000) *tax.rate.ddown, 0), 
-                                                  person.dfkvi$Super.earnings * tax.rate.acc)
+person.dfkvi %<>%
+  mutate(super.earnings.tax.20k.thresh = ifelse(Super.ddown,
+                                                pmax(0, Super.earnings - 20e3) * tax.rate.ddown,
+                                                Super.earnings * tax.rate.acc
+                                                ),
+         Super.concession.20k.thresh.rel_full_income_tax = Tax.estimate.s - Tax.estimate - super.earnings.tax.20k.thresh
+         )
+
+COSTING_15pc_all_earnings_over20k_no_behav <- 
+  person.dfkvi %$%
+  sum((Super.concession.20k.thresh.rel_full_income_tax - super.earnings.tax.current) * Weights)
+
+# person.dfkvi$super.earnings.tax.20000tf <- ifelse(person.dfkvi$Super.ddown == 1,
+#                                                   ifelse(person.dfkvi$Super.earnings - 20000 >= 0,
+#                                                          (person.dfkvi$Super.earnings-20000) *tax.rate.ddown, 0), 
+#                                                   person.dfkvi$Super.earnings * tax.rate.acc)
 
 # Value of the tax concession, relative to a personal income tax benchmark, becomes:
 
-person.dfkvi$Super.concession.20000tf <- person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.20000tf
+# person.dfkvi$Super.concession.20000tf <- person.dfkvi$Tax.estimate.s - person.dfkvi$Tax.estimate - person.dfkvi$super.earnings.tax.20000tf
 
 sum(person.dfkvi$Super.concession.20000tf * person.dfkvi$Weights) / 10^9 # Total concession is $17.2 billion
 
@@ -808,6 +821,22 @@ sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.curre
 # So we write in our behavioural change - ppl affected withdraw what super earnings they can from super to make use of TF thresholds outside of super
 
 # We need to write a function that accounts for the tax-free threshold, plus an SAPTO and LITO entitlement WHEN they are actually unused since they taper away. 
+
+TF.unused.function <- function(income){
+  min_income <- grattan::inverse_income(0)
+  ifelse(income > min_income,
+         0,
+         pmax(0, min_income - income))
+}
+
+person.dfkvi.behaviour <- 
+  person.dfkvi %>%
+  mutate(new_super_earnings = ifelse(Super.ddown,
+                                     ifelse(Taxable.income.annual < grattan::inverse_income(0),
+                                            pmax(0, Super.earnings - TF.unused.function(Taxable.income.annual)),
+                                            Super.earnings),
+                                     Super.earnings),
+         new_super_tax = 0.15 * new_super_earnings)
 
 person.dfkvi %<>%
   mutate(Excess.TF.income.threshold = ifelse(Super.ddown == 1, 
