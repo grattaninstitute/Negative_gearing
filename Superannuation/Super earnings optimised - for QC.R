@@ -254,27 +254,11 @@ person.dfkvi$LITO.max <- 445
 ## Age mutate by Hugh
 age_mutate <- function(.hes){
   stopifnot("Age_of_HH_reference_person" %in% names(.hes) || "Age_of_person" %in% names(.hes))
-  if("Age_of_HH_reference_person" %in% names(.hes)){
-    out <- 
-      .hes %>%
-      mutate(
-        age_group = gsub(" years", "", as.character(Age_of_HH_reference_person)),
-        age_group = ifelse(!is.na(as.numeric(age_group)), 
-                           ifelse(as.numeric(age_group) < 20,
-                                  "20 or under",
-                                  paste((as.numeric(age_group) %/% 5) * 5,
-                                        "to",
-                                        (as.numeric(age_group) %/% 5) * 5 + 4)),
-                           age_group
-        )
-      ) 
-  }
-  
   if("Age_of_person" %in% names(.hes)){
     out <- 
       .hes %>%
       mutate(
-        age_group = gsub("years.*$", "", as.character(Age_of_person)),
+        age_group = gsub("\\syears\\s*$", "", as.character(Age_of_person)),
         age_group = ifelse(!is.na(as.numeric(age_group)),
                            ifelse(as.numeric(age_group) < 20,
                                   "20 or under",
@@ -428,7 +412,7 @@ ML.function <- function(income,
 # Here we distingush between the entitlements for individuals and couples, as well as by age. We don't however, currently allow couples to share their SAPTO entitlements between them (as can happen) and so we will underestimate the degree to which SAPTO reduces personal income tax paid at the aggregate. If we have time we'll add this in.
 
 SAPTO.function <- function(income, 
-                           Age.numeric,
+                           age_group,
                            Single,
                            SAPTO.lower.indiv, 
                            SAPTO.upper.indiv, 
@@ -491,7 +475,16 @@ person.dfkvi %<>%
                                           LITO.lower = LITO.lower,
                                           LITO.upper = LITO.upper,
                                           LITO.max = LITO.max),
-         Tax.estimate = pmax(0, tax.function(Tax.estimate) + Medicare.levy - LITO.entitlement))
+         SAPTO.entitlement = SAPTO.function(income = Taxable.income.annual,
+                                            age_group = age_group,
+                                            Single = Single,
+                                            SAPTO.upper.indiv = SAPTO.upper.indiv,
+                                            SAPTO.max.indiv = SAPTO.max.indiv,
+                                            SAPTO.lower.cpl = SAPTO.lower.cpl,
+                                            SAPTO.lower.indiv = SAPTO.lower.indiv,
+                                            SAPTO.upper.cpl = SAPTO.upper.cpl,
+                                            SAPTO.max.cpl = SAPTO.max.cpl),
+         Tax.estimate = pmax(0, tax.function(Taxable.income.annual) + Medicare.levy - LITO.entitlement - SAPTO.entitlement))
 
 # person.dfkvi$Tax.estimate <- person.dfkvi$Tax.estimate + person.dfkvi$Medicare.levy
 
@@ -514,32 +507,37 @@ person.dfkvi %<>%
 # SAPTO eligibility uses an income definition known as 'rebate income' which is the sum of (a) Taxable Income; (b) Adjusted fringe Benefits; (c) Total net investment loss (financial net investment loss and rental property loss); and (d) reportable super contributions
 # For now, we're just going to use taxable income since we dont know most of these things. As a result, we're going to be more generous in providing SAPTO entitlements to individuals than the ATO will be
 
-person.dfkvi$SAPTO.entitlement <- SAPTO.function(person.dfkvi$Taxable.income.annual,
-                                                 person.dfkvi$Age.numeric,
-                                                 person.dfkvi$Single,
-                                                 person.dfkvi$SAPTO.lower.indiv, 
-                                                 person.dfkvi$SAPTO.upper.indiv, 
-                                                 person.dfkvi$SAPTO.max.indiv, 
-                                                 person.dfkvi$SAPTO.lower.cpl, 
-                                                 person.dfkvi$SAPTO.upper.cpl, 
-                                                 person.dfkvi$SAPTO.max.cpl)
-
-person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$SAPTO.entitlement, 0, 
-                                    person.dfkvi$Tax.estimate - person.dfkvi$SAPTO.entitlement)
+# person.dfkvi$SAPTO.entitlement <- SAPTO.function(person.dfkvi$Taxable.income.annual,
+#                                                  person.dfkvi$Age.numeric,
+#                                                  person.dfkvi$Single,
+#                                                  person.dfkvi$SAPTO.lower.indiv, 
+#                                                  person.dfkvi$SAPTO.upper.indiv, 
+#                                                  person.dfkvi$SAPTO.max.indiv, 
+#                                                  person.dfkvi$SAPTO.lower.cpl, 
+#                                                  person.dfkvi$SAPTO.upper.cpl, 
+#                                                  person.dfkvi$SAPTO.max.cpl)
+# 
+# person.dfkvi$Tax.estimate <- ifelse(person.dfkvi$Tax.estimate < person.dfkvi$SAPTO.entitlement, 0, 
+#                                     person.dfkvi$Tax.estimate - person.dfkvi$SAPTO.entitlement)
 
 
 # Now we have our estimated tax entitlement, accounting for the Medicare Levy (individuals only), and SAPTO and LITO entitlements
 # We compare this against the ABS-derived tax estimate in the SIH 11-12, which used the PIT tax scales for that year, including a 1.5% Medicare Levy
 
-person.dfkvi$Tax.annual <- person.dfkvi$Tax * 52
-(sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) - sum(person.dfkvi$Tax.annual * person.dfkvi$Weights)) / 10 ^ 9 # 55 billion difference
-sum(person.dfkvi$Tax.annual * person.dfkvi$Weights) / 10^9 # ABS estimates PIT of $147 billion for 2011-12
-sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) / 10^9 # We estimate PIT of $199 billion for 2015-16 
+#person.dfkvi$Tax.annual <- person.dfkvi$Tax * 52
+person.dfkvi %<>%
+  mutate(Tax.annual = Tax * 52)
+
+
+
+# (sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) - sum(person.dfkvi$Tax.annual * person.dfkvi$Weights)) / 10 ^ 9 # 55 billion difference
+# sum(person.dfkvi$Tax.annual * person.dfkvi$Weights) / 10^9 # ABS estimates PIT of $147 billion for 2011-12
+# sum(person.dfkvi$Tax.estimate * person.dfkvi$Weights) / 10^9 # We estimate PIT of $199 billion for 2015-16 
 
 # 2012-13 Taxation Statistics (inflated to 2015-16) has taxable income of $760 billion
 # We have taxable income here of $887.7 billion
 
-sum(person.dfkvi$Taxable.income.annual * person.dfkvi$Weights) / 10^9
+# sum(person.dfkvi$Taxable.income.annual * person.dfkvi$Weights) / 10^9
 
 # ==================================================================================
 # Establishing a no tax concession counterfactual for super earnings - PIT collected including super earnings in taxable income
