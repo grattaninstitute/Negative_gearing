@@ -285,8 +285,8 @@ left=2.75cm,right=2.75cm
 %% ---------------------------------
 \RequirePackage[headsepline,plainheadsepline,footsepline,plainfootsepline]{scrlayer-scrpage}
 
-\addtolength{\textheight}{40pt}
-\addtolength{\footskip}{-10pt}
+\addtolength{\textheight}{44pt}
+\addtolength{\footskip}{-12pt}
 
 \clearscrheadings
 \clearscrplain
@@ -494,56 +494,27 @@ left=2.75cm,right=2.75cm
          {\rule{0.8\bibhang}{.2pt}}}}}
 % Hyperlinks entire citation label for most citaiton commands 
 % http://tex.stackexchange.com/questions/15951/hyperlink-name-with-biblatex-authoryear-biblatex-1-4b
-\DeclareFieldFormat{citehyperref}{%
-  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
-  \bibhyperref{#1}}
+\renewbibmacro*{cite}{\printtext[citehyperref]{%
+  \global\boolfalse{cbx:loccit}%
+  \iffieldundef{shorthand}
+    {\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}
+       {\usebibmacro{cite:ibid}}
+       {\ifthenelse{\ifnameundef{labelname}\OR\iffieldundef{labelyear}}
+          {\usebibmacro{cite:label}%
+           \setunit{\addspace}}
+          {\printnames{labelname}%
+           \setunit{\nameyeardelim}}%
+        \usebibmacro{cite:paren:labelyear+extrayear}}}
+    {\usebibmacro{cite:shorthand}}}}
 
-\DeclareFieldFormat{textcitehyperref}{%
-  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
-  \bibhyperref{%
-    #1%
-    \ifbool{cbx:parens}
-      {\bibcloseparen\global\boolfalse{cbx:parens}}
-      {}}}
-
-\savebibmacro{cite}
-\savebibmacro{textcite}
-
-\renewbibmacro*{cite}{%
-  \printtext[citehyperref]{%
-    \restorebibmacro{cite}%
-    \usebibmacro{cite}}}
-
-\renewbibmacro*{textcite}{%
-  \ifboolexpr{
-    ( not test {\iffieldundef{prenote}} and
-      test {\ifnumequal{\value{citecount}}{1}} )
-    or
-    ( not test {\iffieldundef{postnote}} and
-      test {\ifnumequal{\value{citecount}}{\value{citetotal}}} )
-  }
-    {\DeclareFieldAlias{textcitehyperref}{noformat}}
-    {}%
-  \printtext[textcitehyperref]{%
-    \restorebibmacro{textcite}%
-    \usebibmacro{textcite}}}
-
-% The following lines give the correct footcite Author (Year) but make the ibid erroneous
-% Author (ibid) % use ifciteibid
-\DeclareCiteCommand{\footcite}[\mkbibfootnote]
-  {\boolfalse{cbx:parens}}
-  {\usebibmacro{citeindex}%
-  \ifciteibid{Ibid.}{%  % for ibidem
-   \iffirstcitekey
-     {\setcounter{textcitetotal}{1}}
-     {\stepcounter{textcitetotal}%
-      \textcitedelim}%
-   \usebibmacro{textcite}}%
-   }
-  {\ifbool{cbx:parens}
-     {\bibcloseparen\global\boolfalse{cbx:parens}}
-     {}}
-  {\usebibmacro{textcite:postnote}}
+\renewbibmacro*{cite:paren:labelyear+extrayear}{%
+  \iffieldundef{labelyear}
+    {}
+    {\printtext[parens]{%
+       \printfield{labelyear}%
+       \printfield{extrayear}}}}
+  
+  
 \newcommand{\gcite}[1]{{\citeauthor{#1} (\citedate{#1})}}
 
 \RequirePackage{tocloft}
