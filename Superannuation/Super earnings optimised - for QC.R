@@ -437,6 +437,8 @@ SAPTO.function <- function(income,
   SAPTO
 }
 
+
+
 # And a function for LITO entitlement
 
 LITO.function <- function(income, LITO.lower, LITO.upper, LITO.max) {
@@ -725,7 +727,7 @@ person.dfkvi %<>%
 
 COSTING_15pc_all_earnings_over20k_no_behav <- 
   person.dfkvi %$%
-  sum((Super.concession.20k.thresh.rel_full_income_tax - super.earnings.tax.current) * Weights)
+  sum((super.earnings.tax.20k.thresh - super.earnings.tax.current) * Weights)
 
 # person.dfkvi$super.earnings.tax.20000tf <- ifelse(person.dfkvi$Super.ddown == 1,
 #                                                   ifelse(person.dfkvi$Super.earnings - 20000 >= 0,
@@ -823,7 +825,7 @@ sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.curre
 # We need to write a function that accounts for the tax-free threshold, plus an SAPTO and LITO entitlement WHEN they are actually unused since they taper away. 
 
 TF.unused.function <- function(income){
-  min_income <- grattan::inverse_income(0)
+  min_income <- 33e3
   ifelse(income > min_income,
          0,
          pmax(0, min_income - income))
@@ -832,23 +834,47 @@ TF.unused.function <- function(income){
 person.dfkvi.behaviour <- 
   person.dfkvi %>%
   mutate(new_super_earnings = ifelse(Super.ddown,
-                                     ifelse(Taxable.income.annual < grattan::inverse_income(0),
+                                     ifelse(Taxable.income.annual < 33e3,
                                             pmax(0, Super.earnings - TF.unused.function(Taxable.income.annual)),
                                             Super.earnings),
                                      Super.earnings),
-         new_super_tax = 0.15 * new_super_earnings)
+         new_super_earnings_threshold = ifelse(Super.ddown,
+                                         ifelse(Taxable.income.annual < 33e3,
+                                                pmax(0, (Super.earnings - 20e3) - TF.unused.function(Taxable.income.annual)),
+                                                Super.earnings),
+                                         Super.earnings),
+         new_super_tax = 0.14 * new_super_earnings,
+         new_super_tax_threshold = ifelse(Super.ddown, 
+                                          0.14 * pmax(0, new_super_earnings_threshold - 20e3),
+                                          0.125 * new_super_earnings)
+  )
 
-person.dfkvi %<>%
-  mutate(Excess.TF.income.threshold = ifelse(Super.ddown == 1, 
-                                             ifelse(Taxable.income.annual < 18200,
-                                                    TF.unused.function(Taxable.income.annual) * 
-                                                      tax.rate.ddown + SAPTO.entitlement + LITO.entitlement,
-                                                    ifelse(Tax.estimate + Medicare.levy - 
-                                                             SAPTO.entitlement - LITO.entitlement < 0,
-                                                           SAPTO.entitlement + LITO.entitlement - 
-                                                             Tax.estimate - Medicare.levy,
-                                                           0)),
-                                             0))
+taxable_income_deciles <- 
+  person.dfkvi.behaviour %>%
+  svydesign(ids = ~PID, data = ., weights = ~Weights) %>%
+  svyquantile(~Taxable.income.annual, design = ., quantiles = (0:10)/10)
+
+taxable_income_deciles.over60 <- 
+  person.dfkvi.behaviour %>%
+  filter(age_group >= '60 to 64') %>%
+  svydesign(ids = ~PID, data = ., weights = ~Weights) %>%
+  svyquantile(~Taxable.income.annual, design = ., quantiles = (0:10)/10)
+
+income_decile_incl_super_earnings <- 
+  person.dfkvi.behaviour %>%
+  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) - Super.income + Super.earnings) %>%
+  filter(age_group >= '60 to 64') %>%
+  svydesign(ids = ~PID, data = ., weights = ~Weights) %>%
+  svyquantile(~total_income_including_earnings, design = ., quantiles = (0:10)/10)
+
+person.dfkvi.behaviour %<>%
+  mutate(total_income_including_earnings = Taxable.income.annual + Super.earnings) %>%
+  mutate(total_income_decile = .bincode(total_income_including_earnings, 
+                                        breaks = income_decile_incl_super_earnings, 
+                                        include.lowest = TRUE)) 
+
+
+
 
 # We check what's the max income of someone that has tax credits left. It should only be circa $33k
 
@@ -862,9 +888,10 @@ summary(ddown.max.income.df$Taxable.income.annual)
 
 # Super earnings tax collected after behaviour change
 
-person.dfkvi$super.earnings.tax.opt1.behav <- ifelse(person.dfkvi$super.earnings.tax.opt1 < person.dfkvi$Excess.TF.income.threshold, 
-                                                     0, 
-                                                     person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$Excess.TF.income.threshold)
+person.dfkvi$super.earnings.tax.opt1.behav <- 
+  ifelse(person.dfkvi$super.earnings.tax.opt1 < person.dfkvi$Excess.TF.income.threshold, 
+         0, 
+         person.dfkvi$super.earnings.tax.opt1 - person.dfkvi$Excess.TF.income.threshold)
 
 # We write a variable of the tax foregone by behavioural change
 
@@ -1141,7 +1168,7 @@ person.dfkvi$tincome.s.decile.range <- cut(person.dfkvi$Total.income.annual.s,
 
 # Then we define a survey object 
 
-person.dfkvi.over60 <- person.dfkvi %>% filter(Age.numeric > 21)
+person.dfkvi.over60 <- person.dfkvi %>% filter(age_group >= '60 to 64')
 
 SIHP.svy.over60 <- svydesign(id=~PID, weights= ~Weights, 
                              fpc=NULL, 
