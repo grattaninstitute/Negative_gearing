@@ -248,6 +248,9 @@ left=2.75cm,right=2.75cm
   %\addtolength{\columnwidth}{50pt}
   \setlength{\columnsep}{15mm}  
   %\addtolength{\columnwidth}{0.2\columnwidth}
+  
+  
+
 
 % Ensures hyperlinked chapter headings refer to their referent headings
 % not the preceding baseline
