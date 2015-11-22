@@ -824,6 +824,14 @@ sum((person.dfkvi$super.earnings.tax.ALP - person.dfkvi$super.earnings.tax.curre
 
 # We need to write a function that accounts for the tax-free threshold, plus an SAPTO and LITO entitlement WHEN they are actually unused since they taper away. 
 
+library(grattan)
+temp.income <- 1
+while(income_tax(temp.income) - grattan:::.sapto(temp.income, age = 66) <= 0)
+  temp.income <- temp.income + 1
+
+temp.income
+
+
 TF.unused.function <- function(income){
   min_income <- 33e3
   ifelse(income > min_income,
@@ -843,6 +851,10 @@ person.dfkvi.behaviour <-
                                                 pmax(0, (Super.earnings - 20e3) - TF.unused.function(Taxable.income.annual)),
                                                 Super.earnings),
                                          Super.earnings),
+         income_available_for_tax_minimization = ifelse(!Super.ddown,
+                                                        0,
+                                                        inverse_income())
+         new_super_earnings_SAPTO = 
          new_super_tax = 0.14 * new_super_earnings,
          new_super_tax_threshold = ifelse(Super.ddown, 
                                           0.14 * pmax(0, new_super_earnings_threshold - 20e3),
