@@ -862,16 +862,46 @@ taxable_income_deciles.over60 <-
 
 income_decile_incl_super_earnings <- 
   person.dfkvi.behaviour %>%
-  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) - Super.income + Super.earnings) %>%
+  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) + Super.earnings) %>%
   filter(age_group >= '60 to 64') %>%
   svydesign(ids = ~PID, data = ., weights = ~Weights) %>%
-  svyquantile(~total_income_including_earnings, design = ., quantiles = (0:10)/10)
+  svyquantile(~total_income_including_earnings, design = ., quantiles = (0:10)/10, ties = "rounded")
 
-person.dfkvi.behaviour %<>%
-  mutate(total_income_including_earnings = Taxable.income.annual + Super.earnings) %>%
+decile_total_income_incl_wdrawls <- 
+  person.dfkvi.behaviour %>%
+  mutate(total_income_including_withdrawals = Total.income.inc.wdls.annual) %>%
+  filter(age_group >= '60 to 64') %>%
+  svydesign(ids = ~PID, data = ., weights = ~Weights) %>%
+  svyquantile(~total_income_including_withdrawals, design = ., quantiles = (0:10)/10)
+
+require(scales)
+person.dfkvi.behaviour %>%
+  filter(age_group >= '60 to 64') %>%
+  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) + Super.earnings) %>%
   mutate(total_income_decile = .bincode(total_income_including_earnings, 
-                                        breaks = income_decile_incl_super_earnings, 
-                                        include.lowest = TRUE)) 
+                                        breaks = income_decile_incl_super_earnings, right = TRUE,
+                                        include.lowest = TRUE)) %>%
+  mutate(total_income_decile2 = as.numeric(cut(total_income_including_earnings, breaks = income_decile_incl_super_earnings, include.lowest = TRUE))) %>% #filter(is.na(total_income_decile2))
+  group_by(total_income_decile) %>%
+  summarise(individuals = sum(Weights),
+            indiv_drawing_down = scales::comma_format(0)(500 * round(sum(Weights * Super.ddown) / 500)),
+            avg_super_balance = grattan_dollar(weighted.mean(Total.super, Weights))) %>%
+  arrange(total_income_decile)
+
+person.dfkvi.behaviour %>%
+  filter(age_group >= '60 to 64', Super.ddown) %>%
+  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) + Super.earnings) %>%
+  mutate(total_income_decile = .bincode(total_income_including_earnings, 
+                                        breaks = income_decile_incl_super_earnings, right = TRUE,
+                                        include.lowest = TRUE)) %>%
+  mutate(total_income_decile2 = as.numeric(cut(total_income_including_earnings, breaks = income_decile_incl_super_earnings, include.lowest = TRUE))) %>% #filter(is.na(total_income_decile2))
+  group_by(total_income_decile) %>%
+  summarise(individuals = sum(Weights),
+            indiv_drawing_down = scales::comma_format(0)(500 * round(sum(Weights * Super.ddown) / 500)),
+            avg_super_balance = grattan_dollar(weighted.mean(Total.super, Weights))) %>%
+  arrange(total_income_decile)
+
+
 
 
 
