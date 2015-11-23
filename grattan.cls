@@ -250,7 +250,9 @@ left=2.75cm,right=2.75cm
   %\addtolength{\columnwidth}{0.2\columnwidth}
   
   
-
+\RequirePackage{booktabs}
+\RequirePackage{makecell}
+\renewcommand\theadfont{\bfseries}
 
 % Ensures hyperlinked chapter headings refer to their referent headings
 % not the preceding baseline
