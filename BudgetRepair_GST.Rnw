@@ -57,6 +57,7 @@ chart_data <- function(.data){
 \let\footnote=\endnote
 \newcommand*\ie{\emph{i.e.}}
 \newcommand*\eg{\emph{e.g.}}
+\newcommand*\gao{Grattan analysis of}
 
 <<preamble>>=
 library(foreign)
@@ -451,10 +452,11 @@ Not only are Australia's revenues from broad-based consumption taxes low by inte
 
 There is no obvious reason for these trends to reverse in the foreseeable future. Savings rates are now close to long-run averages with low savings rates in the early 1990s and 2000s looking like a historical anomaly (\Vref{fig:Households_are_saving_more}). The proportion of incomes spent on health is forecast continue to grow.\footcite[p.~28]{Daley2014} 
 
-And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the "growth" tax the states were originally promised.\footcite{Costello2000}
+And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the ``growth" tax the states were originally promised.\footcite{Costello2000}
 
 \begin{figure}
 <<Households_are_saving_more>>=
+# Not to be QCd
 read_excel("Households_are_saving_more.xlsx") %>%
   setNames(c("Year", "prop_savings_by_HH_disp_inc")) %>%
   mutate(Year = as.Date(paste0(Year, "-01-01")),
@@ -475,6 +477,7 @@ read_excel("Households_are_saving_more.xlsx") %>%
 \end{figure}
 \begin{figure}
 <<Spending_less_on_GST_liable>>=
+# Not to be QCd.
 read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet = "For_output") %>%
   gather(category, share_of_consumption, -Date) %>%
   mutate(super_category = ifelse(category == "GST_applicable", "GST applicable",
@@ -515,7 +518,7 @@ read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet
 \section{Consumption taxes are less bad than many other taxes}
 Consumption taxes such as the GST are relatively efficient taxes. They are relatively difficult to avoid,\footcite[p.~274]{Treasury2010}  and they encourage saving more than personal income taxes.\footnote{A consumption tax treats current and future consumption equivalently so there is no distortion in savings decisions. In contrast, income tax places a higher burden on savers because households pay tax on their income (regardless of how much they save) and then taxes the capital income on savings again in the future. See: \textcite{Treasury2010} However, the tax rate on savings makes relatively little difference to savings decisions of high-income earners who do most of the saving: see \textcite{DaleySuperannuation2015}}  They drag less on economic efficiency than many state government taxes including payroll taxes\footnote{While theoretically broad based payroll taxes and consumption taxes are equivalent, the range of exceptions and thresholds provided by state government for payroll taxes have considerably increased their efficiency costs.}  and stamp duties.\footcite{DaleyCoates2015Property} 
 
-An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our Wealth of Generations report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
+An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our \textit{Wealth of Generations} report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
 
 Income taxes can affect the incentives to work more than consumption 
 taxes. The combination of income tax scales and the withdrawal of means 
@@ -553,6 +556,7 @@ There are a range of expenditure categories currently exempt from the GST.\footn
 Broadening the base to include fresh food, education, health, water and sewerage could raise almost \$20 billion (\Vref{fig:GST_revenue_of_excluded_items1415}). This figure takes into account the effects of changes in consumer behaviour due to the increased prices in these categories. 
 \begin{figure}
 <<GST_revenue_of_excluded_items1415>>=
+# Not to be QCd
 gst.expenditures <- read_excel("GST_expenditures1415.xlsx")
 
 gst.expenditures %>%
@@ -643,7 +647,7 @@ Opposition to increasing Australia's GST is often motivated by concerns about th
 But if the GST package is partly to provide revenue to State Governments to fund growing health and education spending,\footnote{The decision in the 2014-15 Commonwealth budget to withdraw from the National Health Reform Agreement and to no longer fund growth in hospital spending precipitated the current discussion (including the support from the NSW Government) for the government to increase the GST. \textcite[p.~18]{daleywood2015fiscalchallenges}}
 then it must be revenue positive. Some people will need to pay higher net taxes. Even if the package is budget-neutral, the political need to over-compensate low-income households to protect disadvantaged will lead to some other households paying more tax in total.
 
-This will be difficult for governments that have been accustomed to being able to buy reform. The GST and the Carbon Pollution Reduction Scheme were both accompanied by a package of generous tax cuts and increases to welfare benefits (Box 2). The history of responding to demands that there be `no losers' has changed the political economy of reform. Politicians have arguably become less adept at prosecuting the case for difficult changes.\footcite[p.~80]{Megalogenis2010} 
+This will be difficult for governments that have been accustomed to `buying' reform. The GST and the Carbon Pollution Reduction Scheme were both accompanied by a package of generous tax cuts and increases to welfare benefits (\Vref{box:BuyingReform}). The history of responding to demands that there be `no losers' has changed the political economy of reform. Politicians have arguably become less adept at prosecuting the case for difficult changes.\footcite[p.~80]{Megalogenis2010} 
 And the public have come to expect that medicine will always arrive with a spoonful of sugar.\footcites{Megalogenis2010}{Henry730}
 %Ken Henry, 7.30 report. Australian Broadcasting Corporation
 %Broadcast: 22/09/2015 Reporter: Leigh Sales http://www.abc.net.au/7.30/content/2015/s4317759.htm
@@ -1055,7 +1059,7 @@ welfare_compensation_adequacy %T>%
 \includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/GST_compensation_by_quintile_and_threshold-1}
 \end{figure}
 
-And because low-incomepeople have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
+And because low-income people have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
 nearly  % ceiling
 \Sexpr{
 paste0(ceiling(100 * dplyr::filter(welfare_compensation_adequacy, gross_income_quintile == 1, threshold == ">100%")$comp_adequacy), "\\%")
@@ -1112,6 +1116,7 @@ allowance_with_income <-
                                            IND(fortnightly.income, min = 250) * 0.6 * (fortnightly.income - 250)))
   }
 
+# Determine the allowance cutoff. (Not best practice but readable.)
 for (i in 492:2000){
   if (allowance_with_income(i) == i){
     allowance_cutoff_fortnightly <- i
@@ -1308,6 +1313,12 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 \source{Grattan analysis ATO 2\%\ sample file (2013). See \url{https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}}
 \end{table}
 
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+% \newcommand*{\thead}[1]{%
+% \multicolumn{1}{r}{\bfseries\begin{tabular}{@{}c@{}}#1\end{tabular}}%
+% }
+\begin{table}[!htbp]
+\caption{Impact of GST compensation package on selected households}\label{tbl:GST_comp_selected_hh}
 <<GST_by_welfare_type, results = 'asis'>>=
 hes_with_gst_and_tax_compensation_indiv <-
   hes_with_gst_and_tax_compensation %>%
@@ -1366,15 +1377,28 @@ hes_with_gst_and_tax_compensation_indiv %>%
     `prop undercomp` = latex_percent(prop_undercomp)
   ) %>%
   select(-contains("_"), -starts_with("zc")) %>%
-  xtable(align = "lp{0.3\\columnwidth}rrrr") %>%
+  xtable(
+    #align = "lp{0.3\\columnwidth}rrrr"
+    align = "lp{5cm}YYYY"
+  ) %>%
   print(tabular.environment = "tabularx", 
-        width = "1.4\\columnwidth", 
+        width = "\\columnwidth", 
         include.rownames = FALSE,
-        floating.environment = "table*",
+        #floating.environment = "table*",
+        floating = FALSE,
         table.placement = "tp",
-        sanitize.text.function = function(x)x) 
+        booktabs = TRUE,
+        sanitize.text.function = function(x)x,
+        #sanitize.colnames.function = function(name){ifelse(grepl("Household", name), name, paste0("\\thead{", name, "}"))} 
+        sanitize.colnames.function = function(x)x
+        ) %>%
+  write(., file = )
 @
+\vspace*{5.5pt}
+\notes{This analysis is based on welfare benefits and spending pattersn from 2009-10 because this is the most recent for which spending data at the household level is available.}
 
+\source{\gao\ \textcite{HES200910}}
+\end{table}
 
 
 Politicians might be tempted to try to fully compensate all low and middle income households. 
