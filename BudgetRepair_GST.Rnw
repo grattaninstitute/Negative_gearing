@@ -1,8 +1,10 @@
 \documentclass{grattan}
 \usepackage{tabularx}
 <<MODELLING_PARAMETERS, echo=FALSE>>=
+# Actually proportion not percentage. i.e. 0.3 = 30%
 percentage_of_revenue_to_transfers = 0.3
-new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
+percentage_of_revenue_to_tax_cuts = 0.3 
+new_0910_tax_rates = c(0, 0.130, 0.29, 0.38, 0.45)
 
 # Please change the numbers to reflect final budget outcomes.
 
@@ -19,7 +21,7 @@ my_pdf <- function(file, width, height){
 }
 
 # knitr chunk opts
-# fig.width must = out.width and same for *.height
+# fig.width must = out.width and same for out.height
 .name.of.file <- knitr:::knit_concord$get("infile")
 atlas <- "figure_BudgetRepair_GST/"
 knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
@@ -153,6 +155,7 @@ IND <- function(x, min, max = Inf){
 @
 
 <<age_mutate>>=
+
 age_mutate <- function(.hes){
   stopifnot("Age_of_HH_reference_person" %in% names(.hes) || "Age_of_person" %in% names(.hes))
   if("Age_of_HH_reference_person" %in% names(.hes)){
@@ -175,7 +178,7 @@ age_mutate <- function(.hes){
     out <- 
     .hes %>%
       mutate(
-        age_group = as.character(Age_of_person),
+        age_group = gsub("\\s+(years)", "", as.character(Age_of_person)),
         age_group = ifelse(grepl("^[0-9]+$", age_group), 
                            ifelse(as.numeric(age_group) < 20,
                                   "20 or under",
@@ -1186,6 +1189,19 @@ The bottom 40 per cent of households -- those with incomes up to \$63,000 annual
 
 
 \begin{figure}
+<<Corroborate_size_of_tax_cuts>>=
+tax200910 <- get_sample_file(2010)
+INCOME.TAX.COLLECTED.200910 <- sum(income_tax(tax200910$Taxable_Income, "2009-10")) * 100
+GST.COLLECTED.200910 <- 44e9 # http://www.treasury.gov.au/Policy-Topics/Taxation/Pocket-Guide-to-the-Australian-Tax-System/Pocket-Guide-to-the-Australian-Tax-System/Appendix-C
+revenue_avbl_for_tax_cuts <- 
+  percentage_of_revenue_to_tax_cuts * GST.COLLECTED.200910 / 2  # for 15%
+size_of_tax_cut <- 
+  INCOME.TAX.COLLECTED.200910 - sum(new_income_tax_outer0910(tax200910$Taxable_Income, rates = new_0910_tax_rates))*100
+
+if(abs(size_of_tax_cut - revenue_avbl_for_tax_cuts) > 0.5e9)
+  stop("Tax cut differs")
+@
+
 <<GST_compensation_with_tax_cuts>>=
 hes10_indiv %<>%
   mutate(taxable_income = inverse_income(52 * Imputed_current_weekly_tax_payable, fy.year = "2009-10", zero.tax.income = "uniform"))
@@ -1286,6 +1302,7 @@ third.quintile %>%
   GST.deciles.third.quintile
 
 cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2012-13") -> GST_compensation_required
+cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2013-14") -> GST_compensation_required_1314
 
 # By inspection of https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd
 # Cuts to 14% and 24.5% leave $100,000 individual $4380 better off.
@@ -1317,8 +1334,9 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 % \newcommand*{\thead}[1]{%
 % \multicolumn{1}{r}{\bfseries\begin{tabular}{@{}c@{}}#1\end{tabular}}%
 % }
-\begin{table}[!htbp]
+\begin{table*}[!htbp]
 \caption{Impact of GST compensation package on selected households}\label{tbl:GST_comp_selected_hh}
+\begin{center}
 <<GST_by_welfare_type, results = 'asis'>>=
 hes_with_gst_and_tax_compensation_indiv <-
   hes_with_gst_and_tax_compensation %>%
@@ -1364,6 +1382,7 @@ hes_with_gst_and_tax_compensation_indiv %>%
   group_by(Household_type) %>%
   summarise(new_benefit = weighted.mean(new_welfare + tax_diff_weekly, Weight_HH_HES),
             GST_burden = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2, Weight_HH_HES),
+            prop_increase_in_disp_inc = weighted.mean((new_welfare + tax_diff_weekly + Current_weekly_HH_disposable_income)/(Current_weekly_HH_disposable_income + Weekly_household_GST_on_all_goods_and_services_FIS/2), Weight_HH_HES),
             `zcomp.over.burden` = weighted.mean((new_welfare + tax_diff_weekly) / (Weekly_household_GST_on_all_goods_and_services_FIS / 2),
                                            Weight_HH_HES),
             prop_undercomp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
@@ -1382,7 +1401,7 @@ hes_with_gst_and_tax_compensation_indiv %>%
     align = "lp{5cm}YYYY"
   ) %>%
   print(tabular.environment = "tabularx", 
-        width = "\\columnwidth", 
+        width = "1.4\\columnwidth", 
         include.rownames = FALSE,
         #floating.environment = "table*",
         floating = FALSE,
@@ -1391,14 +1410,14 @@ hes_with_gst_and_tax_compensation_indiv %>%
         sanitize.text.function = function(x)x,
         #sanitize.colnames.function = function(name){ifelse(grepl("Household", name), name, paste0("\\thead{", name, "}"))} 
         sanitize.colnames.function = function(x)x
-        ) %>%
-  write(., file = )
+        ) 
 @
-\vspace*{5.5pt}
+\end{center}
+%\vspace*{5.5pt}
 \notes{This analysis is based on welfare benefits and spending pattersn from 2009-10 because this is the most recent for which spending data at the household level is available.}
 
 \source{\gao\ \textcite{HES200910}}
-\end{table}
+\end{table*}
 
 
 Politicians might be tempted to try to fully compensate all low and middle income households. 
