@@ -1,6 +1,6 @@
 % latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Mon Nov 23 16:29:55 2015
-\begin{tabularx}{\columnwidth}{p{5cm}YYYY}
+% Tue Nov 24 11:16:30 2015
+\begin{tabularx}{1.4\columnwidth}{p{5cm}YYYY}
   \toprule
 Household type & New benefit & GST burden & Comp / Burden & prop undercomp \\ 
   \midrule
