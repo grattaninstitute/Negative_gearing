@@ -634,8 +634,7 @@ macro:->\protecting
 {footcite}{}{}{Mirlees2011}{}}}
 \@endanenote 
 \@doanenote {32}{32}
-macro:->
-In
+macro:->In
 these
 examples
 the
@@ -1122,4 +1121,45 @@ macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{daleywood2015fiscalchallenges}{}}}
+\@endanenote 
+\@doanenote {64}{64}
+macro:->Scott
+Morrison
+as
+quoted
+in
+\textcite
+{Coorey2015}
+\@endanenote 
+\@doanenote {65}{65}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{}{FinancialServicesCouncil2015}{}}}
+\@endanenote 
+\@doanenote {66}{66}
+macro:->\protecting
+{\blxmkbibnote
+{foot}{\blxciteicmd
+{footcite}{}{}{PropertyCouncil2015}{}}}
+\@endanenote 
+\@doanenote {67}{67}
+macro:->Together
+this
+would
+cost
+around
+\$5.3~bn,
+\Vref
+[see:]{tbl:tax_cuts}
+on
+the
+budgetary
+costs
+of
+income
+tax
+rate
+changes.
+
 \@endanenote 
