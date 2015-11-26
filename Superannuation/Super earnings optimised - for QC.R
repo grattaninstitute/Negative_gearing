@@ -832,8 +832,8 @@ while(income_tax(temp.income) - grattan:::.sapto(temp.income, age = 66) <= 0)
 temp.income
 
 
-TF.unused.function <- function(income){
-  min_income <- 33e3
+TF.unused.function <- function(income, ...){
+  min_income <- inverse_income(0, fy.year = "2015-16", zero.tax.income = "maximum", ...)
   ifelse(income > min_income,
          0,
          pmax(0, min_income - income))
@@ -842,23 +842,38 @@ TF.unused.function <- function(income){
 person.dfkvi.behaviour <- 
   person.dfkvi %>%
   mutate(new_super_earnings = ifelse(Super.ddown,
-                                     ifelse(Taxable.income.annual < 33e3,
-                                            pmax(0, Super.earnings - TF.unused.function(Taxable.income.annual)),
+                                     ifelse(Taxable.income.annual < inverse_income(0, 
+                                                                                   fy.year = "2015-16", 
+                                                                                   zero.tax.income = "maximum",
+                                                                                   is.single = Single, 
+                                                                                   age_group = age_group),
+                                            pmax(0, 
+                                                 Super.earnings - TF.unused.function(Taxable.income.annual, 
+                                                                                     age_group = age_group)),
                                             Super.earnings),
+                                     
                                      Super.earnings),
+         
          new_super_earnings_threshold = ifelse(Super.ddown,
-                                         ifelse(Taxable.income.annual < 33e3,
-                                                pmax(0, (Super.earnings - 20e3) - TF.unused.function(Taxable.income.annual)),
-                                                Super.earnings),
-                                         Super.earnings),
+                                               ifelse(Taxable.income.annual < inverse_income(0, fy.year = "2015-16", 
+                                                                                             zero.tax.income = "maximum",
+                                                                                             is.single = Single,
+                                                                                             age_group = age_group),
+                                                      pmax(0, 
+                                                           Super.earnings - TF.unused.function(Taxable.income.annual,
+                                                                                               age_group = age_group)),
+                                                      Super.earnings),
+                                               Super.earnings),
          income_available_for_tax_minimization = ifelse(!Super.ddown,
                                                         0,
-                                                        inverse_income())
-         new_super_earnings_SAPTO = 
+                                                        TF.unused.function(Taxable.income.annual, age_group = age_group)),
          new_super_tax = 0.14 * new_super_earnings,
          new_super_tax_threshold = ifelse(Super.ddown, 
                                           0.14 * pmax(0, new_super_earnings_threshold - 20e3),
-                                          0.125 * new_super_earnings)
+                                          0.125 * new_super_earnings),
+         tax_on_super_earnings_over_400k = ifelse(age_group >= "60 to 64" & Total.super > 400e3,
+                                                  0.14 * Super.earnings,
+                                                  super.earnings.tax.current)
   )
 
 taxable_income_deciles <- 
@@ -874,46 +889,16 @@ taxable_income_deciles.over60 <-
 
 income_decile_incl_super_earnings <- 
   person.dfkvi.behaviour %>%
-  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) + Super.earnings) %>%
+  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) - Super.income + Super.earnings) %>%
   filter(age_group >= '60 to 64') %>%
   svydesign(ids = ~PID, data = ., weights = ~Weights) %>%
-  svyquantile(~total_income_including_earnings, design = ., quantiles = (0:10)/10, ties = "rounded")
+  svyquantile(~total_income_including_earnings, design = ., quantiles = (0:10)/10)
 
-decile_total_income_incl_wdrawls <- 
-  person.dfkvi.behaviour %>%
-  mutate(total_income_including_withdrawals = Total.income.inc.wdls.annual) %>%
-  filter(age_group >= '60 to 64') %>%
-  svydesign(ids = ~PID, data = ., weights = ~Weights) %>%
-  svyquantile(~total_income_including_withdrawals, design = ., quantiles = (0:10)/10)
-
-require(scales)
-person.dfkvi.behaviour %>%
-  filter(age_group >= '60 to 64') %>%
-  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) + Super.earnings) %>%
+person.dfkvi.behaviour %<>%
+  mutate(total_income_including_earnings = Taxable.income.annual + Super.earnings) %>%
   mutate(total_income_decile = .bincode(total_income_including_earnings, 
-                                        breaks = income_decile_incl_super_earnings, right = TRUE,
-                                        include.lowest = TRUE)) %>%
-  mutate(total_income_decile2 = as.numeric(cut(total_income_including_earnings, breaks = income_decile_incl_super_earnings, include.lowest = TRUE))) %>% #filter(is.na(total_income_decile2))
-  group_by(total_income_decile) %>%
-  summarise(individuals = sum(Weights),
-            indiv_drawing_down = scales::comma_format(0)(500 * round(sum(Weights * Super.ddown) / 500)),
-            avg_super_balance = grattan_dollar(weighted.mean(Total.super, Weights))) %>%
-  arrange(total_income_decile)
-
-person.dfkvi.behaviour %>%
-  filter(age_group >= '60 to 64', Super.ddown) %>%
-  mutate(total_income_including_earnings = pmax(0, Taxable.income.annual) + Super.earnings) %>%
-  mutate(total_income_decile = .bincode(total_income_including_earnings, 
-                                        breaks = income_decile_incl_super_earnings, right = TRUE,
-                                        include.lowest = TRUE)) %>%
-  mutate(total_income_decile2 = as.numeric(cut(total_income_including_earnings, breaks = income_decile_incl_super_earnings, include.lowest = TRUE))) %>% #filter(is.na(total_income_decile2))
-  group_by(total_income_decile) %>%
-  summarise(individuals = sum(Weights),
-            indiv_drawing_down = scales::comma_format(0)(500 * round(sum(Weights * Super.ddown) / 500)),
-            avg_super_balance = grattan_dollar(weighted.mean(Total.super, Weights))) %>%
-  arrange(total_income_decile)
-
-
+                                        breaks = income_decile_incl_super_earnings, 
+                                        include.lowest = TRUE)) 
 
 
 
@@ -1274,7 +1259,7 @@ person.dfkvi$tincome.w.decile.over60.range <- cut(person.dfkvi$Total.income.inc.
 
 # Then we define a survey object (you need the survey pkg for this)
 
-person.dfkvi.over60.ddown <- person.dfkvi %>% filter(Age.numeric > 21) %>% filter(Super.ddown == 1)
+person.dfkvi.over60.ddown <- person.dfkvi %>% filter(age_group >= '60 to 64') %>% filter(Super.ddown)
 
 SIHP.svy.over60.ddown <- svydesign(id=~PID, weights= ~Weights, fpc=NULL, data = person.dfkvi.over60.ddown)
 

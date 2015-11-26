@@ -762,10 +762,10 @@ If the GST rate were raised but not broadened, poorer households would pay on av
 
 Whether or not a tax is regressive because it takes a higher proportion of income from low-incomehouseholds, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][p.~37]{Daley2013}
 
-\section{Higher welfare payments}\label{sec:higherWelfarePayments}
-Governments can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
+\section{Higher welfare payments can reduce the effects of a higher GST on poorer households}\label{sec:higherWelfarePayments}
+However fairness is measured, governments  can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
 
-Households at the bottom 20 per cent of the income distribution receive almost of all of their income via government payments -- including pensions, unemployment benefits and family allowances. The next poorest 20 per cent of households receive almost half of their incomes from these sources. Unsurprisingly, those further up the income distribution generate most of their income through employment, investments and super. These households receive little from government benefits (\Vref{fig:Sources_of_income_by_quintile}). 
+For the majority of households at the bottom 20 per cent of the income distribution -- those earning up to around \$36,000 a year  -- government payments are their main source of income. Forty per cent of the next poorest 20~per~cent of households receive most of their income from government. Unsurprisingly, those further up the income distribution generate most of their income through employment and investments, with very few reliant primarily on government benefits  (\Vref{fig:Sources_of_income_by_quintile}). 
 
 \begin{figure}
 <<Sources_of_income_by_quintile, fig.width=12, out.width="12in">>=
@@ -1411,6 +1411,12 @@ States are unlikely to cooperate with changes to the GST unless they receive mor
 \section{GST increases could reduce the Commonwealth's substantial deficit}
 Alternatively, the additional GST revenue could go to reducing the Commonwealth substantial deficit. The Commonwealth has posted structural deficits for the last 8 years.\footcite[p.~4]{daleywood2015fiscalchallenges} On current policies these deficits are likely to continue. Projections for these deficits to reduce quickly over the 4 years of the forward estimates seem optimistic.  Budget repair will almost certainly require both tax increases and spending reductions.\footcite[p.~8-14]{daleywood2015fiscalchallenges} Tax increases through the GST are likely to distort economic activity less than most of the alternatives, and definitely less than the bracket creep which is the dominant driver of the Commonwealth's planned return to surplus.\footcite{daleywood2015fiscalchallenges}  Half of the available additional revenue from raising the GST to 15 per cent -- \$5 billion a year -- would only reduce the Commonwealth's budget deficit by around 15 per cent. 
 
+\section{GST increases could fund other tax reductions}
+The additional GST revenue could instead fund other tax reductions, including further income tax cuts,\footnote{Scott Morrison as quoted in \textcite{Coorey2015}}  cuts to corporate taxes,\footcite{FinancialServicesCouncil2015}  or State stamp duties.\footcite{PropertyCouncil2015}  The relative merits of these proposals are beyond the scope of this paper. Roughly speaking, additional revenue of \$5~billion from the GST could fund:
+\begin{itemize}
+\item a reduction in marginal income tax rates of nearly one percentage point for every bracket\footnote{Together this would cost around \$5.3~bn, \Vref[see:]{tbl:tax_cuts} on the budgetary costs of income tax rate changes. }
+\end{itemize}
+
 <<BottomQuintileFallingThroughCracks2, eval=TRUE>>=
 library(party)
 library(glmnet)
@@ -1729,6 +1735,9 @@ bottom.quintile.not.compensated_factors.noUniqueFactors %>%
   geom_point() + 
   coord_cartesian(xlim = c(0, 100e3))
 @
+
+
+
 
 \clearpage
 \onecolumn

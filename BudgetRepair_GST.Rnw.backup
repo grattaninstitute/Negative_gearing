@@ -606,7 +606,7 @@ Including spending on education and health in the GST will also help address the
 
 Some defend the existing exemptions because they send consumers worthwhile price signals to consume more healthy fresh food and to spend more on private health and education in ways that reduce the pressures on the public systems. 
 
-However, GST exemptions are an inefficient way to pursue these ends. There are any number of goods and services the government might want to promote or deter. But the tax system is a blunt instrument for fine-tuning consumption habits. There are few items with market failures so large that they justify governments imposing differential tax treatment despite the efficiency costs.\footcite{Mirlees2011}  For these items, government can design `sin taxes' specifically aimed at the problems.\footnote{  In these examples the purpose of the taxes is to change relative prices and therefore behaviour rather than to simply raise money.}
+However, GST exemptions are an inefficient way to pursue these ends. There are any number of goods and services the government might want to promote or deter. But the tax system is a blunt instrument for fine-tuning consumption habits. There are few items with market failures so large that they justify governments imposing differential tax treatment despite the efficiency costs.\footcite{Mirlees2011}  For these items, government can design `sin taxes' specifically aimed at the problems.\footnote{In these examples the purpose of the taxes is to change relative prices and therefore behaviour rather than to simply raise money.}
 For example, if governments want to use taxes to encourage better diet, then a high tax rate targeted at foods high in sugar and salt would be much more effective than a relatively small shift in the price of all processed food.\footnote{For example, the Australian Government's \textcite[p.~15]{PreventativeHealthTaskforce2008} recommend a review of taxation consider increasing taxes on energy dense foods.}
 In any case, empirical evidence indicates that there would be relatively little change in consumer behaviour if government broadened the GST to include fresh food \Vref{box:ChangeInConsumerChoices}.
 
@@ -762,10 +762,10 @@ If the GST rate were raised but not broadened, poorer households would pay on av
 
 Whether or not a tax is regressive because it takes a higher proportion of income from low-incomehouseholds, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][p.~37]{Daley2013}
 
-\section{Higher welfare payments}\label{sec:higherWelfarePayments}
-Governments can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
+\section{Higher welfare payments can reduce the effects of a higher GST on poorer households}\label{sec:higherWelfarePayments}
+However fairness is measured, governments  can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
 
-Households at the bottom 20 per cent of the income distribution receive almost of all of their income via government payments -- including pensions, unemployment benefits and family allowances. The next poorest 20 per cent of households receive almost half of their incomes from these sources. Unsurprisingly, those further up the income distribution generate most of their income through employment, investments and super. These households receive little from government benefits (\Vref{fig:Sources_of_income_by_quintile}). 
+For the majority of households at the bottom 20 per cent of the income distribution -- those earning up to around \$36,000 a year  -- government payments are their main source of income. Forty per cent of the next poorest 20~per~cent of households receive most of their income from government. Unsurprisingly, those further up the income distribution generate most of their income through employment and investments, with very few reliant primarily on government benefits  (\Vref{fig:Sources_of_income_by_quintile}). 
 
 \begin{figure}
 <<Sources_of_income_by_quintile, fig.width=12, out.width="12in">>=
@@ -1164,7 +1164,9 @@ But if the purpose of GST reform is to help state governments fund rising health
 
 We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
 
-For example, using \$8 billion of the additional \$27 billion of revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30.5 per cent. If, instead the GST is broadened, 30 per cent of the revenue from a broader GST would supports cuts to approximately 18 per cent and 31 per cent for the same brackets. To put these tax cuts into context, they have a similar impact on average tax rates as 4 years of bracket creep.\footnote{Grattan Insitute calculations. For impact of bracket creep, see }  Households higher up the income scale would receive substantial benefit from these tax changes. 
+For example, using \$8 billion of the additional \$27 billion of revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30.5 per cent. If, instead the GST is broadened, 30 per cent of the revenue from a broader GST would supports cuts to approximately 18 per cent and 31 per cent for the same brackets. To put these tax cuts into context, they have a similar impact on average tax rates as 4 years of bracket creep.\footnote{Grattan Insitute calculations. For impact of bracket creep, see \textcite[p.~6]{daleywood2015fiscalchallenges}.}  Households higher up the income scale would receive substantial benefit from these tax changes. 
+
+\Vref{fig:GST_compensation_and_tax_cuts_by_quintile_and_threshold} shows the combined effect of a higher GST but lower income tax rates and higher welfare payments proposed under our package. 
 \subsection{The size of income tax cuts}
 We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
 
@@ -1173,6 +1175,8 @@ For example, using \$9~billion of the additional revenue from a 15 per cent GST 
 While 30 per cent of the revenue from a broader GST would support cuts to around 18 per cent and 30.5 per cent for those same brackets. 
 
 After tax cuts, households higher up the income scale receive some compensation for the increase in their cost of living. \Vref{fig:GST_compensation_with_tax_cuts} shows levels of compensation for a higher GST after the tax cuts and welfare payments proposed under an increase of the GST under the current base to 15\%. 
+
+The bottom 40 per cent of households -- those with incomes up to \$63,000 annually\footnote{This was the maximum income placing the household in the bottom 40 per cent of household incomes in 2013/14. ABS Survey of Income and Housing}  -- on average would come out in front. Higher up the income distribution, households on average would come out behind, although most households in the third and fourth quintiles would not go backwards by much: for them lower income taxes would offset three quarters or more of the effects of a higher GST.
 
 
 
@@ -1304,10 +1308,82 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 \source{Grattan analysis ATO 2\%\ sample file (2013). See \url{https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}}
 \end{table}
 
+<<GST_by_welfare_type, results = 'asis'>>=
+hes_with_gst_and_tax_compensation_indiv <-
+  hes_with_gst_and_tax_compensation %>%
+  merge(hes10_indiv, by = "Unique_household_number", suffixes = c("hh", "indiv")) 
+
+hes_with_gst_and_tax_compensation_indiv %>%
+  group_by(Unique_household_number) %>%
+  mutate(Household_type = ifelse(sum(Current_weekly_income_from_age_pension) > 0 & 
+                                   # on the full age pension for a couple (approximately)
+                                   between(sum(Current_weekly_income_from_age_pension), 230, 245) & 
+                                   # is a couple
+                                   grepl("Couple", Family_type) & 
+                                   # Own their own home
+                                   Year_purchased_dwelling_HH_ranged != "Not applicable",
+                                 "Age pension; no other income, couple, home-owners",
+                                 ifelse(sum(Current_weekly_income_from_newstart_allowance) > 0 &
+                                          between(sum(Current_weekly_income_from_age_pension), 227, 251) &
+                                          # Is single
+                                          !grepl("Couple", Family_type) &
+                                          # Is renting
+                                          Weekly_rent_payments_HH > 0,
+                                        "Newstart; Single, no other income, renter",
+                                        ifelse(sum(Current_weekly_income_from_newstart_allowance) > 0 &
+                                                 grepl("Couple", Family_type) & 
+                                                 # 2 children under 15
+                                                 grepl("^2", Number_of_dependent_children_aged_under_years_in_household) & 
+                                                 # Other salary
+                                                 sum(Current_weekly_HH_employee_income) > 0 &
+                                                 # is renting
+                                                 Weekly_rent_payments_HH > 0,
+                                               "Newstart; Couple, 2 children, on salary income, renting",
+                                               ifelse(sum(Current_weekly_income_from_disability_support_pension) > 0 &
+                                                        !grepl("Couple", Family_type) &
+                                                        sum(Current_weekly_HH_employee_income) < 1 & 
+                                                        Weekly_rent_payments_HH > 0,
+                                                      "Disability; Single, no other income, renter",
+                                                      #
+                                                      #
+                                                      "Other")
+                                        )
+                                 )
+  )) %>%
+  group_by(Household_type) %>%
+  summarise(new_benefit = weighted.mean(new_welfare + tax_diff_weekly, Weight_HH_HES),
+            GST_burden = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2, Weight_HH_HES),
+            `zcomp.over.burden` = weighted.mean((new_welfare + tax_diff_weekly) / (Weekly_household_GST_on_all_goods_and_services_FIS / 2),
+                                           Weight_HH_HES),
+            prop_undercomp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+                                           Weight_HH_HES)) %>%
+  # cosmetic changes:
+  mutate(
+    `Household type` = Household_type,
+    `New benefit` = paste0("\\", grattan_dollar(new_benefit)),
+    `GST burden` = paste0("\\", grattan_dollar(GST_burden)),
+    `Comp / Burden` = latex_percent(`zcomp.over.burden`),
+    `prop undercomp` = latex_percent(prop_undercomp)
+  ) %>%
+  select(-contains("_"), -starts_with("zc")) %>%
+  xtable(align = "lp{0.3\\columnwidth}rrrr") %>%
+  print(tabular.environment = "tabularx", 
+        width = "1.4\\columnwidth", 
+        include.rownames = FALSE,
+        floating.environment = "table*",
+        table.placement = "tp",
+        sanitize.text.function = function(x)x) 
+@
+
+
 
 Politicians might be tempted to try to fully compensate all low and middle income households. 
 But because GST affects different households in very different ways, it is extremely expensive to ensure there are \emph{no} losers.  
 Tax cuts to at least fully compensate almost every household earning up to \$100,000 for a 5 per cent increase in the GST would have cost the 2012-13 budget approximately \$23.6 billion -- and this would be an underestimate of the budgetary impact today.  This is in addition to the \$9 billion in additional welfare payments required to compensate the most vulnerable (section 3.2). Together, the \$29 billion spend on compensation would exceed the additional \$27 billion in revenue collected. It is simply not possible to fully compensate this far up the income distribution and retain a revenue positive package.
+
+
+
+
 
 \chapter{The uses of GST revenue}
 If the GST is broadened or raised, governments will have additional revenue of between \$7 to \$11 billion a year after paying for the compensation package we have proposed of welfare increases and tax reductions to lower and middle income earners. This additional revenue might:
@@ -1334,6 +1410,12 @@ States are unlikely to cooperate with changes to the GST unless they receive mor
 
 \section{GST increases could reduce the Commonwealth's substantial deficit}
 Alternatively, the additional GST revenue could go to reducing the Commonwealth substantial deficit. The Commonwealth has posted structural deficits for the last 8 years.\footcite[p.~4]{daleywood2015fiscalchallenges} On current policies these deficits are likely to continue. Projections for these deficits to reduce quickly over the 4 years of the forward estimates seem optimistic.  Budget repair will almost certainly require both tax increases and spending reductions.\footcite[p.~8-14]{daleywood2015fiscalchallenges} Tax increases through the GST are likely to distort economic activity less than most of the alternatives, and definitely less than the bracket creep which is the dominant driver of the Commonwealth's planned return to surplus.\footcite{daleywood2015fiscalchallenges}  Half of the available additional revenue from raising the GST to 15 per cent -- \$5 billion a year -- would only reduce the Commonwealth's budget deficit by around 15 per cent. 
+
+\section{GST increases could fund other tax reductions}
+The additional GST revenue could instead fund other tax reductions, including further income tax cuts,\footnote{Scott Morrison as quoted in \textcite{Coorey2015}}  cuts to corporate taxes,\footcite{FinancialServicesCouncil2015}  or State stamp duties.\footcite{PropertyCouncil2015}  The relative merits of these proposals are beyond the scope of this paper. Roughly speaking, additional revenue of \$5~billion from the GST could fund:
+\begin{itemize}
+\item a reduction in marginal income tax rates of nearly one percentage point for every bracket\footnote{Together this would cost around \$5.3~bn, see: \Vref{tbl:b on the budgetary costs of income tax rate changes. }
+\end{itemize}
 
 <<BottomQuintileFallingThroughCracks2, eval=TRUE>>=
 library(party)
@@ -1653,6 +1735,9 @@ bottom.quintile.not.compensated_factors.noUniqueFactors %>%
   geom_point() + 
   coord_cartesian(xlim = c(0, 100e3))
 @
+
+
+
 
 \clearpage
 \onecolumn
