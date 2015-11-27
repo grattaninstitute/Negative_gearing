@@ -1395,17 +1395,20 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 
 @
 
+\newcommand{\tblHead}[2][c]{\bfseries\begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+\newcommand{\tblHeadR}[2][c]{\bfseries\begin{tabular}[#1]{@{}>{\raggedleft}p{\linewidth}@{}}#2\end{tabular}}
 \begin{table}
 \caption{Budgetary impact of income tax rate changes}\label{tbl:tax_cuts}
 \begin{tabularx}{\columnwidth}{lr>{\raggedleft\arraybackslash}X}
-\textbf{Tax bracket} & \textbf{Current tax rate} & {\bfseries Budgetary impact of 1 percentage point change (2015-16)}\\
-\hline
+\toprule
+\tblHead{Tax bracket} & \tblHead{Current tax rate} & \tblHead{Budgetary impact of\\ 1 percentage point change\\(2015-16)}\\
+\midrule
 \$0-\$18,200 & 0\% & \\
 \$18,201 - \$37,000 & 19\% & \$1.9\\
 \$37,001 - \$80,000 & 32.5\% & \$2.3\\
 \$80,001 - \$180,000& 37\% & \$1.3\\
 \$180,001 + & 45\% & \$0.7\\
-\lasthline
+\bottomrule
 \end{tabularx}
 
 \notes{Excludes Temporary Budget Repair Levy (2\%\ for those earning over \$180,000 until 2016-17}
@@ -1569,7 +1572,7 @@ Alternatively, the additional GST revenue could go to reducing the Commonwealth 
 \section{GST increases could fund other tax reductions}
 The additional GST revenue could instead fund other tax reductions, including further income tax cuts,\footnote{Scott Morrison as quoted in \textcite{Coorey2015}}  cuts to corporate taxes,\footcite{FinancialServicesCouncil2015}  or State stamp duties.\footcite{PropertyCouncil2015}  The relative merits of these proposals are beyond the scope of this paper. Roughly speaking, additional revenue of \$5~billion from the GST could fund:
 \begin{itemize}
-\item a reduction in marginal income tax rates of nearly one percentage point for every bracket\footnote{Together this would cost around \$5.3~bn, \Vref[see:]{tbl:tax_cuts} on the budgetary costs of income tax rate changes. }
+\item a reduction in marginal income tax rates of nearly one percentage point for every bracket\footnote{Together this would cost around \$5.3~bn, \Vref{tbl:tax_cuts} on the budgetary costs of income tax rate changes. }
 \end{itemize}
 
 <<BottomQuintileFallingThroughCracks2, eval=TRUE>>=
