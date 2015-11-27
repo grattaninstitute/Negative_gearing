@@ -1436,7 +1436,8 @@ hes_with_gst_and_tax_compensation_indiv %>%
                                    Year_purchased_dwelling_HH_ranged != "Not applicable",
                                  "Age pension; no other income, couple, home-owners",
                                  ifelse(sum(Current_weekly_income_from_newstart_allowance) > 0 &
-                                          between(sum(Current_weekly_income_from_age_pension), 227, 251) &
+                                          # Jim QC
+                                          between(sum(Current_weekly_income_from_newstart_allowance), 227, 251) &
                                           # Is single
                                           !grepl("Couple", Family_type) &
                                           # Is renting
@@ -1519,6 +1520,17 @@ red.in.disp.inc.Q1 <- # reduction in disposable income for bottom quintile
 
 For the minority group of poorer households that go backwards, the change in their living standards is very small. The average reduction is disposable income is \Sexpr{red.in.disp.inc.Q1}~per cent. The fact that some people will be slightly worse off will make reform politically harder, but there is no principled reason to preserve the precise rank order of those in the bottom 20 per cent that applies today.
 
+<<Impact_on_dispoable_income_third_fourth_quintile>>=
+hes_with_gst_and_tax_compensation %>%
+  mutate(is_undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS/2 > new_welfare + tax_diff_weekly) %>%
+  filter(gross_income_quintile %in% 3:4) %>%
+#   mutate(change_in_disposable_income = (Current_weekly_HH_disposable_income + new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2) / Current_weekly_HH_disposable_income) %$%
+#   weighted.mean(change_in_disposable_income, Weight_HH_HES) ## NaN
+  summarise(change_in_disposable_income = sum(Current_weekly_HH_disposable_income + new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2) / sum(Current_weekly_HH_disposable_income)) %$%
+  change_in_disposable_income ->
+  change_in_disposable_income_third_fourth_quintiles
+
+@
 
 Politicians might be tempted to try to fully compensate all low and middle income households. 
 But because GST affects different households in very different ways, it is extremely expensive to ensure there are \emph{no} losers.  
