@@ -1,9 +1,12 @@
 \documentclass{grattan}
 \usepackage{tabularx}
 <<MODELLING_PARAMETERS, echo=FALSE>>=
+# Actually proportion not percentage. i.e. 0.3 = 30%
 percentage_of_revenue_to_transfers = 0.3
-new_0910_tax_rates = c(0, 0.13, 0.29, 0.38, 0.45)
-
+percentage_of_revenue_to_tax_cuts = 0.3 
+old_0910_tax_rates = c(0, 0.15, 0.30, 0.38, 0.45)
+#new_0910_tax_rates = c(0, 0.125, 0.30, 0.38, 0.45)
+new_0910_tax_rates = c(0, 0.130, 0.29, 0.38, 0.45)
 # Please change the numbers to reflect final budget outcomes.
 
 @
@@ -19,7 +22,7 @@ my_pdf <- function(file, width, height){
 }
 
 # knitr chunk opts
-# fig.width must = out.width and same for *.height
+# fig.width must = out.width and same for out.height
 .name.of.file <- knitr:::knit_concord$get("infile")
 atlas <- "figure_BudgetRepair_GST/"
 knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
@@ -28,6 +31,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       message=FALSE, warning=FALSE
                       ,fig.path = atlas
                       ,cache=F
+                      ,error=FALSE  # prevents the pdf being generated when an error is encountered.
                       ,cache.path = "cache_BudgetRepair_GST/"
                       ,dev=c('my_pdf', 'my_emf'
                              #, 'png'
@@ -57,6 +61,7 @@ chart_data <- function(.data){
 \let\footnote=\endnote
 \newcommand*\ie{\emph{i.e.}}
 \newcommand*\eg{\emph{e.g.}}
+\newcommand*\gao{Grattan analysis of}
 
 <<preamble>>=
 library(foreign)
@@ -152,6 +157,7 @@ IND <- function(x, min, max = Inf){
 @
 
 <<age_mutate>>=
+
 age_mutate <- function(.hes){
   stopifnot("Age_of_HH_reference_person" %in% names(.hes) || "Age_of_person" %in% names(.hes))
   if("Age_of_HH_reference_person" %in% names(.hes)){
@@ -174,7 +180,7 @@ age_mutate <- function(.hes){
     out <- 
     .hes %>%
       mutate(
-        age_group = as.character(Age_of_person),
+        age_group = gsub("\\s+(years)", "", as.character(Age_of_person)),
         age_group = ifelse(grepl("^[0-9]+$", age_group), 
                            ifelse(as.numeric(age_group) < 20,
                                   "20 or under",
@@ -292,7 +298,8 @@ latex_percent <- function(x, digits = 3){
     return(character())
   # x <- reshape::round_any(x, scales:::precision(x)/100)
   x <- round(x, digits)
-  paste0(scales::comma(x * 100), "\\%")
+  
+  paste0(ifelse(x < 0, "\U2212", ""), paste0(scales::comma(abs(x) * 100), "\\%"))
 }
 @
 
@@ -419,7 +426,7 @@ total.inc.quintiles_indiv <-
 \begin{summary}
 Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
 
-Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the coverage of the tax would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
+Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the GST base to include fresh food, health and education would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
 
 \textbf{Extending the GST} to cover many of the categories currently exempt could raise almost \textbf{\$20~billion} per year. While \textbf{increasing the rate to 15 per cent} would generate around \textbf{\$27~billion}. 
 
@@ -451,10 +458,11 @@ Not only are Australia's revenues from broad-based consumption taxes low by inte
 
 There is no obvious reason for these trends to reverse in the foreseeable future. Savings rates are now close to long-run averages with low savings rates in the early 1990s and 2000s looking like a historical anomaly (\Vref{fig:Households_are_saving_more}). The proportion of incomes spent on health is forecast continue to grow.\footcite[p.~28]{Daley2014} 
 
-And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the "growth" tax the states were originally promised.\footcite{Costello2000}
+And the proportion of incomes spent on housing may well also continue to increase, as land supply is finite, and new housing supply is struggling to meet the demands of a growing population. \footnote{Ultimately the path of prices will depend on population growth, household size and whether supply of new properties keeps pace with the growth in demand. \textcite[p.~7]{RBA2014}} The GST has not been, and may never entirely be the ``growth" tax the states were originally promised.\footcite{Costello2000}
 
 \begin{figure}
 <<Households_are_saving_more>>=
+# Not to be QCd
 read_excel("Households_are_saving_more.xlsx") %>%
   setNames(c("Year", "prop_savings_by_HH_disp_inc")) %>%
   mutate(Year = as.Date(paste0(Year, "-01-01")),
@@ -475,6 +483,7 @@ read_excel("Households_are_saving_more.xlsx") %>%
 \end{figure}
 \begin{figure}
 <<Spending_less_on_GST_liable>>=
+# Not to be QCd.
 read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet = "For_output") %>%
   gather(category, share_of_consumption, -Date) %>%
   mutate(super_category = ifelse(category == "GST_applicable", "GST applicable",
@@ -515,7 +524,7 @@ read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet
 \section{Consumption taxes are less bad than many other taxes}
 Consumption taxes such as the GST are relatively efficient taxes. They are relatively difficult to avoid,\footcite[p.~274]{Treasury2010}  and they encourage saving more than personal income taxes.\footnote{A consumption tax treats current and future consumption equivalently so there is no distortion in savings decisions. In contrast, income tax places a higher burden on savers because households pay tax on their income (regardless of how much they save) and then taxes the capital income on savings again in the future. See: \textcite{Treasury2010} However, the tax rate on savings makes relatively little difference to savings decisions of high-income earners who do most of the saving: see \textcite{DaleySuperannuation2015}}  They drag less on economic efficiency than many state government taxes including payroll taxes\footnote{While theoretically broad based payroll taxes and consumption taxes are equivalent, the range of exceptions and thresholds provided by state government for payroll taxes have considerably increased their efficiency costs.}  and stamp duties.\footcite{DaleyCoates2015Property} 
 
-An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our Wealth of Generations report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
+An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our \textit{Wealth of Generations} report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
 
 Income taxes can affect the incentives to work more than consumption 
 taxes. The combination of income tax scales and the withdrawal of means 
@@ -553,6 +562,7 @@ There are a range of expenditure categories currently exempt from the GST.\footn
 Broadening the base to include fresh food, education, health, water and sewerage could raise almost \$20 billion (\Vref{fig:GST_revenue_of_excluded_items1415}). This figure takes into account the effects of changes in consumer behaviour due to the increased prices in these categories. 
 \begin{figure}
 <<GST_revenue_of_excluded_items1415>>=
+# Not to be QCd
 gst.expenditures <- read_excel("GST_expenditures1415.xlsx")
 
 gst.expenditures %>%
@@ -643,7 +653,7 @@ Opposition to increasing Australia's GST is often motivated by concerns about th
 But if the GST package is partly to provide revenue to State Governments to fund growing health and education spending,\footnote{The decision in the 2014-15 Commonwealth budget to withdraw from the National Health Reform Agreement and to no longer fund growth in hospital spending precipitated the current discussion (including the support from the NSW Government) for the government to increase the GST. \textcite[p.~18]{daleywood2015fiscalchallenges}}
 then it must be revenue positive. Some people will need to pay higher net taxes. Even if the package is budget-neutral, the political need to over-compensate low-income households to protect disadvantaged will lead to some other households paying more tax in total.
 
-This will be difficult for governments that have been accustomed to being able to buy reform. The GST and the Carbon Pollution Reduction Scheme were both accompanied by a package of generous tax cuts and increases to welfare benefits (Box 2). The history of responding to demands that there be `no losers' has changed the political economy of reform. Politicians have arguably become less adept at prosecuting the case for difficult changes.\footcite[p.~80]{Megalogenis2010} 
+This will be difficult for governments that have been accustomed to `buying' reform. The GST and the Carbon Pollution Reduction Scheme were both accompanied by a package of generous tax cuts and increases to welfare benefits (\Vref{box:BuyingReform}). The history of responding to demands that there be `no losers' has changed the political economy of reform. Politicians have arguably become less adept at prosecuting the case for difficult changes.\footcite[p.~80]{Megalogenis2010} 
 And the public have come to expect that medicine will always arrive with a spoonful of sugar.\footcites{Megalogenis2010}{Henry730}
 %Ken Henry, 7.30 report. Australian Broadcasting Corporation
 %Broadcast: 22/09/2015 Reporter: Leigh Sales http://www.abc.net.au/7.30/content/2015/s4317759.htm
@@ -867,66 +877,131 @@ It follows that targeting compensation through the welfare system is the most di
 
 However, compensation through higher welfare payments would not be perfectly targeted in reality. Only 30 per cent of welfare payments go to the bottom of 20 per cent of households (\Vref{fig:Welfare_by_household_disposable_income}). To ensure that the poorest households are no worse off as a group requires welfare benefits that will benefit some richer households as well, and thus spending much more than 10 per cent of the increased GST collection.
 \begin{figure}
+<<SIH201314>>=
+sih201314hh <- # all vars
+  read.dta("./SIH/Stata files/sih13bh.dta") %>%
+  data.table
+
+sih201314h <- 
+  read.dta("./SIH/Stata files/sih13bh.dta") %>%
+  data.table %>%
+  select(
+    Unique_household_number = ABSHID,
+    Gross_household_income = INCTSCH8,
+    Gross_imputed_rent = GROSSIR,
+    Total_pensions_hh = ITGCBCH8,
+    Weight_HH = SIHHHWT
+  ) %>%
+  mutate(Gross_household_income_less_imputed_rent = Gross_household_income - Gross_imputed_rent) %>%
+  setkey(Unique_household_number)
+
+gross_income_quintiles_1314 <- 
+  sih201314h %>%
+  svydesign(ids = ~Unique_household_number, data = ., weights = ~Weight_HH) %>%
+  svyquantile(~Gross_household_income, design = ., quantiles = (0:5)/5)
+
+gross_income_quintiles_1314_no_imputed_rent <- 
+  sih201314h %>%
+  mutate(Gross_household_income_less_imputed_rent = Gross_household_income - Gross_imputed_rent) %>%
+  svydesign(ids = ~Unique_household_number, data = ., weights = ~Weight_HH) %>%
+  svyquantile(~Gross_household_income_less_imputed_rent, design = ., quantiles = (0:5)/5)
+
+sih201314p <-
+  read.dta("./SIH/Stata files/sih13bp.dta") %>%
+  data.table 
+@
+
 <<Welfare_by_household_disposable_income>>=
 welfare.by.income.quintile <- 
-  hes10_indiv %>%
-  merge(hes10hh, by = "Unique_household_number", suffixes = c("indiv", "hh")) %>%
-  mutate(Gross_income_quintile = factor(as.numeric(cut(Total_current_weekly_HH_income_from_all_sources, 
-                                                       breaks = total.inc.quintiles,  
-                                                       include.lowest = TRUE)))) %>%
-  select(Unique_household_number, Gross_income_quintile, 
-         Weight_Person_HES, 
-         Current_weekly_amount_of_Commonwealth_Rent_Assistance, 
-         Current_weekly_income_from_age_pension, 
-         Current_weekly_income_from_wife_pension, 
-         Current_weekly_income_from_carer_payment, 
-         Current_weekly_income_from_carer_allowance, 
-         Current_weekly_income_from_special_benefit, 
-         Current_weekly_income_from_widow_allowance, 
-         Current_weekly_income_from_youth_allowance, 
-         Current_weekly_income_from_Austudy_Abstudy, 
-         Current_weekly_income_from_parenting_payment, 
-         Current_weekly_income_from_Baby_Bonus_payment, 
-         Current_weekly_income_from_partner_allowance, 
-         Current_weekly_income_from_senior_supplement, 
-         Current_weekly_income_from_newstart_allowance, 
-         Current_weekly_income_from_pension_supplement, 
-         Current_weekly_income_from_sickness_allowance, 
-         Current_weekly_income_from_service_pension_DVA, 
-         Current_weekly_income_from_utilities_allowance, 
-         Current_weekly_income_from_disability_pension_DVA, 
-         Current_weekly_income_from_war_widows_pension_DVA, 
-         Current_weekly_income_from_disability_support_pension, 
-         Current_weekly_income_from_family_tax_benefits_modelled, 
-         Current_weekly_income_from_other_government_pensions_and_allowances) %>%
-  gather(Allowance, income, -Unique_household_number, -Gross_income_quintile, -Weight_Person_HES) %>%
-  data.table %>%
-  mutate(Allowance = gsub("Current_weekly_income_from_", "", Allowance, fixed = TRUE)) %>%
-  group_by(Gross_income_quintile, Allowance) %>%
-  summarise(total = sum(income * Weight_Person_HES)) %>%
-  ungroup %>% 
-  arrange(desc(total)) 
-
+  sih201314p %>%
+  select(
+     Unique_household_number = ABSHID,
+    Rent_assistance = CWKCRA  # Current_weekly_amount_
+    ,Austudy = IAUSTCP #
+    ,Age_Pension = IAGECP # 
+    ,Disability = IDSUPPCP # 
+    ,Carer_allowance = ICAREACP
+    ,Carer_payment = ICAREPCP
+    ,Carer_supplement = ICARESCP
+    ,Family_tax_benefit = IFTBCP8 # 
+    ,Baby_bonus = IMATCP # 
+    ,Disability_DVA = IDISBCP # 
+    ,Newstart = INEWLSCP #
+    ,Other = IOTHPCP 
+    ,Parenting = IPARENCP # 
+    ,Parental_leave = IPPLCP # 
+    ,Dad_and_partner_pay = IDPPLCP # 
+    ,Partner_allowance = IPARTNCP # 
+    ,Service_pension_DVA = ISERVCP # 
+    ,Sickness_allowance = ISICKCP #
+    ,Special_benefit = ISPECCP 
+    ,War_widows_pension = IWARWCP
+    ,widow_allowance = IWIDOWCP
+    ,wife_pension = IWIFECP
+    ,Youth_allowance = IYOUTHCP
+    ,Utility_allowance = IUTILCP
+    ,Senior_supplement = ISSUPCP
+    ,Pension_supplement = IPSUPCP
+    ,School_kids_bonus = ISCHPCP
+    ,Clean_energy_suppl = ICEACP
+    ,Total_pensions_and_allowances = ITGCBCP8
+    #
+    ,Weight_Person = SIHPSWT
+  ) %>% 
+  mutate(
+    Pension = Age_Pension + Service_pension_DVA + Senior_supplement + Pension_supplement,
+    Disability = Disability + Disability_DVA + Sickness_allowance + Carer_allowance + Carer_payment + Carer_supplement,
+    Family = Family_tax_benefit + Baby_bonus + Parenting + Parental_leave + Dad_and_partner_pay + Partner_allowance + School_kids_bonus,
+    Unemployment_study_youth = Newstart + Austudy + Youth_allowance,
+    Other = Total_pensions_and_allowances - Pension - Disability - Family - Unemployment_study_youth  - Rent_assistance
+  ) %>%
+  setkey(Unique_household_number) %>%
+  merge(sih201314h) %>% #group_by(Unique_household_number) %>% summarise(tot_dis = sum(Disability), Weight_HH = first(Weight_HH)) %$% weighted.mean(tot_dis, Weight_HH)  # verified at the aggregate they match 6523.0 2013-14
+  group_by(Unique_household_number) %>%
+  summarise(Pension = sum(Pension),
+            Disability = sum(Disability),
+            Family = sum(Family),
+            Unemployment_study_youth = sum(Unemployment_study_youth),
+            Other = sum(Other),
+            Rent_assistance = sum(Rent_assistance),
+            Weight_HH = first(Weight_HH), # technically should do a merge, but this works.
+            Gross_household_income = first(Gross_household_income)
+            ) %>% 
+  ungroup %>%
+  group_by(gross_income_quintile = .bincode(Gross_household_income, 
+                                            breaks = gross_income_quintiles_1314, 
+                                            include.lowest = TRUE)) %>%
+  summarise(Pension = weighted.mean(Pension, Weight_HH),
+            Disability = weighted.mean(Disability, Weight_HH),
+            Family = weighted.mean(Family, Weight_HH),
+            Unemployment_study_youth = weighted.mean(Unemployment_study_youth, Weight_HH),
+            `Rental assistance` = weighted.mean(Rent_assistance, Weight_HH),
+            Other = weighted.mean(Other, Weight_HH)) %>%
+  gather(Payment_type, average_payment, Pension:Other)
 
 welfare.by.income.quintile %>%
-  mutate(Allowance = factor(Allowance, levels = (welfare.by.income.quintile$Allowance), ordered = TRUE)) %>%
-  mutate(total = 52 * total/1e9) %>%
-  mutate(text = ifelse(Gross_income_quintile == 2 & total > 1, gsub("_", " ", Allowance, fixed = TRUE), NA_character_)) %>%
-  mutate(text = gsub("^([a-z]+)\\s([a-z]+)\\s(.*)$", "\\1 \\2\n\\3", text)) %>%
-  group_by(Gross_income_quintile) %>%
-  arrange(desc(total)) %>%
-  mutate(text.y = cumsum(total)) %>%
-  ggplot(aes(x = Gross_income_quintile, fill = Allowance, order = Allowance)) + 
-  geom_bar(aes(y = total), stat = "identity", position = "stack") + 
-  geom_text(aes(label = text, y = text.y), vjust = 1.1, fontface = "bold", size = 5.5) + 
-  scale_fill_manual(values = c(rep(RColorBrewer::brewer.pal(11, name="Spectral"), 2), "black")) + 
-  scale_y_continuous(label = grattan_dollar, expand = c(0,0), limits = c(0,30)) + 
-  xlab("Gross income quintile") + 
-  theme_light(base_size = 18) + 
-  theme(legend.position = "none")
+  group_by(gross_income_quintile) %>%
+  mutate(text.y = cumsum(average_payment)) %>%
+  grplot(aes(x = factor(gross_income_quintile), fill = Payment_type)) + 
+  geom_bar(aes(y = average_payment), stat = "identity", position = "stack")  +
+  geom_text(aes(label = gsub("_", "/",
+                             ifelse(gross_income_quintile == 1, as.character(Payment_type), NA_character_),
+                             fixed = TRUE),
+                lineheight = 0.6,
+                y = text.y), 
+            vjust = 1, fontface = "bold", size = 6.14) + 
+  guides(fill = guide_legend(reverse = TRUE)) + 
+  scale_y_continuous(label=grattan_dollar,
+                     expand = c(0,0),
+                     limits = c(0,400)) +
+  theme(legend.position = c(0.8, 0.8)) + 
+  annotate("blank", x = 00.2, y = 100) + 
+  xlab("Gross income quintile")
+  
+  
 @
 \Caption{Higher welfare payments also benefit richer households}{Total spend in 2009-10}{fig:Welfare_by_household_disposable_income}
-\makebox[\linewidth][r]{\includegraphics[width=1.1\columnwidth]{figure_BudgetRepair_GST/Welfare_by_household_disposable_income-1}}
+\makebox[\linewidth][r]{\includegraphics[width=1.0\columnwidth]{figure_BudgetRepair_GST/Welfare_by_household_disposable_income-1}}
 
 
 \end{figure}
@@ -969,8 +1044,8 @@ ratio.gst_welfare <- percentage_of_revenue_to_transfers
 
 welfare.by.income.quintile_total <-
   welfare.by.income.quintile %>%
-  group_by(gross_income_quintile = Gross_income_quintile) %>%
-  summarise(total = sum(total)) %>%
+  group_by(gross_income_quintile) %>%
+  summarise(total = sum(average_payment)) %>%
   ungroup %>%
   mutate(prop_welfare = total/sum(total)) %>%
   select(-total)
@@ -989,6 +1064,12 @@ amount_of_quintile_on_welfare <-
 @
 
 <<GST_compensation_by_quintile_and_threshold>>=
+# welfare.by.income.quintile_total <- 
+#   data.table(
+#     gross_income_quintile = 1:5,
+#     prop_welfare = c(1,rep(0,4))
+#   )
+
 hes_with_gst_compensation <- 
   hes10hh %>%
   group_by.income_quintile() %>%
@@ -996,7 +1077,7 @@ hes_with_gst_compensation <-
   data.table %>%
   setkey(gross_income_quintile) %>%
   merge(., welfare.by.income.quintile_total) %>%
-  merge(., amount_of_quintile_on_welfare) %>% 
+  #merge(., amount_of_quintile_on_welfare) %>%  # for debugging?
   group_by(gross_income_quintile) %>%
   # Originally, we assumed that everyone in a quintile received the 
   # quintile's share of compensation...
@@ -1055,7 +1136,7 @@ welfare_compensation_adequacy %T>%
 \includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/GST_compensation_by_quintile_and_threshold-1}
 \end{figure}
 
-And because low-incomepeople have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
+And because low-income people have diverse patterns of spending, spending more that is required to compensate this group on average helps ensure that fewer people in this group go backwards as a result of the changes. Indeed, spending this much on across-the board increases in welfare payments would mean that 
 nearly  % ceiling
 \Sexpr{
 paste0(ceiling(100 * dplyr::filter(welfare_compensation_adequacy, gross_income_quintile == 1, threshold == ">100%")$comp_adequacy), "\\%")
@@ -1112,6 +1193,7 @@ allowance_with_income <-
                                            IND(fortnightly.income, min = 250) * 0.6 * (fortnightly.income - 250)))
   }
 
+# Determine the allowance cutoff. (Not best practice but readable.)
 for (i in 492:2000){
   if (allowance_with_income(i) == i){
     allowance_cutoff_fortnightly <- i
@@ -1181,15 +1263,34 @@ The bottom 40 per cent of households -- those with incomes up to \$63,000 annual
 
 
 \begin{figure}
+<<Corroborate_size_of_tax_cuts, error=FALSE>>=
+tax200910 <- get_sample_file(2010)
+INCOME.TAX.COLLECTED.200910 <- sum(income_tax(tax200910$Taxable_Income, "2009-10")) * 100
+GST.COLLECTED.200910 <- 44e9 # http://www.treasury.gov.au/Policy-Topics/Taxation/Pocket-Guide-to-the-Australian-Tax-System/Pocket-Guide-to-the-Australian-Tax-System/Appendix-C
+revenue_avbl_for_tax_cuts <- 
+  percentage_of_revenue_to_tax_cuts * GST.COLLECTED.200910 / 2  # for 15%
+size_of_tax_cut <- 
+  INCOME.TAX.COLLECTED.200910 - sum(new_income_tax_outer0910(tax200910$Taxable_Income, rates = new_0910_tax_rates))*100
+
+if(abs(size_of_tax_cut - revenue_avbl_for_tax_cuts) > 0.5e9){
+
+  stop("Tax cut differs by more than $0.5 bn (", texNum(size_of_tax_cut - revenue_avbl_for_tax_cuts), ")")
+}
+@
+
 <<GST_compensation_with_tax_cuts>>=
 hes10_indiv %<>%
-  mutate(taxable_income = inverse_income(52 * Imputed_current_weekly_tax_payable, fy.year = "2009-10", zero.tax.income = "uniform"))
+  mutate(taxable_income = ifelse(Imputed_current_weekly_tax_payable < 0, 
+                                 0, 
+                                 inverse_income(52 * pmax(0, Imputed_current_weekly_tax_payable), 
+                                                fy.year = "2009-10", 
+                                                zero.tax.income = "uniform")))
 
 hes10_indiv %<>%
   mutate(
     old_tax = 52 * Imputed_current_weekly_tax_payable,
     new_tax = new_income_tax_outer0910(taxable_income, rates = new_0910_tax_rates),
-    tax_diff = pmax(0, old_tax - new_tax)
+    tax_diff = old_tax - new_tax
       ) 
 
 new_tax_by_indiv <- 
@@ -1230,8 +1331,11 @@ welfare_and_tax_compensation_adequacy %T>%
   geom_hline(yintercept = 0.50, linetype = 2) + 
   guides(fill = guide_legend("Comp/burden",
                              direction = "horizontal",
-                             label.position = "top",
+                             label.position = "bottom",
+                             title.position = "top",
+                             title.hjust = 0.5,
                              label.hjust = 0.5,
+                             keywidth = 3,
                              override.aes = list(linetype = 0)
                              )) + 
   theme(legend.position = c(0.7,0.8),
@@ -1281,6 +1385,7 @@ third.quintile %>%
   GST.deciles.third.quintile
 
 cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2012-13") -> GST_compensation_required
+cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2013-14") -> GST_compensation_required_1314
 
 # By inspection of https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd
 # Cuts to 14% and 24.5% leave $100,000 individual $4380 better off.
@@ -1290,24 +1395,34 @@ cpi_inflator(GST.deciles.third.quintile[9] * 52, from_fy = "2009-10", to_fy = "2
 
 @
 
+\newcommand{\tblHead}[2][c]{\bfseries\begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+\newcommand{\tblHeadR}[2][c]{\bfseries\begin{tabular}[#1]{@{}>{\raggedleft}p{\linewidth}@{}}#2\end{tabular}}
 \begin{table}
 \caption{Budgetary impact of income tax rate changes}\label{tbl:tax_cuts}
 \begin{tabularx}{\columnwidth}{lr>{\raggedleft\arraybackslash}X}
-\textbf{Tax bracket} & \textbf{Current tax rate} & {\bfseries Budgetary impact of 1 percentage point change (2015-16)}\\
-\hline
+\toprule
+\tblHead{Tax bracket} & \tblHead{Current tax rate} & \tblHeadR{Budgetary impact of 1 percentage point change (2015-16)}\\
+\midrule
 \$0-\$18,200 & 0\% & \\
 \$18,201 - \$37,000 & 19\% & \$1.9\\
 \$37,001 - \$80,000 & 32.5\% & \$2.3\\
 \$80,001 - \$180,000& 37\% & \$1.3\\
 \$180,001 + & 45\% & \$0.7\\
-\lasthline
+\bottomrule
 \end{tabularx}
 
-\notes{Excludes Temporary Budget Repair Levy (2\%\ for those earning over \$180,000 until 2016-17}
+\notes{Excludes Temporary Budget Repair Levy (2\%\ for those earning over \$180,000 until 2016-17)}
 
 \source{Grattan analysis ATO 2\%\ sample file (2013). See \url{https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}}
 \end{table}
 
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+% \newcommand*{\thead}[1]{%
+% \multicolumn{1}{r}{\bfseries\begin{tabular}{@{}c@{}}#1\end{tabular}}%
+% }
+\begin{table*}[!htbp]
+\caption{Impact of GST compensation package on selected households}\label{tbl:GST_comp_selected_hh}
+\begin{center}
 <<GST_by_welfare_type, results = 'asis'>>=
 hes_with_gst_and_tax_compensation_indiv <-
   hes_with_gst_and_tax_compensation %>%
@@ -1324,7 +1439,8 @@ hes_with_gst_and_tax_compensation_indiv %>%
                                    Year_purchased_dwelling_HH_ranged != "Not applicable",
                                  "Age pension; no other income, couple, home-owners",
                                  ifelse(sum(Current_weekly_income_from_newstart_allowance) > 0 &
-                                          between(sum(Current_weekly_income_from_age_pension), 227, 251) &
+                                          # Jim QC
+                                          between(sum(Current_weekly_income_from_newstart_allowance), 227, 251) &
                                           # Is single
                                           !grepl("Couple", Family_type) &
                                           # Is renting
@@ -1353,6 +1469,7 @@ hes_with_gst_and_tax_compensation_indiv %>%
   group_by(Household_type) %>%
   summarise(new_benefit = weighted.mean(new_welfare + tax_diff_weekly, Weight_HH_HES),
             GST_burden = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2, Weight_HH_HES),
+            prop_increase_in_disp_inc = weighted.mean((new_welfare + tax_diff_weekly + Current_weekly_HH_disposable_income)/(Current_weekly_HH_disposable_income + Weekly_household_GST_on_all_goods_and_services_FIS/2), Weight_HH_HES) - 1,
             `zcomp.over.burden` = weighted.mean((new_welfare + tax_diff_weekly) / (Weekly_household_GST_on_all_goods_and_services_FIS / 2),
                                            Weight_HH_HES),
             prop_undercomp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
@@ -1362,20 +1479,61 @@ hes_with_gst_and_tax_compensation_indiv %>%
     `Household type` = Household_type,
     `New benefit` = paste0("\\", grattan_dollar(new_benefit)),
     `GST burden` = paste0("\\", grattan_dollar(GST_burden)),
+    `$\\Delta$dispos income` =  latex_percent(prop_increase_in_disp_inc),
     `Comp / Burden` = latex_percent(`zcomp.over.burden`),
     `prop undercomp` = latex_percent(prop_undercomp)
   ) %>%
   select(-contains("_"), -starts_with("zc")) %>%
-  xtable(align = "lp{0.3\\columnwidth}rrrr") %>%
+  xtable(
+    #align = "lp{0.3\\columnwidth}rrrrr"
+    align = "lp{5cm}YYYYY"
+  ) %>%
   print(tabular.environment = "tabularx", 
         width = "1.4\\columnwidth", 
         include.rownames = FALSE,
-        floating.environment = "table*",
+        #floating.environment = "table*",
+        floating = FALSE,
         table.placement = "tp",
-        sanitize.text.function = function(x)x) 
+        booktabs = TRUE,
+        sanitize.text.function = function(x)x,
+        #sanitize.colnames.function = function(name){ifelse(grepl("Household", name), name, paste0("\\thead{", name, "}"))} 
+        sanitize.colnames.function = function(x)x
+        ) 
+@
+\end{center}
+%\vspace*{5.5pt}
+\notes{This analysis is based on welfare benefits and spending pattersn from 2009-10 because this is the most recent for which spending data at the household level is available.}
+
+\source{\gao\ \textcite{HES200910}}
+\end{table*}
+
+<<Impact_on_dispoable_income_undercompensated>>=
+hes_with_gst_and_tax_compensation %>%
+  mutate(is_undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS/2 > new_welfare + tax_diff_weekly) %>%
+  filter(gross_income_quintile == 1, is_undercompensated) %>%
+#   mutate(change_in_disposable_income = (Current_weekly_HH_disposable_income + new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2) / Current_weekly_HH_disposable_income) %$%
+#   weighted.mean(change_in_disposable_income, Weight_HH_HES) ## NaN
+  summarise(change_in_disposable_income = sum(Current_weekly_HH_disposable_income + new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2) / sum(Current_weekly_HH_disposable_income)) %$%
+  change_in_disposable_income ->
+  change_in_disposable_income
+
+red.in.disp.inc.Q1 <- # reduction in disposable income for bottom quintile
+  latex_percent(1 - change_in_disposable_income)
 @
 
+For the minority group of poorer households that go backwards, the change in their living standards is very small. The average reduction is disposable income is \Sexpr{red.in.disp.inc.Q1}~per cent. The fact that some people will be slightly worse off will make reform politically harder, but there is no principled reason to preserve the precise rank order of those in the bottom 20 per cent that applies today.
 
+<<Impact_on_dispoable_income_third_fourth_quintile>>=
+hes_with_gst_and_tax_compensation %>%
+  mutate(is_undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS/2 > new_welfare + tax_diff_weekly) %>%
+  filter(gross_income_quintile %in% 3:4) %>%
+#   mutate(change_in_disposable_income = (Current_weekly_HH_disposable_income + new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2) / Current_weekly_HH_disposable_income) %$%
+#   weighted.mean(change_in_disposable_income, Weight_HH_HES) ## NaN
+  summarise(change_in_disposable_income = sum(Current_weekly_HH_disposable_income + new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2) / sum(Current_weekly_HH_disposable_income)) %$%
+  change_in_disposable_income ->
+  change_in_disposable_income_third_fourth_quintiles
+
+@
 
 Politicians might be tempted to try to fully compensate all low and middle income households. 
 But because GST affects different households in very different ways, it is extremely expensive to ensure there are \emph{no} losers.  
@@ -1414,7 +1572,7 @@ Alternatively, the additional GST revenue could go to reducing the Commonwealth 
 \section{GST increases could fund other tax reductions}
 The additional GST revenue could instead fund other tax reductions, including further income tax cuts,\footnote{Scott Morrison as quoted in \textcite{Coorey2015}}  cuts to corporate taxes,\footcite{FinancialServicesCouncil2015}  or State stamp duties.\footcite{PropertyCouncil2015}  The relative merits of these proposals are beyond the scope of this paper. Roughly speaking, additional revenue of \$5~billion from the GST could fund:
 \begin{itemize}
-\item a reduction in marginal income tax rates of nearly one percentage point for every bracket\footnote{Together this would cost around \$5.3~bn, see: \Vref{tbl:b on the budgetary costs of income tax rate changes. }
+\item a reduction in marginal income tax rates of nearly one percentage point for every bracket\footnote{Together this would cost around \$5.3~bn, \Vref{tbl:tax_cuts} on the budgetary costs of income tax rate changes. }
 \end{itemize}
 
 <<BottomQuintileFallingThroughCracks2, eval=TRUE>>=
@@ -1723,7 +1881,7 @@ bottom.quintile.not.compensated_factors.noUniqueFactors %>%
   geom_boxplot()
 @
 
-<<KNN>>=
+<<KNN, error=TRUE>>=
 bottom.quintile.not.compensated_factors.noUniqueFactors %>% 
   mutate(
     age = as.numeric(gsub("^([0-9]{2}).*$", "\\1", age_group)) + runif(n(), min = 0, max = 5)

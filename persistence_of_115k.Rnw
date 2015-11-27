@@ -476,12 +476,13 @@ marimekko_data_decile_presence_by_top_decile_longevity %>%
                 y = (cumsubpresence_lag + cumsubpresence)/2,
                 label = ifelse(xcenter == min(xcenter), as.character(decile), NA_character_),
                 color = ifelse(decile == first(decile), "white", "black"))) + 
+  geom_abline(yintercept = 0, slope = 1, color = "white") + 
   scale_color_manual(values = c("white" = "white", "black" = "black")) +
   scale_y_continuous(expand = c(0,0),
                      label = percent) + 
   scale_x_continuous("Years in top decile",
                      expand = list(c(0,0.075), c(0,0)),
-                     breaks = unique((marimekko.data$xmin + marimekko.data$xmax.b)/2),
+                     breaks = unique((marimekko_data_decile_presence_by_top_decile_longevity$xmin + marimekko_data_decile_presence_by_top_decile_longevity$xmax)/2),
                      labels = 1:13) + 
   scale_y_continuous("Prop time in each decile",
                      label=percent,
