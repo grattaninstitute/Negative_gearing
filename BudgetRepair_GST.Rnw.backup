@@ -59,6 +59,7 @@ chart_data <- function(.data){
 \addbibresource{bibliography2.bib} % r packages
 
 \let\footnote=\endnote
+\newcommand{\highlight}{\textbf}
 \newcommand*\ie{\emph{i.e.}}
 \newcommand*\eg{\emph{e.g.}}
 \newcommand*\gao{Grattan analysis of}
@@ -424,21 +425,24 @@ total.inc.quintiles_indiv <-
 \contentspage
 
 \begin{summary}
-Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
+%Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them.
+A well-designed GST reform package could increase economic efficiency, make the tax and transfer system more progressive, and give the state and Commonwealth governments more budgetary options.
+
+Proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been perennial. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
 
 Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the GST base to include fresh food, health and education would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
 
 \textbf{Extending the GST} to cover many of the categories currently exempt could raise almost \textbf{\$20~billion} per year. While \textbf{increasing the rate to 15 per cent} would generate around \textbf{\$27~billion}. 
 
-The regressive impacts of a broader or higher GST can be mitigated by higher welfare payments. Spending around 30 per cent of the increase in revenue on higher welfare payments would leave most of the bottom 20 per cent of income earners better off. And increases in welfare payments can be structured so for most recipients there is no change in their incentive to work. 
+The regressive impacts of a broader or higher GST can be mitigated by higher welfare payments and targeted tax cuts. The welfare and tax changes we propose protect the most vulnerable while also minimising the economic cost of the changes. 
 
-The major concern with this approach is that compensating welfare payments may be eroded over time. Overcompensation of the most vulnerable recipients should help ease this concern: a substantial boost to payments, even if eroded over time, could leave many recipients better off than otherwise for many years.
+New household-level modelling informs our proposed compensation package. Spending around \highlight{30 per cent of the additional revenue from a broader or higher GST on higher welfare payments} would leave most of the bottom 20 per cent of income earners better off. And increases in welfare payments can be structured so for most recipients there is no change in their incentive to work. 
 
-Modest income tax cuts should also be part of any GST reform package. Income tax cuts provide compensation further up the income distribution, while also paying an economic dividend.  Appropriately targeted tax cuts will maintain and even increase work incentives for low to middle income taxpayers most responsive to changes in the effective tax rates.   
+A major concern with this approach is that compensating welfare payments may be eroded over time. Overcompensation of the most vulnerable recipients should help ease this concern: a substantial boost to payments, even if eroded over time, could leave many recipients better off than otherwise for many years.
 
-But if the GST is to provide higher revenues to help the states fund their hospital spending, then not everyone can be fully compensated. Channelling 30 per cent of additional revenues from a broader or higher GST to tax cuts will allow the government to shave at least two percentage points off the bottom two tax rates. Tax cuts of this magnitude fully compensate most low and middle income households -- those earning up to \$100,000 a year -- for the increase in GST. 
+Modest income tax cuts are also part of our proposed package. Channelling a further 30 per cent of additional revenue to income tax cuts will allow the government to shave 1 to 2.5 percentage points off the bottom two tax rates. Tax cuts of this magnitude fully offset the increase in GST for most low and middle income households -- those earning up to \$100,000 a year -- while also providing some benefit for those further up the income distribution. These tax cuts will maintain and even increase work incentives for low to middle income taxpayers, who are most responsive to changes in effective tax rates. 
 
-Beyond their immediate hip pocket, most Australians benefit from better government services that increased GST collections could fund. The 40 per cent of the revenue left over after tax cuts and welfare payments should go to State governments to help them address their looming hospital funding gap so they can continue to supply the new and better treatments that the public demands. 
+However, not everyone can be fully compensated. Government budgets do not balance, and it is neither politically nor practically feasible for governments to bridge the gap purely with spending cuts. Around 40 per cent of the additional revenue from a higher or broader GST (between \$7 to \$11 billion) would be left over after welfare increases and middle income tax cuts. At least some will need to go to state governments to help them address their looming hospital funding gap, as the price for their cooperation in the changes. This will leave a little -- but not much -- to reduce the Commonwealth's budget deficit, or to pay for other tax cuts that will promote economic growth. 
 \end{summary}
 
 \chapter{Australia should raise more from the GST}\label{chap:Chapter1}

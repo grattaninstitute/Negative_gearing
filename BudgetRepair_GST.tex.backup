@@ -64,6 +64,7 @@
 \addbibresource{bibliography2.bib} % r packages
 
 \let\footnote=\endnote
+\newcommand{\highlight}{\textbf}
 \newcommand*\ie{\emph{i.e.}}
 \newcommand*\eg{\emph{e.g.}}
 \newcommand*\gao{Grattan analysis of}
@@ -92,19 +93,19 @@
 \begin{summary}
 Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
 
-Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the coverage of the tax would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
+Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the GST base to include fresh food, health and education would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
 
 \textbf{Extending the GST} to cover many of the categories currently exempt could raise almost \textbf{\$20~billion} per year. While \textbf{increasing the rate to 15 per cent} would generate around \textbf{\$27~billion}. 
 
-The regressive impacts of a broader or higher GST can be mitigated by higher welfare payments. Spending around 30 per cent of the increase in revenue on higher welfare payments would leave most of the bottom 20 per cent of income earners better off. And increases in welfare payments can be structured so for most recipients there is no change in their incentive to work. 
+The regressive impacts of a broader or higher GST can be mitigated by higher welfare payments and targeted tax cuts. The welfare and tax changes we propose protect the most vulnerable while also minimising the economic cost of the changes. 
 
-The major concern with this approach is that compensating welfare payments may be eroded over time. Overcompensation of the most vulnerable recipients should help ease this concern: a substantial boost to payments, even if eroded over time, could leave many recipients better off than otherwise for many years.
+New household-level modelling informs our proposed compensation package. Spending around \highlight{30 per cent of the additional revenue from a broader or higher GST on higher welfare payments} would leave most of the bottom 20 per cent of income earners better off. And increases in welfare payments can be structured so for most recipients there is no change in their incentive to work. 
 
-Modest income tax cuts should also be part of any GST reform package. Income tax cuts provide compensation further up the income distribution, while also paying an economic dividend.  Appropriately targeted tax cuts will maintain and even increase work incentives for low to middle income taxpayers most responsive to changes in the effective tax rates.   
+A major concern with this approach is that compensating welfare payments may be eroded over time. Overcompensation of the most vulnerable recipients should help ease this concern: a substantial boost to payments, even if eroded over time, could leave many recipients better off than otherwise for many years.
 
-But if the GST is to provide higher revenues to help the states fund their hospital spending, then not everyone can be fully compensated. Channelling 30 per cent of additional revenues from a broader or higher GST to tax cuts will allow the government to shave at least two percentage points off the bottom two tax rates. Tax cuts of this magnitude fully compensate most low and middle income households -- those earning up to \$100,000 a year -- for the increase in GST. 
+Modest income tax cuts are also part of our proposed package. Channelling a further \highlight{30 per cent of additional revenue} to income tax cuts will allow the government to shave \highlight{1 to 2.5 percentage points} off the bottom two tax rates. Tax cuts of this magnitude fully offset the increase in GST for most low and middle income households -- those earning up to \$100,000 a year -- while also providing some benefit for those further up the income distribution. These tax cuts will maintain and even increase work incentives for low to middle income taxpayers, who are most responsive to changes in effective tax rates. 
 
-Beyond their immediate hip pocket, most Australians benefit from better government services that increased GST collections could fund. The 40 per cent of the revenue left over after tax cuts and welfare payments should go to State governments to help them address their looming hospital funding gap so they can continue to supply the new and better treatments that the public demands. 
+However, not everyone can be fully compensated. Government budgets are in deficit, and it is neither politically nor practically feasible for governments to bridge the gap purely with spending cuts. Around \highlight{40~per~cent of the additional revenue} from a higher or broader GST \highlight{(between \$7 to \$11~billion)} would be left over after welfare increases and middle income tax cuts. At least some will need to go to state governments to help them address their looming hospital funding gap, as the price for their cooperation in the changes. This will leave a little -- but not much -- to reduce the Commonwealth's budget deficit, or to pay for other tax cuts that will promote economic growth. 
 \end{summary}
 
 \chapter{Australia should raise more from the GST}\label{chap:Chapter1}
@@ -149,6 +150,17 @@ Consumption taxes such as the GST are relatively efficient taxes. They are relat
 
 An increase in consumption tax in effect acts as part a lump sum tax on accumulated wealth, and so collects more from households such as retirees that are living from savings and income from investments. Such households otherwise contribute less to tax collections, and their contribution relative to younger households is falling as a result of age-based tax-free thresholds, and superannuation tax breaks.\footcite{Daley2014}  Our \textit{Wealth of Generations} report showed that households over 55 pay much less tax on average than younger households, despite much higher wealth.\footcite[p.~27]{Daley2014}  
 
+% \begin{smallbox}[tp]%
+\begin{bigbox*}{Impact of taxes on labour supply}{box:labour_supply}
+There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
+
+Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high-income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
+
+On the other hand, empirical studies invariably find that tax and welfare benefits have a much greater bearing on working decisions for women with young children, particularly single mothers -- affecting both the decision to work and the number of hours chosen.  
+
+% Taken together, the studies suggests that the people whose labour supply decisions are most responsive to changes are those on low and middle incomes deciding whether to work or whether to increase their hours of work. If one objective of tax reform is to increase workforce participation, then tax cuts should focus on the low to middle brackets.
+\end{bigbox*}
+
 Income taxes can affect the incentives to work more than consumption 
 taxes. The combination of income tax scales and the withdrawal of means 
 tested welfare benefits can discourage working because they result in 
@@ -159,20 +171,12 @@ of middle income part-time earners.
 
 Consumption taxes can affect incentives to work less than income taxes. The combination of income tax scales and the withdrawal of means tested welfare benefits can discourage working because they result in low rates of take home pay. The disincentives are larger for low-income workers and those working part time (\Vref{box:labour_supply}).\footnote{\textcites{Commission2015}{Harding2009}{ReferenceGroupToMinisterForSocialServices2015} which recommended mechanisms to improve these incentives.}  Higher income tax rates as a result of bracket creep can materially reduce workforce participation of middle income part-time earners.\footcite[p.~6]{daleywood2015fiscalchallenges} 
 
+\FloatBarrier
+
 Consumption taxes do discourage work to some extent, because wages buy less once the consumption tax is taken into account.\footcite{PicosSanchez2011}  However, consumption taxes may discourage working less than income taxes because their impact on spending power is less obvious. Consumption taxes are less salient: there is some experimental economics evidence that people notice nominal wages (due to income tax) more than lower real wages (due to a consumption tax).\footnote{\textcites{Blumkin2012}{SausgruberTyran2005}  This is because of the `money illusion': individuals tend to think in nominal rather than real terms.} 
 
 Overall, higher consumption taxes should cause fewer problems than higher income taxes. Overall incentives to work can be improved if income tax cuts introduced with the GST are targeted at low and middle brackets (\Vref{box:labour_supply}). 
 And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (\Vref{chap:targeted_comp_pkg}). 
-
-\begin{smallbox}{Impact of taxes on labour supply}{box:labour_supply}
-There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
-
-Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high-income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
-
-On the other hand, empirical studies invariably find that tax and welfare benefits have a much greater bearing on working decisions for women with young children, particularly single mothers -- affecting both the decision to work and the number of hours chosen.  
-
-Taken together, the studies suggests that the people whose labour supply decisions are most responsive to changes are those on low and middle incomes deciding whether to work or whether to increase their hours of work. If one objective of tax reform is to increase workforce participation, then tax cuts should focus on the low to middle brackets.
-\end{smallbox}
 
 
 \chapter{A broader base, or a higher rate?}
@@ -455,7 +459,7 @@ Still, more than half of those in the third and fourth quintiles are compensated
 
 
 \newcommand{\tblHead}[2][c]{\bfseries\begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
-\newcommand{\tblHeadR}[2][c]{\bfseries\begin{tabular}[#1]{@{}r@{}}#2\end{tabular}}
+\newcommand{\tblHeadR}[2][c]{\bfseries\begin{tabular}[#1]{@{}>{\raggedleft}p{\linewidth}@{}}#2\end{tabular}}
 \begin{table}
 \caption{Budgetary impact of income tax rate changes}\label{tbl:tax_cuts}
 \begin{tabularx}{\columnwidth}{lr>{\raggedleft\arraybackslash}X}
@@ -470,7 +474,7 @@ Still, more than half of those in the third and fourth quintiles are compensated
 \bottomrule
 \end{tabularx}
 
-\notes{Excludes Temporary Budget Repair Levy (2\%\ for those earning over \$180,000 until 2016-17}
+\notes{Excludes Temporary Budget Repair Levy (2\%\ for those earning over \$180,000 until 2016-17)}
 
 \source{Grattan analysis ATO 2\%\ sample file (2013). See \url{https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}}
 \end{table}
@@ -483,15 +487,15 @@ Still, more than half of those in the third and fourth quintiles are compensated
 \caption{Impact of GST compensation package on selected households}\label{tbl:GST_comp_selected_hh}
 \begin{center}
 % latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Fri Nov 27 15:38:58 2015
+% Sun Nov 29 15:58:08 2015
 \begin{tabularx}{1.4\columnwidth}{p{5cm}YYYYY}
   \toprule
 Household type & New benefit & GST burden & $\Delta$dispos income & Comp / Burden & prop undercomp \\ 
   \midrule
-Other & \$27 & \$38 & -0.9\% & 106.0\% & 61.1\% \\ 
+Other & \$25 & \$38 & -1.2\% & 98.9\% & 62.4\% \\ 
   Newstart; Single, no other income, renter & \$24 & \$17 & 1.6\% & 255.3\% & 23.6\% \\ 
-  Disability; Single, no other income, renter & \$19 & \$15 & 1.4\% & 195.7\% & 20.5\% \\ 
-  Age pension; no other income, couple, home-owners & \$25 & \$25 & 0.0\% & 125.2\% & 36.4\% \\ 
+  Disability; Single, no other income, renter & \$19 & \$15 & 1.4\% & 195.4\% & 20.9\% \\ 
+  Age pension; no other income, couple, home-owners & \$25 & \$25 & 0.0\% & 124.9\% & 36.4\% \\ 
   Newstart; Couple, 2 children, on salary income, renting & \$26 & \$16 & 0.8\% & 192.9\% & 8.5\% \\ 
    \bottomrule
 \end{tabularx}
@@ -505,7 +509,7 @@ Other & \$27 & \$38 & -0.9\% & 106.0\% & 61.1\% \\
 
 
 
-For the minority group of poorer households that go backwards, the change in their living standards is very small. The average reduction is disposable income is 3.3\%~per cent. The fact that some people will be slightly worse off will make reform politically harder, but there is no principled reason to preserve the precise rank order of those in the bottom 20 per cent that applies today.
+For the minority group of poorer households that go backwards, the change in their living standards is very small. The average reduction is disposable income is 3.9\%. The fact that some people will be slightly worse off will make reform politically harder, but there is no principled reason to preserve the precise rank order of those in the bottom 20 per cent that applies today.
 
 
 
@@ -560,9 +564,9 @@ The additional GST revenue could instead fund other tax reductions, including fu
 ## 
 ##   not_compensated is_self_funded_retiree            n         prop
 ##             (lgl)                  (lgl)        (dbl)        (dbl)
-## 1           FALSE                  FALSE 1.142371e+06 0.6811392371
+## 1           FALSE                  FALSE 1.119442e+06 0.6674681221
 ## 2           FALSE                   TRUE 4.847393e+01 0.0000289026
-## 3            TRUE                  FALSE 4.949372e+05 0.2951065633
+## 3            TRUE                  FALSE 5.178657e+05 0.3087776783
 ## 4            TRUE                   TRUE 3.979082e+04 0.0237252970
 \end{verbatim}
 \end{kframe}
@@ -612,7 +616,7 @@ The additional GST revenue could instead fund other tax reductions, including fu
 \clearpage
 \onecolumn
 % latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Fri Nov 27 15:39:07 2015
+% Sun Nov 29 15:58:17 2015
 \begin{longtable}{lllll}
   \hline
 packages.package & packages.. & packages.version & packages.date & packages.source \\ 
