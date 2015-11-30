@@ -1,4 +1,14 @@
 \documentclass{grattan}
+\LoadMicrotypeFile{cmr}
+\SetProtrusion[]  { }%
+    { 
+      \textendash = { 0,0},      % left protrusion will remain untouched, 
+                                % right protrusion set to zero
+                                
+      {--} = {0,0}
+     %\textendash = {150,150},  % this would set protrusion on both sides to 150
+    }
+
 \usepackage{tabularx}
 <<MODELLING_PARAMETERS, echo=FALSE>>=
 # Actually proportion not percentage. i.e. 0.3 = 30%
@@ -542,7 +552,7 @@ Consumption taxes do discourage work to some extent, because wages buy less once
 Overall, higher consumption taxes should cause fewer problems than higher income taxes. Overall incentives to work can be improved if income tax cuts introduced with the GST are targeted at low and middle brackets (\Vref{box:labour_supply}). 
 And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (\Vref{chap:targeted_comp_pkg}). 
 
-\begin{smallbox}[tp]{Impact of taxes on labour supply}{box:labour_supply}
+\begin{smallbox}[tbp]{Impact of taxes on labour supply}{box:labour_supply}
 There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
 
 Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high-income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
@@ -1035,6 +1045,8 @@ But recent budget proposals to index pensions at inflation rather than average w
 
 On the other hand, concerns about the value of Newstart are based on recurring political decisions to reduce payments relative to average wages.  These concerns might be addressed if increases to the GST were accompanied by a substantial real increase in Newstart. Even if it were eroded over time, a large increase would leave most of those on Newstart substantially better off for some time. This might be the political price for welfare groups to support increases to the GST.
 \end{smallbox}
+
+Changes that over-compensated most households on Newstart would recognise the substantial financial distress of these households,  and the possibility that higher payments may increase workforce participation by improving the capacity of individuals to present themselves well or to maintain their readiness for work.  This reflects a broad consensus amongst welfare groups, economists and even business lobbies that Newstart payments are too low.  The rising gap in living standards between those on Newstart (and other allowances) and those receiving a pension is due to the less favourable indexation for Newstart.  
 
 <<welfare.by.income.quintile.total>>=
 gst_revenue.15pc.weekly <- 
@@ -1540,6 +1552,127 @@ Politicians might be tempted to try to fully compensate all low and middle incom
 But because GST affects different households in very different ways, it is extremely expensive to ensure there are \emph{no} losers.  
 Tax cuts to at least fully compensate almost every household earning up to \$100,000 for a 5 per cent increase in the GST would have cost the 2012-13 budget approximately \$23.6 billion -- and this would be an underestimate of the budgetary impact today.  This is in addition to the \$9 billion in additional welfare payments required to compensate the most vulnerable (section 3.2). Together, the \$29 billion spend on compensation would exceed the additional \$27 billion in revenue collected. It is simply not possible to fully compensate this far up the income distribution and retain a revenue positive package.
 
+
+\subsection{--- Remarks about nonnegative incomes ---}
+<<prop_hh_nonpositive_income>>=
+hes10hh %$%
+  weighted.mean(Total_current_weekly_HH_income_from_all_sources <= 0, Weight_HH_HES) ->
+  prop_hh_nonpositive_income
+@
+
+<<prop_hh_leq_Newstart>>=
+# http://www.humanservices.gov.au/spw/corporate/publications-and-resources/resources/co029/archive/co029-0901.pdf
+# 449.30 per fortnight
+NEWSTART.ALLOWANCE.200910.FORTNIGHTLY = 449.30
+
+hes10hh %$% 
+  weighted.mean(Total_current_weekly_HH_income_from_all_sources < NEWSTART.ALLOWANCE.200910.FORTNIGHTLY/2, Weight_HH_HES) ->
+  prop_hh_leq_Newstart
+@
+
+<<prop_undercompensated_w_inc_leq_Newstart>>=
+hes_with_gst_and_tax_compensation %>%
+  as.data.table %>%
+  group_by.income_quintile() %>% ungroup %>%
+  mutate(undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+         leq_Newstart = Total_current_weekly_HH_income_from_all_sources < NEWSTART.ALLOWANCE.200910.FORTNIGHTLY/2) %>%
+  filter(undercompensated, gross_income_quintile == 1) %$%
+  weighted.mean(leq_Newstart, Weight_HH_HES)
+@
+
+<<nonpositive_incomes_spending_patterns>>=
+hes_with_gst_and_tax_compensation %>%
+  as.data.table %>%
+  group_by.income_quintile() %>% ungroup %>%
+  mutate(undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+         leq_Newstart = Total_current_weekly_HH_income_from_all_sources < NEWSTART.ALLOWANCE.200910.FORTNIGHTLY/2) %>%
+  filter(gross_income_quintile == 1) %>%
+  grplot(aes(x = Total_current_weekly_HH_income_from_all_sources, y = Weekly_household_GST_on_all_goods_and_services_FIS,
+             color = leq_Newstart)) + 
+  geom_point(aes(alpha = Weight_HH_HES)) + 
+  theme(legend.position = c(0.2, 0.8))
+
+hes_with_gst_and_tax_compensation %>%
+  as.data.table %>%
+  group_by.income_quintile() %>% ungroup %>%
+  mutate(undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+         leq_Newstart = Total_current_weekly_HH_income_from_all_sources < NEWSTART.ALLOWANCE.200910.FORTNIGHTLY/2) %>%
+#   mutate(Category = ifelse(leq_Newstart, TRUE, ifelse(gross_income_quintile == 1, FALSE, NA))) %>%
+#   t.test(Weekly_household_GST_on_all_goods_and_services_FIS ~ Category, data = .)
+  grplot(aes(x = factor(gross_income_quintile), fill = leq_Newstart, y = Weekly_household_GST_on_all_goods_and_services_FIS, weights = Weight_HH_HES)) + 
+  geom_boxplot() + 
+  scale_y_continuous("Weekly GST", label = grattan_dollar)
+@
+
+<<GST_compensation_with_dubious_nonpositive_income_annotation>>=
+# here we identify all all those household with nonpostive income who are "undercompensated" by our model.
+hes_with_gst_and_tax_compensation %>%
+  as.data.table %>%
+  group_by.income_quintile() %>% ungroup %>%
+  mutate(undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+         leq_Newstart = Total_current_weekly_HH_income_from_all_sources < NEWSTART.ALLOWANCE.200910.FORTNIGHTLY/2) %>%
+  #
+  group_by.income_quintile() %>%
+  summarise(compensated = weighted.mean(!undercompensated, Weight_HH_HES),
+            #leq_Newstart = weighted.mean(leq_Newstart & !undercompensated & new_welfare > 0, Weight_HH_HES),
+            not_compensated_but_below_Newstart = weighted.mean(undercompensated & leq_Newstart & new_welfare == 0, Weight_HH_HES)) %>%
+  gather(group, prop, -gross_income_quintile) %>%
+  grplot(aes(x = factor(gross_income_quintile),
+             y = prop,
+             fill = group)) + 
+  geom_bar(stat = "identity") + 
+  scale_y_continuous(label = percent,
+                     expand = c(0,0),
+                     limits = c(0,1),
+                     breaks = (0:10)/10) + 
+  theme(legend.position = c(0.8,0.8))
+@
+
+<<HH_w_inc_leq_Newstart_enter_newstart>>=
+HH_w_inc_leq_Newstart_enter_newstart <- 
+  hes_with_gst_and_tax_compensation %>%
+  as.data.table %>%
+  group_by.income_quintile() %>% ungroup %>%
+  mutate(undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+         leq_Newstart = Total_current_weekly_HH_income_from_all_sources < NEWSTART.ALLOWANCE.200910.FORTNIGHTLY/2) %>%
+  group_by.income_quintile() %>%
+  mutate(new_welfare3 = ifelse(leq_Newstart | new_welfare > 0, max(new_welfare), 0)) %>%
+  group_by.income_quintile() %>%
+  summarise(comp_adequacy = weighted.mean(new_welfare + tax_diff_weekly > Weekly_household_GST_on_all_goods_and_services_FIS/2, 
+                                          Weight_HH_HES),
+            comp_adequacy3 = weighted.mean(new_welfare3 + tax_diff_weekly > Weekly_household_GST_on_all_goods_and_services_FIS/2, 
+                                          Weight_HH_HES)) %>%
+  ungroup %>%
+  mutate(extra_adequacy = comp_adequacy3 - comp_adequacy) %>%
+  filter(gross_income_quintile == 1) 
+
+comp_adequacy.orig <- 
+  HH_w_inc_leq_Newstart_enter_newstart$comp_adequacy[1]
+
+comp_adequacy.newstart_allow <- 
+  HH_w_inc_leq_Newstart_enter_newstart$comp_adequacy3[1]
+@
+
+<<>>=
+hes_with_gst_and_tax_compensation %>%
+  as.data.table %>%
+  group_by.income_quintile() %>% ungroup %>%
+  mutate(undercompensated = Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
+         leq_Newstart = Total_current_weekly_HH_income_from_all_sources < NEWSTART.ALLOWANCE.200910.FORTNIGHTLY/2) %>%
+  group_by.income_quintile() %>%
+  mutate(new_income_quintile = as.integer(ifelse(leq_Newstart, 2, gross_income_quintile))) %>%
+  group_by(new_income_quintile) %>%
+  mutate(new_welfare3 = ifelse(leq_Newstart | new_welfare > 0, max(new_welfare), 0)) %>%
+  group_by(new_income_quintile) %>%
+  summarise(comp_adequacy = weighted.mean(new_welfare + tax_diff_weekly > Weekly_household_GST_on_all_goods_and_services_FIS/2, 
+                                          Weight_HH_HES),
+            comp_adequacy3 = weighted.mean(new_welfare3 + tax_diff_weekly > Weekly_household_GST_on_all_goods_and_services_FIS/2, 
+                                          Weight_HH_HES)) %>%
+  ungroup %>%
+  mutate(extra_adequacy = comp_adequacy3 - comp_adequacy)
+@
+
+This analysis overestimates how many people in the bottom quintile would be worse off. The ABS survey used for calculating the impacts of taxes appears to have a substantial number of households that mis-state their income. About \Sexpr{latex_percent(prop_hh_nonpositive_income)} of all households (by definition in the bottom quintile) are recorded in the ABS survey as having zero or negative income, and another \Sexpr{latex_percent(prop_hh_leq_Newstart - prop_hh_nonpositive_income)} have incomes less than Newstart for a single person of \$\Sexpr{scales::comma_format(digits = 2)(round(NEWSTART.ALLOWANCE.200910.FORTNIGHTLY * 26, 2))}~per year (2009-10). If households with incomes below the minimum of the least generous welfare benefit are assumed to enter the welfare system then \Sexpr{latex_percent(comp_adequacy.newstart_allow)}~per cent of the lowest income quintile would be fully compensated by our proposed package, rather than \Sexpr{latex_percent(comp_adequacy.orig)}~per cent as shown in Figure~7.
 
 
 
