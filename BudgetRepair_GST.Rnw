@@ -878,7 +878,7 @@ It follows that targeting compensation through the welfare system is the most di
 
 However, compensation through higher welfare payments would not be perfectly targeted in reality. Only 30 per cent of welfare payments go to the bottom of 20 per cent of households (\Vref{fig:Welfare_by_household_disposable_income}). To ensure that the poorest households are no worse off as a group requires welfare benefits that will benefit some richer households as well, and thus spending much more than 10 per cent of the increased GST collection.
 \begin{figure}
-<<SIH201314>>=
+<<SIH201314, eval=FALSE>>=
 sih201314hh <- # all vars
   read.dta("./SIH/Stata files/sih13bh.dta") %>%
   data.table
@@ -912,7 +912,7 @@ sih201314p <-
   data.table 
 @
 
-<<Welfare_by_household_disposable_income>>=
+<<Welfare_by_household_disposable_income, eval=FALSE>>=
 welfare.by.income.quintile <- 
   sih201314p %>%
   select(
