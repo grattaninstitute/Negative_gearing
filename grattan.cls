@@ -89,7 +89,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 % Boxes
 \crefname{boxe}{Box}{Boxes}
 \Crefname{boxe}{Box}{Boxes}
-\DeclareFloatingEnvironment[listname={List of boxes}, name = {Box}]{boxe}
+\DeclareFloatingEnvironment[listname={List of boxes}, placement = {!htbp}, name = {Box}]{boxe}
 \mdfdefinestyle{GrattanFrameBox}{%
     linecolor=Orange,
     nobreak=true, % prevents page breaking
@@ -113,25 +113,24 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
     }
     
 % The smallbox is a box intended for onecolumn.
-\newenvironment{smallbox}[2]{%
+\newenvironment{smallbox}[3][p]{%
 \setlength{\currentparskip}{\parskip}% save the value
-\begin{boxe}
+\begin{boxe}[#1]
 \vfill
 \begin{mdframed}[style=GrattanFrameBox]%
- \setlength{\parskip}{\currentparskip}% restore the value
- \captionsetup{labelfont={bf,Orange},font={bf,Orange},format=plain,justification=justified,singlelinecheck=false}
- \caption{#1}\label{#2}
- \vspace{-1.5ex}
-}{\end{mdframed}\vfill\end{boxe}}  
+\setlength{\parskip}{\currentparskip}% restore the value
+\captionsetup{labelfont={bf,Orange},font={bf,Orange},format=plain,justification=justified,singlelinecheck=false}
+\caption{#2}\label{#3}
+\vspace{-1.5ex}
+}{\end{mdframed}\vfill\end{boxe}} 
 
-
-
+\RequirePackage{stfloats}
 % Big boxes -- over the whole page
 % It is recommended to surround this with an \afterpage{% 
 \newenvironment{bigbox}[2]{\onecolumn\setlength{\currentparskip}{\parskip}
 \begin{boxe}
 \begin{mdframed}[style=GrattanFrameBox]%
-\setlength{\columnsep}{10mm}
+\setlength{\columnsep}{15mm}
 \begin{multicols}{2}
 \setlength{\parskip}{\currentparskip}% restore the value
  \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=justified,singlelinecheck=false}
@@ -143,7 +142,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
   \setlength{\currentparskip}{\parskip}
   \@dblfloat{boxe}%
   \begin{mdframed}[style=GrattanFrameBox]
-  \setlength{\columnsep}{10mm}
+  \setlength{\columnsep}{15mm}
   \begin{multicols}{2}
   \setlength{\parskip}{\currentparskip}% restore the value
  \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=justified,singlelinecheck=false}
@@ -153,12 +152,30 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
   \end{multicols}\end{mdframed}
   \end@dblfloat
 }
+
+% dbl floats
+\newenvironment{bigboxtop*}[2]{%
+  \setlength{\currentparskip}{\parskip}
+  \@dblfloat{boxe}%
+  \begin{mdframed}[style=GrattanFrameBox]
+  \setlength{\columnsep}{15mm}
+  \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=centering,singlelinecheck=false}
+  \caption{#1}\label{#2}%
+  \vspace{-2.5ex}
+  \begin{multicols}{2}  
+  \setlength{\parskip}{5.5pt}% restore the value 
+%  \vspace{-1.5ex}
+}{%
+  \end{multicols}\end{mdframed}
+  \end@dblfloat
+}
+
  
 \newenvironment{ultrabox}[2]{\onecolumn\setlength{\currentparskip}{\parskip}
 \begin{boxe}
 \pagecolor{OrangeBackground}
 \begin{mdframed}[style=GrattanFrameBoxUltra]%
-\setlength{\columnsep}{10mm}
+\setlength{\columnsep}{15mm}
 \begin{minipage}[t][\textheight][t]{\textwidth} % textheight
 \begin{multicols}{2}
 \setlength{\parskip}{\currentparskip}% restore the value
