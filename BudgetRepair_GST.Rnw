@@ -1,13 +1,6 @@
 \documentclass{grattan}
-\LoadMicrotypeFile{cmr}
-\SetProtrusion[]  { }%
-    { 
-      \textendash = { 0,0},      % left protrusion will remain untouched, 
-                                % right protrusion set to zero
-                                
-      {--} = {0,0}
-     %\textendash = {150,150},  % this would set protrusion on both sides to 150
-    }
+%\LoadMicrotypeFile{cmr}
+
 
 \usepackage{tabularx}
 <<MODELLING_PARAMETERS, echo=FALSE>>=
@@ -435,7 +428,9 @@ total.inc.quintiles_indiv <-
 \contentspage
 
 \begin{summary}
-Since its introduction in 2000, proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been a perennial in the tax reform debate in Australia. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
+A well-designed GST reform package could support economic growth, make the tax and transfer system more progressive and give state and Commonwealth governments more budgetary options.
+
+Proposals to extend or broaden Australia's 10 per cent goods and services tax (GST) have been perennial. Current governments face many challenges, such as funding growing healthcare costs, reducing deficits, and cutting inefficient taxes. A higher GST could fund any of these initiatives -- although perhaps not all of them. 
 
 Raising more money through raising the GST or applying it to more things is preferable to most of the other revenue-raising alternatives. A broad based tax on consumption is one of the least damaging taxes to economic growth. Broadening the GST base to include fresh food, health and education would reduce distortions and compliance costs compared to its current narrow coverage. But increasing the rate of the GST is a satisfactory second best.
 
@@ -445,7 +440,7 @@ The regressive impacts of a broader or higher GST can be mitigated by higher wel
 
 New household-level modelling informs our proposed compensation package. Spending around \highlight{30 per cent of the additional revenue from a broader or higher GST on higher welfare payments} would leave most of the bottom 20 per cent of income earners better off. And increases in welfare payments can be structured so for most recipients there is no change in their incentive to work. 
 
-A major concern with this approach is that compensating welfare payments may be eroded over time. Overcompensation of the most vulnerable recipients should help ease this concern: a substantial boost to payments, even if eroded over time, could leave many recipients better off than otherwise for many years.
+There is real concern that these welfare payments may be eroded over time. Overcompensating the most vulnerable recipients should ease this concern. A substantial boost to payments would leave most recipients better off than otherwise for many years.
 
 Modest income tax cuts are also part of our proposed package. Channelling a further \highlight{30 per cent of additional revenue} to income tax cuts will allow the government to shave \highlight{1 to 2.5 percentage points} off the bottom two tax rates. Tax cuts of this magnitude fully offset the increase in GST for most low and middle income households -- those earning up to \$100,000 a year -- while also providing some benefit for those further up the income distribution. These tax cuts will maintain and even increase work incentives for low to middle income taxpayers, who are most responsive to changes in effective tax rates. 
 
@@ -551,17 +546,6 @@ Consumption taxes do discourage work to some extent, because wages buy less once
 
 Overall, higher consumption taxes should cause fewer problems than higher income taxes. Overall incentives to work can be improved if income tax cuts introduced with the GST are targeted at low and middle brackets (\Vref{box:labour_supply}). 
 And potential disincentives to work from higher welfare benefits to compensate poorer households for a higher GST can be managed by the design of these measures (\Vref{chap:targeted_comp_pkg}). 
-
-\begin{smallbox}[tbp]{Impact of taxes on labour supply}{box:labour_supply}
-There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
-
-Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high-income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
-
-On the other hand, empirical studies invariably find that tax and welfare benefits have a much greater bearing on working decisions for women with young children, particularly single mothers -- affecting both the decision to work and the number of hours chosen.  
-
-Taken together, the studies suggests that the people whose labour supply decisions are most responsive to changes are those on low and middle incomes deciding whether to work or whether to increase their hours of work. If one objective of tax reform is to increase workforce participation, then tax cuts should focus on the low to middle brackets.
-\end{smallbox}
-
 
 \chapter{A broader base, or a higher rate?}
 GST revenue collections can be increased either by broadening the range of items that are subject to the tax (`broadening the base') or by increasing the rate above the current 10 per cent. Broadening the base is generally favoured on pure policy grounds because it is simpler and more efficient. But increasing the rate could be a satisfactory `second best'; if it is too politically difficult to broaden the base. 
@@ -781,7 +765,7 @@ Overall, the differences are small: poorer households would pay on average an ex
 
 If the GST rate were raised but not broadened, poorer households would pay on average an extra \$25 per \$1000 spent, compared with the \$26 per \$1000 for high-income households. Although there is substantial variation in spending patterns between people in a given income group (\cref{sec:higherWelfarePayments}). 
 
-Whether or not a tax is regressive because it takes a higher proportion of income from low-incomehouseholds, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][p.~37]{Daley2013}
+Whether or not a tax is regressive because it takes a higher proportion of income from low-incomehouseholds, many are concerned by tax reforms that would take \emph{any} resources from the most vulnerable. Consequently, many proposals to increase GST envisage accompanying reforms to welfare that would offset the GST impacts on those worst off. While ethical theories differ on the value of minimising overall inequality, they generally converge on the importance of ensuring that those worse off have enough resources to pursue lives that they have reason to value.\footcite[See][37]{Daley2013}
 
 \section{Higher welfare payments can reduce the effects of a higher GST on poorer households}\label{sec:higherWelfarePayments}
 However fairness is measured, governments  can mitigate the effects of GST changes on lower income households -- indeed governments can choose to overcompensate -- through the welfare system.
@@ -845,7 +829,7 @@ read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
   
 @
 \Caption{Poorest households receive most of their income from government benefits}{Proportion of income}{fig:Sources_of_income_by_quintile}
-\makebox[\textwidth][l]{\includegraphics[width=1.1\columnwidth]{figure_BudgetRepair_GST/Sources_of_income_by_quintile-1}}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/Sources_of_income_by_quintile-1}
 \end{figure}
 
 <<percent_of_GST_burden_by_quintile>>=
@@ -888,7 +872,7 @@ It follows that targeting compensation through the welfare system is the most di
 
 However, compensation through higher welfare payments would not be perfectly targeted in reality. Only 30 per cent of welfare payments go to the bottom of 20 per cent of households (\Vref{fig:Welfare_by_household_disposable_income}). To ensure that the poorest households are no worse off as a group requires welfare benefits that will benefit some richer households as well, and thus spending much more than 10 per cent of the increased GST collection.
 \begin{figure}
-<<SIH201314, eval=FALSE>>=
+<<SIH201314>>=
 sih201314hh <- # all vars
   read.dta("./SIH/Stata files/sih13bh.dta") %>%
   data.table
@@ -922,7 +906,7 @@ sih201314p <-
   data.table 
 @
 
-<<Welfare_by_household_disposable_income, eval=FALSE>>=
+<<Welfare_by_household_disposable_income>>=
 welfare.by.income.quintile <- 
   sih201314p %>%
   select(
@@ -1012,7 +996,7 @@ welfare.by.income.quintile %>%
   
 @
 \Caption{Higher welfare payments also benefit richer households}{Total spend in 2009-10}{fig:Welfare_by_household_disposable_income}
-\makebox[\linewidth][r]{\includegraphics[width=1.0\columnwidth]{figure_BudgetRepair_GST/Welfare_by_household_disposable_income-1}}
+\includegraphics[width=1.0\columnwidth]{figure_BudgetRepair_GST/Welfare_by_household_disposable_income-1}
 
 
 \end{figure}
@@ -1253,29 +1237,27 @@ Modest income tax cuts should be part of any GST reform package.
 
 Appropriately targeted income tax cuts will help to moderate the effect of a higher GST on work incentives. By increases prices of many good and services, a higher or broader GST, reduces the real purchasing power of take home pay. But tax cuts mean the size of workers' pay packets is larger. But income tax cuts mean that workers will have bigger pay packets. 
 
-This partial ``swap'' of income taxes for consumption taxes will provide an economic dividend. However, the economic gain will depend on the design of any income tax cuts: cuts targeted at middle income earners are likely to have a much bigger impact on participation than reductions in the top marginal rate only paid by a small number of taxpayers who usually work full time (\vref{chap:Chapter1}).
+\begin{smallbox}[tbp]{Impact of taxes on labour supply}{box:labour_supply}
+There is a comprehensive literature on the effect of taxes on labour supply decisions. In \textcite{Mirrlees2011}, \textcite{meghir2008labour} provide a summary of this work and nominate the findings for which there is consensus or near consensus. 
+
+Almost all the relevant studies find that men's hours of work are relatively unresponsive to tax changes. This is because most men work full-time. But for men with low levels of education, the decision of whether to work is somewhat affected by tax and welfare incentives. For highly educated men, tax rates make almost no difference to their work decisions. However, tax rates do affect their taxable incomes: high-income taxpayers are more likely to convert income into non-taxable forms when tax rates are high.  
+
+On the other hand, empirical studies invariably find that tax and welfare benefits have a much greater bearing on working decisions for women with young children, particularly single mothers -- affecting both the decision to work and the number of hours chosen.  
+
+Taken together, the studies suggests that the people whose labour supply decisions are most responsive to changes are those on low and middle incomes deciding whether to work or whether to increase their hours of work. If one objective of tax reform is to increase workforce participation, then tax cuts should focus on the low to middle brackets.
+\end{smallbox}
+
+This partial ``swap'' of income taxes for consumption taxes will provide an economic dividend. However, the economic gain will depend on the design of any income tax cuts: cuts targeted at middle income earners are likely to have a much bigger impact on participation than reductions in the top marginal rate only paid by a small number of taxpayers who usually work full time (\vref{box:labour_supply}).
+
+While some argue that cuts at the upper end should be prioritised to spur entrepreneurial activity,\footnote{For example, Graeme Bradley, former Business Council of Australia president: \textcite{BaloghHepworthHockey2TakeTaxCuts}}  our tax system already provides numerous incentives for starting a business, such as deductibility of losses, a 50 per cent discount on capital gains income and a host of small business capital gains exemptions.\footnote{Exemptions from capital gains tax for small business owners include: 
+ exemptions for the sale of active assets (needs to be paid into a super fund for people under 55); and an exemption for people over 55 who are retiring and selling business assets held for more than 15 years. A lifetime cap of \$1.4 million applies to these exemptions. See: ATO (2014). More details on tax incentives for small business can be found in Daley, et al. (2015).
+} 
 
 But if the purpose of GST reform is to help state governments fund rising healthcare costs, there is a limit to the money available to fund income tax reductions. Given our proposed welfare package, spending any more than 30 per cent of the revenue on tax cuts will not leave state governments with enough funds to make a meaningful dent in their health funding ``gap'', or deficit reduction. 
 
 We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
 
-For example, using \$8 billion of the additional \$27 billion of revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30.5 per cent. If, instead the GST is broadened, 30 per cent of the revenue from a broader GST would supports cuts to approximately 18 per cent and 31 per cent for the same brackets. To put these tax cuts into context, they have a similar impact on average tax rates as 4 years of bracket creep.\footnote{Grattan Insitute calculations. For impact of bracket creep, see \textcite[p.~6]{daleywood2015fiscalchallenges}.}  Households higher up the income scale would receive substantial benefit from these tax changes. 
-
-\Vref{fig:GST_compensation_and_tax_cuts_by_quintile_and_threshold} shows the combined effect of a higher GST but lower income tax rates and higher welfare payments proposed under our package. 
-\subsection{The size of income tax cuts}
-We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
-
-For example, using \$9~billion of the additional revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30 per cent.\footnote{\url{https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}}
-
-While 30 per cent of the revenue from a broader GST would support cuts to around 18 per cent and 30.5 per cent for those same brackets. 
-
-After tax cuts, households higher up the income scale receive some compensation for the increase in their cost of living. \Vref{fig:GST_compensation_with_tax_cuts} shows levels of compensation for a higher GST after the tax cuts and welfare payments proposed under an increase of the GST under the current base to 15\%. 
-
-The bottom 40 per cent of households -- those with incomes up to \$63,000 annually\footnote{This was the maximum income placing the household in the bottom 40 per cent of household incomes in 2013/14. ABS Survey of Income and Housing}  -- on average would come out in front. Higher up the income distribution, households on average would come out behind, although most households in the third and fourth quintiles would not go backwards by much: for them lower income taxes would offset three quarters or more of the effects of a higher GST.
-
-
-
-\begin{figure}
+\begin{figure}[t]
 <<Corroborate_size_of_tax_cuts, error=FALSE>>=
 tax200910 <- get_sample_file(2010)
 INCOME.TAX.COLLECTED.200910 <- sum(income_tax(tax200910$Taxable_Income, "2009-10")) * 100
@@ -1360,6 +1342,20 @@ welfare_and_tax_compensation_adequacy %T>%
 {fig:GST_compensation_with_tax_cuts}
 \includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/GST_compensation_with_tax_cuts-1}
 \end{figure}
+
+For example, using \$8 billion of the additional \$27 billion of revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30.5 per cent. If, instead the GST is broadened, 30 per cent of the revenue from a broader GST would supports cuts to approximately 18 per cent and 31 per cent for the same brackets. To put these tax cuts into context, they have a similar impact on average tax rates as 4 years of bracket creep.\footnote{Grattan Insitute calculations. For impact of bracket creep, see \textcite[p.~6]{daleywood2015fiscalchallenges}.}  Households higher up the income scale would receive substantial benefit from these tax changes. 
+
+\Vref{fig:GST_compensation_with_tax_cuts} shows the combined effect of a higher GST but lower income tax rates and higher welfare payments proposed under our package. 
+\subsection{The size of income tax cuts}
+We propose a package of income tax cuts that helps protect welfare of lower and middle income households. Spending 30 per cent of additional GST revenues allows for modest income tax cuts in the low to middle brackets. 
+
+For example, using \$9~billion of the additional revenue from a 15 per cent GST would allow a reduction in the bottom tax bracket from 19 per cent to 16.5 per cent and a reduction in the next bracket from 32.5 to 30 per cent.\footnote{\url{https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}}
+
+While 30 per cent of the revenue from a broader GST would support cuts to around 18 per cent and 30.5 per cent for those same brackets. 
+
+After tax cuts, households higher up the income scale receive some compensation for the increase in their cost of living. \Vref{fig:GST_compensation_with_tax_cuts} shows levels of compensation for a higher GST after the tax cuts and welfare payments proposed under an increase of the GST under the current base to 15\%. 
+
+The bottom 40 per cent of households -- those with incomes up to \$63,000 annually\footnote{This was the maximum income placing the household in the bottom 40 per cent of household incomes in 2013/14. ABS Survey of Income and Housing}  -- on average would come out in front. Higher up the income distribution, households on average would come out behind, although most households in the third and fourth quintiles would not go backwards by much: for them lower income taxes would offset three quarters or more of the effects of a higher GST.
 
 <<Are_bottom_40pc_compensated>>=
 welfare_and_tax_compensation_adequacy %>% 
