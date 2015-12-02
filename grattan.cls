@@ -19,7 +19,8 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
 % needs to be switched off for copying and pasting
-\RequirePackage[activate={true,nocompatibility},final,expansion,tracking=true,kerning=true, spacing=false,selected=true, letterspace=-20]{microtype}
+\RequirePackage[activate={true,nocompatibility},factor=500,final,expansion,tracking=true,kerning=true, spacing=false,selected=true, letterspace=-20]{microtype}
+\LoadMicrotypeFile{uarial}
 
 \SetExtraSpacing{ font = * / * / * / * / * }{. = {100,100,100},}
 
@@ -89,7 +90,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 % Boxes
 \crefname{boxe}{Box}{Boxes}
 \Crefname{boxe}{Box}{Boxes}
-\DeclareFloatingEnvironment[listname={List of boxes}, placement = {!htbp}, name = {Box}]{boxe}
+\DeclareFloatingEnvironment[listname={List of boxes}, name = {Box}]{boxe}
 \mdfdefinestyle{GrattanFrameBox}{%
     linecolor=Orange,
     nobreak=true, % prevents page breaking
@@ -124,7 +125,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \vspace{-1.5ex}
 }{\end{mdframed}\vfill\end{boxe}} 
 
-\RequirePackage{stfloats}
+%\RequirePackage{stfloats}
 % Big boxes -- over the whole page
 % It is recommended to surround this with an \afterpage{% 
 \newenvironment{bigbox}[2]{\onecolumn\setlength{\currentparskip}{\parskip}
@@ -213,8 +214,8 @@ singlelinecheck=false}
 % New user friendly (less typing) \Caption?
 \newcommand{\Caption}[3]{\captionwithunits{#1}{#2}\label{#3}}
 
-\newcommand{\source}[1]{\footnotesize\textit{Source:~#1}}
-\newcommand{\notes}[1]{\footnotesize\textit{Notes:~#1}}
+\newcommand{\source}[1]{\scriptsize\textit{Source:~#1}}
+\newcommand{\notes}[1]{\scriptsize\textit{Notes:~#1}}
 
 \setkomafont{disposition}{\color{Orange}}
 \addtokomafont{chapter}{\bfseries\Large}
