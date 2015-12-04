@@ -922,7 +922,12 @@ sih201314p <-
   data.table 
 @
 
-<<
+<<eval=FALSE>>=
+sih201314hh %>%
+  svydesign(data = ., weights = ~SIHHHWT, id = ~ABSHID) %>%
+  svyquantile(~DISPSCH8, quantiles = c(0:5)/5, design = .) * 52 %>%
+  grattan_dollar
+@
 
 <<Welfare_by_household_disposable_income>>=
 welfare.by.income.quintile <- 
@@ -1512,6 +1517,8 @@ hes_with_gst_and_tax_compensation_indiv %>%
   summarise(new_benefit = weighted.mean(new_welfare + tax_diff_weekly, Weight_HH_HES),
             GST_burden = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2, Weight_HH_HES),
             prop_increase_in_disp_inc = weighted.mean((new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2 +  Current_weekly_HH_disposable_income)/(Current_weekly_HH_disposable_income), Weight_HH_HES) - 1,
+            avg_disp_inc_before = weighted.mean(Current_weekly_HH_disposable_income, Weight_HH_HES),
+            avg_disp_inc_after = weighted.mean((new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2 +  Current_weekly_HH_disposable_income), Weight_HH_HES),
             `zcomp.over.burden` = weighted.mean((new_welfare + tax_diff_weekly) / (Weekly_household_GST_on_all_goods_and_services_FIS / 2),
                                            Weight_HH_HES),
             prop_undercomp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,
