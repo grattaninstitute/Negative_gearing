@@ -888,7 +888,7 @@ It follows that targeting compensation through the welfare system is the most di
 
 However, compensation through higher welfare payments would not be perfectly targeted in reality. Only 30 per cent of welfare payments go to the bottom of 20 per cent of households (\Vref{fig:Welfare_by_household_disposable_income}). To ensure that the poorest households are no worse off as a group requires welfare benefits that will benefit some richer households as well, and thus spending much more than 10 per cent of the increased GST collection.
 \begin{figure}
-<<SIH201314, eval=FALSE>>=
+<<SIH201314>>=
 sih201314hh <- # all vars
   read.dta("./SIH/Stata files/sih13bh.dta") %>%
   data.table
@@ -922,7 +922,9 @@ sih201314p <-
   data.table 
 @
 
-<<Welfare_by_household_disposable_income, eval=FALSE>>=
+<<
+
+<<Welfare_by_household_disposable_income>>=
 welfare.by.income.quintile <- 
   sih201314p %>%
   select(
@@ -1015,6 +1017,30 @@ welfare.by.income.quintile %>%
 \makebox[\linewidth][r]{\includegraphics[width=1.0\columnwidth]{figure_BudgetRepair_GST/Welfare_by_household_disposable_income-1}}
 
 
+\end{figure}
+
+<<prop_welfare_by_income>>=
+prop_welfare_by_income <- 
+  welfare.by.income.quintile %>%
+  group_by(gross_income_quintile) %>%
+  summarise(total = sum(average_payment)) %>%
+  ungroup %>% 
+  mutate(prop = total/sum(total))
+
+prop_welfare_by_income %>%
+  grplot(aes(x = factor(gross_income_quintile),
+             y = prop)) + 
+  geom_bar(stat = "identity") + 
+  scale_y_continuous(label=percent,
+                     expand=list(c(0,0), c(0,0.1))) + 
+  geom_text(aes(label = percent_format()(prop)),
+            vjust = -0.25,
+            size = 7.14)
+@
+\begin{figure}
+\Caption{Welfare leaks}{Percentage of welfare by income quintile}{fig:prop_welfare_by_income}
+\includegraphics[width=\columnwidth]{figure_BudgetRepair_GST/prop_welfare_by_income-1}
+\source{HES}
 \end{figure}
 
 <<GST_increase_to_15pc>>=
@@ -1302,7 +1328,7 @@ hes10_indiv %<>%
 hes10_indiv %<>%
   mutate(
     old_tax = 52 * Imputed_current_weekly_tax_payable,
-    new_tax = new_income_tax_outer0910(taxable_income, rates = new_0910_tax_rates),
+    new_tax = ifelse(old_tax < 0, old_tax, new_income_tax_outer0910(taxable_income, rates = new_0910_tax_rates)),
     tax_diff = old_tax - new_tax
       ) 
 
@@ -1479,10 +1505,13 @@ hes_with_gst_and_tax_compensation_indiv %>%
                                         )
                                  )
   )) %>%
+  filter(Current_weekly_HH_disposable_income > 0
+         #,grepl("Age pension", Household_type)) %>% select(Current_weekly_HH_disposable_income, Weekly_household_GST_on_all_goods_and_services_FIS, new_welfare, tax_diff_weekly) %>% as.data.table %>% print
+) %>%
   group_by(Household_type) %>%
   summarise(new_benefit = weighted.mean(new_welfare + tax_diff_weekly, Weight_HH_HES),
             GST_burden = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2, Weight_HH_HES),
-            prop_increase_in_disp_inc = weighted.mean((new_welfare + tax_diff_weekly + Current_weekly_HH_disposable_income)/(Current_weekly_HH_disposable_income + Weekly_household_GST_on_all_goods_and_services_FIS/2), Weight_HH_HES) - 1,
+            prop_increase_in_disp_inc = weighted.mean((new_welfare + tax_diff_weekly - Weekly_household_GST_on_all_goods_and_services_FIS/2 +  Current_weekly_HH_disposable_income)/(Current_weekly_HH_disposable_income), Weight_HH_HES) - 1,
             `zcomp.over.burden` = weighted.mean((new_welfare + tax_diff_weekly) / (Weekly_household_GST_on_all_goods_and_services_FIS / 2),
                                            Weight_HH_HES),
             prop_undercomp = weighted.mean(Weekly_household_GST_on_all_goods_and_services_FIS / 2 > new_welfare + tax_diff_weekly,

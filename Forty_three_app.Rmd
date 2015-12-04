@@ -131,6 +131,7 @@ shinyApp( options = list(height = 1024),
       
       if (input$TargetFY != "2015-16"){
         cpi.inflator <- cpi_inflator(from_fy = "2012-13", to_fy = input$TargetFY)
+        cpi.inflator = 1
         wage.inflator <- wage_inflator(from_fy = "2012-13", to_fy = input$TargetFY)
         lf.inflator <- lf_inflator(to_date = as.character(fy2date(input$TargetFY)))
         
@@ -164,6 +165,7 @@ shinyApp( options = list(height = 1024),
           cpi.inflator <- cpi_inflator(from_fy = "2012-13",                                         
                                        to_fy = "2014-15") * cpi_inflator(from_fy = "2013-14",
                                                                          to_fy = "2014-15")
+          cpi.inflator = 1 
           wage.inflator <- wage_inflator(from_fy = "2012-13", 
                                          to_fy = "2014-15") * wage_inflator(from_fy = "2013-14",
                                                                             to_fy = "2014-15")
@@ -213,6 +215,15 @@ shinyApp( options = list(height = 1024),
         {income_tax(as.numeric(cameo2.Taxable_Income)) - new_income_tax(as.numeric(cameo2.Taxable_Income))} ->
         cameo2_diff
       
+      temp %>%
+        #group_by(bracket = cut(Taxable_Income, breaks = c(input$bracket_1, input$bracket_2, input$bracket_3, input$bracket_4))) %>%
+        summarise(average_tax_rate = mean(ifelse(Taxable_Income < 1, 0,
+                                            income_tax(Taxable_Income, fy.year = input$TargetFY)/Taxable_Income
+                                            )),
+                  average_tax_rate_new = mean(ifelse(Taxable_Income < 1, 0,
+                                                new_income_tax(Taxable_Income)/Taxable_Income))) ->
+        avg_tax_rates
+      
       # Reactive expression to compose a data frame containing all of
       # the values
       
@@ -232,7 +243,9 @@ shinyApp( options = list(height = 1024),
                                "Extra revenue", 
                                "$100,000",
                                paste("Cameo 1 saving", input$cameo1),
-                               paste("Cameo 2 saving", input$cameo2)),
+                               paste("Cameo 2 saving", input$cameo2),
+                               "old_avg_tax_rate",
+                               "new_avg_tax_rate"),
         Value = as.character(c(input$rate_1, 
                                input$rate_2,
                                input$rate_3,
@@ -243,7 +256,10 @@ shinyApp( options = list(height = 1024),
                                the_amount_remaining,
                                grattan_dollar(new_income_tax(cpi_inflator(100e3, from_fy = "2012-13", to_fy = "2013-14"))),
                                grattan_dollar(cameo1_diff),
-                               grattan_dollar(cameo2_diff)))
+                               grattan_dollar(cameo2_diff),
+                               avg_tax_rates$average_tax_rate,
+                               avg_tax_rates$average_tax_rate_new
+                               ))
         ) 
       }) 
     
