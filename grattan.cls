@@ -10,11 +10,11 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
   \makeindex
 \RequirePackage{xcolor}
 \RequirePackage{amsmath,amssymb}
-\RequirePackage{tikz,adjustbox}
-  \usetikzlibrary{positioning}
-  \usetikzlibrary{decorations.text}
-  \usetikzlibrary{decorations.pathmorphing}
-  \usetikzlibrary{patterns,arrows,decorations.pathreplacing} % for waterfalls
+% \RequirePackage{tikz,adjustbox}
+%   \usetikzlibrary{positioning}
+%   \usetikzlibrary{decorations.text}
+%   \usetikzlibrary{decorations.pathmorphing}
+%   \usetikzlibrary{patterns,arrows,decorations.pathreplacing} % for waterfalls
 \RequirePackage{float}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
@@ -303,7 +303,7 @@ left=2.75cm,right=2.75cm
 %% ---------------------------------
 %  Headers and footers
 %% ---------------------------------
-\RequirePackage[headsepline,plainheadsepline,footsepline,plainfootsepline]{scrlayer-scrpage}
+\RequirePackage[headsepline=1pt,plainheadsepline,footsepline=1pt,plainfootsepline]{scrlayer-scrpage}
 
 \addtolength{\textheight}{44pt}
 \addtolength{\footskip}{-12pt}
@@ -330,8 +330,8 @@ left=2.75cm,right=2.75cm
 
 \setkomafont{headsepline}{\color{Orange}}
 \setkomafont{footsepline}{\color{Orange}}
-\setheadsepline{1pt}
-\setfootsepline{1pt}
+%\setheadsepline{1pt}
+%\setfootsepline{1pt}
 %\setheadtopline{0pt}  
 \pagestyle{scrheadings}
 
@@ -392,6 +392,7 @@ left=2.75cm,right=2.75cm
 \endgroup}
   
 \AtBeginDocument{%
+\lsstyle
 \let\mytitle\@title
 \let\myauthor\@author
 % TitlePage
@@ -401,7 +402,6 @@ left=2.75cm,right=2.75cm
 \ClearShipoutPicture
 \clearpage
 \twocolumn
-\lsstyle
 %
 % Following page.
   \subsection*{Grattan Institute Support}
