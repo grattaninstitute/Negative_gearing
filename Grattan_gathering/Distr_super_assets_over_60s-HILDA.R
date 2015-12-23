@@ -4,6 +4,8 @@ library(data.table)
 library(dplyr)
 library(magrittr)
 library(tidyr)
+library(readr)
+library(readxl)
 library(ggplot2)
 library(scales)
 library(grattan)
@@ -15,6 +17,18 @@ hilda_master <-
 hilda <- read.dta("../HILDA/Household_j130c.dta")
 hilda <- data.table(hilda)
 
+hildaEp <- read.dta("../HILDA/Eperson_j130c.dta")
+hildaEp <- data.table(hildaEp)
+
+hilda.HH.EP.merge <- 
+  data.table:::merge.data.table(hilda, hildaEp, by = "jhhrhid", suffixes = c("_hh", "_ep"))
+
+data_dictionary <-
+    read_excel("../HILDA/data_dictionary.xlsx", sheet = "For_input")
+
+data_dictionary.wealth <- 
+    read_excel("../HILDA/data_dictionary.xlsx", sheet = "Wealth_data_dictionary", col_types = rep("text", 17))
+
 hilda %>%
   select(
     jhhrhid,
@@ -22,7 +36,8 @@ hilda %>%
     jhwsupei, # Superannuation 
     jhwfini, # financial assets
     jhwassei, # other assets
-    age = jhgage1
+    age = hgage,
+    age1 = jhgage1
   ) %>% 
   mutate(
     prop_super = jhwfini / jhwassei
@@ -138,3 +153,56 @@ hilda %>%
   geom_histogram() + 
   theme(legend.position = c(0.8, 0.8)) + 
   scale_x_continuous(label=percent) 
+
+# Enumerated person ====
+hildaEp %>%
+  grplot(aes(x = (jpwsupri + jpwsupwi)/(jhwnwip - jhwnwin))) + 
+  geom_histogram()
+
+
+# Both ====
+hilda.HH.EP.merge %>%
+  filter(jhgage >= 18) %>%
+  mutate(asset_percentile  = .bincode(jhwassei, breaks = asset_percentiles, include.lowest = TRUE),
+         super_percentile  = .bincode(jhwsupei, breaks = super_percentiles, include.lowest = TRUE)
+         # ,income_percentile = .bincode()
+         ,super_prop_of_asset = jhwsupei / jhwassei
+         ) %>%
+  grplot(aes(x = super_prop_of_asset)) + 
+  geom_histogram(aes(fill = jhgage >= 60 & jhgage <= 70), binwidth = 0.10) + 
+  scale_x_continuous(label = percent, breaks = (0:5)/5,  limits = c(0,1)) + 
+  scale_y_continuous(label = grattan_dollar)
+
+# =====
+# SIH 2013-14
+sih201314 <- 
+  read.dta("../SIH/Stata files/sih13bh.dta") %>%
+  data.table
+
+
+sih201314.var.listing <-  
+  read_excel("../SIH/SIH_201314_variable_listing.xlsx", sheet = "Household") %>%
+  filter(!is.na(Identifier)) %>%
+  data.table %>%
+  setnames(old = c("Label and categories", "Identifier"), c("Label", "Identifier")) %>% 
+  mutate(new_label = gsub("[^a-zA-Z0-9]+", "_",
+                          gsub("(\\s+$)|(^\\s+)", "", Label)),
+         # Cleanse of random vars
+         Identifier = gsub("(^\\s+)|(\\s+$)", 
+                           "",
+                           Identifier)) %>%
+  setkey(Identifier)
+
+# Some variables haven't been coded in a normal form, 
+# i.e. they are ranges of variables or describe the variable
+# rather than being the explicit variable.  Accordingly, 
+# we exclude them from our table.
+
+sih201314.var.listing.subset <-
+  sih201314.var.listing %>%
+  filter(!grepl("\\s", Identifier), 
+         (Identifier %in% names(sih201314)))
+
+sih201314 %>% 
+  setnames(old = sih201314.var.listing.subset$Identifier, 
+           new = sih201314.var.listing.subset$new_label)
