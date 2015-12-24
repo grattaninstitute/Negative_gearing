@@ -291,5 +291,46 @@ sih201314 %>%
   mutate(total_super_balance = Balance_of_accounts_with_government_superannuation_funds_household_level + Balance_of_accounts_with_non_government_superannuation_funds_household_level,
          prop_assets_in_super = total_super_balance / Net_wealth_of_household) %>%
   filter(prop_assets_in_super < 0.01)
+
+## Tree diagram
+# ====
+rpart.zero.super <- 
+  sih201314 %>%
+  mutate(total_super_balance = Balance_of_accounts_with_government_superannuation_funds_household_level + Balance_of_accounts_with_non_government_superannuation_funds_household_level,
+         prop_assets_in_super = total_super_balance / Net_wealth_of_household) %>%
+  select(-Unique_household_number, -contains("supera"), -prop_assets_in_super) %>%
+  rpart(total_super_balance == 0 ~ ., data = ., weights = Weight_HH_SIH_) 
+
+rpart.zero.super %$%
+  as.list(variable.importance) %>%
+  data.frame() %>%
+  mutate(id = 1:n()) %>%
+  gather(variable, importance, -id) %>%
+  grplot(aes(x = variable, y = importance)) + 
+  geom_bar(stat = "identity") +
+  coord_flip()
+
+# collinearity much?
+sih201314 %>% count(NOEMPHBC, NOEARNBC) %>% grplot(aes(x = NOEMPHBC, y = NOEARNBC, alpha = n/max(n))) + geom_tile()
+
+rpart.zero.super <- 
+  sih201314 %>%
+  mutate(total_super_balance = Balance_of_accounts_with_government_superannuation_funds_household_level + Balance_of_accounts_with_non_government_superannuation_funds_household_level,
+         prop_assets_in_super = total_super_balance / Net_wealth_of_household) %>%
+  select(-Unique_household_number, -contains("supera"), -prop_assets_in_super,
+         -NOEARNBC) %>%
+  rpart(total_super_balance == 0 ~ ., data = ., weights = Weight_HH_SIH_) 
+
+rpart.zero.super %$%
+  as.list(variable.importance) %>%
+  data.frame() %>%
+  mutate(id = 1:n()) %>%
+  gather(variable, importance, -id) %>%
+  grplot(aes(x = variable, y = importance)) + 
+  geom_bar(stat = "identity") +
+  scale_y_continuous(expand = c(0,0)) + 
+  coord_flip()
+
+
   
   
