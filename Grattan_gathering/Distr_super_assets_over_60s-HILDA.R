@@ -206,3 +206,90 @@ sih201314.var.listing.subset <-
 sih201314 %>% 
   setnames(old = sih201314.var.listing.subset$Identifier, 
            new = sih201314.var.listing.subset$new_label)
+
+
+# ====
+# Person file preparation
+sih201314.person <-
+  read.dta("../SIH/Stata files/sih13bp.dta") %>%
+  data.table
+
+sih201314.person.var.names <- 
+  read_excel("../SIH/SIH_201314_variable_listing.xlsx", sheet = "Person") %>%
+  filter(!is.na(Identifier)) %>%
+  data.table %>%
+  setnames(old = c("Label and categories", "Identifier"), c("Label", "Identifier")) %>% 
+  mutate(new_label = gsub("[^a-zA-Z0-9]+", "_",
+                          gsub("(\\s+$)|(^\\s+)", "", Label)),
+         # Cleanse of random vars
+         Identifier = gsub("(^\\s+)|(\\s+$)", 
+                           "",
+                           Identifier)) %>%
+  setkey(Identifier)
+
+
+sih201314.var.listing.subset.person <-
+  sih201314.person.var.names %>%
+  filter(!grepl("\\s", Identifier), 
+         (Identifier %in% names(sih201314.person)))
+
+sih201314.person %>% 
+  setnames(old = c(sih201314.var.listing.subset.person$Identifier
+                   , "AGEBC"), # age mislabled in original
+           new = c(sih201314.var.listing.subset.person$new_label
+                   , "Age_of_person"))
+
+ages.by.hh <- 
+  sih201314.person %>%
+  select(Unique_household_number,
+         Person_number_within_each_income_unit,
+         Age_of_person)
+
+max.age.by.hh <- 
+  ages.by.hh %>%
+  group_by(Unique_household_number) %>%
+  summarise(max_age = max(Age_of_person))
+  
+
+# ====
+sih201314 %>%
+  #data.table:::merge.data.table(max.age.by.hh, by = "Unique_household_number") %>%
+  mutate(total_super_balance = Balance_of_accounts_with_government_superannuation_funds_household_level + Balance_of_accounts_with_non_government_superannuation_funds_household_level,
+         prop_assets_in_super = total_super_balance / Net_wealth_of_household) %>%
+  grplot(aes(x = prop_assets_in_super, y = ..count.., weights = Weight_HH_SIH_)) + 
+  scale_x_continuous(limits = c(0,1)) +
+  scale_y_continuous(label=comma)
+
+# ====
+# Relationship betwen prop assets in super and net wealth
+sih201314 %>%
+  #data.table:::merge.data.table(ages.by.hh, by = "Unique_household_number") %>%
+  mutate(total_super_balance = Balance_of_accounts_with_government_superannuation_funds_household_level + Balance_of_accounts_with_non_government_superannuation_funds_household_level,
+         prop_assets_in_super = total_super_balance / Net_wealth_of_household) %>%
+  #
+  ggplot(aes(x = prop_assets_in_super, y = Net_wealth_of_household, weight = Weight_HH_SIH_)) + 
+  geom_bin2d(binwidth = c(0.01, 1000)) + 
+  scale_x_continuous(limits = c(0,1)) + 
+  scale_y_continuous(limits = c(0,2e5))
+
+# Jack all.
+
+# ==== 
+# What about income?
+sih201314 %>%
+  #data.table:::merge.data.table(ages.by.hh, by = "Unique_household_number") %>%
+  mutate(total_super_balance = Balance_of_accounts_with_government_superannuation_funds_household_level + Balance_of_accounts_with_non_government_superannuation_funds_household_level,
+         prop_assets_in_super = total_super_balance / Net_wealth_of_household) %>%
+  #
+  ggplot(aes(x = prop_assets_in_super, y = Total_current_weekly_HH_income_from_all_sources, weight = Weight_HH_SIH_)) +
+  stat_bin2d(binwidth = c(0.01, 1000)) + 
+  scale_x_continuous(limits = c(0,1))
+
+# ====
+sih201314 %>%
+  data.table:::merge.data.table(ages.by.hh, by = "Unique_household_number") %>%
+  mutate(total_super_balance = Balance_of_accounts_with_government_superannuation_funds_household_level + Balance_of_accounts_with_non_government_superannuation_funds_household_level,
+         prop_assets_in_super = total_super_balance / Net_wealth_of_household) %>%
+  filter(prop_assets_in_super < 0.01)
+  
+  
