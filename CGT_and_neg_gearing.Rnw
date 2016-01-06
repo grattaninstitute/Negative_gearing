@@ -1125,7 +1125,7 @@ henry_taxstats %>%
 @
 
 <<Summary-chunk, results='hide'>>=
-new.discount <- 0.30
+new.discount <- 0.25
 
 # Our proposal
 policy <- cost_of_daley_policy_fast(2015, CGT.discount = new.discount) 
@@ -1230,7 +1230,7 @@ As a consequence property prices have soared and revenue has leaked, mostly for 
 There is little reason to maintain such a wide gulf between the treatment of gains and losses.
 The Commonwealth Government's primary goal should be to narrow this gulf.
  
-Reducing the capital gains discount and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{costing_policy_2015_year0}~billion a year in the short-term.
+Reducing the capital gains discount to \Sexpr{100 * new.discount}~per cent and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{costing_policy_2015_year0}~billion a year in the short-term.
 The preferential treatment of capital gains should be moderated, even if the policy surrounding negative gearing is untouched.
 Negative gearing should also be limited.
 Allowing deductions for costs, including interest costs, is a standard feature of the tax system. It avoids bias against debt financed investments.
@@ -1559,10 +1559,11 @@ both <- bind_rows(no_cg, incl_cg)
 both %T>%
   chart_data %>%
   grplot(aes(x = factor(Income_decile), y = tot.CG, fill = decile_of)) + 
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity", width = 0.9) + 
   facet_grid(~decile_of) + 
-  scale_y_continuous(expand = list(c(0,0.1), c(0,0)), label = percent) + 
+  scale_y_continuous(expand = c(0,0.00), label = percent) + 
   scale_fill_manual(values = gpal(2, T)) + 
+  annotate("blank", x = 1, y = 0.7) + 
   theme(strip.background = element_rect(color = theGrey, size = 12, fill = theGrey),
         strip.text = element_text(size = 23, color = "white", face = "bold", vjust = 0.8),
         panel.margin.x = grid::unit(1, "lines")) + 
@@ -1589,7 +1590,7 @@ get_sample_file(2013) %>%
             mean.spous = mean(Spouse_adjusted_taxable_inc)) %>%
   gather(amounts, means, mean.cg:mean.spous) %>% 
   grplot(aes(x = Income_decile, fill = amounts, y = means)) + 
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity", width = 1) + 
   facet_grid(~age) + 
   theme(legend.position = "top")
 @
@@ -1624,7 +1625,8 @@ read_excel("ASX_Returns_by_asset_class.xlsx") %>%
   #
   grplot(aes(y = returnz, x = `Asset class`, fill = tax_class)) + 
   geom_bar(stat = "identity",
-           position = "dodge") + 
+           position = "dodge",
+           width = 1) + 
   geom_hline(yintercept = 0.028, 
              color = theGrey, size = 2) + 
   annotate("text", x = 2, y = 0.0299, 
@@ -1793,7 +1795,7 @@ HILDA_wave10 %>%
             mean_asset = mean(jhwassei),
             mean_inco = mean(jhifeftp)) %>%
   grplot(aes(x = Income_decile, y = mean_prop_bank)) + 
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity", width = 1)
 @
 
 <<Investor_tax_rates>>=
@@ -2258,7 +2260,7 @@ taxstats_ts <- read_excel("taxstats_time_series1979-2013.xlsx", sheet = "Individ
   filter(!is.na(unit)) 
 
 taxstats_ts <- taxstats_ts %>%
-  gather_("fy.year", "value", grep("[0-9]{4}", names(taxstats_ts))) %>%
+  gather_("fy.year", "value", grep("[0-9]{4}", names(taxstats_ts), value = TRUE)) %>%
   # getting real tired of en-dashes posing as hyphens.Anything that's not a number is a hyphen
   mutate(fy.year = gsub("[^0-9]", "-", fy.year)) %>% 
   mutate(fy.year = ifelse(fy.year == "1999-2000", "1999-00", fy.year))
@@ -2357,7 +2359,7 @@ taxstats_ts %>%
   chart_data %>%
   grplot + 
   # geom_line(aes(x = year, y = value.real, group = 1)) +
-  geom_bar(aes(x = year, y = value.real), stat = "identity")+
+  geom_bar(aes(x = year, y = value.real), stat = "identity", width = 1)+
   annotate("segment", x = 1987.75, xend = 1987.75, y = -Inf, yend = Inf,
            linetype = "dashed") + 
   annotate("text", hjust = 0,
@@ -2703,7 +2705,7 @@ rbind(benefits_by_taxable_income_before_deductions, benefits_by_taxable_income) 
   grplot(aes(x = factor(Decile), y = prop_benefit, fill = Decile_of)) + 
   scale_fill_manual(values = gpal(2,T)) +
   scale_color_manual(values = rev(gpal(2,T))) + 
-  geom_bar(stat = "identity", position = "dodge") + 
+  geom_bar(stat = "identity", position = "dodge", width = 1) + 
   scale_y_continuous(expand = c(0,0.00), limits = c(0,0.525), label=percent) + 
   #scale_y_continuous(expand = c(0,0), limits = c(0,3300), label = grattan_dollar) + 
   facet_grid(~Decile_of) + 
