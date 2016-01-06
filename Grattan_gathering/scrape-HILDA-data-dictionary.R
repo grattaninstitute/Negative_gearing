@@ -43,7 +43,24 @@ setnames(metadata.tbl,
 readr::write_csv(metadata.tbl[!grepl("^No results were found for search string", Variable)],
                  path = "../HILDA/csv/data_dictionary.csv")
 
-
+metadata.tbl %>%
+  mutate(in_dollars = grepl("$", Description, fixed = TRUE),
+         Description = gsub("($)", "", Description, fixed = TRUE),
+         weighted.topcode = grepl("[weighted topcode]", Description, fixed = TRUE),
+         Description = gsub("[weighted topcode]", "", Description, fixed = TRUE),
+         derived.var = grepl("^DV[:] ", Description),
+         Description = gsub("^DV[:] ", "", Description),
+         imputed.var = grepl("[imputed]", Description, fixed = TRUE),
+         Description = gsub("[imputed]", "", Description, fixed = TRUE),
+         signed.var = grepl("positive values", Description, ignore.case = TRUE) | grepl("negative values", Description, ignore.case = TRUE),
+         sign.of.var = signed.var * ifelse(grepl("positive values", Description, ignore.case = TRUE), 1L, -1L),
+         Description = gsub("(positive values*)|(negative values*)", "", Description,
+                            ignore.case = TRUE),
+         SCQ.var = grepl("[SCQ]", Description, fixed = TRUE),
+         Description = gsub("[SCQ]", "", Description, fixed = TRUE),
+         estimated.var = grepl("[estimated]", Description, fixed = TRUE),
+         Long_name = gsub("[^0-9A-Za-z]", "_", Description)
+  ) 
 
 
 
