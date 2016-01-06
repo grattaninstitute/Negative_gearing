@@ -54,7 +54,8 @@ name_decoder <-
   mutate(nVariable = paste0("n", Variable)) %>%
   filter(nVariable %in% names(hilda.w14.hh.raw))
 
-hilda.w14.hh <- hilda.w14.hh.raw
+hilda.w14.hh <- copy(hilda.w14.hh.raw)
+
 setnames(hilda.w14.hh,
          old = name_decoder$nVariable, 
          new = name_decoder$Long_name)
@@ -70,9 +71,6 @@ for (k in which(numeric.cols)){
   set(hilda.w14.hh, j = k, value = ifelse(hilda.w14.hh[[k]] < 0, NA, hilda.w14.hh[[k]]))
 }
 
-
-
-
 hilda.w14.hh %>% 
   select(Household_wealth_Total_superannuation,
          Household_wealth_Total_superannuation.i,
@@ -82,5 +80,46 @@ hilda.w14.hh %>%
   mutate(prop_superannuation = Household_wealth_Total_superannuation / (Household_Net_Worth.p - Household_Net_Worth.n)) %>%
   grplot(aes(x = prop_superannuation, weight = Household_population_weight)) + 
   geom_histogram() +
+  xlim(-1,1)
+
+Age.vars <- grep("^Age_last", name_decoder$Long_name, value = TRUE)
+# HILDA recodes *these* variables as characters with such 
+# splendid encodings as [-1] Not asked -> NA
+
+k <- NULL
+for (k in Age.vars){
+  set(hilda.w14.hh, j = k, value = as.integer(as.character(hilda.w14.hh[[k]])))
+}
+
+# Next, determine whether a household has only people of a certain age.
+# The ages we are interested in are those between 50 and 60. 
+hilda.w14.hh[ ,temp.id := 1:.N]
+setkey(hilda.w14.hh, temp.id)
+id.by.age <- 
+  hilda.w14.hh %>% 
+  mutate(temp.id = 1:n()) %>%
+  select_(.dots = c("temp.id", Age.vars)) %>%
+  melt.data.table(measure.vars = Age.vars, variable.name = "Person", value.name = "Age") %>%
+  filter(!is.na(Age)) %>%
+  group_by(temp.id) %>%
+  summarise(min_age = min(Age),
+            max_age = max(Age)) %>%
+  mutate(btwn_50_60 = min_age >= 50 & max_age <= 60) %>%
+  select(temp.id, btwn_50_60) %>%
+  setkey(temp.id)
+
+hilda.w14.hh %>%
+  select(Household_wealth_Total_superannuation,
+         Household_wealth_Total_superannuation.i,
+         Household_Net_Worth.p,
+         Household_Net_Worth.n,
+         Household_population_weight,
+         temp.id) %>%
+  merge(id.by.age) %>%
+  mutate(prop_superannuation = Household_wealth_Total_superannuation / (Household_Net_Worth.p - Household_Net_Worth.n)) %>%
+  grplot(aes(x = prop_superannuation, weight = Household_population_weight,
+             fill = btwn_50_60)) + 
+  geom_histogram() +
+  facet_grid(btwn_50_60 ~ .) + 
   xlim(-1,1)
 
