@@ -36,7 +36,7 @@ hilda %>%
     jhwsupei, # Superannuation 
     jhwfini, # financial assets
     jhwassei, # other assets
-    age = hgage,
+    #age = hgage,
     age1 = jhgage1
   ) %>% 
   mutate(
@@ -45,7 +45,7 @@ hilda %>%
 #   group_by(age) %>%
 #   summarise(prop_super = weighted.mean(prop_super, jhhwth)) %>%
   #
-  grplot(aes(x = age, y = prop_super, group = 1, weight = jhhwth)) + 
+  grplot(aes(x = age1, y = prop_super, group = 1, weight = jhhwth)) + 
   stat_smooth(color = Orange, size = 1.5) +
   scale_y_continuous(label=percent)
 
