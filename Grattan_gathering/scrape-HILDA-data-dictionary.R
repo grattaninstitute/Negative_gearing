@@ -1,28 +1,36 @@
 library(httr)
 library(rvest)
 
+filename <- "../HILDA/Wave14/Rperson_n140c.dta"
 hilda.w14.hh.names <- 
-  sub("^n", "", names(fread("../HILDA/Wave14/csv/Household_n140c.csv", nrows = 5)))
+  sub("^n", "", names(read.dta(filename)))
+hilda.file <- stringr::str_extract(pattern = "(Household)|(Eperson)|(Rperson)|(Combined)",
+                                   string = filename)
 
 url <- "https://www.melbourneinstitute.com/hildaddictionary/onlinedd/srchVarnameUsingCategoriesCrossWave.aspx"
 hilda_session <- html_session(url)
 
 get_metadata1 <- function(var){
+  i <- i + 1
+  if (!(i %% 5)){
+    cat("i = ", i, ": Variable = ", var, "\n")
+  }
+  
   filled_form <- 
     hilda_session %>%
     html_form() %>%
     extract2(1) %>%
     set_values(DerivedVariableTextBox = var)
   
-    hilda_session %>%
-    submit_form(filled_form) %>%
+  hilda_session %>%
+    submit_form(filled_form, submit = 'ImageButton1') %>%
     html_nodes(xpath = '//*[@id="gridviewQueryResults"]') %>%
     html_table(fill = TRUE)
 }
-
+i <- 0
 metadata.list <- lapply(as.list(hilda.w14.hh.names), get_metadata1)
 metadata.list.list <- lapply(metadata.list, function(lst) magrittr::extract2(lst, 1))
-metadata.tbl <- rbindlist(metadata.list.list)
+metadata.tbl <- rbindlist(metadata.list.list, use.names = TRUE, fill = TRUE)
 
 # Inconsistent treatment of NAs: sometimes ""
 for (j in 1:ncol(metadata.tbl)){
@@ -41,7 +49,7 @@ setnames(metadata.tbl,
 # Still some variables left. That's ok: we got what we needed.
 # However, some variables were not returned:
 readr::write_csv(metadata.tbl[!grepl("^No results were found for search string", Variable)],
-                 path = "../HILDA/csv/data_dictionary.csv")
+                 path = paste0("../HILDA/csv/data_dictionary_", hilda.file, ".csv"))
 
 metadata.tbl %>%
   mutate(in_dollars = grepl("$", Description, fixed = TRUE),

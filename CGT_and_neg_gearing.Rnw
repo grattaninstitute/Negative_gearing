@@ -2480,20 +2480,16 @@ housing_finance_commitments <-
 @
 
 <<What_price_change_req_to_obtain_same_return>>=
-res_dwelling_values <- 
-  readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/RES_DWEL_ST/1+2+3+4+5.0+1+2+3+4+5+6+7+8.Q/ABS?startTime=2011&endTime=2015") %>% 
-  as.data.frame 
-
-metadata <- 
+res_dwelling_values_metadata <- 
   readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS")
 
-cls <- slot(metadata, "codelists")
-codelists <- sapply(slot(cls, "codelists"), function(x) slot(x, "id")) 
-
 recode_res_dwelling_values <- function(DT, colname){
+  cls <- slot(res_dwelling_values_metadata, "codelists")
+  codelists <- sapply(slot(cls, "codelists"), function(x) slot(x, "id")) 
+  
   colname.code <- 
-    as.data.frame(slot(metadata, "codelists"), 
-                codelistId = codelists[grep(colname, codelists)]) %>%
+    as.data.frame(slot(res_dwelling_values_metadata, "codelists"), 
+                  codelistId = codelists[grep(colname, codelists)]) %>%
     as.data.table %>%
     select(id, label.en) %>%
     setnames(old = "label.en", paste0("label_", colname))
@@ -2501,32 +2497,20 @@ recode_res_dwelling_values <- function(DT, colname){
   merge(DT, colname.code, by.x = colname, by.y = "id")
 }
 
-# MEASURE.code <- 
-#   as.data.frame(slot(metadata, "codelists"), 
-#                 codelistId = codelists[grep("MEASURE", codelists)]) %>%
-#   select(-ends_with("fr")) # damn French
-# 
-# ASGS_2011.code <- 
-#   as.data.frame(slot(metadata, "codelists"), 
-#                 codelistId = codelists[grep("ASGS_2011", codelists)]) %>%
-#   select(-ends_with("fr"))
-
-res_dwelling_values %>%
+res_dwelling_values <- 
+  readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/RES_DWEL_ST/1+2+3+4+5.0+1+2+3+4+5+6+7+8.Q/ABS?startTime=2011&endTime=2015") %>% 
+  as.data.frame %>%
   recode_res_dwelling_values("ASGS_2011") %>%
   recode_res_dwelling_values("MEASURE") %>%
-  recode_res_dwelling_values("FREQUENCY")
-#   merge(MEASURE.code, by.x = "MEASURE", by.y = "id") %>%
-#   merge(ASGS_2011.code, by.x = "ASGS_2011", by.y = "id") %>%
-  as.data.table
+  recode_res_dwelling_values("FREQUENCY") %>%
+  data.table
 
-
-metadata_code_ds <- 
-  as.data.frame(metadata[[which(names(metadata) == "CodeLists")]]) %>%
-  gather(var, val, -CodeList.Name.text) %>% 
-  head
-  setnames(old = names(.))
-
-
+res_dwelling_values %>% 
+  filter(label_ASGS_2011 == "Australia",
+         label_MEASURE == "Mean price of residential dwelling ($'000)")  %>%
+  mutate(r = (lead(obsValue)/obsValue)^ifelse(label_FREQUENCY == "Quarterly", 4, NA_real_) - 1) %>%
+  arrange(obsValue)
+  
 @
 
 <<Owner_occupiers_loans_are_being_outnumbered_by_investors>>=
