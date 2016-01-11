@@ -1,21 +1,21 @@
 library(httr)
 library(rvest)
+library(magrittr)
+library(data.table)
+library(readr)
+library(foreign)
 
-filename <- "../HILDA/Wave14/Rperson_n140c.dta"
-hilda.w14.hh.names <- 
+filename <- "../HILDA/Wave14/Eperson_n140c.dta"
+hilda.w14.names <- 
   sub("^n", "", names(read.dta(filename)))
 hilda.file <- stringr::str_extract(pattern = "(Household)|(Eperson)|(Rperson)|(Combined)",
                                    string = filename)
 
-url <- "https://www.melbourneinstitute.com/hildaddictionary/onlinedd/srchVarnameUsingCategoriesCrossWave.aspx"
+url <- 
+  "https://www.melbourneinstitute.com/hildaddictionary/onlinedd/srchVarnameUsingCategoriesCrossWave.aspx"
 hilda_session <- html_session(url)
 
 get_metadata1 <- function(var){
-  i <- i + 1
-  if (!(i %% 5)){
-    cat("i = ", i, ": Variable = ", var, "\n")
-  }
-  
   filled_form <- 
     hilda_session %>%
     html_form() %>%
@@ -25,10 +25,10 @@ get_metadata1 <- function(var){
   hilda_session %>%
     submit_form(filled_form, submit = 'ImageButton1') %>%
     html_nodes(xpath = '//*[@id="gridviewQueryResults"]') %>%
-    html_table(fill = TRUE)
+    html_table(fill = TRUE) 
 }
-i <- 0
-metadata.list <- lapply(as.list(hilda.w14.hh.names), get_metadata1)
+
+metadata.list <- lapply(as.list(hilda.w14.names), get_metadata1)
 metadata.list.list <- lapply(metadata.list, function(lst) magrittr::extract2(lst, 1))
 metadata.tbl <- rbindlist(metadata.list.list, use.names = TRUE, fill = TRUE)
 
@@ -48,8 +48,10 @@ setnames(metadata.tbl,
          new = paste0("Wave_", num.cols))
 # Still some variables left. That's ok: we got what we needed.
 # However, some variables were not returned:
-readr::write_csv(metadata.tbl[!grepl("^No results were found for search string", Variable)],
-                 path = paste0("../HILDA/csv/data_dictionary_", hilda.file, ".csv"))
+metadata.tbl %>%
+  select(Variable, Description, starts_with("Wave")) %>%
+  filter(!grepl("^No results were found for search string", Variable)) %>%
+  write_csv(path = paste0("../HILDA/csv/data_dictionary_", hilda.file, ".csv"))
 
 metadata.tbl %>%
   mutate(in_dollars = grepl("$", Description, fixed = TRUE),
