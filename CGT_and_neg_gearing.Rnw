@@ -90,7 +90,7 @@ library(foreign)
 library(Hmisc)
 library(devtools)
 library(grattan)
-#library(XLConnect)
+library(XLConnect)
 library(dplyr)
 library(tidyr)
 library(magrittr)
@@ -2508,8 +2508,9 @@ res_dwelling_values <-
 res_dwelling_values %>% 
   filter(label_ASGS_2011 == "Australia",
          label_MEASURE == "Mean price of residential dwelling ($'000)")  %>%
+  arrange(obsTime) %>%
   mutate(r = (lead(obsValue)/obsValue)^ifelse(label_FREQUENCY == "Quarterly", 4, NA_real_) - 1) %>%
-  arrange(obsValue)
+  arrange(obsTime)
   
 @
 
