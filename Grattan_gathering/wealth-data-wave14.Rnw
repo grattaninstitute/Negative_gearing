@@ -1,11 +1,13 @@
 \documentclass{report}
-
+\usepackage[twocolumn,landscape]{geometry}
 \begin{document}
 
-<<>>=
-knitr::opts_chunk$set(fig.width = 11, out.width = "11in")
+
+<<a>>=
+knitr::opts_chunk$set(fig.width = 11, out.width = "11in", fig.show = "hide", cache=TRUE)
 library(data.table)
 library(dplyr)
+library(magrittr)
 library(survey)
 library(ggplot2)
 library(grattan)
@@ -278,7 +280,7 @@ hilda.w14.hh %>%
 
 \section{Lump sum}
 
-<<hilda_Ep>>=
+<<hilda_Ep, eval=FALSE>>=
 read_hilda_file <- 
   function(filename){
     dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
@@ -301,7 +303,7 @@ names(hilda_list) <- enumerate.person.files.names
 lapply(seq_along(hilda_list), function(element) readr::write_csv(hilda_list[[element]], path = paste0("../HILDA/Wave14/csv/", names(hilda_list)[element], ".csv")))
 @
 
-<<Eperson>>=
+<<Eperson, eval=F>>=
 read_hilda_strip_first_letter_add_column_id <- 
   function(filename, n_waves = 14){  
     temp <- fread(filename)
@@ -363,47 +365,9 @@ lapply(seq_along(hilda_list),
                                                         ".csv")))
 @
 
-<<Eperson>>=
-read_hilda_strip_first_letter_add_column_id <- 
-  function(filename, n_waves = 14){  
-    temp <- fread(filename)
-    nms <- names(temp)
-    # detect the prefix if it is the wave id.
-    nms.prefixes <- unique(gsub("^(.).*$", "\\1", nms))
-    yearid <- nms.prefixes[nms.prefixes %in% letters[1:n_waves]]
-    # we're interested in stripping the names that specify the wave id (a-m)
-    
-    setnames(temp, old = nms, new = sub(paste0("^[a-", letters[n_waves],"]"), "", nms))
-    
-    wave.decoder <- 
-      data.table(
-        wave = letters[1:n_waves],
-        Year = 2000 + 1:n_waves
-      ) %>%
-      setkey(wave)
-    
-    temp %<>% mutate(wave = yearid) 
-    
-    setkey(temp, wave)
-    temp <- merge(temp, wave.decoder)
-  }
 
-hilda_Ep <- 
-  rbindlist(lapply(list.files(path = "../HILDA/Wave14/csv",
-                              pattern = "E.*csv$", 
-                              full.names = TRUE),
-                   read_hilda_strip_first_letter_add_column_id),
-            use.names = TRUE,
-            fill = TRUE
-  )
-@
 
-<<EpRename>>=
-Ep_metadata <- 
-  fread("../HILDA/csv/data_dictionary_Eperson.csv")
-@
-
-<<hilda_Rp>>=
+<<hilda_Rp_combine>>=
 hilda_Rp <- 
   rbindlist(lapply(list.files(path = "../HILDA/Wave14/csv",
                               pattern = "R.*csv$", 
@@ -411,7 +375,12 @@ hilda_Rp <-
                    read_hilda_strip_first_letter_add_column_id),
             use.names = TRUE,
             fill = TRUE
-  )
+  ) %>%
+  select(wave, 
+         hhwtrp, 
+         oiflssa,
+         oifsupi
+         )
 
 
 
@@ -449,7 +418,7 @@ hilda_Rp %>%
   scale_y_continuous(label = function(val){paste0("$", val/1e9, "bn")})
 @
 
-<<>>=
+<<b>>=
 hilda_Rp %>%
   select(wave, 
          Responding_person_weight = hhwtrp, 
