@@ -1,18 +1,55 @@
-\documentclass{report}
+\documentclass[a3paper]{report}
 \usepackage[twocolumn,landscape]{geometry}
+\addtolength\columnsep{10pt}
 \begin{document}
 
 
-<<a>>=
+<<packages>>=
 knitr::opts_chunk$set(fig.width = 11, out.width = "11in", fig.show = "hide", cache=TRUE)
+library(tidyr)
 library(data.table)
+library(foreign)
 library(dplyr)
 library(magrittr)
 library(survey)
 library(ggplot2)
 library(grattan)
+@
 
+<<functions>>=
+read_hilda_strip_first_letter_add_column_id <- 
+  function(filename, n_waves = 14){  
+    temp <- fread(filename)
+    nms <- names(temp)
+    # detect the prefix if it is the wave id.
+    nms.prefixes <- unique(gsub("^(.).*$", "\\1", nms))
+    yearid <- nms.prefixes[nms.prefixes %in% letters[1:n_waves]]
+    # we're interested in stripping the names that specify the wave id (a-m)
+    
+    setnames(temp, old = nms, new = sub(paste0("^[a-", letters[n_waves],"]"), "", nms))
+    
+    wave.decoder <- 
+      data.table(
+        wave = letters[1:n_waves],
+        Year = 2000 + 1:n_waves
+      ) %>%
+      setkey(wave)
+    
+    temp %<>% mutate(wave = yearid) 
+    
+    setkey(temp, wave)
+    temp <- merge(temp, wave.decoder)
+  }
 
+read_hilda_file <- 
+  function(filename){
+    dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
+                  orig.filename = filename)
+  }
+
+@
+
+<<loadHilda>>=
 # hilda.w14.hh <- foreign::read.dta("../HILDA/Wave14/Household_n140c.dta")
 hilda.w14.hh.raw <- as.data.table(readRDS("../HILDA/Wave14/csv/Household_n140c.rds"))
 
@@ -281,12 +318,6 @@ hilda.w14.hh %>%
 \section{Lump sum}
 
 <<hilda_Ep, eval=FALSE>>=
-read_hilda_file <- 
-  function(filename){
-    dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
-                  orig.filename = filename)
-  }
-
 enumerate.person.files <- 
   list.files(path = "../HILDA/Wave14/"
                     ,pattern = "^E.*dta$"  # Enumerate person
@@ -304,30 +335,6 @@ lapply(seq_along(hilda_list), function(element) readr::write_csv(hilda_list[[ele
 @
 
 <<Eperson, eval=F>>=
-read_hilda_strip_first_letter_add_column_id <- 
-  function(filename, n_waves = 14){  
-    temp <- fread(filename)
-    nms <- names(temp)
-    # detect the prefix if it is the wave id.
-    nms.prefixes <- unique(gsub("^(.).*$", "\\1", nms))
-    yearid <- nms.prefixes[nms.prefixes %in% letters[1:n_waves]]
-    # we're interested in stripping the names that specify the wave id (a-m)
-    
-    setnames(temp, old = nms, new = sub(paste0("^[a-", letters[n_waves],"]"), "", nms))
-    
-    wave.decoder <- 
-      data.table(
-        wave = letters[1:n_waves],
-        Year = 2000 + 1:n_waves
-      ) %>%
-      setkey(wave)
-    
-    temp %<>% mutate(wave = yearid) 
-    
-    setkey(temp, wave)
-    temp <- merge(temp, wave.decoder)
-  }
-
 hilda_Ep <- 
   rbindlist(lapply(list.files(path = "../HILDA/Wave14/csv",
                               pattern = "E.*csv$", 
@@ -338,7 +345,7 @@ hilda_Ep <-
   )
 @
 
-<<hilda_Rp>>=
+<<hilda_Rp, eval=FALSE>>=
 read_hilda_file <- 
   function(filename){
     dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
@@ -400,7 +407,7 @@ set_NAs <- function(hilda){
 
 set_NAs(hilda_Rp)
 @
-<<>>=
+<<PC-update-lump-sum>>=
 hilda_Rp %>%
   select(wave, 
          Responding_person_weight = hhwtrp, 
@@ -410,7 +417,8 @@ hilda_Rp %>%
   group_by(wave) %>%
   summarise(total_lump_sum = sum(Super_lump_sum * Responding_person_weight, na.rm = TRUE),
             total_super_income = sum(Super_income * Responding_person_weight, na.rm = TRUE)
-            ) %>%
+            ) %T>%
+  chart_data() %>%
   gather(group, value, total_lump_sum:total_super_income) %>% 
   grplot(aes(x = factor(as.integer(factor(wave))), 
              y = value, group = group, color = group)) + 
