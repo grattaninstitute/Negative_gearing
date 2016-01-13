@@ -252,18 +252,27 @@ hilda.w14.hh %>%
                 Household_wealth_Equity_investments.i,
                 Household_wealth_Total_property_Apportioned_value.i) %>%
   filter(!is.na(Age)) %>% 
-  group_by(Over60 = ifelse(Age >= 60, "Over 60", "Below 60"),
+  group_by(AgeSubset = cut(Age, breaks = c(-Inf, 60, 65, Inf), 
+                           labels = c("18-60", "60-65", "65+")),
            Household_wealth_decile, 
            wealth_type) %>%
   summarise(value = weighted.mean(value, Household_population_weight)) %>%
   data.table %>%
-  grplot(aes(x = factor(Household_wealth_decile), y = value, 
+  mutate(wealth_type = factor(wealth_type,
+                              labels = gsub("_", " ", 
+                                            gsub("Household_wealth_", 
+                                                 "", 
+                                                 levels(wealth_type), 
+                                                 fixed = TRUE)
+                                            )
+  )) %>%
+           grplot(aes(x = factor(Household_wealth_decile), y = value, 
              fill = wealth_type)) + 
   geom_bar(stat = "identity", width = 1) + 
   scale_y_continuous(label = function(x)paste0(grattan_dollar(x/1e6), " M"),
                      limits = c(0,4e6),
                      expand = c(0,0)) + 
-  facet_grid(~Over60) + 
+  facet_grid(~AgeSubset) + 
   theme(legend.position = c(0.3,0.8)) + 
   guides(fill = guide_legend(reverse = TRUE))
 @
