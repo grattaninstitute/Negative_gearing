@@ -38,14 +38,21 @@ replacement_rate <- function(income_initial,
              Retd = Age > retirement_age)
     
     ## Determine super balance
-    Tbl$Super_balance <- Reduce(f = function(prev_bal, income){prev_bal + prev_bal * super_rate_of_return * (1 - earnings_tax_effective) + income}, 
+    balance_now <- function(prev_bal, contribution){
+      prev_bal + prev_bal * super_rate_of_return * (1 - earnings_tax_effective) + contribution
+    }
+    
+    Tbl$Super_balance <- Reduce(f = balance_now, 
                                 x = Tbl$contributions, 
                                 accumulate = TRUE)
-
     
+    Tbl[ ,Super_balance_real := Super_balance / (1 + CPI + real_wage_growth) ^ (Year - year_initial))]
     
-    Tbl %<>% 
-      mutate(Super_balance_real = Super_balance / (1 + CPI + real_wage_growth) ^ (Year - year_initial))
+    balance_retd <- function(prev_bal, withdrawal){
+      # r_a rate of annuity inflation
+      # e_r earnings rate in retirement)
+      (prev_bal - withdrawal * (1 + r_a)) * (1 + e_r)
+    }
     
   }
   super_income <- 
