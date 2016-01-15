@@ -25,7 +25,8 @@ replacement_rate <- function(income_initial,
 ){
   if(SG_policy == "2014-15 Budget"){
     Tbl <- data.table(
-      Age = seq(age_initial, retirement_age, by = 1L)
+      Age = seq(age_initial, retirement_age + annuity_period, by = 1L),
+      Super_balance = 0
     ) %>%
       mutate(Year = (year_initial - 1L) + 1:n(),
              SG_rate = ifelse(Year <= 2020, 
@@ -33,21 +34,22 @@ replacement_rate <- function(income_initial,
                               pmin(0.12, 
                                    0.095 + 0.005 * (Year - 2020))),
              Salary = income_initial * (1 + real_wage_growth + CPI) ^ (Year - year_initial),
-             contributions = Salary * SG_rate * (1 - contributions_tax))
+             contributions = Salary * SG_rate * (1 - contributions_tax),
+             Retd = Age > retirement_age)
     
-    Tbl %<>% mutate(Super_balance = 0) 
-    for (i in seq_along(seq(age_initial, retirement_age, by = 1L))){
-      Tbl %<>%
-        mutate(Super_balance = ifelse(Year == year_initial,
-                                      contributions,
-                                      
-                                      lag(Super_balance) + lag(Super_balance) * super_rate_of_return * (1 - earnings_tax_effective) + contributions))
-    }
+    ## Determine super balance
+    Tbl$Super_balance <- Reduce(f = function(prev_bal, income){prev_bal + prev_bal * super_rate_of_return * (1 - earnings_tax_effective) + income}, 
+                                x = Tbl$contributions, 
+                                accumulate = TRUE)
+
     
-    Tbl %<>% mutate(Super_balance_real = Super_balance / (1 + CPI + real_wage_growth) ^ (Year - year_initial))
+    
+    Tbl %<>% 
+      mutate(Super_balance_real = Super_balance / (1 + CPI + real_wage_growth) ^ (Year - year_initial))
     
   }
-  
-  Tbl %$%
+  super_income <- 
+    Tbl %$%
     last(Super_balance_real) / ((1 - 1/(1 + annuity_rate)^annuity_period)/annuity_rate)
+  Tbl 
 }
