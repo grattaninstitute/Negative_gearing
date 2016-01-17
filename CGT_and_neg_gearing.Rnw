@@ -2507,11 +2507,52 @@ res_dwelling_values <-
 
 res_dwelling_values %>% 
   filter(label_ASGS_2011 == "Australia",
-         label_MEASURE == "Mean price of residential dwelling ($'000)")  %>%
+         label_MEASURE == "Value of dwelling stock: Owned by non households ($m)")  %>%
   arrange(obsTime) %>%
   mutate(r = (lead(obsValue)/obsValue)^ifelse(label_FREQUENCY == "Quarterly", 4, NA_real_) - 1) %>%
-  arrange(obsTime)
-  
+  arrange(obsTime) %>% invisible
+
+read_excel("ASX_Returns_by_asset_class.xlsx") %>% 
+  filter(`Asset class` == "Residential investment property") %$%
+  `After tax highest marginal tax rate` / 100 ->
+  RoR_proprty
+
+value.of.ng.by.yr <- 
+  all_sample_files %>%
+  mutate(benefit_due_NG = income_tax(pmax(Taxable_Income, Taxable_Income - Net_rent_amt), 
+                                     fy.year = yr2fy(year)) -  income_tax(Taxable_Income, 
+                                                                          fy.year = yr2fy(year))) %>%
+  group_by(year) %>%
+  summarise(total_benefit = sum(benefit_due_NG) * weighting(year))
+
+value_of_NG_one_year <- value.of.ng.by.yr %>%
+  filter(year == 2013) %$%
+  total_benefit
+
+value_of_NG_perpertuity <- value_of_NG_one_year / RoR_proprty
+
+value_dwelling_stock_2014 <- 
+  res_dwelling_values %>% 
+   filter(label_ASGS_2011 == "Australia",
+          label_MEASURE == "Value of dwelling stock: Owned by non households ($m)") %>%
+  arrange(obsTime) %$%
+  last(obsValue) * 10^6
+
+value_of_dwelling_stock_expected_2025 <- 
+  res_dwelling_values %>% 
+   filter(label_ASGS_2011 == "Australia",
+          label_MEASURE == "Value of dwelling stock: Owned by non households ($m)") %>%
+  arrange(obsTime) %$%
+  last(obsValue) * 10^6 *  # millions
+  (1 + RoR_proprty)^(10)
+
+value_without_NG <- value_of_dwelling_stock_expected_2025 - value_of_NG_perpertuity
+(value_of_dwelling_stock_expected_2025 -  value_without_NG / (1+RoR_proprty))/ (value_of_dwelling_stock_expected_2025)
+
+
+
+
+
 @
 
 <<Owner_occupiers_loans_are_being_outnumbered_by_investors>>=
