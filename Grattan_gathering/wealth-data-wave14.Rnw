@@ -1,17 +1,25 @@
-\documentclass[a3paper]{report}
-\usepackage[twocolumn,landscape]{geometry}
-\addtolength\columnsep{10pt}
+\documentclass[a3paper,10pt]{report}
+\usepackage[twocolumn,landscape, margin = 2cm]{geometry}
+\addtolength\columnsep{24pt}
 \begin{document}
 
 
 <<packages>>=
-knitr::opts_chunk$set(fig.width = 11, out.width = "11in", fig.show = "hide", cache=TRUE)
+my_emf <- function(file, width, height){
+  devEMF::emf(file, width=width, height=height,
+              family = "Arial")
+}
+
+knitr::opts_chunk$set(fig.width = 11, out.width = "11in", fig.show = "hide", cache=TRUE,
+                      dev = c('my_emf', 'pdf'),
+                      fig.ext = c("emf", "pdf"))
 library(tidyr)
 library(data.table)
 library(foreign)
 library(dplyr)
 library(magrittr)
 library(survey)
+library(scales)
 library(ggplot2)
 library(grattan)
 @
@@ -155,6 +163,7 @@ id.by.age <-
   mutate(btwn_50_60 = min_age >= 60 & max_age <= 70) %>%
   select(temp.id, btwn_50_60) %>%
   setkey(temp.id)
+@
 
 <<prop_super_distr_by_age>>=
 hilda.w14.hh %>%
@@ -182,6 +191,16 @@ hilda.w14.hh %>%
 household.wealth.deciles <- 
   hilda.w14.hh %>%
   mutate(Household_wealth = Household_Net_Worth.p - Household_Net_Worth.n) %>%
+  svydesign(ids = ~temp.id, weights = ~Household_population_weight,
+            data = .) %>%
+  svyquantile(~Household_wealth, design = ., quantiles = (0:10)/10, na.rm = TRUE)
+@
+
+<<household_income_deciles>>=
+household.wealth.deciles <- 
+  hilda.w14.hh %>%
+  mutate(Household_wealth = Household_Net_Worth.p - Household_Net_Worth.n,
+         Household_income = Household_financial_year_gross_regular_income.i.p - Household_financial_year_gross_regular_income.i.n) %>%
   svydesign(ids = ~temp.id, weights = ~Household_population_weight,
             data = .) %>%
   svyquantile(~Household_wealth, design = ., quantiles = (0:10)/10, na.rm = TRUE)
@@ -217,11 +236,13 @@ hilda.w14.hh %>%
   data.table %>%
   grplot(aes(x = factor(Household_wealth_decile), y = value, 
              fill = wealth_type)) + 
+  xlab("Household wealth decile") +
   geom_bar(stat = "identity", width = 1) + 
   scale_y_continuous(label = function(x)paste0(grattan_dollar(x/1e6), " M"),
                      limits = c(0,3e6),
                      expand = c(0,0)) + 
-  theme(legend.position = c(0.3,0.8)) + 
+  theme(legend.position = c(0.3,0.8),
+        strip.background = element_rect(fill = theGrey)) + 
   guides(fill = guide_legend(reverse = TRUE))
 @
 
@@ -242,15 +263,16 @@ hilda.w14.hh %>%
          Household_population_weight,
          temp.id) %>%
   mutate(Household_wealth = Household_Net_Worth.p - Household_Net_Worth.n,
+         Other_wealth.ii  = Household_wealth - Household_wealth_Total_superannuation - Household_wealth_Equity_investments.i - Household_wealth_Total_property_Apportioned_value.i,
          Household_wealth_decile = .bincode(Household_wealth, 
                                             breaks = household.wealth.deciles,
                                             include.lowest = TRUE)) %>%
   filter(!is.na(Household_wealth_decile)) %>%
   tidyr::gather(wealth_type, value, 
+                Household_wealth_Total_property_Apportioned_value.i,
                 Household_wealth_Total_superannuation.i,
-                Household_wealth_Total_bank_accounts.i,
                 Household_wealth_Equity_investments.i,
-                Household_wealth_Total_property_Apportioned_value.i) %>%
+                Other_wealth.ii) %>%
   filter(!is.na(Age)) %>% 
   group_by(AgeSubset = cut(Age, breaks = c(-Inf, 60, 65, Inf), 
                            labels = c("18-60", "60-65", "65+")),
@@ -266,16 +288,83 @@ hilda.w14.hh %>%
                                                  fixed = TRUE)
                                             )
   )) %>%
-           grplot(aes(x = factor(Household_wealth_decile), y = value, 
+  grplot(aes(x = factor(Household_wealth_decile), y = value, 
              fill = wealth_type)) + 
+  xlab("Household wealth decile") + 
   geom_bar(stat = "identity", width = 1) + 
   scale_y_continuous(label = function(x)paste0(grattan_dollar(x/1e6), " M"),
                      limits = c(0,4e6),
                      expand = c(0,0)) + 
   facet_grid(~AgeSubset) + 
-  theme(legend.position = c(0.3,0.8)) + 
-  guides(fill = guide_legend(reverse = TRUE))
+  theme(legend.position = c(0.2125,0.875),
+        strip.background = element_rect(fill = theGrey, color = "black"),
+        strip.text = element_text(face = "bold", color = "white"),
+        legend.title = element_text(size = 20, face = "bold"),
+        axis.title.x = element_text(hjust = 0.5, margin = margin(11,0,0,0, unit = "pt"))) + 
+  guides(fill = guide_legend("Wealth type", reverse = TRUE))
 @
+
+<<wealth_by_type_by_income_decile>>=
+hilda_income_deciles.w14 <- 
+  hilda.w14.hh %>%
+  mutate(Household_income = Household_financial_year_disposable_total_income.i.p -
+         Household_financial_year_disposable_total_income.i.n) %>%
+  svydesign(~temp.id, data = ., weights = ~Household_population_weight) %>%
+  svyquantile(~Household_income, ., quantiles = (0:10)/10)
+
+
+hilda.w14.hh %>%
+  select(Household_wealth_Total_superannuation,
+         Household_wealth_Total_superannuation.i,
+         Household_wealth_Cash_investments,
+         Household_wealth_Cash_investments.i,
+         Household_wealth_Total_bank_accounts, 
+         Household_wealth_Total_bank_accounts.i,
+         Household_wealth_Equity_investments, 
+         Household_wealth_Equity_investments.i,
+         Household_wealth_Total_property_Apportioned_value.i,
+         Household_Net_Worth.p,
+         Household_Net_Worth.n,
+         Household_population_weight,
+         Household_financial_year_disposable_total_income.i.p,
+         Household_financial_year_disposable_total_income.i.n,
+         Age = Age_last_birthday_at_June_30_2014_person_01,
+         temp.id) %>%
+  mutate(Household_income = Household_financial_year_disposable_total_income.i.p -
+           Household_financial_year_disposable_total_income.i.n,
+         Household_income_decile = .bincode(Household_income, 
+                                            breaks = hilda_income_deciles.w14,
+                                            include.lowest = TRUE)) %>%
+  filter(!is.na(Household_income_decile)) %>%
+  tidyr::gather(wealth_type, value, 
+                Household_wealth_Total_superannuation.i,
+                Household_wealth_Total_bank_accounts.i,
+                Household_wealth_Equity_investments.i,
+                Household_wealth_Total_property_Apportioned_value.i) %>%
+  filter(!is.na(Age)) %>%
+  group_by(AgeSubset = cut(Age, breaks = c(-Inf, 60, 65, Inf), 
+                           labels = c("18-60", "60-65", "65+"), 
+                           include.lowest = TRUE),
+           Household_income_decile, wealth_type) %>%
+  summarise(value = weighted.mean(value, Household_population_weight)) %>%
+  tbl_df %>%
+  mutate(wealth_type = factor(wealth_type, 
+                              labels = gsub("_", " ", 
+                                            gsub("Household_wealth_", "", levels(wealth_type))))) %>%
+  grplot(aes(x = factor(Household_income_decile), y = value, 
+             fill = wealth_type, order = wealth_type)) + 
+  xlab("Household income decile") +
+  geom_bar(stat = "identity", width = 1) + 
+  scale_y_continuous(label = function(x)paste0(grattan_dollar(x/1e6), " M"),
+                     limits = c(0,4e6),
+                     expand = c(0,0)) + 
+  facet_grid(~AgeSubset) + 
+  theme(legend.position = c(0.25,0.87),
+        axis.title.x = element_text(hjust = 0.5, margin = margin(11,0,0,0, unit = "pt")),
+        strip.background = element_rect(fill = theGrey, color = "black")) + 
+  guides(fill = guide_legend("Wealth type", reverse = TRUE))
+@
+
 
 <<ScatterPlot-Wealth-against-age>>=
 hilda.w14.hh %>%
@@ -450,5 +539,196 @@ hilda_Rp %>%
   scale_y_continuous(label = grattan_dollar)
 @
 
+<<Inheritances-by-age-group>>=
+Rp_metadata <- fread("../HILDA/csv/data_dictionary_Rperson.csv")
+
+hilda_Rp_14 <- fread("../HILDA/Wave14/csv/Rperson_n140c.csv")
+
+Rp_name_decoder <-
+  Rp_metadata %>%
+  mutate(in_dollars = grepl("$", Description, fixed = TRUE),
+         Description = gsub("($)", "", Description, fixed = TRUE),
+         weighted.topcode = grepl("[weighted topcode]", Description, fixed = TRUE),
+         Description = gsub("[weighted topcode]", "", Description, fixed = TRUE),
+         derived.var = grepl("^DV[:] ", Description),
+         Description = gsub("^DV[:] ", "", Description),
+         imputed.var = grepl("[imputed]", Description, fixed = TRUE),
+         Description = gsub("[imputed]", "", Description, fixed = TRUE),
+         signed.var = grepl("positive values", Description, ignore.case = TRUE) | grepl("negative values", Description, ignore.case = TRUE),
+         sign.of.var = ifelse(signed.var, 
+                              ifelse(grepl("positive values", Description, ignore.case = TRUE), 
+                                     1L, 
+                                     -1L), 
+                              NA_integer_),
+         # positive values are inconsistently defined in the description
+         # e.g [positive values*] Positive values
+         Description = gsub("(positive values*)|(negative values*)", "", Description,
+                            ignore.case = TRUE),
+         SCQ.var = grepl("[SCQ]", Description, fixed = TRUE),
+         Description = gsub("[SCQ]", "", Description, fixed = TRUE),
+         estimated.var = grepl("[estimated]", Description, fixed = TRUE),
+         Long_name = sub("_+$", "", 
+                         gsub("[^0-9A-Za-z]+", 
+                              "_", 
+                              sub("\\s+$", "", Description))),
+         Long_name = ifelse(imputed.var, paste0(Long_name, ".i"), Long_name),
+         # we should still take note of positive/negative value to avoid two
+         # vars having the same name
+         Long_name = ifelse(is.na(sign.of.var),
+                            Long_name,
+                            ifelse(sign.of.var == 1, 
+                            paste0(Long_name, ".p"),
+                            paste0(Long_name, ".n")))
+         ) %>%
+  mutate(nVariable = paste0("n", Variable)) %>%
+  filter(nVariable %in% names(hilda_Rp_14))
+
+
+
+hilda_Rp_14 %>%
+  setnames(old = Rp_name_decoder$nVariable,
+           new = Rp_name_decoder$Long_name)
+
+hilda_Rp_14.numeric.cols <- sapply(hilda_Rp_14, is.numeric)
+
+for (k in seq_along(hilda_Rp_14.numeric.cols)){
+  set(hilda_Rp_14, j = k, value = ifelse(hilda_Rp_14[[k]] < 0, NA_real_, hilda_Rp_14[[k]]))
+}
+
+household_id_by_wealth_decile <- 
+  hilda.w14.hh %>%
+  mutate(Household_wealth = Household_Net_Worth.p - Household_Net_Worth.n) %>%
+  mutate(Household_wealth_decile = .bincode(Household_wealth, breaks = household.wealth.deciles, 
+                                            include.lowest = TRUE)) %>%
+  select(Randomised_household_ID, Household_wealth_decile) %>%
+  mutate(Randomised_household_ID = as.integer(Randomised_household_ID))
+@
+<<>>=
+hilda_Rp_14 %>%
+  mutate(Randomised_household_ID = as.integer(Randomised_household_ID)) %>%
+  select(Randomised_household_ID, 
+         Age_last_birthday_at_June_30_2014, 
+         Financial_year_inheritance_bequests,
+         Responding_person_population_weight) %>%
+  merge(household_id_by_wealth_decile, by = "Randomised_household_ID") %>%
+  filter(!is.na(Household_wealth_decile)) %>%
+  mutate(Household_wealth_quintile = (Household_wealth_decile + 1) %/% 2,
+         Household_wealth_quintile_f = factor(Household_wealth_quintile)) %>%
+  mutate(Financial_year_inheritance_bequests = ifelse(is.na(Financial_year_inheritance_bequests),
+                                                      0, 
+                                                      Financial_year_inheritance_bequests)) %>%
+  # One heir between the ages of 25 and 34 received a $1.8M bequest. They 
+  # were the only heir of that age group and wealth quintile, so have been excluded.
+  # filter(Household_wealth_quintile < 5 | Financial_year_inheritance_bequests < 1.5e6) %>%
+  # Similarly, 
+  group_by(age_group = cut(Age_last_birthday_at_June_30_2014, 
+                           breaks = c(-Inf, 25, 35, 50, 60, 80, Inf), 
+                           labels = c("< 25", "25-34", "35-49", "50-59", "60-79", "80+"), 
+                           include.lowest = TRUE),
+           Household_wealth_quintile,
+           has_inheritance = !is.na(Financial_year_inheritance_bequests)) %>%
+  summarise(expected_inheritance = weighted.mean(Financial_year_inheritance_bequests, 
+                                                Responding_person_population_weight),
+            number_received_inheritance = sum(has_inheritance * Responding_person_population_weight)) %>%
+  tbl_df %>%
+  arrange(Household_wealth_quintile) %>%
+  mutate(Household_wealth_quintile = factor(Household_wealth_quintile)) %>%
+
+  grplot(aes(x = age_group, y = expected_inheritance, fill = Household_wealth_quintile,
+             order = Household_wealth_quintile)) + 
+  geom_bar(stat = "identity", width = 0.9, position = "dodge") +
+  theme(legend.position = "bottom")
+@
+
+<<>>=
+hilda_Rp_14 %>%
+  mutate(Randomised_household_ID = as.integer(Randomised_household_ID)) %>%
+  select(Randomised_household_ID, 
+         Age_last_birthday_at_June_30_2014, 
+         Financial_year_inheritance_bequests,
+         Responding_person_population_weight) %>%
+  merge(household_id_by_wealth_decile, by = "Randomised_household_ID") %>%
+  filter(!is.na(Household_wealth_decile)) %>%
+  mutate(Household_wealth_quintile = (Household_wealth_decile + 1) %/% 2,
+         Household_wealth_quintile_f = factor(Household_wealth_quintile)) %>%
+  mutate(age_group = cut(Age_last_birthday_at_June_30_2014, 
+                           breaks = c(-Inf, 25, 35, 50, 60, 80, Inf), 
+                           labels = c("< 25", "25-34", "35-49", "50-59", "60-79", "80+"), 
+                           include.lowest = TRUE),
+           Household_wealth_quintile,
+           has_inheritance = !is.na(Financial_year_inheritance_bequests))  %>%
+  filter(has_inheritance) %>%
+  grplot(aes(x = age_group, y = Financial_year_inheritance_bequests, fill = factor(Household_wealth_quintile))) + 
+  geom_boxplot() +
+  facet_grid(~Household_wealth_quintile) + scale_y_log10(labels = function(x) paste0("$", comma(x)),
+                                                         limits = c(0.1, 1e7), breaks = 10^(1:7))
+@
+
+<<Inheritances-all-years>>=
+read_hilda_get_inheritance <- function(filename){
+  wave <- sub("^.*Rperson.([a-n])1.+$", "\\1", filename)
+  dat <- fread(filename, select = paste0(wave, c("oifinha",  # inheritance
+                                                  "hhiage",  # Age last birthday
+                                                  "hhwtrp"  # population weight
+                                                 )))
+  setnames(dat, old = names(dat), new = c("Inheritance", "Age", "Pop_WT"))
+  for (j in 1:3)
+    set(dat, j = j, value = ifelse(dat[[j]] < 0, NA_integer_, dat[[j]]))
+  
+  dat[,wave := wave]
+  return(merge(dat, wave_decoder, by = "wave"))
+}
+
+wave_decoder <- 
+  data.table(wave = letters[1:14],
+             year = 2000 + 1:14)
+
+all_years_inheritance <-
+rbindlist(lapply(list.files(path = "../HILDA/Wave14/csv", 
+                            pattern = "^R.*csv$", 
+                            full.names = TRUE),
+                 read_hilda_get_inheritance),
+          use.names = TRUE) 
+all_years_inheritance %<>%
+  merge(wave_decoder, by = "wave") %>%
+  mutate(Inheritance = cpi_inflator(Inheritance, from_fy = yr2fy(year), to_fy = "2014-15")) 
+
+median_inheritances <- 
+  all_years_inheritance %>%
+  group_by(age_group = cut(Age, 
+                           breaks = c(-Inf, 25, 35, 50, 60, 80, Inf), 
+                           labels = c("< 25", "25-34", "35-49", "50-59", "60-79", "80+"), 
+                           include.lowest = TRUE)) %>%
+  summarise(medianInheritance = matrixStats::weightedMedian(Inheritance, w = Pop_WT, na.rm = TRUE)) %>%
+  arrange(age_group)
+@
+
+<<Inheritance-all-years-by-age>>=
+all_years_inheritance %>%
+  filter(!is.na(Inheritance), !is.na(Age)) %>%
+  group_by(age_group = cut(Age, 
+                         breaks = c(-Inf, 25, 35, 50, 60, 80, Inf), 
+                         labels = c("< 25", "25-34", "35-49", "50-59", "60-79", "80+"), 
+                         include.lowest = TRUE)) %>%
+  mutate(weight = Pop_WT/sum(Pop_WT)) %>%
+  grplot() + 
+  geom_violin(aes(x = age_group, y = Inheritance, weights = weight, fill = age_group)) + 
+  geom_text(data = median_inheritances, 
+            aes(x = age_group, 
+                y = medianInheritance,
+                color = ifelse(age_group == "< 25", "white", "black"),
+                label = grattan_dollar(round(medianInheritance, -3))),
+            size = 7.14, 
+            vjust = 0,
+            nudge_y = 0.05) +
+  scale_color_manual(values = c("white" = "white", "black" = "black")) + 
+  theme(axis.title.x = element_blank()) + 
+  scale_y_log10(breaks = c(10^(1:6), 5e6), labels = function(x)paste0(" ", grattan_dollar(x)), limits = 10^c(2,7)) 
+@
+
+
+<<Savings-by-income-decile>>=
+
+@
 
 \end{document}
