@@ -1,4 +1,5 @@
 \documentclass{grattan}
+\usepackage{amsmath}
 \renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
 \usepackage{grfext}
 \PrependGraphicsExtensions*{.pdf}
@@ -61,7 +62,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=TRUE
+                      ,cache=FALSE
                       ,dev=c('my_pdf', 'my_emf', 'png')
                       ,fig.ext = c("pdf", "emf", "png")
 )
@@ -69,6 +70,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
 
 <<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
 # library(Rcell)
+library(knitr)
 library(data.table)
 library(car)
 library(devEMF)
@@ -129,6 +131,13 @@ write(package_cite_input, file = "package_cite_input.tex")
 % citations
 \input{package_cite_input}
 \raggedbottom
+
+<<Convenience-functions>>=
+latex_percent <- function (x) {
+    x <- plyr::round_any(x, scales:::precision(x)/100)
+    stringr::str_c(comma(x * 100), "\\%")
+}
+@
 
 %%% Costings analysis
 <<paths_to_sample_files>>=
@@ -2407,7 +2416,7 @@ The opposite is true when prices are stable or falling.
 The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75
 ,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
 
-\begin{smallbox}{Impact of negative gearing on house prices}{box:Impact_of_NG_on_house_prices}
+\begin{bigbox*}{Impact of negative gearing on house prices}{box:Impact_of_NG_on_house_prices}
 Limiting or abolishing negative gearing will reduce the post-tax investment returns for negatively geared property investors. 
 There will be a one-off decrease in house prices as investors reduce their willingness to pay. 
 Of course, house prices may not actually fall if market dynamics continue to push prices upwards. 
@@ -2421,13 +2430,15 @@ get_sample_file_and_year <- function(yr){
 
 all_sample_files <-
   lapply(2004:2013, get_sample_file_and_year) %>%
-  rbindlist(fill = TRUE)
+  rbindlist(fill = TRUE, use.names = TRUE)
 
 rental_losses <- 
   all_sample_files %>% 
   filter(Net_rent_amt < 0) %>%
   group_by(year) %>%
-  summarise(real_tot_avg_loss = cpi_inflator(sum(Net_rent_amt), from_fy = yr2fy(year)))
+  summarise(tot_avg_loss = -1 * sum(Net_rent_amt) * weighting(year)) %>%
+  ungroup %>%
+  mutate(real_tot_avg_loss = cpi_inflator(tot_avg_loss, from_fy = yr2fy(year)))
 
 NG_tax_exps <-
   all_sample_files %>%
@@ -2448,10 +2459,10 @@ NG_tax_exps.real <-
   mean(avg.diff.real)
 
 present.value_benefit_from_NG <-
-  grattan::npv(rate = 0.05, values = rep(NG_tax_exps.real, 100))
+  grattan::npv(rate = 0.042, values = rep(NG_tax_exps.real, 10))
 
 present.value_benefit_from_Quaran_NG <-
-  -round(grattan::pv(0.05, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)))
+  -round(grattan::pv(0.042, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)))
 
 housing_finance_commitments.metadata <-
   # This file is Table 8 of Cat. 5671.8 
@@ -2523,13 +2534,18 @@ value.of.ng.by.yr <-
                                      fy.year = yr2fy(year)) -  income_tax(Taxable_Income, 
                                                                           fy.year = yr2fy(year))) %>%
   group_by(year) %>%
-  summarise(total_benefit = sum(benefit_due_NG) * weighting(year))
+  summarise(total_benefit = sum(benefit_due_NG) * weighting(year)) %>%
+  ungroup %>%
+  mutate(total_benefit_real = cpi_inflator(total_benefit, from_fy = yr2fy(year), to_fy = "2014-15"))
 
-value_of_NG_one_year <- value.of.ng.by.yr %>%
+value_of_NG_one_year <- 
+  value.of.ng.by.yr %>%
   filter(year == 2013) %$%
   total_benefit
 
 value_of_NG_perpertuity <- value_of_NG_one_year / RoR_proprty
+value_of_NG_10yrs <-
+  -1 * grattan::pv(0.042, 10, value_of_NG_one_year)
 
 value_dwelling_stock_2014 <- 
   res_dwelling_values %>% 
@@ -2546,8 +2562,9 @@ value_of_dwelling_stock_expected_2025 <-
   last(obsValue) * 10^6 *  # millions
   (1 + RoR_proprty)^(10)
 
-value_without_NG <- value_of_dwelling_stock_expected_2025 - value_of_NG_perpertuity
-(value_of_dwelling_stock_expected_2025 -  value_without_NG / (1+RoR_proprty))/ (value_of_dwelling_stock_expected_2025)
+value_without_NG <- value_of_dwelling_stock_expected_2025 - value_of_NG_10yrs
+change_in_price_due_to_NG_upper <-
+  (value_of_dwelling_stock_expected_2025 -  value_without_NG / (1 + RoR_proprty)^10 ) / (value_of_dwelling_stock_expected_2025)
 
 
 
@@ -2583,24 +2600,38 @@ housing_finance_commitments %>%
 #  8,223,900.0 
 
 total.value.of.property.2014 <- 
-  # 8223900 * 10^6  # total value of all property 
+  #8223900 * 10^6  # total value of all property 
   283323.1 * 10^6 # total value of dwellings owned by non-households
 
 pc.prop_val_due_NG <- 
-  paste0(round(100*present.value_benefit_from_NG / total.value.of.property.2014, 1), "\\%")
+  paste0(round(100*present.value_benefit_from_NG / total.value.of.property.2014), "\\%")
 pc.prop_val_due_NG_Quaran <-
-  paste0(round(100*present.value_benefit_from_Quaran_NG / total.value.of.property.2014, 1), "\\%")
+  paste0(round(100*present.value_benefit_from_Quaran_NG / total.value.of.property.2014), "\\%")
 @
 
 The impact on prices depends on investor perceptions of the size of the lost tax benefit. 
-Average annual rental losses over the last decade were \$12.8 billion, generating annual tax write-offs worth an average of \$4 billion in today's dollars. 
-If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \Sexpr{round(present.value_benefit_from_NG/10^9)}~billion. 
+Average annual rental losses over the last decade were \$\Sexpr{texNum(mean(rental_losses$real_tot_avg_loss))}, generating annual tax write-offs worth an average of \$\Sexpr{texNum(mean(value.of.ng.by.yr$total_benefit_real))} in today's dollars. 
+If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \$\Sexpr{texNum(present.value_benefit_from_NG)}. 
 
 If negative gearing were entirely abolished, then these expected tax benefits would be lost entirely. 
-If this were fully capitalised in the price of property, prices could fall by up to \Sexpr{pc.prop_val_due_NG}. 
+Given that the value of dwellings held by investors is \$\Sexpr{texNum(total.value.of.property.2014)} (2014), a loss of \$\Sexpr{texNum(present.value_benefit_from_NG)} could see prices fall by up to \Sexpr{pc.prop_val_due_NG}. 
 For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. 
 For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{round(present.value_benefit_from_Quaran_NG/1e9)}~billion, with a maximum impact on property prices of \Sexpr{pc.prop_val_due_NG_Quaran}.
-\end{smallbox}
+
+Alternatively, assuming that investors demand the same return on investment without negative gearing, the change could be as high as \Sexpr{latex_percent(change_in_price_due_to_NG_upper)}. The post-tax return on residential property investment was \Sexpr{latex_percent(RoR_proprty)} in the decade to December 2013.
+
+Let $V_0$ be the current value of (investor, residential) housing stock. Let $V_{10}$ be the value of $V_0$ in ten years' time. Let $V_{0\not{G}}'$ be the new value of housing stock in the absence of negative gearing. Let $G$ be value of negative gearing in perpertuity. Let $r$ be the rate of return demanded in residential property. So 
+\[V_{10} = V_0(1 + r)^{10}\]
+and by assumption
+\begin{align*}
+V_{10} - G &= V_{0\not{G}}' (1 + r)^{10} \\
+V_{0\not{G}}' = \frac{V_{10} - G}{(1 + r)^{10}} \\
+&= \frac{V_0(1 +r)^{10} - G}{(1 + r)^{10}} \\
+\implies \frac{V_{0\not G}'}{V_0} &= 1 - \frac{G}{V_0(1 + r)^{10}}
+\end{align*}
+
+Thus \[\frac{V_{0\not G}'}{V_0} = \text{\Sexpr{latex_percent(1 - value_of_NG_perpertuity/(total.value.of.property.2014 * (1 + RoR_proprty)^(10)))}}.\]
+\end{bigbox*}
 
 One concern with limiting negative gearing is that downward pressure on house prices could leave some highly geared investors with negative equity.  
 But given expected one-off price impacts of less than 
@@ -2632,7 +2663,7 @@ While it was clearly in the interests of the real estate industry to exaggerate 
 
 Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them.\footcite{CormannLateline2015}
 
-<<Capital_city_rents_direct_abs_get, fig.height = 11, out.height = "11in">>=
+<<Capital_city_rents_direct_abs_get, fig.height = 11, out.height = "11in", cache=TRUE>>=
 rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1992") %>% 
   as.data.frame ->
   rent.indices
