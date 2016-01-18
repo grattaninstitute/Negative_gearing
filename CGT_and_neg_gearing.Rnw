@@ -62,7 +62,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=FALSE
+                      ,cache=TRUE
                       ,dev=c('my_pdf', 'my_emf', 'png')
                       ,fig.ext = c("pdf", "emf", "png")
 )
@@ -2625,7 +2625,7 @@ Let $V_0$ be the current value of (investor, residential) housing stock. Let $V_
 and by assumption
 \begin{align*}
 V_{10} - G &= V_{0\not{G}}' (1 + r)^{10} \\
-V_{0\not{G}}' = \frac{V_{10} - G}{(1 + r)^{10}} \\
+V_{0\not{G}}' &= \frac{V_{10} - G}{(1 + r)^{10}} \\
 &= \frac{V_0(1 +r)^{10} - G}{(1 + r)^{10}} \\
 \implies \frac{V_{0\not G}'}{V_0} &= 1 - \frac{G}{V_0(1 + r)^{10}}
 \end{align*}
