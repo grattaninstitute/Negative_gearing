@@ -10,9 +10,9 @@
 library(data.table)
 library(dplyr)
 
-replacement_rate_super <- function(income_initial, 
+replacement_rate <- function(income_initial, 
                              age_initial = 32,
-                             year_initial = 2015,
+                             year_initial = 2014,
                              retirement_age = 67,
                              termination_age = retirement_age + annuity_period,
                              SG_policy = "2014-15 Budget",  # Legislated to rise to 12%
@@ -29,11 +29,11 @@ replacement_rate_super <- function(income_initial,
       Super_balance = 0
     ) %>%
       mutate(Year = (year_initial - 1L) + 1:n(),
-             SG_rate = ifelse(SG_policy == "2014-15 Budget",
+             sg_policy = SG_policy,  # for vector recycling
+             SG_rate = ifelse(sg_policy == "2014-15 Budget",
                               ifelse(Year <= 2020, 
                                      0.095, 
-                                     pmin(0.12, 
-                                          0.095 + 0.005 * (Year - 2020))),
+                                     pmin(0.12, 0.095 + 0.005 * (Year - 2020))),
                               ifelse(SG_policy == "9.5%",
                                      0.095, NA_real_)),
              Salary = income_initial * (1 + real_wage_growth + CPI) ^ (Year - year_initial),
