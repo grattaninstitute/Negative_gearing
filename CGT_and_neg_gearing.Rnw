@@ -2562,6 +2562,10 @@ value_of_dwelling_stock_expected_2025 <-
   last(obsValue) * 10^6 *  # millions
   (1 + RoR_proprty)^(10)
 
+NG_inflator <- function(n){
+  1.028^n
+}
+
 value_without_NG <- value_of_dwelling_stock_expected_2025 - value_of_NG_10yrs
 change_in_price_due_to_NG_upper <-
   (value_of_dwelling_stock_expected_2025 -  value_without_NG / (1 + RoR_proprty)^10 ) / (value_of_dwelling_stock_expected_2025)
@@ -2620,17 +2624,17 @@ For example, if investment losses are quarantined so they can't be written off a
 
 Alternatively, assuming that investors demand the same return on investment without negative gearing, the change could be as high as \Sexpr{latex_percent(change_in_price_due_to_NG_upper)}. The post-tax return on residential property investment was \Sexpr{latex_percent(RoR_proprty)} in the decade to December 2013.
 
-Let $V_0$ be the current value of (investor, residential) housing stock. Let $V_{10}$ be the value of $V_0$ in ten years' time. Let $V_{0\not{G}}'$ be the new value of housing stock in the absence of negative gearing. Let $G$ be value of negative gearing in perpertuity. Let $r$ be the rate of return demanded in residential property. So 
+Let $V_0$ be the current value of (investor, residential) housing stock. Let $V_{10}$ be the value of $V_0$ in ten years' time. Let $V_{0\not{G}}'$ be the new value of housing stock in the absence of negative gearing. Let $G$ be the value of negative gearing in perpertuity. Let $r$ be the rate of return demanded in residential property. So 
 \[V_{10} = V_0(1 + r)^{10}\]
 and by assumption
 \begin{align*}
 V_{10} - G &= V_{0\not{G}}' (1 + r)^{10} \\
 V_{0\not{G}}' &= \frac{V_{10} - G}{(1 + r)^{10}} \\
-&= \frac{V_0(1 +r)^{10} - G}{(1 + r)^{10}} \\
+              &= \frac{V_0(1 +r)^{10} - G}{(1 + r)^{10}} \\
 \implies \frac{V_{0\not G}'}{V_0} &= 1 - \frac{G}{V_0(1 + r)^{10}}
 \end{align*}
 
-Thus \[\frac{V_{0\not G}'}{V_0} = \text{\Sexpr{latex_percent(1 - value_of_NG_perpertuity/(total.value.of.property.2014 * (1 + RoR_proprty)^(10)))}}.\]
+Thus \[\frac{V_{0\not G}'}{V_0} = \text{\Sexpr{latex_percent(1 - value_of_NG_perpertuity * NG_inflator(10)/(total.value.of.property.2014 * (1 + RoR_proprty)^(10)))}}.\]
 \end{bigbox*}
 
 One concern with limiting negative gearing is that downward pressure on house prices could leave some highly geared investors with negative equity.  
