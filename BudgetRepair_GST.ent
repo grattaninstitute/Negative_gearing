@@ -915,7 +915,7 @@ generation.
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
-{footcite}{See}{37}{Daley2013}{}}}
+{footcite}{See}{p.~37}{Daley2013}{}}}
 \@endanenote 
 \@doanenote {45}{45}
 macro:->\protecting
@@ -986,101 +986,6 @@ Newstart
 cutoff.
 \@endanenote 
 \@doanenote {51}{51}
-macro:->For
-example,
-Graeme
-Bradley,
-former
-Business
-Council
-of
-Australia
-president:
-\textcite
-{BaloghHepworthHockey2TakeTaxCuts}
-\@endanenote 
-\@doanenote {52}{52}
-macro:->Exemptions
-from
-capital
-gains
-tax
-for
-small
-business
-owners
-include:
-exemptions
-for
-the
-sale
-of
-active
-assets
-(needs
-to
-be
-paid
-into
-a
-super
-fund
-for
-people
-under
-55);
-and
-an
-exemption
-for
-people
-over
-55
-who
-are
-retiring
-and
-selling
-business
-assets
-held
-for
-more
-than
-15
-years.
-A
-lifetime
-cap
-of
-\$1.4
-million
-applies
-to
-these
-exemptions.
-See:
-ATO
-(2014).
-More
-details
-on
-tax
-incentives
-for
-small
-business
-can
-be
-found
-in
-Daley,
-et
-al.
-(2015).
-
-\@endanenote 
-\@doanenote {53}{53}
 macro:->Grattan
 Insitute
 calculations.
@@ -1093,11 +998,11 @@ see
 \textcite
 [p.~6]{daleywood2015fiscalchallenges}.
 \@endanenote 
-\@doanenote {54}{54}
+\@doanenote {52}{52}
 macro:->\url
 {https://grattan.shinyapps.io/Changing_income_taxes/Forty_three_app.Rmd}
 \@endanenote 
-\@doanenote {55}{55}
+\@doanenote {53}{53}
 macro:->This
 was
 the
@@ -1124,7 +1029,7 @@ Income
 and
 Housing
 \@endanenote 
-\@doanenote {56}{56}
+\@doanenote {54}{54}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxmcites
@@ -1134,14 +1039,14 @@ macro:->\protecting
 {2}{footcite}{}{p.~17}{Daley2014}{}\blxendmcites
 }}
 \@endanenote 
-\@doanenote {57}{57}
+\@doanenote {55}{55}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{BP~No.2,
 p.~126}{Budget2014}{}}}
 \@endanenote 
-\@doanenote {58}{58}
+\@doanenote {56}{56}
 macro:->Health
 estimates
 based
@@ -1152,13 +1057,13 @@ on
 \textcite
 [p.~16-18]{Daley2015}.
 \@endanenote 
-\@doanenote {59}{59}
+\@doanenote {57}{57}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~7}{Treasury2014a}{}}}
 \@endanenote 
-\@doanenote {60}{60}
+\@doanenote {58}{58}
 macro:->Estimates
 in
 2014-15
@@ -1175,7 +1080,7 @@ in
 \textcite
 {Treasury2014a}.
 \@endanenote 
-\@doanenote {61}{61}
+\@doanenote {59}{59}
 macro:->Section
 11
 of
@@ -1193,31 +1098,31 @@ Base)
 Act~1999}
 (Cth)
 \@endanenote 
-\@doanenote {62}{62}
+\@doanenote {60}{60}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{twomey2003federal}{}}}
 \@endanenote 
-\@doanenote {63}{63}
+\@doanenote {61}{61}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~4}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {64}{64}
+\@doanenote {62}{62}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{p.~8-14}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {65}{65}
+\@doanenote {63}{63}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{daleywood2015fiscalchallenges}{}}}
 \@endanenote 
-\@doanenote {66}{66}
+\@doanenote {64}{64}
 macro:->Scott
 Morrison
 as
@@ -1226,19 +1131,19 @@ in
 \textcite
 {Coorey2015}
 \@endanenote 
-\@doanenote {67}{67}
+\@doanenote {65}{65}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{FinancialServicesCouncil2015}{}}}
 \@endanenote 
-\@doanenote {68}{68}
+\@doanenote {66}{66}
 macro:->\protecting
 {\blxmkbibnote
 {foot}{\blxciteicmd
 {footcite}{}{}{PropertyCouncil2015}{}}}
 \@endanenote 
-\@doanenote {69}{69}
+\@doanenote {67}{67}
 macro:->Together
 this
 would
