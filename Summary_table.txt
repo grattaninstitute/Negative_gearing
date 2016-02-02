@@ -1,4 +1,4 @@
-Cost of policy by policy option
+Cost of policy by policy option with CGT discount set at 25%
 ====================================
 4.8 Quarantine NG losses and reduce CGT discount (Year 0)
 4.1 Quarantine NG losses and reduce CGT discount

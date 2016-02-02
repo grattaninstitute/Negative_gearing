@@ -17,8 +17,6 @@ percentage_of_revenue_to_tax_cuts = 0.3
 old_0910_tax_rates = c(0, 0.15, 0.30, 0.38, 0.45)
 #new_0910_tax_rates = c(0, 0.125, 0.30, 0.38, 0.45)
 new_0910_tax_rates = c(0, 0.130, 0.29, 0.38, 0.45)
-# Please change the numbers to reflect final budget outcomes.
-
 @
 
 <<knitrsettings, echo=FALSE, warning=FALSE, message=FALSE>>=
@@ -104,14 +102,12 @@ scale_x_date <- function(...) {
   s
 }
 
-
 library(grattan)
 library(data.table)
 library(tidyr)
 library(dplyr)
 library(magrittr)
 library(xtable)
-library(rattle)
 library(rpart)
 library(stringr)
 
@@ -517,7 +513,7 @@ read_excel("Final_consumption_expenditure_by_GST_category_1999-2015.xlsx", sheet
             show_guide = FALSE) + 
   scale_color_manual("", values = gpal(6)[c(1,5,3)]) + 
   scale_y_continuous(limits = c(80,160), expand = c(0,0)) + 
-  scale_x_date(expand = list(c(0,0.27), c(0,0.0))) + 
+  #scale_x_date(expand = list(c(0,0.27), c(0,0.0))) + 
   guides(color = guide_legend(keywidth = 3, keyheight = 2)) + 
   theme(axis.title = element_blank(),
         legend.position = c(0.20, 0.90),
@@ -579,10 +575,10 @@ gst.expenditures <- read_excel("GST_expenditures1415.xlsx")
 gst.expenditures %>%
   mutate(Category = factor(Category)) %>%
   grplot(aes(x = Category, y = Tax_expenditure, fill = Scope, order = Order)) + 
-  geom_bar(stat = "identity")  + 
+  geom_bar(stat = "identity", width = 0.7)  + 
   geom_text(aes(label = Tax_expenditure), hjust = -0.25, size = 7.14) + 
   scale_x_discrete(limits = gst.expenditures$Category[order(gst.expenditures$Order)] ) +
-  scale_y_continuous(label = grattan_dollar, expand = list(c(0,0), c(0,0.5))) + 
+  scale_y_continuous(label = grattan_dollar) + #, expand = list(c(0,0), c(0,0.5))) + 
   coord_flip() + 
   ylab("Tax expenditure (bn)") + 
   scale_fill_manual(values = gpal(2, dark=TRUE)) + 
@@ -726,7 +722,7 @@ read_excel("Spending_on_exempt_goods_by_hh_quintile.xlsx") %>%
   mutate(label.text = ifelse(Quintile == last(Quintile), as.character(Category), NA_character_)) %>%
   #
   grplot(aes(x = Quintile, y = prop_spending, fill = Category)) + 
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity", width = 0.7) + 
   geom_text(aes(x = 5.5, y = label.y, label = label.text, color = Category),
             hjust = 0, 
             fontface = "bold",
@@ -804,7 +800,7 @@ hes10hh %>%
                                   levels = c("Employee.income", "Investment.income", "Super.income", "Gov.benefits"), 
                                   labels = c("Salary/wages", "Investments", "Super", "Welfare"))) %>%
   grplot(aes(x = disposable_income_quintile, y = income_amt, fill = income_category, order = income_category)) + 
-  geom_bar(stat = "identity", position = "fill")
+  geom_bar(stat = "identity", position = "fill", width = 0.7)
 
 read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
   setnames(1, "income_category") %>%
@@ -828,7 +824,7 @@ read_excel("Sources_of_income_by_quintile0910.xlsx") %>%
              fill = income_category,
              order = income_category)) + 
   
-  geom_bar(stat = "identity", position = "fill") + 
+  geom_bar(stat = "identity", position = "fill", width = 0.7) + 
   geom_text(aes(label = label.text,
                 x = 5.55,
                 color = income_category,
@@ -1001,7 +997,7 @@ welfare.by.income.quintile %>%
   group_by(gross_income_quintile) %>%
   mutate(text.y = cumsum(average_payment)) %>%
   grplot(aes(x = factor(gross_income_quintile), fill = Payment_type)) + 
-  geom_bar(aes(y = average_payment), stat = "identity", position = "stack")  +
+  geom_bar(aes(y = average_payment), stat = "identity", position = "stack", width = 0.7)  +
   geom_text(aes(label = gsub("_", "/",
                              ifelse(gross_income_quintile == 1, as.character(Payment_type), NA_character_),
                              fixed = TRUE),
@@ -1035,9 +1031,10 @@ prop_welfare_by_income <-
 prop_welfare_by_income %>%
   grplot(aes(x = factor(gross_income_quintile),
              y = prop)) + 
-  geom_bar(stat = "identity") + 
-  scale_y_continuous(label=percent,
-                     expand=list(c(0,0), c(0,0.1))) + 
+  geom_bar(stat = "identity", width = .7) + 
+  scale_y_continuous(label=percent
+                     #expand=list(c(0,0), c(0,0.1))
+                     ) + 
   geom_text(aes(label = percent_format()(prop)),
             vjust = -0.25,
             size = 7.14)
@@ -1166,7 +1163,7 @@ welfare_compensation_adequacy %T>%
   mutate(`Gross income quintile` = gross_income_quintile) %>%
   grplot(aes(x = `Gross income quintile`, fill = threshold, y = comp_adequacy)) + 
   geom_bar(stat = "identity",
-           position = "dodge") + 
+           position = "dodge", width = 0.9) + 
   #geom_text(aes(label = round(100*comp_adequacy))) + 
   scale_y_continuous("Percent reaching threshold", label=percent,
                      limits = c(0,1), 
@@ -1376,7 +1373,7 @@ welfare_and_tax_compensation_adequacy %T>%
          `Gross income quintile` = gross_income_quintile) %>%
   grplot(aes(x = `Gross income quintile`, fill = threshold, y = comp_adequacy)) + 
   geom_bar(stat = "identity",
-           position = "dodge") + 
+           position = "dodge", width = 0.9) + 
   scale_y_continuous("Percent reaching threshold", 
                      label=percent,
                      breaks = (0:10)/10,
@@ -1666,7 +1663,7 @@ hes_with_gst_and_tax_compensation %>%
   grplot(aes(x = factor(gross_income_quintile),
              y = prop,
              fill = group)) + 
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity", width = 0.7) + 
   scale_y_continuous(label = percent,
                      expand = c(0,0),
                      limits = c(0,1),
@@ -1831,7 +1828,7 @@ hes_with_gst_and_tax_compensation %>%
   filter(gross_income_quintile == 1) %>%
   grplot(aes(x = comp_threshold.wk,
              y = pc.comp)) + 
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity", width = 0.7)
   
 @
 
@@ -1855,8 +1852,10 @@ bottom.quintile.not.compensated_factors %>%
   chart_data %>%
   mutate(age_group = gsub("\\s", "\n", age_group)) %>%
   grplot(aes(x = age_group, y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
-                                                               axis.title.x = element_blank()) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare),
+           width = 0.7) + 
+  theme(legend.position = c(0.15, 0.7),
+        axis.title.x = element_blank()) + 
   scale_y_continuous(label=percent)
 @
 \begin{figure}
@@ -1873,8 +1872,10 @@ bottom.quintile.not.compensated_factors %>%
   filter(not_compensated) %>%
   mutate(prop = n/sum(n))  %>% 
   grplot(aes(x = factor(number_dependent_children), y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
-                                                               axis.title.x = element_blank()) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare),
+           width = 0.7) + 
+  theme(legend.position = c(0.15, 0.7),
+        axis.title.x = element_blank()) + 
   scale_y_continuous(label=percent)
 @
 
@@ -1889,8 +1890,10 @@ bottom.quintile.not.compensated_factors %>%
   filter(not_compensated) %>%
   mutate(prop = n/sum(n))  %>% 
   grplot(aes(x = factor(Prev_yr_HH_disp_income_factors), y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
-                                                               axis.title.x = element_blank()) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare),
+           width = 0.7) + 
+  theme(legend.position = c(0.15, 0.7),
+        axis.title.x = element_blank()) + 
   scale_y_continuous(label=percent)
 @
 
@@ -1915,7 +1918,7 @@ bottom.quintile.not.compensated_factors %>%
          gross_income_quintile = 1) %T>% 
   chart_data %>%
   grplot(aes(x = factor(Net_wealth_of_household_factors), y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare), width= 0.7) + 
   theme(legend.position = c(0.15, 0.7)) + 
   xlab("Net wealth of household (2014-15 dollars / 1000)") +
   scale_y_continuous(label=percent)
@@ -1938,8 +1941,10 @@ hes_with_gst_and_tax_compensation %>%
   filter(not_compensated) %>%
   mutate(prop = n/sum(n))  %>% 
   grplot(aes(x = factor(Weekly_GST), y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + theme(legend.position = c(0.15, 0.7),
-                                                               axis.title.x = element_blank()) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare),
+           width = 0.7) + 
+  theme(legend.position = c(0.15, 0.7),
+        axis.title.x = element_blank()) + 
   scale_y_continuous(label=percent)
 @
 
@@ -1951,7 +1956,8 @@ bottom.quintile.not.compensated_factors %>%
   filter(not_compensated) %>%
   mutate(prop = n/sum(n))  %>% 
   grplot(aes(x = factor(Main_source_of_current_HH_income), y = prop)) + 
-  geom_bar(stat = "identity", aes(fill = has_welfare)) + 
+  geom_bar(stat = "identity", aes(fill = has_welfare),
+           width = 0.7) + 
   theme(legend.position = c(0.15, 0.7),
         axis.title.x = element_blank()) + 
   scale_y_continuous(label=percent)

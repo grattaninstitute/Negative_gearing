@@ -1,11 +1,11 @@
 # This function calculates the replacement rate of an individual. The
 # **replacement rate** of an individual is 
 #
-#   (retirement income) / (lifetime income)
+#   (retirement income) / (pre-retirement income)
 #
 # So someone with an average (inflation-adjusted) income of $100,000/yr
 # with a retirement income of $50,000/yr would have a replacement rate 
-# of 50%.
+# of 50%. There's a bit 
 
 library(data.table)
 library(dplyr)
@@ -24,6 +24,8 @@ replacement_rate <- function(income_initial,
                              annuity_rate = 0.04,
                              annuity_period = 25
 ){
+  
+  stopifnot(require(data.table), require(dplyr), require(magrittr))
     Accumulation <- data.table(
       Age = seq(age_initial, retirement_age + annuity_period, by = 1L),
       Super_balance = 0
@@ -34,8 +36,9 @@ replacement_rate <- function(income_initial,
                               ifelse(Year <= 2020, 
                                      0.095, 
                                      pmin(0.12, 0.095 + 0.005 * (Year - 2020))),
-                              ifelse(SG_policy == "9.5%",
-                                     0.095, NA_real_)),
+                              ifelse(grepl("%", sg_policy, fixed = TRUE),
+                                     as.numeric(gsub("%", "", sg_policy, fixed = TRUE))/100, 
+                                     NA_real_)),
              Salary = income_initial * (1 + real_wage_growth + CPI) ^ (Year - year_initial),
              contributions = Salary * SG_rate * (1 - contributions_tax),
              Retd = Age > retirement_age)
