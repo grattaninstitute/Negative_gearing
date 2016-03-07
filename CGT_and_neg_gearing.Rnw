@@ -41,24 +41,16 @@ new.discount <- 0.25  # CGT
 \begin{document}
 \clearpage
 %\chapter{Distribution of negative gearing}
-<<minimal_peamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
+<<knitrOptions, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 my_emf <- function(file, width, height){
   devEMF::emf(file, width=width, height=height,
               family = "Arial")
 }
 
-# if(require(extrafont) && any(grepl("Arial", extrafont::fonts()))){
-#   font_import(pattern = "Arial")
-#   my_pdf <- function(file, width, height){
-#     pdf.options(family = "Arial")
-#     pdf(file = file, width = width, height = height)
-#   } 
-#   theme_hugh <- function(...) {theme_hugh(...) + theme(text = element_text(family = "Arial"))}
-# } else {
-  my_pdf <- function(file, width, height){
-    pdf(file = file, width, height = height)
-  }
-# }
+
+my_pdf <- function(file, width, height){
+  pdf(file = file, width, height = height)
+}
 
 # knitr chunk opts
 # fig.width must = out.width and same for *.height
@@ -66,7 +58,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       out.width="11.000in", out.height="7.00in", 
                       fig.show='hide',echo=FALSE,
                       message=FALSE, warning=FALSE
-                      ,cache=TRUE
+                      ,cache=FALSE
                       ,dev=c('my_pdf', 'my_emf', 'png')
                       ,fig.ext = c("pdf", "emf", "png")
 )
@@ -79,7 +71,8 @@ library(data.table)
 library(car)
 library(devEMF)
 library(gridExtra)
-library(ggplot2);require(scales)
+library(ggplot2)
+library(scales)
 library(directlabels)
 
 # I insist the latest version
@@ -96,7 +89,7 @@ library(foreign)
 library(Hmisc)
 library(devtools)
 library(grattan)
-library(XLConnect)
+library(taxstats)
 library(dplyr)
 library(tidyr)
 library(magrittr)
@@ -245,9 +238,9 @@ age_mutate_ <- function(.data){
 \onecolumn
 <<Determine_future_rental_deductions>>=
 historical.interest.losses <- 
-  rbindlist(lapply(2004:2013, function(yr){mutate(get_sample_file(yr), year = yr)}), fill = TRUE) %>%
-  group_by(year) %>%
-  summarise(tot.rent_interest_deds = sum(Rent_int_ded_amt)*weighting(year))
+  sample_files_all %>%
+  group_by(year = fy2yr(fy.year)) %>%
+  summarise(tot.rent_interest_deds = sum(as.numeric(Rent_int_ded_amt * WEIGHT)))
 
 total.investor.loans <- 
   read_excel("ABS_Household_financing.xlsx", sheet = "Investment_loans_outstanding") %>%
