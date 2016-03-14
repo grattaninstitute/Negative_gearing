@@ -72,14 +72,15 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
 )
 @
 
-<<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
+<<loadPackages, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
 # library(Rcell)
 library(knitr)
 library(data.table)
 library(car)
 library(devEMF)
 library(gridExtra)
-library(ggplot2);require(scales)
+library(ggplot2)
+library(scales)
 library(directlabels)
 
 # I insist the latest version
@@ -101,30 +102,9 @@ library(dplyr)
 library(tidyr)
 library(magrittr)
 #devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
+@
 
-      # for asymmetric expansion of limits
-      scale_dimension.custom_expand <- function(scale, expand = ggplot2:::scale_expand(scale)) {
-        expand_range(ggplot2:::scale_limits(scale), expand[[1]], expand[[2]])
-      }
-      
-      scale_y_continuous <- function(...) {
-        s <- ggplot2::scale_y_continuous(...)
-        class(s) <- c('custom_expand', class(s))
-        s
-      }
-      
-      scale_x_continuous <- function(...) {
-        s <- ggplot2::scale_x_continuous(...)
-        class(s) <- c('custom_expand', class(s))
-        s
-      }
-      
-      scale_x_date <- function(...) {
-        s <- ggplot2::scale_x_date(...)
-        class(s) <- c('custom_expand', class(s))
-        s
-      }
-      
+<<packcageCitation>>=
 # Select packages to cite:
 citPkgs <- names(sessionInfo()$otherPkgs)
 # Write the bibtex file:
@@ -136,7 +116,7 @@ write(package_cite_input, file = "package_cite_input.tex")
 \input{package_cite_input}
 \raggedbottom
 
-<<Convenience-functions>>=
+<<latex_percent>>=
 latex_percent <- function (x) {
     x <- plyr::round_any(x, scales:::precision(x)/100)
     stringr::str_c(comma(x * 100), "\\%")
