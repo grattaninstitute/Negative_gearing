@@ -1,64 +1,22 @@
 \documentclass{grattan}
-<<MODELLING-PARAMETERS,echo=FALSE>>=
+
+<<MODELLING-PARAMETERS, echo=FALSE>>=
 new.discount <- 0.25  # CGT
 @
-
-\usepackage{amsmath}
-\renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
-\usepackage{grfext}
-\PrependGraphicsExtensions*{.pdf}
-
-\title{Negative gearing and the capital gains discount}
-\usepackage[normalem]{ulem}
-\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{3pt}}}\ULon}
-\author{\redsout{John Daley and Danielle Wood}}
-
-\newcommand{\TBD}[1]{\colorbox{yellow}{#1}}
-
-\addbibresource{bibliography.bib}
-\addbibresource{bibliography2.bib} % r packages
-
-\newcommand\gao{Grattan analysis of}
-\newcommand{\mpfootnotes}[1][1]{
-  \renewcommand{\thempfootnote}{\thefootnote}
-  \addtocounter{footnote}{-#1}
-  \renewcommand{\footnote}{\stepcounter{footnote}\footnotetext[\value{footnote}]}}
-
-\usetikzlibrary{shapes,arrows,automata,positioning}
-\tikzstyle{block} = [rectangle, draw, 
-    text width=6em, text centered, rounded corners, minimum height=4em]
-    
-    \tikzstyle{line} = [draw, thick, -latex']
-
-\newcommand{\Act}[2]{\emph{#1} (#2)}
-\newcommand{\EMPH}[1]{\textbf{#1}}
-\newcommand{\highlight}[1]{\textbf{#1}}
-\newcommand\ie{\emph{i.e.~}}
-
-\usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
-\AtBeginEnvironment{quote}{\smaller}
 
 \begin{document}
 \clearpage
 %\chapter{Distribution of negative gearing}
-<<minimal_peamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
+<<knitrOpts, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 my_emf <- function(file, width, height){
   devEMF::emf(file, width=width, height=height,
               family = "Arial")
 }
 
-# if(require(extrafont) && any(grepl("Arial", extrafont::fonts()))){
-#   font_import(pattern = "Arial")
-#   my_pdf <- function(file, width, height){
-#     pdf.options(family = "Arial")
-#     pdf(file = file, width = width, height = height)
-#   } 
-#   theme_hugh <- function(...) {theme_hugh(...) + theme(text = element_text(family = "Arial"))}
-# } else {
-  my_pdf <- function(file, width, height){
-    pdf(file = file, width, height = height)
-  }
-# }
+my_pdf <- function(file, width, height){
+  pdf(file = file, width, height = height)
+}
+
 
 # knitr chunk opts
 # fig.width must = out.width and same for *.height
@@ -82,8 +40,6 @@ library(gridExtra)
 library(ggplot2)
 library(scales)
 library(directlabels)
-
-# I insist the latest version
 library(grattan)
 library(xtable)
 library(readxl)
@@ -101,7 +57,7 @@ library(XLConnect)
 library(dplyr)
 library(tidyr)
 library(magrittr)
-#devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
+library(taxstats)
 @
 
 <<packcageCitation>>=
@@ -114,6 +70,8 @@ write(package_cite_input, file = "package_cite_input.tex")
 @
 % citations
 \input{package_cite_input}
+
+% \textheight quite small for flushbottom
 \raggedbottom
 
 <<latex_percent>>=
@@ -126,9 +84,9 @@ latex_percent <- function (x) {
 \onecolumn
 <<Determine_future_rental_deductions>>=
 historical.interest.losses <- 
-  rbindlist(lapply(2004:2013, function(yr){mutate(get_sample_file(yr), year = yr)}), fill = TRUE) %>%
-  group_by(year) %>%
-  summarise(tot.rent_interest_deds = sum(Rent_int_ded_amt)*weighting(year))
+  sample_files_all %>%
+  group_by(year = fy2yr(fy.year)) %>%
+  summarise(tot.rent_interest_deds = sum(as.numeric(Rent_int_ded_amt * WEIGHT)))
 
 total.investor.loans <- 
   read_excel("ABS_Household_financing.xlsx", sheet = "Investment_loans_outstanding") %>%
@@ -183,14 +141,15 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
       select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
       filter(FY %in% c("2012-13", yr2fy(year))) %>%
       arrange(FY) %>%
-      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
+      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% 
+      last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
     #
     # Inflate by CG amount too.
     daley_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
@@ -229,7 +188,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   
   # More things to consider
   # This is a problem.
-  #   get_sample_file(2013) %>%
+  #   sample_file_1213 %>%
   #     filter(Net_CG_amt > 0) %>%
   #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
   #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
@@ -248,7 +207,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
     # discount. This was erroneous, but thought not to be a major problem. It is
     # somewhat of a problem.
     #
-    #   get_sample_file(2013) %>%
+    #   sample_file_1213 %>%
     #     filter(Net_CG_amt > 0) %>%
     #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
     #     grplot(aes(x = discount, y = Net_CG_amt)) + 
@@ -426,7 +385,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
     #
     # Inflate by CG amount too.
     daley_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
@@ -452,7 +411,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
     daley_taxstats[,ETP_txbl_amt := 0]
   
   prop_full_discount <-
-    get_sample_file(2013) %>%
+    sample_file_1213 %>%
     filter(Net_CG_amt > 0) %>%
     mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
            apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
@@ -466,7 +425,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
   
   # More things to consider
   # This is a problem.
-  #   get_sample_file(2013) %>%
+  #   sample_file_1213 %>%
   #     filter(Net_CG_amt > 0) %>%
   #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
   #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
@@ -487,7 +446,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
     # discount. This was erroneous, but thought not to be a major problem. It is
     # somewhat of a problem.
     #
-    #   get_sample_file(2013) %>%
+    #   sample_file_1213 %>%
     #     filter(Net_CG_amt > 0) %>%
     #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
     #     grplot(aes(x = discount, y = Net_CG_amt)) + 
@@ -671,7 +630,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
     #
     # Inflate by CG amount too.
     daley_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
@@ -696,7 +655,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
     daley_taxstats[,ETP_txbl_amt := 0]
   
   prop_full_discount <-
-    get_sample_file(2013) %>%
+    sample_file_1213 %>%
     filter(Net_CG_amt > 0) %>%
     mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
            apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
@@ -710,7 +669,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
   
   # More things to consider
   # This is a problem.
-  #   get_sample_file(2013) %>%
+  #   sample_file_1213 %>%
   #     filter(Net_CG_amt > 0) %>%
   #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
   #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
@@ -731,7 +690,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
     # discount. This was erroneous, but thought not to be a major problem. It is
     # somewhat of a problem.
     #
-    #   get_sample_file(2013) %>%
+    #   sample_file_1213 %>%
     #     filter(Net_CG_amt > 0) %>%
     #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
     #     grplot(aes(x = discount, y = Net_CG_amt)) + 
@@ -904,10 +863,8 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
 \twocolumn
 
 <<Just_negative_gearing_cost>>=
-tax2013 <- fread(sample_file_of(2013))
-
 prob_of_noCG_if_investor201213 <- 
-  tax2013 %>%
+  sample_file_1213 %>%
   group_by(
     IsInvestor = Gross_rent_amt > 0,
     HasCG = Net_CG_amt > 0
@@ -920,7 +877,7 @@ prob_of_noCG_if_investor201213 <-
   prop
 
 just_negative_gearing_taxstats <-
-  tax2013 %>%
+  sample_file_1213 %>%
   mutate(
     income_no_salary = Tot_inc_amt - Net_rent_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt,  
     #
@@ -990,7 +947,7 @@ henry_taxstats <- function(year = 2013, new.discount = 0.25){
     #
     # Inflate by CG amount too.
     henry_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
           Net_CG_amt + Net_CG_amt * CG_inflator,
@@ -1149,7 +1106,7 @@ It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year 
  
 
 <<Number_of_NG_taxpayers>>=
-n.NGrs <- get_sample_file(2013) %$% sum(Net_rent_amt < 0) * 50 / 10^6
+n.NGrs <- sample_file_1213 %$% sum(Net_rent_amt < 0) * 50 / 10^6
 n.NGrs <- round(n.NGrs, 1)
 @
  
@@ -1185,53 +1142,6 @@ To bring their budgets back to balance, governments will need to undertake refor
 It has deferred any significant changes in its revenue mix until after its \emph{Tax White Paper}.
  
 But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
- 
-% \chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
-% This chapter examines two significant concessions in the taxation of savings: \highlight{tax discounts for capital gains} and \highlight{negative gearing}.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.} 
-% These allow investors to use debt-financed investment, particularly property investment, to reduce and defer their personal income tax.
-%
-% These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property.
-% The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers.
-% Like most tax concessions on investment, these concessions largely benefit the wealthy.
-%
-% The 50~per cent \highlight{capital gains tax (CGT) discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.~4-21]{Treasury2015a}.
-% This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts.
-% That is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment.
-% But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings.
-% And entrepreneurs already receive a range of other capital gains tax concessions.
-% Reducing the CGT discount to 30~per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
-%
-% Negative gearing should also be limited.
-% The tax deductibility of costs, including interest costs, is a standard feature of the tax system, preventing bias against debt-financed investments.
-% But allowing investment losses to be written off against wage and salary income is not needed to prevent such bias.
-% Such losses should only be deductible against investment income.
-% The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
-%
-% Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term.
-% This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income. 
-%
-% An alternative option would align the tax rates for capital gains and losses.
-% For example, the capital gains discount could be reduced so that people paid tax on 70~per cent of their capital gains, but could claim only 70~per cent of any investment losses against wage and salary income.
-% Treating capital gains and recurrent losses consistently would reduce the tax-driven incentive for borrowing to invest.
-% It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
-%
-% The best way to transition to these new arrangements would be to phase them in over a number of years.
-% Such a phase-in would help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump.
-% This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
-% \chapter{Hugh}
-% The preferential treatment of the capital gains discount and negative gearing result in revenue leakage of \textbf{\$10.2~billion}. 
-% Yet Australia these tax expenditures do more harm than good, leaving alone their contribution to the deficit.
-% 
-% When nominal investment losses can be written off in full, but investment gains enjoy a discount relative to ordinary income, 
-% 
-% Given supply and demand, there is an optimal level of investment for property. Governments should ensure that their tax policies do not result in a different level of investment, unless there is a specific and worthy policy reason to do so.\footnote{Of course, governments should not restrict supply or induce changes in demand, as they currently do. But that is a separate matter.} 
-% 
-% The current tax policies of negative gearing and discounts for capital gains do not respect this principle.  
-% \mpfootnotes[3]
-% \end{onepager}
-% \clearpage
-
-
 
 \chapter{The capital gains discount}
 \section{Capital gains enjoy preferential tax treatment relative to income from working}
@@ -1477,7 +1387,7 @@ This means that realising gains can push investors up the taxable income scale.
 When we control for this by removing gains from income, we see that more than 30~per cent of gains are still earned by those in the top ten per cent of (non-capital gains) income. 
 
 <<Capital_gains_deciles_by_age>>=
-get_sample_file(2013) %>% 
+sample_file_1213 %>% 
   filter(Net_CG_amt < 5e6,
          Net_CG_amt > 0) %>%
   mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under",
@@ -1698,7 +1608,7 @@ HILDA_wave10 %>%
 
 <<Investor_tax_rates>>=
 cgt.marginal.rates <- 
-  get_sample_file(2013) %>% 
+  sample_file_1213 %>% 
   age_mutate_ %>% 
   group_by(HasCGT = Net_CG_amt > 0, 
            HasSalary = Sw_amt > 0, 
@@ -1873,7 +1783,7 @@ Those over 50 have much higher average realisation of gains, regardless of incom
 The preponderance of retirees occurs regardless of income level as clearly shown in the incidence of capital gains realizations in \Vref{fig:Prob_of_CGevent_by_age_income}.
 
 <<Prob_of_CGevent_by_age_income, fig.height=8.5, out.height="8.5in">>=
-get_sample_file(2013) %>% 
+sample_file_1213 %>% 
   mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", ifelse(age > 65, "65+", age))) %>% 
   mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65+"))) %>% 
   group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
@@ -1967,7 +1877,7 @@ Investing in loss making properties is popular amongst those of working age, but
 Over 70~per cent of those under 60 with investment properties make rental losses compared to less than 35~per cent over 60. (See \Vref{fig:Age_negative_gearing_investments}.)
 
 <<Age_negative_gearing_investments, fig.width=11.000, fig.height=10.00, out.width="11.000in", out.height="10.00in",>>=
-get_sample_file(2013) %>%
+sample_file_1213 %>%
     mutate(Age = car::recode(age_range, "0 = '70 and over';
                             1 = '65 to 69';
                             2 = '60 to 64';
@@ -2666,7 +2576,7 @@ It shows that the top 20~per cent of income earners are almost ten times more li
 
 <<Decile_constructor>>=
 benefits_by_taxable_income <- 
-  get_sample_file(2013) %>%
+  sample_file_1213 %>%
   mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
          Taxable_Income_NoNegGearg = Taxable_Income - pmin(Net_rent_amt, 0),
          Taxable_Income_NoNegGearg_Decile = ntile(Taxable_Income_NoNegGearg, 10),
@@ -2678,7 +2588,7 @@ benefits_by_taxable_income <-
   mutate(Decile_of = "Taxable Income")
 
 benefits_by_taxable_income_before_deductions <- 
-  get_sample_file(2013)%>%
+  sample_file_1213%>%
   mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
          #Taxable_Income_NoNegGearg = Taxable_Income + Rent_int_ded_amt,
          Taxable_Income_NoNegGearg = Taxable_Income - pmin(Net_rent_amt, 0),
@@ -2886,7 +2796,7 @@ Concerns about investor expectations are not particularly strong as the phase-in
 @
 
 <<income_age_heatmap_raw>>=
-tax2013 %>%
+sample_file_1213 %>%
   age_mutate_ %>%
   group_by(Income_decile = ntile(Tot_inc_amt, 10),
            Age) %>%
