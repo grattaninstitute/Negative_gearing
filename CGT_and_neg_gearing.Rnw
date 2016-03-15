@@ -1,5 +1,6 @@
 \documentclass{grattan}
-<<MODELLING-PARAMETERS,echo=FALSE>>=
+
+<<MODELLING-PARAMETERS, echo=FALSE>>=
 new.discount <- 0.25  # CGT
 @
 
@@ -40,13 +41,7 @@ new.discount <- 0.25  # CGT
 \begin{document}
 \clearpage
 %\chapter{Distribution of negative gearing}
-<<knitrOptions, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
-my_emf <- function(file, width, height){
-  devEMF::emf(file, width=width, height=height,
-              family = "Arial")
-}
-
-
+<<knitrOpts, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
 my_pdf <- function(file, width, height){
   pdf(file = file, width, height = height)
 }
@@ -63,7 +58,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
 )
 @
 
-<<preamble, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
+<<loadPackages, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
 # library(Rcell)
 library(knitr)
 library(data.table)
@@ -73,8 +68,6 @@ library(gridExtra)
 library(ggplot2)
 library(scales)
 library(directlabels)
-
-# I insist the latest version
 library(grattan)
 library(xtable)
 library(readxl)
@@ -92,31 +85,10 @@ library(taxstats)
 library(dplyr)
 library(tidyr)
 library(magrittr)
-#devtools::install_bitbucket("mkuhn/parallelRandomForest", ref="parallelRandomForest")
+library(taxstats)
+@
 
-      # for asymmetric expansion of limits
-      scale_dimension.custom_expand <- function(scale, expand = ggplot2:::scale_expand(scale)) {
-        expand_range(ggplot2:::scale_limits(scale), expand[[1]], expand[[2]])
-      }
-      
-      scale_y_continuous <- function(...) {
-        s <- ggplot2::scale_y_continuous(...)
-        class(s) <- c('custom_expand', class(s))
-        s
-      }
-      
-      scale_x_continuous <- function(...) {
-        s <- ggplot2::scale_x_continuous(...)
-        class(s) <- c('custom_expand', class(s))
-        s
-      }
-      
-      scale_x_date <- function(...) {
-        s <- ggplot2::scale_x_date(...)
-        class(s) <- c('custom_expand', class(s))
-        s
-      }
-      
+<<packcageCitation>>=
 # Select packages to cite:
 citPkgs <- names(sessionInfo()$otherPkgs)
 # Write the bibtex file:
@@ -126,14 +98,17 @@ write(package_cite_input, file = "package_cite_input.tex")
 @
 % citations
 \input{package_cite_input}
+
+% \textheight quite small for flushbottom
 \raggedbottom
 
-<<Convenience-functions>>=
+<<latex_percent>>=
 latex_percent <- function (x) {
     x <- plyr::round_any(x, scales:::precision(x)/100)
     stringr::str_c(comma(x * 100), "\\%")
 }
 @
+
 
 %%% Costings analysis
 <<paths_to_sample_files>>=
@@ -236,6 +211,10 @@ interest_losses[!complete.cases(interest_losses), ] %>%
 
 
 
+<<cost-new-CGT-discount>>=
+
+@
+
 
 <<Functions_For_All_Years>>=
 # This is a functional version of the above.
@@ -243,10 +222,18 @@ interest_losses[!complete.cases(interest_losses), ] %>%
 # not fast to run.
 # Beware.
 
-cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30){
+cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = new.discount){
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
+    CG_inflator <-
+      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
+      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
+      filter(FY %in% c("2012-13", yr2fy(year))) %>%
+      arrange(FY) %>%
+      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% 
+      last(cgt_inflation)
+
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
@@ -462,18 +449,10 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
       select(-marginal.tax.of.avg) %>%
       data.table
   }
-  #   return({
-  #     data.table(Year = year,
-  #                Initial_revenue_diff = sum(daley_taxstats$diff)*weighting(year)/1e9,
-  #                Eventual_revenue_diff = sum(new_daley$diff)*weighting(year)/1e9,
-  #                eventual_means... = paste("After", eventual, "years"),
-  #                Diff_due_CG = sum(daley_taxstats$tax_after_reduction_in_discount - daley_taxstats$current_tax)*weighting(year)/1e9
-  #     )
-  #   })
   new_daley
 }
 
-cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount = 0.30){
+cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount = new.discount){
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
@@ -1228,53 +1207,6 @@ To bring their budgets back to balance, governments will need to undertake refor
 It has deferred any significant changes in its revenue mix until after its \emph{Tax White Paper}.
  
 But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
- 
-% \chapter{Other tax concessions for savings: capital gains tax discount and negative gearing}
-% This chapter examines two significant concessions in the taxation of savings: \highlight{tax discounts for capital gains} and \highlight{negative gearing}.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.} 
-% These allow investors to use debt-financed investment, particularly property investment, to reduce and defer their personal income tax.
-%
-% These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property.
-% The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers.
-% Like most tax concessions on investment, these concessions largely benefit the wealthy.
-%
-% The 50~per cent \highlight{capital gains tax (CGT) discount} provides an annual tax discount to individuals and trusts worth \$7 billion each year.\footnote{\textcite[p.~4-21]{Treasury2015a}.
-% This is Treasury's estimate of the revenue foregone from the discounted tax treatment of capital gains for individuals and trusts.
-% That is, compared to taxing gains at full marginal rates.} This discount is justified on the basis that it promotes savings and investment.
-% But tax rates do not do much to affect the amount of that wealthy people save -- although they do affect the form of savings.
-% And entrepreneurs already receive a range of other capital gains tax concessions.
-% Reducing the CGT discount to 30~per cent could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion, depending on behavioural change and the extent of future gains.
-%
-% Negative gearing should also be limited.
-% The tax deductibility of costs, including interest costs, is a standard feature of the tax system, preventing bias against debt-financed investments.
-% But allowing investment losses to be written off against wage and salary income is not needed to prevent such bias.
-% Such losses should only be deductible against investment income.
-% The current system encourages people to pursue investments that make sense only because they provide tax breaks on wages.
-%
-% Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term.
-% This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income. 
-%
-% An alternative option would align the tax rates for capital gains and losses.
-% For example, the capital gains discount could be reduced so that people paid tax on 70~per cent of their capital gains, but could claim only 70~per cent of any investment losses against wage and salary income.
-% Treating capital gains and recurrent losses consistently would reduce the tax-driven incentive for borrowing to invest.
-% It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
-%
-% The best way to transition to these new arrangements would be to phase them in over a number of years.
-% Such a phase-in would help smooth reductions in asset prices and reduce the risk of over-shooting, and a broader economic slump.
-% This would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
-% \chapter{Hugh}
-% The preferential treatment of the capital gains discount and negative gearing result in revenue leakage of \textbf{\$10.2~billion}. 
-% Yet Australia these tax expenditures do more harm than good, leaving alone their contribution to the deficit.
-% 
-% When nominal investment losses can be written off in full, but investment gains enjoy a discount relative to ordinary income, 
-% 
-% Given supply and demand, there is an optimal level of investment for property. Governments should ensure that their tax policies do not result in a different level of investment, unless there is a specific and worthy policy reason to do so.\footnote{Of course, governments should not restrict supply or induce changes in demand, as they currently do. But that is a separate matter.} 
-% 
-% The current tax policies of negative gearing and discounts for capital gains do not respect this principle.  
-% \mpfootnotes[3]
-% \end{onepager}
-% \clearpage
-
-
 
 \chapter{The capital gains discount}
 \section{Capital gains enjoy preferential tax treatment relative to income from working}
@@ -2772,6 +2704,14 @@ Income tax includes medicare levy, medicare thresholds, but not other tax benefi
 \source{\gao\ \textcite{ATO2013i}}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% CHAPTER 3: IMPACT OF NEGATIVE GEARING AND THE CGT %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<<Impact, child='./CGT-NG-sections/chapter-Impact-of-changing-negative-gearing/Impact-of-changing-negative-gearing.Rnw'>>=
+@
+
+
+
 \chapter{Options for reform}
 The favourable tax treatment of investments -- particularly the interaction of the negative gearing arrangements with the capital gains tax discount -- have promoted speculative investment in housing while also costing the budget bottom line. 
 
@@ -2929,7 +2869,7 @@ Concerns about investor expectations are not particularly strong as the phase-in
 @
 
 <<income_age_heatmap_raw>>=
-tax2013 %>%
+sample_file_1213 %>%
   age_mutate_ %>%
   group_by(Income_decile = ntile(Tot_inc_amt, 10),
            Age) %>%
