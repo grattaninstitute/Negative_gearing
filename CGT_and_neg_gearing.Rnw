@@ -25,8 +25,7 @@ new.discount <- 0.25  # CGT
   \renewcommand{\footnote}{\stepcounter{footnote}\footnotetext[\value{footnote}]}}
 
 \usetikzlibrary{shapes,arrows,automata,positioning}
-\tikzstyle{block} = [rectangle, draw, 
-    text width=6em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{block} = [rectangle, draw, text width=6em, text centered, rounded corners, minimum height=4em]
     
     \tikzstyle{line} = [draw, thick, -latex']
 
@@ -138,59 +137,6 @@ latex_percent <- function (x) {
 
 %%% Costings analysis
 <<paths_to_sample_files>>=
-sample_file_of <- function(year = 2013){
-  year <- min(2013, year)
-  fy.year <- paste0(year - 1, "-", formatC(year - 2000, flag = "0", width=2))
-  # List all files with sample in them that have csv or txt at the end.
-  list.of.files <- list.files(path = "./IndividualSampleFile", pattern = paste0("(s|S)ample.*((csv)|(txt))$"), recursive = TRUE, full.names = TRUE)
-  return(list.of.files[grepl(fy.year, list.of.files)])
-}
-
-
-get_sample_file <- function(year = 2013){
-  colClasses = sapply(fread(sample_file_of(year), nrows=50), class)
-  fread(sample_file_of(year), colClasses = colClasses, na.strings = "?")
-}
-
-# This function is 50 for 2012-13, as it 
-# represents a 2% sample file.  Future years
-# are a bit more subtle, as the sample file
-# will be large (have more rows)
-weighting <- function(year = 2013){
-  # From Budget Table 1 from BP 1
-  # http://budget.gov.au/2015-16/content/bp1/html/bp1_bs2.htm
-  wage.growth <- 1.0275
-  #Use the one from Department of employment forecasts
-  #2014 Regional Projections to November 2018
-  
-  lf.url <- "http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/LF/0.6.3.1599.10.M/ABS?startTime=1981"
-  lf <- readSDMX(lf.url)
-  lf <- as.data.frame(lf) 
-#   
-#   lf.201314 <- lf[lf$obsTime == "2014-06",]$obsValue / lf[lf$obsTime == "2013-06",]$obsValue
-#   # May good enough for now
-#   lf.201315 <- lf[lf$obsTime == "2015-05",]$obsValue / lf[lf$obsTime == "2013-06",]$obsValue
-  lf.growth <- 1.015
-  if (year > 2013){
-    percentage_sample <- 2 
-  } else {
-    percentage_sample <- as.numeric(gsub("^.*(.)%.*$", "\\1", sample_file_of(year)))
-  }
-  # 
-  # Some files don't signal the percentage amount
-  if (is.na(percentage_sample)){
-    return(100)
-  } else {
-    # Use population projections?
-    # 100 * aus_pop_qtr(paste0(year, "-Q4")) / aus_pop_qtr("2013-Q4") / percentage_sample
-    #
-    if (year > 2013)
-      100 * (lf.growth)^(year - 2013) / percentage_sample
-    else 
-      100 / percentage_sample
-  }
-}
-
 age_mutate_ <- function(.data){
   .data %>%
   mutate(Age = car::recode(age_range, "0 = '70 and over';
@@ -232,6 +178,17 @@ age_mutate_ <- function(.data){
                                        '65 to 69',
                                        '70 and over')),
                        ordered = T))
+}
+@
+
+<<CGT_inflator>>=
+CG_inflator <- function(from_fy, to_fy){
+  read_excel("Tax-Expenditures-CGT Historical.xlsx") %$%
+  {
+   .$CGT_discount_for_individuals_and_trusts_millions[which(.$FY == to_fy)] / 
+      .$CGT_discount_for_individuals_and_trusts_millions[which(.$FY == from_fy)]
+             
+  }
 }
 @
 
@@ -290,27 +247,21 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
-    CG_inflator <-
-      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
-      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
-      filter(FY %in% c("2012-13", yr2fy(year))) %>%
-      arrange(FY) %>%
-      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
     #
     # Inflate by CG amount too.
     daley_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
-        Net_CG_amt = Net_CG_amt * CG_inflator,
-        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
       )
   } else {
     daley_taxstats <- 
@@ -341,7 +292,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
   
   # More things to consider
   # This is a problem.
-  #   get_sample_file(2013) %>%
+  #   sample_file_1213 %>%
   #     filter(Net_CG_amt > 0) %>%
   #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
   #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
@@ -360,7 +311,7 @@ cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = 0.30
     # discount. This was erroneous, but thought not to be a major problem. It is
     # somewhat of a problem.
     #
-    #   get_sample_file(2013) %>%
+    #   sample_file_1213 %>%
     #     filter(Net_CG_amt > 0) %>%
     #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
     #     grplot(aes(x = discount, y = Net_CG_amt)) + 
@@ -526,28 +477,22 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
-    CG_inflator <-
-      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
-      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
-      filter(FY %in% c("2012-13", yr2fy(year))) %>%
-      arrange(FY) %>%
-      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
     #
     # Inflate by CG amount too.
     daley_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         # data.table may be tempestuous without explicit coercion.
         Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
-        Net_CG_amt = Net_CG_amt * CG_inflator,
-        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
       )
   } else {
     daley_taxstats <- 
@@ -564,7 +509,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
     daley_taxstats[,ETP_txbl_amt := 0]
   
   prop_full_discount <-
-    get_sample_file(2013) %>%
+    sample_file_1213 %>%
     filter(Net_CG_amt > 0) %>%
     mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
            apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
@@ -578,7 +523,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
   
   # More things to consider
   # This is a problem.
-  #   get_sample_file(2013) %>%
+  #   sample_file_1213 %>%
   #     filter(Net_CG_amt > 0) %>%
   #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
   #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
@@ -599,7 +544,7 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
     # discount. This was erroneous, but thought not to be a major problem. It is
     # somewhat of a problem.
     #
-    #   get_sample_file(2013) %>%
+    #   sample_file_1213 %>%
     #     filter(Net_CG_amt > 0) %>%
     #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
     #     grplot(aes(x = discount, y = Net_CG_amt)) + 
@@ -771,27 +716,21 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
   fy.year <- yr2fy(year)
   
   if (year >= 2014){
-    CG_inflator <-
-      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
-      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
-      filter(FY %in% c("2012-13", yr2fy(year))) %>%
-      arrange(FY) %>%
-      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
     #
     # Inflate by CG amount too.
     daley_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
-        Net_CG_amt = Net_CG_amt * CG_inflator,
-        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
       )
   } else {
     daley_taxstats <- 
@@ -808,7 +747,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
     daley_taxstats[,ETP_txbl_amt := 0]
   
   prop_full_discount <-
-    get_sample_file(2013) %>%
+    sample_file_1213 %>%
     filter(Net_CG_amt > 0) %>%
     mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
            apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
@@ -822,7 +761,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
   
   # More things to consider
   # This is a problem.
-  #   get_sample_file(2013) %>%
+  #   sample_file_1213 %>%
   #     filter(Net_CG_amt > 0) %>%
   #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
   #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
@@ -843,7 +782,7 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
     # discount. This was erroneous, but thought not to be a major problem. It is
     # somewhat of a problem.
     #
-    #   get_sample_file(2013) %>%
+    #   sample_file_1213 %>%
     #     filter(Net_CG_amt > 0) %>%
     #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
     #     grplot(aes(x = discount, y = Net_CG_amt)) + 
@@ -1016,10 +955,8 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
 \twocolumn
 
 <<Just_negative_gearing_cost>>=
-tax2013 <- fread(sample_file_of(2013))
-
 prob_of_noCG_if_investor201213 <- 
-  tax2013 %>%
+  sample_file_1213 %>%
   group_by(
     IsInvestor = Gross_rent_amt > 0,
     HasCG = Net_CG_amt > 0
@@ -1032,7 +969,7 @@ prob_of_noCG_if_investor201213 <-
   prop
 
 just_negative_gearing_taxstats <-
-  tax2013 %>%
+  sample_file_1213 %>%
   mutate(
     income_no_salary = Tot_inc_amt - Net_rent_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt,  
     #
@@ -1090,27 +1027,21 @@ for (i in 1:20){
 <<Henry_proposal_mutate>>=
 henry_taxstats <- function(year = 2013, new.discount = 0.25){
   if (year >= 2014){
-    CG_inflator <-
-      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
-      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
-      filter(FY %in% c("2012-13", yr2fy(year))) %>%
-      arrange(FY) %>%
-      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% last(cgt_inflation)
     # Inflate the wages for future years.
     # Adjust the variables which depend on Sw_amt
     # accordingly (otherwise the difference just becomes smaller).
     #
     # Inflate by CG amount too.
     henry_taxstats <- 
-      get_sample_file(2013) %>%  
+      sample_file_1213 %>%  
       mutate(
         Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
-          Net_CG_amt + Net_CG_amt * CG_inflator,
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
         Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
-        Net_CG_amt = Net_CG_amt * CG_inflator,
-        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
       )
   } else {
     henry_taxstats <- 
@@ -1138,7 +1069,7 @@ policy_align_gains_and_losses <- henry_taxstats(2015, new.discount = new.discoun
 
 policy %>%
   mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
-  round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
+  round(sum(diff_due_CG)*lf_inflator_fy(from_fy = "2012-13", to_fy = "2015-16")/1e9, 1) ->
   cost_of_red_CGT_discount
 
 cost_of_daley_policy_fast(year = 2015, CGT.discount = new.discount, eventual = 0) %>%
@@ -1261,7 +1192,7 @@ It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year 
  
 
 <<Number_of_NG_taxpayers>>=
-n.NGrs <- get_sample_file(2013) %$% sum(Net_rent_amt < 0) * 50 / 10^6
+n.NGrs <- sample_file_1213 %$% sum(Net_rent_amt < 0) * 50 / 10^6
 n.NGrs <- round(n.NGrs, 1)
 @
  
@@ -1589,7 +1520,7 @@ This means that realising gains can push investors up the taxable income scale.
 When we control for this by removing gains from income, we see that more than 30~per cent of gains are still earned by those in the top ten per cent of (non-capital gains) income. 
 
 <<Capital_gains_deciles_by_age>>=
-get_sample_file(2013) %>% 
+sample_file_1213 %>% 
   filter(Net_CG_amt < 5e6,
          Net_CG_amt > 0) %>%
   mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under",
@@ -1810,7 +1741,7 @@ HILDA_wave10 %>%
 
 <<Investor_tax_rates>>=
 cgt.marginal.rates <- 
-  get_sample_file(2013) %>% 
+  sample_file_1213 %>% 
   age_mutate_ %>% 
   group_by(HasCGT = Net_CG_amt > 0, 
            HasSalary = Sw_amt > 0, 
@@ -1985,7 +1916,7 @@ Those over 50 have much higher average realisation of gains, regardless of incom
 The preponderance of retirees occurs regardless of income level as clearly shown in the incidence of capital gains realizations in \Vref{fig:Prob_of_CGevent_by_age_income}.
 
 <<Prob_of_CGevent_by_age_income, fig.height=8.5, out.height="8.5in">>=
-get_sample_file(2013) %>% 
+sample_file_1213 %>% 
   mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", ifelse(age > 65, "65+", age))) %>% 
   mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65+"))) %>% 
   group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
@@ -2079,7 +2010,7 @@ Investing in loss making properties is popular amongst those of working age, but
 Over 70~per cent of those under 60 with investment properties make rental losses compared to less than 35~per cent over 60. (See \Vref{fig:Age_negative_gearing_investments}.)
 
 <<Age_negative_gearing_investments, fig.width=11.000, fig.height=10.00, out.width="11.000in", out.height="10.00in",>>=
-get_sample_file(2013) %>%
+sample_file_1213 %>%
     mutate(Age = car::recode(age_range, "0 = '70 and over';
                             1 = '65 to 69';
                             2 = '60 to 64';
@@ -2778,7 +2709,7 @@ It shows that the top 20~per cent of income earners are almost ten times more li
 
 <<Decile_constructor>>=
 benefits_by_taxable_income <- 
-  get_sample_file(2013) %>%
+  sample_file_1213 %>%
   mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
          Taxable_Income_NoNegGearg = Taxable_Income - pmin(Net_rent_amt, 0),
          Taxable_Income_NoNegGearg_Decile = ntile(Taxable_Income_NoNegGearg, 10),
@@ -2790,7 +2721,7 @@ benefits_by_taxable_income <-
   mutate(Decile_of = "Taxable Income")
 
 benefits_by_taxable_income_before_deductions <- 
-  get_sample_file(2013)%>%
+  sample_file_1213%>%
   mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
          #Taxable_Income_NoNegGearg = Taxable_Income + Rent_int_ded_amt,
          Taxable_Income_NoNegGearg = Taxable_Income - pmin(Net_rent_amt, 0),
