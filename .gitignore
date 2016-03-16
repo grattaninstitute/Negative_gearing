@@ -55,6 +55,8 @@ cache_BudgetRepair_GST/
 
 # figures
 *.pdf
+!./FrontPage/*pdf
+!./logos/*pdf
 *.emf
 *.dta
 *.RData
