@@ -1,0 +1,33 @@
+\usepackage{amsmath}
+\renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
+\usepackage{grfext}
+\PrependGraphicsExtensions*{.pdf}
+
+\title{Negative gearing and the capital gains discount}
+\usepackage[normalem]{ulem}
+\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{3pt}}}\ULon}
+\author{\redsout{John Daley and Danielle Wood}}
+
+\newcommand{\TBD}[1]{\colorbox{yellow}{#1}}
+  
+  \addbibresource{bibliography.bib}
+  \addbibresource{bibliography2.bib} % r packages
+  
+  \newcommand\gao{Grattan analysis of}
+  \newcommand{\mpfootnotes}[1][1]{
+    \renewcommand{\thempfootnote}{\thefootnote}
+    \addtocounter{footnote}{-#1}
+        \renewcommand{\footnote}{\stepcounter{footnote}\footnotetext[\value{footnote}]}}
+    
+    \usetikzlibrary{shapes,arrows,automata,positioning}
+    \tikzstyle{block} = [rectangle, draw, text width=6em, text centered, rounded corners, minimum height=4em]
+    
+    \tikzstyle{line} = [draw, thick, -latex']
+                        
+                        \newcommand{\Act}[2]{\emph{#1} (#2)}
+                        \newcommand{\EMPH}[1]{\textbf{#1}}
+                        \newcommand{\highlight}[1]{\textbf{#1}}
+                        \newcommand\ie{\emph{i.e.~}}
+                        
+                        \usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
+                        \AtBeginEnvironment{quote}{\smaller}
