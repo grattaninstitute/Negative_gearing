@@ -1,2 +1,20 @@
 Cost of policy by policy option with CGT discount set at 25%
 ====================================
+<<<<<<< HEAD
+||||||| merged common ancestors
+4.8 Quarantine NG losses and reduce CGT discount (Year 0)
+4.1 Quarantine NG losses and reduce CGT discount
+2 Reduce CGT discount
+2.1 Just quarantine losses
+3 Just quarantine losses (year 0)
+3.7 Henry proposal
+0.9 Henry proposal (just NG)
+=======
+0.1 Quarantine NG losses and reduce CGT discount (Year 0)
+0.1 Quarantine NG losses and reduce CGT discount
+0 Reduce CGT discount
+0 Just quarantine losses
+0.1 Just quarantine losses (year 0)
+0.1 Henry proposal
+0 Henry proposal (just NG)
+>>>>>>> d543f4adf8a449f488fc28bc8fc306bce540470f
