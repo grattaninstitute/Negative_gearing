@@ -10,25 +10,33 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
   \makeindex
 \RequirePackage{xcolor}
 \RequirePackage{amsmath,amssymb}
-% \RequirePackage{tikz,adjustbox}
-%   \usetikzlibrary{positioning}
-%   \usetikzlibrary{decorations.text}
-%   \usetikzlibrary{decorations.pathmorphing}
-%   \usetikzlibrary{patterns,arrows,decorations.pathreplacing} % for waterfalls
+\RequirePackage{tikz,adjustbox}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{decorations.text}
+  \usetikzlibrary{decorations.pathmorphing}
+  \usetikzlibrary{patterns,arrows,decorations.pathreplacing} % for waterfalls
 \RequirePackage{float}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
 % needs to be switched off for copying and pasting
-\RequirePackage[activate={true,nocompatibility},factor=500,final,expansion,tracking=true,kerning=true, spacing=false,selected=true, letterspace=-20]{microtype}
-\LoadMicrotypeFile{uarial}
-
-\SetExtraSpacing{ font = * / * / * / * / * }{. = {100,100,100},}
+% \frenchspacing  %% NOT REALLY (see \SetExtraSpacing below)
+% \RequirePackage[activate={true,nocompatibility},
+% final,
+% expansion,
+% tracking=true,
+% kerning=true, 
+% spacing=false,
+% letterspace=5]{microtype}
+% 
+% \SetExtraSpacing{ font = * / * / * / * / * }{. = {100,0,0},}
+\RequirePackage[activate=true, expansion, final, kerning=true, spacing=true]{microtype}
 
 % Arial font looks a little bit spaced. One way to do it is to adjust the letterspace 
 % option to microtype.  Another is to adjust the spaceskip
 % large
 % \spaceskip=1.5\fontdimen2\font plus 1.5\fontdimen3\font minus 1.5\fontdimen4\font
-\spaceskip=1.2\fontdimen2\font plus 1.2\fontdimen3\font minus 1.2\fontdimen4\font
+% \spaceskip=1.2\fontdimen2\font plus 1.2\fontdimen3\font minus 1.2\fontdimen4\font
+
 % ------
 % Grattan colors
 \definecolor{Orange}{HTML}{F68B33}
@@ -64,7 +72,8 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
 \RequirePackage{lmodern}
-\RequirePackage{uarial}
+%\RequirePackage{uarial}
+\RequirePackage[scaled]{helvet}
   \renewcommand{\familydefault}{\sfdefault}
 
 \RequirePackage[framemethod=TikZ]{mdframed}
@@ -125,13 +134,14 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \vspace{-1.5ex}
 }{\end{mdframed}\vfill\end{boxe}} 
 
-%\RequirePackage{stfloats}
+
+
 % Big boxes -- over the whole page
 % It is recommended to surround this with an \afterpage{% 
 \newenvironment{bigbox}[2]{\onecolumn\setlength{\currentparskip}{\parskip}
 \begin{boxe}
 \begin{mdframed}[style=GrattanFrameBox]%
-\setlength{\columnsep}{15mm}
+\setlength{\columnsep}{10mm}
 \begin{multicols}{2}
 \setlength{\parskip}{\currentparskip}% restore the value
  \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=justified,singlelinecheck=false}
@@ -143,40 +153,21 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
   \setlength{\currentparskip}{\parskip}
   \@dblfloat{boxe}%
   \begin{mdframed}[style=GrattanFrameBox]
-  \setlength{\columnsep}{15mm}
+  \setlength{\columnsep}{10mm}
   \begin{multicols}{2}
   \setlength{\parskip}{\currentparskip}% restore the value
  \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=justified,singlelinecheck=false}
  \caption{#1}\label{#2}%
- \vspace{-1.5ex}
 }{%
   \end{multicols}\end{mdframed}
   \end@dblfloat
 }
-
-% dbl floats
-\newenvironment{bigboxtop*}[2]{%
-  \setlength{\currentparskip}{\parskip}
-  \@dblfloat{boxe}%
-  \begin{mdframed}[style=GrattanFrameBox]
-  \setlength{\columnsep}{15mm}
-  \captionsetup{labelfont={bf,Orange}, font={bf,Orange}, format=plain,justification=centering,singlelinecheck=false}
-  \caption{#1}\label{#2}%
-  \vspace{-2.5ex}
-  \begin{multicols}{2}  
-  \setlength{\parskip}{5.5pt}% restore the value 
-%  \vspace{-1.5ex}
-}{%
-  \end{multicols}\end{mdframed}
-  \end@dblfloat
-}
-
  
 \newenvironment{ultrabox}[2]{\onecolumn\setlength{\currentparskip}{\parskip}
 \begin{boxe}
 \pagecolor{OrangeBackground}
 \begin{mdframed}[style=GrattanFrameBoxUltra]%
-\setlength{\columnsep}{15mm}
+\setlength{\columnsep}{10mm}
 \begin{minipage}[t][\textheight][t]{\textwidth} % textheight
 \begin{multicols}{2}
 \setlength{\parskip}{\currentparskip}% restore the value
@@ -214,17 +205,14 @@ singlelinecheck=false}
 % New user friendly (less typing) \Caption?
 \newcommand{\Caption}[3]{\captionwithunits{#1}{#2}\label{#3}}
 
-\newcommand{\source}[1]{\scriptsize\textit{Source:~#1}}
-\newcommand{\notes}[1]{\scriptsize\textit{Notes:~#1}}
+\newcommand{\source}[1]{\footnotesize\textit{Source:~#1}}
+\newcommand{\notes}[1]{\footnotesize\textit{Notes:~#1}}
 
 \setkomafont{disposition}{\color{Orange}}
 \addtokomafont{chapter}{\bfseries\Large}
 \addtokomafont{section}{\bfseries\normalsize}
 \addtokomafont{subsection}{\bfseries\normalsize}
 \addtokomafont{subsubsection}{\normalsize}
-
-%\RequirePackage{titlesec}
-%\titleformat{\chapter}{\bfseries\Large}{\thechapter}{2ex}{\phantomsection}
 
 % Spacing
 \RedeclareSectionCommand[
@@ -266,11 +254,6 @@ left=2.75cm,right=2.75cm
   %\addtolength{\columnwidth}{50pt}
   \setlength{\columnsep}{15mm}  
   %\addtolength{\columnwidth}{0.2\columnwidth}
-  
-  
-\RequirePackage{booktabs}
-\RequirePackage{makecell}
-\renewcommand\theadfont{\bfseries}
 
 % Ensures hyperlinked chapter headings refer to their referent headings
 % not the preceding baseline
@@ -305,8 +288,8 @@ left=2.75cm,right=2.75cm
 %% ---------------------------------
 \RequirePackage[headsepline=1pt,plainheadsepline,footsepline=1pt,plainfootsepline]{scrlayer-scrpage}
 
-\addtolength{\textheight}{44pt}
-\addtolength{\footskip}{-12pt}
+\addtolength{\textheight}{40pt}
+\addtolength{\footskip}{-10pt}
 
 \clearscrheadings
 \clearscrplain
@@ -330,37 +313,45 @@ left=2.75cm,right=2.75cm
 
 \setkomafont{headsepline}{\color{Orange}}
 \setkomafont{footsepline}{\color{Orange}}
-%\setheadsepline{1pt}
-%\setfootsepline{1pt}
-%\setheadtopline{0pt}  
+
 \pagestyle{scrheadings}
-
-%% Title pages
-%% For a full picture:
-% \RequirePackage{eso-pic}
-% \newcommand\BackgroundPic{%
-% \put(0,0){%
-% \parbox[b][\paperheight]{\paperwidth}{%
-% \vfill
-% \centering
-% % Amend
-% \includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
-% \vfill
-% }}}
-
-%% For a logo only:
 \RequirePackage{eso-pic}
-\newcommand\BackgroundPic{%
-\put(0,0){%
-\parbox[b][\paperheight]{\paperwidth}{%
-\hfill
-%\includegraphics[width=0.2\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
-\vfill
-}}}
+%% Title pages
+\newtoggle{makefullpicture}
+\togglefalse{makefullpicture}
 
+\DeclareOption{fullpicture}{
+  \toggletrue{makefullpicture}
+}
+
+%% For a full picture:
+\iftoggle{makefullpicture}{
+	\newcommand\BackgroundPic{%
+	\put(0,0){%
+	\parbox[b][\paperheight]{\paperwidth}{%
+	\vfill
+	\centering
+	% Amend
+	%\includegraphics[width=\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
+	\vfill
+	}}}
+
+}{
+%% For a logo only:
+	\newcommand\BackgroundPic{%
+	\put(0,0){%
+	\parbox[b][\paperheight]{\paperwidth}{%
+	\hfill
+	% // Do nothing
+	% \includegraphics[width=0.2\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
+	\vfill
+	}}}
+}
+
+\ProcessOptions\relax
 
 \RequirePackage{epstopdf}
-\newcommand{\logoskip}{\par\vspace{18pt}}
+\newcommand{\logoskip}{\par\vspace{16pt}}
 \newcommand{\includegraphicsmaybe}[1]{\IfFileExists{#1}{\includegraphics{#1}}{\includegraphics{dummy.pdf}}}
 \newcommand{\noimage}{%
   \setlength{\fboxsep}{-\fboxrule}%
@@ -375,10 +366,9 @@ left=2.75cm,right=2.75cm
 
 \newcommand*{\titleTH}{\begingroup % Create the command for including the title page in the document
 \raggedleft % Right-align all text
-\vfill
-\phantom{.}%\vspace*{\baselineskip}
-\hfill 
-\includegraphics[width=0.225\paperwidth,keepaspectratio, trim = 0 0 5mm 0,clip]{./FrontPage/GrattanSVGLogo}
+\vfil
+\phantom{.}\hfill 
+\includegraphics[width=0.225\paperwidth,keepaspectratio]{./FrontPage/GrattanSVGLogo}
 \vspace{30pt}
 \vfil % Whitespace at the top of the page
 
@@ -392,13 +382,12 @@ left=2.75cm,right=2.75cm
 \endgroup}
   
 \AtBeginDocument{%
-\lsstyle
 \let\mytitle\@title
 \let\myauthor\@author
 % TitlePage
 \onecolumn
 \AddToShipoutPicture*{\BackgroundPic}
-\titleTH
+\phantom{.}\hfill\titleTH
 \ClearShipoutPicture
 \clearpage
 \twocolumn
@@ -407,20 +396,14 @@ left=2.75cm,right=2.75cm
   \subsection*{Grattan Institute Support}
   %\begin{minipage}[t][0.7\textheight][t]{\columnwidth}
   \begin{minipage}{\columnwidth}
-  %
-  % This makes multicolumns equiwidth.  Of course, 
-  % variable widths are possible:
-  % http://tex.stackexchange.com/questions/89721/different-column-widths-using-multicol
   \begin{multicols}{2}
-  \textbf{\textcolor{theGrey}{Founding members}}\par
+  \textbf{\textcolor{theGrey}{Founding members}}\logoskip
   \begin{center}
   \includegraphics[width=4cm]{./logos/aus-gov-logo-stacked-black.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Vic_Gov_Logo.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/UOM-Pos_S_PMS.eps}\logoskip
   \includegraphics[width=3.5cm]{./logos/Bhp.pdf}
   \end{center}
-  \vfill
-  \phantom{.}
   \columnbreak
   
   \textbf{\textcolor{theGrey}{Program support}}
@@ -474,8 +457,8 @@ left=2.75cm,right=2.75cm
 % We define a new environment that take as its contents the text of the 
 % overview, placing it with a chapter* heading 'Overview' all on the same
 % page. 
-\newenvironment{overview}%
-  {\onecolumn\vtop to 0pt\bgroup\vspace{-25pt}\chapter*{Overview}\begin{multicols}{2}}%
+\newenvironment{overview}[1][]%
+  {\onecolumn\vtop to 0pt\bgroup\vspace{#1}\chapter*{Overview}\begin{multicols}{2}}%
   {\end{multicols}\vss\egroup\hfill\twocolumn}
   
 \newenvironment{summary}%
@@ -490,7 +473,7 @@ left=2.75cm,right=2.75cm
 % Bibliography
 \RequirePackage[british]{babel}
 \RequirePackage{csquotes}
-\RequirePackage[backend=biber,style=authoryear-ibid,ibidpage,loccittracker=context, autocite=footnote]{biblatex}
+\RequirePackage[backend=biber,style=authoryear-ibid,ibidtracker=strict, autocite=footnote, sorting=none]{biblatex}
 \renewcommand*{\bibfont}{\raggedright}
 \DeclareLanguageMapping{british}{british-apa}
 
@@ -514,27 +497,56 @@ left=2.75cm,right=2.75cm
          {\rule{0.8\bibhang}{.2pt}}}}}
 % Hyperlinks entire citation label for most citaiton commands 
 % http://tex.stackexchange.com/questions/15951/hyperlink-name-with-biblatex-authoryear-biblatex-1-4b
-\renewbibmacro*{cite}{\printtext[citehyperref]{%
-  \global\boolfalse{cbx:loccit}%
-  \iffieldundef{shorthand}
-    {\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}
-       {\usebibmacro{cite:ibid}}
-       {\ifthenelse{\ifnameundef{labelname}\OR\iffieldundef{labelyear}}
-          {\usebibmacro{cite:label}%
-           \setunit{\addspace}}
-          {\printnames{labelname}%
-           \setunit{\nameyeardelim}}%
-        \usebibmacro{cite:paren:labelyear+extrayear}}}
-    {\usebibmacro{cite:shorthand}}}}
+\DeclareFieldFormat{citehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{#1}}
 
-\renewbibmacro*{cite:paren:labelyear+extrayear}{%
-  \iffieldundef{labelyear}
-    {}
-    {\printtext[parens]{%
-       \printfield{labelyear}%
-       \printfield{extrayear}}}}
-  
-  
+\DeclareFieldFormat{textcitehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{%
+    #1%
+    \ifbool{cbx:parens}
+      {\bibcloseparen\global\boolfalse{cbx:parens}}
+      {}}}
+
+\savebibmacro{cite}
+\savebibmacro{textcite}
+
+\renewbibmacro*{cite}{%
+  \printtext[citehyperref]{%
+    \restorebibmacro{cite}%
+    \usebibmacro{cite}}}
+
+\renewbibmacro*{textcite}{%
+  \ifboolexpr{
+    ( not test {\iffieldundef{prenote}} and
+      test {\ifnumequal{\value{citecount}}{1}} )
+    or
+    ( not test {\iffieldundef{postnote}} and
+      test {\ifnumequal{\value{citecount}}{\value{citetotal}}} )
+  }
+    {\DeclareFieldAlias{textcitehyperref}{noformat}}
+    {}%
+  \printtext[textcitehyperref]{%
+    \restorebibmacro{textcite}%
+    \usebibmacro{textcite}}}
+
+% The following lines give the correct footcite Author (Year) but make the ibid erroneous
+% Author (ibid) % use ifciteibid
+\DeclareCiteCommand{\footcite}[\mkbibfootnote]
+  {\boolfalse{cbx:parens}}
+  {\usebibmacro{citeindex}%
+  \ifciteibid{Ibid.}{%  % for ibidem
+   \iffirstcitekey
+     {\setcounter{textcitetotal}{1}}
+     {\stepcounter{textcitetotal}%
+      \textcitedelim}%
+   \usebibmacro{textcite}}%
+   }
+  {\ifbool{cbx:parens}
+     {\bibcloseparen\global\boolfalse{cbx:parens}}
+     {}}
+  {\usebibmacro{textcite:postnote}}
 \newcommand{\gcite}[1]{{\citeauthor{#1} (\citedate{#1})}}
 
 \RequirePackage{tocloft}
@@ -551,6 +563,7 @@ left=2.75cm,right=2.75cm
 \end{multicols}
 \clearpage
 \listoffigures
+% This is necessary for the box list to actually appear
 \setcounter{tocdepth}{2}
 \listofboxes
 \twocolumn%

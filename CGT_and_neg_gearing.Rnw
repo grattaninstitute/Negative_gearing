@@ -61,7 +61,9 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
 <<loadPackages, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
 # library(Rcell)
 library(knitr)
-library(dtplyr)
+# library(dtplyr)
+library(data.table)
+library(dplyr)
 library(car)
 library(devEMF)
 library(gridExtra)
@@ -110,61 +112,6 @@ latex_percent <- function (x) {
 
 
 %%% Costings analysis
-<<paths_to_sample_files>>=
-age_mutate_ <- function(.data){
-  .data %>%
-  mutate(Age = car::recode(age_range, "0 = '70 and over';
-                            1 = '65 to 69';
-                            2 = '60 to 64';
-                            3 = '55 to 59';
-                            4 = '50 to 54';
-                            5 = '45 to 49';
-                            6 = '40 to 44';
-                            7 = '35 to 39';
-                            8 = '30 to 34';
-                            9 = '25 to 29';
-                            10 = '20 to 24';
-                            11 = 'under 20'")) %>%
-  mutate(Age =  factor(Age,
-                       levels = c("under 20",
-                                  '20 to 24',
-                                  '25 to 29',
-                                  '30 to 34',
-                                  '35 to 39',
-                                  '40 to 44',
-                                  '45 to 49',
-                                  '50 to 54',
-                                  '55 to 59',
-                                  '60 to 64',
-                                  '65 to 69',
-                                  '70 and over'),
-                       labels = gsub("\\s", "\n",
-                                     c("under 20",
-                                       '20 to 24',
-                                       '25 to 29',
-                                       '30 to 34',
-                                       '35 to 39',
-                                       '40 to 44',
-                                       '45 to 49',
-                                       '50 to 54',
-                                       '55 to 59',
-                                       '60 to 64',
-                                       '65 to 69',
-                                       '70 and over')),
-                       ordered = T))
-}
-@
-
-<<CGT_inflator>>=
-CG_inflator <- function(from_fy, to_fy){
-  read_excel("Tax-Expenditures-CGT Historical.xlsx") %$%
-  {
-   .$CGT_discount_for_individuals_and_trusts_millions[which(.$FY == to_fy)] / 
-      .$CGT_discount_for_individuals_and_trusts_millions[which(.$FY == from_fy)]
-             
-  }
-}
-@
 
 \onecolumn
 <<Determine_future_rental_deductions>>=
@@ -211,7 +158,7 @@ interest_losses[!complete.cases(interest_losses), ] %>%
 
 
 <<cost-new-CGT-discount>>=
-
+revenu
 @
 
 
@@ -678,14 +625,6 @@ cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount =
       select(-marginal.tax.of.avg) %>%
       data.table
   }
-  #   return({
-  #     data.table(Year = year,
-  #                Initial_revenue_diff = sum(daley_taxstats$diff)*weighting(year)/1e9,
-  #                Eventual_revenue_diff = sum(new_daley$diff)*weighting(year)/1e9,
-  #                eventual_means... = paste("After", eventual, "years"),
-  #                Diff_due_CG = sum(daley_taxstats$tax_after_reduction_in_discount - daley_taxstats$current_tax)*weighting(year)/1e9
-  #     )
-  #   })
   new_daley
   }
 }
@@ -918,14 +857,6 @@ cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount 
       select(-marginal.tax.of.avg) %>%
       data.table
   }
-  #   return({
-  #     data.table(Year = year,
-  #                Initial_revenue_diff = sum(daley_taxstats$diff)*weighting(year)/1e9,
-  #                Eventual_revenue_diff = sum(new_daley$diff)*weighting(year)/1e9,
-  #                eventual_means... = paste("After", eventual, "years"),
-  #                Diff_due_CG = sum(daley_taxstats$tax_after_reduction_in_discount - daley_taxstats$current_tax)*weighting(year)/1e9
-  #     )
-  #   })
   new_daley
   }
 }
@@ -2089,17 +2020,8 @@ Indeed, the distortions created are so large that it is possible that even inves
 While these distortions exist for all investments, the tax advantages are greatest for property because bank lending rules allow greater leverage than for others assets such as shares that also produce capital gains.\footcite[p.~23]{RBA2015}
 
 <<Negative_Gearing_tax_expenditures>>=
-get_sample_file_and_year <- function(yr){
-  get_sample_file(yr) %>%
-    mutate(year = yr)
-}
-
-
-
 NG_tax_exps <-
-  lapply(2004:2013, get_sample_file_and_year) %>%
-  rbindlist(fill = TRUE) %>%
-  tbl_df %>%
+  sample_files_all
   group_by(year) %>%
   mutate(current_tax = income_tax(Taxable_Income, fy.year = yr2fy(year)),
          subseqt_tax = income_tax(ifelse(Net_rent_amt < 0, 
@@ -2107,7 +2029,7 @@ NG_tax_exps <-
                                          Taxable_Income), fy.year = yr2fy(year)),
          diff = subseqt_tax - current_tax) %>%
   group_by(year) %>%
-  summarise(avg.diff = sum(diff) * weighting(year) / 1e9)
+  summarise(avg.diff = sum(diff * WEIGHT) / 1e9)
 
 NG_tax_exps.real <-
   NG_tax_exps %>%
@@ -2313,7 +2235,7 @@ NG_tax_exps <-
                                          Taxable_Income), fy.year = yr2fy(year)),
          diff = subseqt_tax - current_tax) %>%
   group_by(year) %>%
-  summarise(avg.diff = sum(diff) * weighting(year))
+  summarise(avg.diff = sum(diff * WEIGHT))
 
 NG_tax_exps.real <- 
   NG_tax_exps %>%
@@ -2398,7 +2320,7 @@ value.of.ng.by.yr <-
                                      fy.year = yr2fy(year)) -  income_tax(Taxable_Income, 
                                                                           fy.year = yr2fy(year))) %>%
   group_by(year) %>%
-  summarise(total_benefit = sum(benefit_due_NG) * weighting(year)) %>%
+  summarise(total_benefit = sum(benefit_due_NG * WEIGHT)) %>%
   ungroup %>%
   mutate(total_benefit_real = cpi_inflator(total_benefit, from_fy = yr2fy(year), to_fy = "2014-15"))
 
