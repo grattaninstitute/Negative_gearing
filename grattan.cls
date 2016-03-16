@@ -2,7 +2,7 @@
 \ProvidesClass{grattan}[2015/02/27 Reports of the Grattan Institute, Melbourne]
 
 \LoadClass[a4paper,11pt,titlepage,headings=big,chapterprefix=false,headsepline,
-parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
+parskip=half-,twocolumn,numbers=noenddot]{scrreprt}
 \RequirePackage{cmap}
 \RequirePackage{scrhack}
 \RequirePackage{acronym}
@@ -18,25 +18,7 @@ parskip=half-,twocolumn,landscape,numbers=noenddot]{scrreprt}
 \RequirePackage{float}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
-% needs to be switched off for copying and pasting
-% \frenchspacing  %% NOT REALLY (see \SetExtraSpacing below)
-% \RequirePackage[activate={true,nocompatibility},
-% final,
-% expansion,
-% tracking=true,
-% kerning=true, 
-% spacing=false,
-% letterspace=5]{microtype}
-% 
-% \SetExtraSpacing{ font = * / * / * / * / * }{. = {100,0,0},}
 \RequirePackage[activate=true, expansion, final, kerning=true, spacing=true]{microtype}
-
-% Arial font looks a little bit spaced. One way to do it is to adjust the letterspace 
-% option to microtype.  Another is to adjust the spaceskip
-% large
-% \spaceskip=1.5\fontdimen2\font plus 1.5\fontdimen3\font minus 1.5\fontdimen4\font
-% \spaceskip=1.2\fontdimen2\font plus 1.2\fontdimen3\font minus 1.2\fontdimen4\font
-
 % ------
 % Grattan colors
 \definecolor{Orange}{HTML}{F68B33}
@@ -473,7 +455,7 @@ left=2.75cm,right=2.75cm
 % Bibliography
 \RequirePackage[british]{babel}
 \RequirePackage{csquotes}
-\RequirePackage[backend=biber,style=authoryear-ibid,ibidtracker=strict, autocite=footnote, sorting=none]{biblatex}
+\RequirePackage[backend=biber,style=authoryear-ibid,ibidtracker=strict, autocite=footnote]{biblatex}
 \renewcommand*{\bibfont}{\raggedright}
 \DeclareLanguageMapping{british}{british-apa}
 
@@ -568,6 +550,5 @@ left=2.75cm,right=2.75cm
 \listofboxes
 \twocolumn%
 }
-
 
 

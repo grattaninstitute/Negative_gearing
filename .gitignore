@@ -78,6 +78,7 @@ cache_BudgetRepair_GST/
 *.run.xml
 *concordance.tex
 *.tex
+!CGT-NG-sections/*.tex
 *.log
 
 bibliography2.bib
