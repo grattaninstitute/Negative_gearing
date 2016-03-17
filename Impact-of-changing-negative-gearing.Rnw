@@ -41,9 +41,11 @@ But if there is a more segmented investor housing market, price effects could be
 \end{smallbox}
 
 Any impact on prices could well be swamped by the effects of broader changes in the economy. As the CBA Chief Executive Ian Narev recently noted:
+
 \begin{quote}
-I can tell you having a \$400~billion home loan book -- your assumptions on unemployment and what’s happening in global interest rates will dwarf whatever assumptions you’ve got on the modelling about the impact of negative gearing by a factor of\dots I can’t tell you the number but it’s a big number.
+I can tell you having a \$400~billion home loan book -- your assumptions on unemployment and what’s happening in global interest rates will dwarf whatever assumptions you’ve got on the modelling about the impact of negative gearing by a factor of \dots\ I can’t tell you the number but it’s a big number.
 \end{quote}
+
 One concern with downward price pressure is that highly geared investors may end up with negative equity. But given expected one-off price impacts of \TBD{less than 10~per cent},  the risk of negative equity from the tax changes is limited. Only around ten per cent of new property loans go to investors with loan value ratios in excess of 90~per cent.  \TBD{[Impact of new macro-prudential controls]} And ratios for existing loans are falling as property prices continue to grow. For the small proportion of investors that remain highly leveraged, higher interest rates pose a far greater risk than changes to the tax treatment of rental losses.   
 
 Ultimately, the government should not shy away from a sound policy because it generates modest house price corrections. It is incongruous for governments to seek to address housing affordability for new buyers while continuing to offer generous tax breaks to investors that bid up house prices.  
@@ -57,7 +59,7 @@ The first argument is easily refuted. In 1985, the Hawke Government restricted n
 
 But these concerns were ill-founded. Rents did rise rapidly in Perth and rose somewhat in Sydney. Yet inflation-adjusted rents were stable in Melbourne and actually fell in Adelaide and Brisbane (Figure 13). In Sydney and Perth it was population growth and insufficient residential construction -- due to high borrowing rates and competition from the stock market for funds -- not the policy change, led to the rent rises. 
 
-<<Capital_city_rents_direct_abs_get, fig.height = 11, out.height = "11in", cache=TRUE>>=
+<<Capital_city_rents_direct_abs_get, fig.height = 11, out.height = "11in">>=
 rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1992") %>% 
   as.data.frame ->
   rent.indices
@@ -98,8 +100,8 @@ rent.indices %>%
 
 <<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
 rent.indices.real  %>%
-  filter(obsTime < as.POSIXct("1989-06-01")) %T>%
-  chart_data %>%
+  filter(obsTime < as.POSIXct("1989-06-01")) %>%
+  # chart_data %>%
   grplot(aes(x = obsTime,
              y = obsValuerel, 
              color = city,
@@ -132,7 +134,7 @@ rent.indices.real  %>%
 \begin{figure}
 \Caption{Rents did not rise when negative gearing was removed in Melbourne, Adelaide or Brisbane}{Average rent prices (real compared with overall CPI), 1982 = 1.
 Grey band indicates the dates when negative gearing was not permitted}{fig:Capital_city_rents}
-\includegraphics[width=\columnwidth]{..//Capital_city_rents_direct_abs-1}
+\includegraphics[width=\columnwidth]{\Sexpr{paste0(atlas, "Capital_city_rents_direct_abs-1")}}
 \source{\textcite{ABSVariousyearsa}}
 \end{figure}
 
