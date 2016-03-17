@@ -30,8 +30,8 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       fig.path= atlas <- "CGT-NG-atlas/",
                       message=FALSE, warning=FALSE
                       ,cache=FALSE
-                      ,dev=c('my_pdf', 'my_emf', 'png')
-                      ,fig.ext = c("pdf", "emf", "png")
+                      ,dev=c('my_pdf', 'png')
+                      ,fig.ext = c("pdf", "png")
 )
 @
 
@@ -62,7 +62,7 @@ library(taxstats)
 @
 
 <<downloadGrattex>>=
-overwrite_grattex <- FALSE || (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
+overwrite_grattex <- TRUE || (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
 if (overwrite_grattex){
   GET(url = "https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls", 
       write_disk("grattan.cls", overwrite = TRUE))
@@ -1057,6 +1057,7 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 
 \begin{overview}[-35pt]
+\addtolength{\columnsep}{1pt}
 Two decades of strong house price growth and falling rates of home ownership have raised questions about the appropriateness of generous tax concessions for property investment. As the Commonwealth Government looks for revenue measures to address its structural budget problems, it is unsurprising that winding back \highlight{negative gearing} and the \highlight{capital gains tax (CGT) discount} are high on the list of many commentators' options. 
 
 Together negative gearing and the CGT discount allow investors to use debt financed investment (particularly property investment) to reduce and defer personal income tax. These tax concessions have reduced housing affordability. They increase investor activity by increasing post-tax returns to rental housing, pushing up prices to the disadvantage of young would-be home buyers. Like most tax concessions, these tax breaks largely benefit the wealthy. 
@@ -1099,6 +1100,9 @@ To bring their budgets back to balance, governments will need to undertake refor
 It has deferred any significant changes in its revenue mix until after its \emph{Tax White Paper}.
  
 But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
+
+<<Impacts, child='Impact-of-changing-negative-gearing.Rnw'>>=
+@
 
 <<sessionInfo, results = 'hide'>>=
 devtools::session_info()
