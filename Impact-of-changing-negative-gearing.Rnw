@@ -340,4 +340,136 @@ The main constraint on new housing is land release and zoning restrictions -- es
 In any case, general tax breaks like negative gearing are an inefficient way of supporting the rental market.   Blanket tax concessions for investors that primarily accrue to existing property owners through higher house prices are poorly targeted way of alleviating rental stress.  
 
 
+\subsection{Capping loss deductions}
+<<cost_NG_limited_to>>=
+cost_NG_limited_to <- function(Net_rent_amt.limit, h = 0L){
+  stopifnot(Net_rent_amt.limit <= 0)
+  sample_file_1314 %>%
+    taxstats:::project(h = h) %>%
+    mutate(new_Net_rent_amt = pmaxC(Net_rent_amt, Net_rent_amt.limit),
+           new_Taxable_Income = Taxable_Income - Net_rent_amt + new_Net_rent_amt,
+           prev_tax = income_tax(Taxable_Income, "2015-16"),
+           new_tax = income_tax(new_Taxable_Income, "2015-16"),
+           diff = new_tax - prev_tax) -> resultant_samplefile
+  resultant_samplefile %$%
+    sum(diff * WEIGHT)
+}
+@
+Capping the total amount of investment losses that can be deducted each
+year has been presented as a way to curb the `excesses' of negative
+gearing policy.
+
+Capping losses will tend to affect high income earners because they
+claim much higher losses on average (section \TBD{3.2}).
+
+The budgetary impact depends on where the cap is set. Table x sets out
+the amount of money that could be raised in the longer term if loss
+write off against salary and wages is capped annually. Setting a cap on
+losses of \$20,000 or more means the policy change will make very little
+contribution to the budget bottom line.
+
+<<number_affected>>=
+number_affected <- function(Net_rent_amt.limit, h = 0L){
+  # Net_rent_amt.limit is understood to be negative
+  stopifnot(Net_rent_amt.limit <= 0)
+  sample_file_1314 %>%
+    # This only affects negative gearers
+    filter(Net_rent_amt < 0) %>%
+    mutate(new_Net_rent_amt = pmaxC(Net_rent_amt, Net_rent_amt.limit),
+           new_Taxable_Income = Taxable_Income - Net_rent_amt + new_Net_rent_amt,
+           prev_tax = income_tax(Taxable_Income),
+           new_tax = income_tax(new_Taxable_Income),
+           diff = new_tax - prev_tax) %$%
+    sum(diff != 0) * 50 * lf_inflator_fy(from_fy = "2013-14", to_fy = yr2fy(fy2yr("2013-14") + h))
+}
+
+@
+
+<<cost_of_policy_carry_fwd>>=
+cost_of_policy_carry_fwd <- function(Net_rent_amt.limit, h = 1L){
+  stopifnot(length(Net_rent_amt.limit) == 1)
+  if (h > 0){
+    probCG <-
+      sample_file_1314 %>% 
+      filter(Gross_rent_amt > 0) %$%
+      mean(Net_CG_amt > 0)
+    
+    M <- matrix(0, ncol = h, nrow = h)
+    M[row(M) == col(M) - 1] <- 1 - probCG
+    M[col(M) == 1] <- probCG
+    M[1,2] <- 1
+    M[1,1] <- 0
+    M[h,h] <- 1 - probCG
+    
+    # require(expm)
+    P <- M %^% h
+    
+    # P[h,j] represents the probabilities of 
+    # having (j - 1)*Net_rent_amt in the hth year
+    # Expected multiplier
+    Ehj <- P[h, ] * seq(0, h - 1, by = 1)
+    
+    cum.ecdf <- cumsum(P[h,])
+    
+    accumulator <- 
+      data.table(rand = cum.ecdf, 
+                 multiplier = seq(0, h-1, by = 1)) %>%
+      setkey(rand)
+    
+    rental_matrix <- 
+      matrix(data = c(sample_file_1314$Net_rent_amt, 
+                      rep(0, (h - 1) * nrow(sample_file_1213))), 
+             ncol = h, 
+             byrow = FALSE)
+    
+    results <- rental_matrix %*% P
+  }
+  # Net_rent_amt.limit is understood to be negative
+  stopifnot(Net_rent_amt.limit <= 0)
+  sample_file_1314 %>%
+    # This change only affects those who negatively gear.
+    filter(Net_rent_amt < 0) %>%
+    mutate(rand = runif(nrow(.))) %>%
+    setkey(rand) %>%
+    # rolling join, if < rand choose that multiplier
+    accumulator[., roll = -Inf] %>%
+    # inflation
+    mutate(Taxable_Income = Taxable_Income - Sw_amt + wage_inflator(Sw_amt, from_fy = "2013-14", to_fy = yr2fy(fy2yr("2013-14") + h))) %>%
+    mutate(new_Net_rent_amt = pmaxC(Net_rent_amt, Net_rent_amt.limit),
+           accumulated_loss = pmaxC(Net_rent_amt.limit - Net_rent_amt, 0) * multiplier) %>%
+    # if the person has a CG event now, they use their accumulated losses against their taxable income
+    mutate(hasCG = runif(nrow(.)) < probCG,
+           new_Taxable_Income = ifelse(hasCG, 
+                                       Taxable_Income - accumulated_loss,
+                                       Taxable_Income - Net_rent_amt + new_Net_rent_amt),
+           prev_tax = income_tax(Taxable_Income),
+           new_tax = income_tax(new_Taxable_Income),
+           diff = new_tax - prev_tax) -> resultant_samplefile 
+  
+  resultant_samplefile %$%
+    sum(diff) * 50 * lf_inflator_fy(from_fy = "2013-14", to_fy = yr2fy(fy2yr("2013-14") + h))
+}
+@
+
+%\caption{Budget impact of cap on loss write-offs}
+<<Results, results = 'asis'>>=
+long_term = 7L
+data_frame(Threshold = c(seq(0, -20e3, by = -5e3), - 50e3, -Inf)) %>%
+  rowwise %>%
+  mutate(Costing = grattan_dollar(round(cost_NG_limited_to(Threshold, h = 2L))),
+         Cost_policy_over_5_yrs = grattan_dollar(round(cost_of_policy_carry_fwd(Threshold, h = long_term))),
+         `Number affected` = comma(round(number_affected(Threshold, h = long_term)))) %>%
+  mutate(Threshold = paste0("$-\\$", ifelse(is.infinite(Threshold), "\\infty", abs(Threshold)), "$"),
+         LongRunCost = sub("$", "\\$", Cost_policy_over_5_yrs, fixed = TRUE),
+         Costing = sub("$", "\\$", Costing, fixed = TRUE)) %>%
+  select(Threshold, Costing, `Long-run costing` = LongRunCost, `Number affected`) %>%
+  xtable(align = "rrrrr") %>% 
+  print(include.rownames = FALSE, 
+        align = "rrrrr", 
+        sanitize.text.function = function(x){x})
+@
+
+
+
+
 

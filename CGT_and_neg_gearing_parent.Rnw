@@ -29,6 +29,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       fig.show='hide',echo=FALSE,
                       fig.path= atlas <- "CGT-NG-atlas/",
                       message=FALSE, warning=FALSE
+                      ,results='hide'
                       ,cache=FALSE
                       ,dev=c('my_pdf', 'png')
                       ,fig.ext = c("pdf", "png")
@@ -55,6 +56,7 @@ library(zoo)
 library(survey)
 library(foreign)
 library(Hmisc)
+library(expm)
 library(devtools)
 library(tidyr)
 library(magrittr)
@@ -62,7 +64,7 @@ library(taxstats)
 @
 
 <<downloadGrattex>>=
-overwrite_grattex <- TRUE || (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
+overwrite_grattex <- FALSE && (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
 if (overwrite_grattex){
   GET(url = "https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls", 
       write_disk("grattan.cls", overwrite = TRUE))
