@@ -1,0 +1,104 @@
+\chapter{Negative gearing}
+Negative gearing allows taxpayers to subtract the losses they make on
+investments (after costs including mortgage interest payments) from
+their taxable income including wages.
+
+The ability to deduct expenses incurred in generating assessable income
+is part of the normal operation of the Australian tax system, and
+applies to a wide range of investments and business activities. If
+losses were not deductible, they would be treated asymmetrically to
+gains (which are taxed) and investments in risky assets would be less
+attractive. Deductibility of interest payments in theory maintains tax
+neutrality for investors choosing between debt and equity
+financing.\footnote{Fane and Richardson (2004)}
+
+But there is no theoretical basis for allowing losses on investment to
+be deducted against entirely unrelated income such as wages. Indeed,
+allowing full deductibility of investment losses against wages when
+capital gains are taxed concessionally and only on realisation leads
+investors to favour debt financed investments that generate more of
+their returns via capital gains in order to maximise tax breaks on
+wages. This reduces tax collections and has negative impacts in
+investment markets, particularly housing markets, where the tax
+treatment has encouraged speculative activity.
+
+Most other advanced economies provide a less generous treatment for
+rental losses. The United States only allows losses to be written off
+against other forms of ``passive'' income.\footnote{Passive income is
+  defined as income from rental properties or businesses in which the
+  taxpayer does not materially participate. It is distinct from active
+  income (wage, salary and income from business in which the person is
+  actively involved) and portfolio income (income from interest,
+  dividends etc). See: IRS (2015).} The UK and many European countries
+only allow deductions against the same \emph{class} of income, so for
+example, losses on investment property can only be used to reduce tax on
+income or capital gains from other investment properties. Others such as
+the Netherlands do not allow deductibility of losses from investment
+housing (Appendix C).\footnote{Summaries of international regimes can be
+  found in RBA (2014), p. 43; Productivity Commission (2004), p. 86;
+  O'Donnell (2005), pp. 92-95.}
+
+\section{Negative gearing provides a (widely used) tax shelter on
+wages}\label{negative-gearing-provides-a-widely-used-tax-shelter-on-wages}
+
+Taxes on capital gains are discounted by 50 per cent and only paid when
+the asset is sold. But negative gearing arrangements allow investors to
+deduct losses -- investment expenses (including interest costs) in
+excess of rental income from wage income that would otherwise be taxed
+at the full marginal rate.\footnote{In reality, the assets are generally
+  not making a loss because they are accruing a capital gain. But these
+  gains are not included in the definition of taxable income from the
+  asset until they are realised. See: ACOSS (2015), pp.12-13.}
+
+With the right investment strategy, an investor can use this asymmetry
+in the tax treatment of gains and losses to pay less tax in total and
+later despite receiving additional investment income (\Vref{box:NG-to-reduce-tax-on-wages}).
+
+\begin{smallbox}{Using negative gearing to reduce taxes on wage income}{box:NG-to-reduce-tax-on-wages}
+
+High income investors can maximise the tax shelter on their wage income
+by borrowing to invest in assets that generate less in recurrent income
+and more through capital gains.
+
+Suppose Dan, a lawyer earning \$250,000 a year, borrows \$750,000 to
+purchase an investment property. Interest on the loan is 6 per cent a
+year and the property generates a rental return of 2.5 per cent each
+year. Most of the return is via capital appreciation of 7 per cent each
+year.
+
+In the first year, Dan makes a loss of \$26,000 on the property and
+reduces the tax he pays on his \$250,000 salary by \$12,000. His rental
+losses decline over time as the property appreciates. After five years,
+Dan has reduced taxes on his wage income by a total of \$55,000. If he
+sells the property after five years he will realise a capital gain of
+\$233,000 and pay tax on the gain of just under \$55,000.
+
+Because of the asymmetry of tax treatment of gains and losses, Dan pays
+\$294 less tax in total over five years than he if he had not purchased
+the house. So despite his profit of more than \$115,000 on the
+investment, in effect he pays no tax on this profit, actually receiving
+a small tax reduction.
+\end{smallbox}
+Tax deductions from wage income may also generate ``psychic payoff'' for
+some investors -- the pleasure of denying the Tax Office its due. As an
+investment strategy, negative gearing only makes sense if the expected
+capital gains exceed the rental losses over the life of the
+investment.\footnote{And this is more than the returns that could have
+  been generated through other investments.} But for some investors,
+reducing taxes on their wages has become one of the primary goals.
+Investment advisors have warned against investors placing too much
+emphasis on tax breaks and not enough on the financial returns to the
+investment.\footnote{See for example: Brown (2012). There is some
+  evidence from the US of taxpayers placing disproportionate weight on
+  tax deductions for investments . For example, taxpayers are far more
+  likely to contribute to a tax deductible retirement saving account if
+  they owe money to the Internal Revenue Service in excess of taxes
+  withheld. Hubbard and Skinner (1996), p.76.}
+
+The attractiveness of using investment losses to reduce taxes on wage
+income is evident in the age profile of those negatively gearing
+property. Investing in loss making properties is popular amongst those
+of working age, but far less prevalent amongst over 60s who are unlikely
+to benefit from the tax write-offs. Over 70 per cent of those under 60
+with investment properties make rental losses compared to less than 35
+per cent over 60 (see Figure 5).
