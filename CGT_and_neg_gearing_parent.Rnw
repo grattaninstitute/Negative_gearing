@@ -1101,6 +1101,9 @@ It has deferred any significant changes in its revenue mix until after its \emph
  
 But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
 
+<<NGCHAPTER, child='Negative-gearing-chapter.Rnw'>>=
+@
+
 <<Impacts, child='Impact-of-changing-negative-gearing.Rnw'>>=
 @
 
