@@ -470,6 +470,33 @@ data_frame(Threshold = c(seq(0, -20e3, by = -5e3), - 50e3, -Inf)) %>%
 @
 
 
+\section{\TBD{Number of properties}}
+<<Import-HILDA, error=FALSE>>=
+hilda_w14_hh <- 
+  foreign::read.dta("HILDA/Wave14/Household_n140c.dta")
+@
+
+\begin{table}[!h]
+\begin{center}
+<<HILDA-Number-of-properties, results='asis'>>=
+hilda_w14_hh %>%
+  group_by(Owns_other_property = noprntn) %>%
+  summarise(population = comma(round(sum(nhhwth)))) %>%
+  ungroup %>%
+  select(`Investment properties owned` = Owns_other_property, 
+         `Households` = population) %>%
+  xtable(align = "rrr") %>%
+  print(include.rownames = FALSE, 
+        floating = FALSE, 
+        booktabs = TRUE)
+@
+\end{center}
+\source{HILDA}
+\end{table}
+
+<<aa>>=
+ hilda_w14_hh %>% group_by(nopnum) %>% summarise(sum(nhhwth))
+@
 
 
 
