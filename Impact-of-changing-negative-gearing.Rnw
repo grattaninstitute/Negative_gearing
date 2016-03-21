@@ -494,8 +494,15 @@ hilda_w14_hh %>%
 \source{HILDA}
 \end{table}
 
-<<aa>>=
- hilda_w14_hh %>% group_by(nopnum) %>% summarise(sum(nhhwth))
+<<Import-SIH>>=
+sih201314 <- 
+  read.dta("SIH201314/sih13bh.dta")
+@
+
+<<Number-households-SIH>>=
+sih201314 %>%
+  group_by(NUMRPRCF) %>%
+  summarise(comma(round(sum(SIHHHWT))))
 @
 
 
