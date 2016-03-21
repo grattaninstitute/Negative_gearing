@@ -1,5 +1,6 @@
 % !TeX program = pdflatex
 \documentclass{grattan}
+\usepackage{booktabs}
 
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
