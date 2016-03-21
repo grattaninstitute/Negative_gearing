@@ -499,11 +499,20 @@ sih201314 <-
   read.dta("SIH201314/sih13bh.dta")
 @
 
-<<Number-households-SIH>>=
+\begin{table}
+<<Number-households-SIH, results='asis'>>=
 sih201314 %>%
-  group_by(NUMRPRCF) %>%
-  summarise(comma(round(sum(SIHHHWT))))
+  group_by(var = NUMRPRCF) %>%
+  summarise(comma(round(sum(SIHHHWT)))) %>%
+  ungroup %>%
+  mutate(var = gsub("residential ", "residential\n", var)) %>%
+  xtable(align = "rrr") %>%
+  print.xtable(include.rownames = FALSE, 
+               include.colnames = FALSE, 
+               booktabs = TRUE, 
+               floating = FALSE)
 @
-
+\source{Survey Income Housing 2013-14}
+\end{table}
 
 
