@@ -50,6 +50,7 @@ library(directlabels)
 library(grattan)
 library(xtable)
 library(readxl)
+library(openxlsx)
 library(readr)
 library(rsdmx)
 library(httr)
@@ -1133,6 +1134,9 @@ To bring their budgets back to balance, governments will need to undertake refor
 It has deferred any significant changes in its revenue mix until after its \emph{Tax White Paper}.
  
 But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
+
+<<CGT-CHAPTER, child='The-capital-gains-discount.Rnw'>>=
+@
 
 <<NGCHAPTER, child='Negative-gearing-chapter.Rnw'>>=
 @
