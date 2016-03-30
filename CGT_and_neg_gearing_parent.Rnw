@@ -1,6 +1,5 @@
 % !TeX program = pdflatex
 \documentclass{grattan}
-\usepackage{booktabs}
 
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
@@ -12,6 +11,7 @@
 <<MODELLING-PARAMETERS, echo=FALSE>>=
 new.discount <- 0.25  # proposed CGT
 TARGET.FY <- "2015-16"
+use.sample.fy <- "2013-14"
 @
 
 
@@ -93,6 +93,10 @@ latex_percent <- function (x, percentage_symbol = "~percent") {
 }
 @
 
+<<load_sample_file>>=
+sample_file <- sample_files_all[fy.year == use.sample.fy]
+@
+
 
 %%% Costings analysis
 
@@ -164,6 +168,32 @@ revenue_CGT_discount <- function(CGT.discount = new.discount, fy.year = TARGET.F
   
   revenue_CGT_discount_sample_file %$%
     sum(taxdiff * WEIGHT)
+}
+@
+
+<<revenue_abolish_NG>>=
+revenue_abolish_NG <- function(fy.year = "2016-17"){
+  sample_file_1314 %>%
+    select(-contains("MCS")) %>%  # project not good
+    project_to(fy.year, fy.year.of.sample.file = use.sample.fy) %>%
+    mutate(new_Tot_inc_amt = Tot_inc_amt - Net_rent_amt + pmaxC(Net_rent_amt, 0),
+           new_Taxable_Income = new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+           prev_tax = income_tax(Taxable_Income, fy.year = "2015-16"), 
+           new_tax  = income_tax(new_Taxable_Income, fy.year = "2015-16")) %$%
+    sum((new_tax - prev_tax) * WEIGHT)
+}
+
+@
+
+<<revenue_quarantine_NG>>=
+# new.discount <- 0.25  # proposed CGT
+# TARGET.FY <- "2015-16"
+# use.sample.fy <- "2013-14"
+revenue_quarantine_NG <- function(sample_file, new_CGT_discount = new.discount, sample_file_fy_year = "2013-14", target_fy = TARGET.FY){
+  sample_file %>%
+    project_to(to_fy = TARGET.FY, fy.year.of.sample.file = "2012-13") %>%
+    # We assume that the CGT discount is enjoyed by everyone with a capital gains
+    mutate(new_Net_CG_amt = Net_CG_amt)
 }
 @
 
