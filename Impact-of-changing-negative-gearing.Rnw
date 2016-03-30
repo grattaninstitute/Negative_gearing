@@ -451,23 +451,27 @@ cost_of_policy_carry_fwd <- function(Net_rent_amt.limit, h = 1L){
 }
 @
 
-%\caption{Budget impact of cap on loss write-offs}
+\begin{table}
+\caption{Budgetary impact of caps to negative gearing}
 <<Results, results = 'asis'>>=
-long_term = 7L
+long_term = 10L
 data_frame(Threshold = c(seq(0, -20e3, by = -5e3), - 50e3, -Inf)) %>%
   rowwise %>%
   mutate(Costing = grattan_dollar(round(cost_NG_limited_to(Threshold, h = 2L))),
          Cost_policy_over_5_yrs = grattan_dollar(round(cost_of_policy_carry_fwd(Threshold, h = long_term))),
          `Number affected` = comma(round(number_affected(Threshold, h = long_term)))) %>%
-  mutate(Threshold = paste0("$-\\$", ifelse(is.infinite(Threshold), "\\infty", abs(Threshold)), "$"),
+  mutate(Threshold = paste0("$-$\\$", ifelse(is.infinite(Threshold), "$\\infty$", comma(abs(Threshold)))),
          LongRunCost = sub("$", "\\$", Cost_policy_over_5_yrs, fixed = TRUE),
          Costing = sub("$", "\\$", Costing, fixed = TRUE)) %>%
   select(Threshold, Costing, `Long-run costing` = LongRunCost, `Number affected`) %>%
   xtable(align = "rrrrr") %>% 
-  print(include.rownames = FALSE, 
-        align = "rrrrr", 
-        sanitize.text.function = function(x){x})
+  print.xtable(include.rownames = FALSE,
+               booktabs = TRUE,
+               floating = FALSE,
+               align = "rrrrr", 
+               sanitize.text.function = function(x){x})
 @
+\end{table}
 
 
 \section{\TBD{Number of properties}}

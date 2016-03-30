@@ -1,0 +1,60 @@
+\chapter{The capital gains discount}
+A capital gain is the increase in the value of an asset. Capital gains are taxed when the asset is sold and the gains are realised. The 50 per cent capital gains tax discount means the tax rate paid on capital gains is half the rate for other forms of income. 
+
+The purpose of providing a tax discount for capital gains is to promote savings and entrepreneurship. But the benefits of a discount need to be balanced against the costs. Tax concessions for capital gains reduce government revenue collections. They also distort investment choices because other forms of investment income -- such as bank interest -- are taxed without discount. 
+
+They also undermine the integrity of the income tax system by creating opportunities for artificial transactions to reduce income tax. Some well-advised taxpayers structure receipts that many would see as recurrent earnings so that they are legally characterised as capital gains.
+
+And tax concessions for capital gains reduce the progressivity of the tax system because capital gains are far less evenly distributed than other forms of income. 
+
+This is a growing concern as accumulated wealth and returns on investments become more important relative to labour income to a person's lifetime resources.
+
+The key policy question is whether the capital gains discount is set at the right level given these costs and benefits. While there is some justification for retaining a discount -- primarily not taxing inflationary gains -- the current discount is too generous given the range of competing considerations. 
+
+\section{The size and distribution of capital gains}
+<<CGT-by-entity-get>>=
+# 2013-14 figures
+cgt_entity_url <- "http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/4e5cc0c1-a1b5-4bd2-80f4-6845ef78658b/download/Taxstats2014Summary5Index-of-chart-data.xlsx"
+
+
+tempf <- paste0(tempfile(), ".xlsx")
+
+GET(url = cgt_entity_url, write_disk(tempf))
+@
+
+<<CGT-by-entity>>=
+cgt_by_entity_asset <- 
+  readWorkbook(tempf, sheet = "16", rows = c(4:7), cols = 1:4) %>%
+  gather(asset_type, value_bn, -Entity) %>%
+  mutate(asset_type = factor(gsub(".", " ", gsub(".$b", "", asset_type, fixed = TRUE), fixed = TRUE), 
+                             levels = c("Shares", "Other assets", "Real estate"), 
+                             ordered = TRUE))
+
+total_CGT <- 
+  cgt_by_entity_asset %$%
+  sum(value_bn * 10^9)
+
+cgt_by_entity <- 
+  cgt_by_entity_asset %>%
+  group_by(Entity) %>%
+  summarise(value = sum(value_bn * 10^9)) %>%
+  ungroup %>%
+  mutate(prop = value / sum(value))
+@
+
+<<CGT-by-entity-asset>>=
+cgt_by_entity_asset %>%
+  arrange(desc(asset_type)) %>%
+  grplot(aes(Entity, value_bn, fill = asset_type, order = asset_type)) + 
+  geom_bar(stat = "identity") + 
+  theme(axis.title = element_blank(), 
+        legend.position = "right")
+@
+
+Australian entities -- individuals, companies, and superannuation funds -- accrued about \Sexpr{texNum(total_CGT, dollar = TRUE)} of income through capital gains in 2013-14. Individuals accrued a plurality (\Sexpr{latex_percent(cgt_by_entity %>% filter(Entity == "Individuals") %$% prop)}) 
+of capital gains and most of the value of those gains were through real estate. (See \Vref{fig:CGT-by-entity-asset}.)
+\begin{figure}
+\Caption{Capital gains from real estate assets are almost always through individuals}{Taxable net capital gains, 2013-14}{fig:CGT-by-entity-asset}
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/CGT-by-entity-asset-1}
+\source{\url{\Sexpr{cgt_entity_url}}}
+\end{figure}
