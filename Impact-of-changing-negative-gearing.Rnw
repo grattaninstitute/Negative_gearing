@@ -519,4 +519,54 @@ sih201314 %>%
 \source{Survey Income Housing 2013-14}
 \end{table}
 
+\begin{table*}
+\caption{Taxpayers with wage and salary income claiming business losses by occupation}\label{tbl:bizlosses}
+<<bizLosses, results='asis'>>=
+primary_losses <- 
+  sample_file_1314 %>%
+  merge(occupation_decoder, by = "Occ_code") %>%
+  filter(Sw_amt > 0) %>%
+  group_by(Occupation_description) %>%
+  summarise(n_losses = sum(Net_PP_BI_amt < 0) * 50, 
+            prop_losses = mean(Net_PP_BI_amt < 0), 
+            average_write_off = mean(Net_PP_BI_amt[Net_PP_BI_amt < 0]), 
+            average_salary = mean(Sw_amt), 
+            average_salary_business_losses = mean(Sw_amt[Net_PP_BI_amt < 0]))
 
+non_primary_losses <- 
+  sample_file_1314 %>%
+  merge(occupation_decoder, by = "Occ_code") %>%
+  filter(Sw_amt > 0) %>%
+  group_by(Occupation_description) %>%
+  summarise(n_losses = sum(Net_NPP_BI_amt < 0) * 50, 
+            prop_losses = mean(Net_NPP_BI_amt < 0), 
+            average_write_off = mean(Net_NPP_BI_amt[Net_NPP_BI_amt < 0]), 
+            average_salary = mean(Sw_amt), 
+            average_salary_business_losses = mean(Sw_amt[Net_NPP_BI_amt < 0]))
+
+bind_rows("Primary" = primary_losses, "Non-Primary" = non_primary_losses, .id = "Type") %>% arrange(Occupation_description, desc(Type)) %T>%
+  readr::write_csv("Taxpayers-with-wage-salary-income-claiming-bizlosses.csv") %>%
+  # Cosmetic:
+  mutate(
+    Occupation_description = ifelse(grepl("Occupation not specified", Occupation_description), "Other", Occupation_description),
+    Occupation_description = gsub("\\sworkers", "", Occupation_description, ignore.case = TRUE), 
+    Occupation_description = ifelse(grepl("Consultants", Occupation_description), "Consultants, apprentices", Occupation_description)
+    ) %>%
+  mutate(prop_losses = latex_percent(prop_losses, percentage_symbol = "%"), 
+         average_salary_business_losses = grattan_dollar(average_salary_business_losses), 
+         `Average loss` = grattan_dollar(-average_write_off)) %>%
+  rename(`Occupation` = Occupation_description, 
+         `No. claiming losses` = n_losses, 
+         `\\%` = prop_losses, 
+         `Average salary` = average_salary_business_losses) %>%
+  select(Occupation, Type, `No. claiming losses`, `\\%`, `Average loss`, `Average salary`) %>%
+  xtable(align = paste0("ll", paste0(rep("r", ncol(.) - 1), collapse = ""))) %>%
+  print(include.rownames = FALSE, 
+        booktabs = TRUE, 
+        floating = FALSE, 
+        add.to.row = list(pos = list(which(.$Occupation[-1] != .$Occupation[-nrow(.)])), 
+                          command = "[6pt]"))
+
+@
+\source{2\%\ sample file 2013-14}
+\end{table*}
