@@ -30,6 +30,7 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       fig.show='hide',echo=FALSE,
                       fig.path= atlas <- "CGT-NG-atlas/",
                       message=FALSE, warning=FALSE
+                      ,error=FALSE
                       ,results='hide'
                       ,cache=FALSE
                       ,dev=c('my_pdf', 'png')
@@ -92,6 +93,16 @@ latex_percent <- function (x, percentage_symbol = "~percent") {
     x <- plyr::round_any(x, scales:::precision(x)/100)
     stringr::str_c(comma(x * 100), percentage_symbol)
 }
+@
+
+<<xtable-formatting>>=
+# bold column names
+boldxt <- function(x, sanitize = TRUE) {
+  # Replace $ without \\
+  x <- ifelse(grepl("((?<!\\\\)\\$)", x, perl = TRUE), gsub("$", "\\$", x, fixed = TRUE), x)
+  paste('{\\textbf{',x,'}}', sep ='')
+}
+options("xtable.sanitize.colnames.function" = function(x) boldxt(x))
 @
 
 <<load_sample_file>>=
@@ -1098,7 +1109,7 @@ Together negative gearing and the CGT discount allow investors to use debt finan
 
 Changes to both capital gains tax and negative gearing are needed to address these efficiency and fairness issues. 
  
-The current 50 per cent CGT discount is justified on the basis that it promotes savings and investment. But these benefits can be overstated: tax rates don’t do much to affect the total amount that wealthy people save. And entrepreneurs already receive a range of other tax concessions. Some discount remains justified to avoid taxing investors for inflationary gains. But the discount is larger than it needs to be given its budgetary and economic costs. \highlight{Reducing the CGT discount to \Sexpr{latex_percent(new.discount)}} could raise around \Sexpr{texNum(revenue_CGT_discount(CGT.discount = new.discount, fy.year = TARGET.FY), sig.figs = 1L, dollar = TRUE)} annually.
+The current 50 per cent CGT discount is justified on the basis that it promotes savings and investment. But these benefits can be overstated: tax rates don't do much to affect the total amount that wealthy people save. And entrepreneurs already receive a range of other tax concessions. Some discount remains justified to avoid taxing investors for inflationary gains. But the discount is larger than it needs to be given its budgetary and economic costs. \highlight{Reducing the CGT discount to \Sexpr{latex_percent(new.discount)}} could raise around \Sexpr{texNum(revenue_CGT_discount(CGT.discount = new.discount, fy.year = TARGET.FY), sig.figs = 1L, dollar = TRUE)} annually.
  
 Negative gearing should also be limited. There is no basis for the claims from the property industry that negative gearing serves a broader social purpose in moderating house prices and rents. Negative gearing puts upward pressure on house prices and plays little role in moderating rents. 
 

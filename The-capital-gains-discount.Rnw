@@ -58,3 +58,65 @@ of capital gains and most of the value of those gains were through real estate. 
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/CGT-by-entity-asset-1}
 \source{\url{\Sexpr{cgt_entity_url}}}
 \end{figure}
+
+An explanation for the larger proportion of assets in real estate for individuals might be the existence of progressive state land taxes which discourage large property holdings and institutional real estate investment.
+
+Capital gains are taxed as part of the income of individuals, companies and superannuation funds. In 2013-14, capital gains tax raised around \$7.5~billion, around 3\%\ of total income. This is expected to have climbed to \$8.9~billion in the following year.\footnote{2015-16 Budget Paper 1. Table 5 memoranda. \url{http://www.budget.gov.au/2015-16/content/bp1/html/bp1_bs4-03.htm}}
+
+\section{Capital gains receive a range of tax advantages}
+At present, capital gains are taxed for individuals at half their marginal rate of income tax. Superannuation funds pay tax on capital gains at 10 per cent (compared to 15 per cent for income). Large corporations pay tax on their capital gains at the corporate tax rate of 30 per cent, which also applies to their income.
+
+Before 1985, capital gains were not taxed in Australia. Since then, the tax treatment of capital gains has varied, but they have always been taxed at a lower rate than wage and salary income \Vref{box:Short-History}. 
+
+\begin{smallbox}[!htb]{A short history of capital gains tax changes}{box:Short-History}
+Before 1985 capital gains were untaxed in Australia. Taxes on capital gains were introduced to improve the integrity of the tax system, which was undermined by taxpayers recharacterising regular income as capital to avoid tax.   
+
+Between 1985 and 1999, real capital gains (sale proceeds minus the original purchase price adjusted for inflation) were taxed at a taxpayer’s marginal income tax rate. 
+
+As recommended by the Ralph Review of Business Taxation, the Howard Government removed indexation adjustments so that tax was applied on nominal gains. To offset the removal of the indexation concession, capital gains tax was discounted by 50 per cent for individuals and 33 per cent for superannuation funds for assets held for more than a year. Capital gains of small unincorporated businesses, but not large businesses, are also discounted by 50 per cent. Small businesses also receive a range of other CGT concessions. When this regime was introduced, it was argued that it would stimulate capital markets and make the Australian regime more internationally competitive.
+\end{smallbox}
+
+Under the current rules, net capital gains are included as part of assessable income.  For individuals and small businesses, \highlight{50 per cent of capital gains are excluded from taxable income} for assets held for more than one year. This means the effective tax rate paid on these gains is half the rate for other forms of income. 
+
+Capital gains on owner-occupied housing are not taxed at all.
+
+Capital gains also receive other less explicit tax advantages compared to recurrent income.
+
+First, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan.  This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing if the asset is held for longer.
+
+<<CG-delay-EMTR, eval=FALSE>>=
+value_after <- function(n, init = 1, tax_r = 0.00, cg_discount = 0.50, cg_r = 0.05, div_r = 0.03){
+  asset_value <- function(prev_asset_value, realizeCG = FALSE){
+    dividend <- prev_asset_value * div_r
+    dividend_post_tax <- dividend - dividend * tax_r
+    capital_gain <- prev_asset_value * cg_r
+    capital_gain_post_tax <- ifelse(realizeCG, capital_gain - (prev_asset_value - init) * cg_discount * tax_r, capital_gain)
+    capital_gain_post_tax + dividend_post_tax + prev_asset_value
+  }
+  if (n == 1){
+    asset_value(init, realizeCG = TRUE)
+  } else {
+    value_after(n - 1, asset_value(init))
+  }
+}
+
+emtr <- function(posttax_value, pretax_value){
+  (pretax_value - posttax_value) / pretax_value
+}
+
+data.table::CJ(
+  year = 1:15, 
+  marginal_rate = c(0.47, 0.39, 0.345)
+) %>%
+  rowwise %>%
+  mutate(value_with_tax = value_after(year, tax_r = marginal_rate), 
+         value_without_tax = value_after(year, tax_r = 0.00)) %>%
+  mutate(capital_gain = (1 + 0.05) ^ year) %>% .[]
+  mutate(emtr = emtr(posttax_value = value_with_tax, pretax_value = value_without_tax)) %>% .[]
+
+
+
+
+@
+
+
