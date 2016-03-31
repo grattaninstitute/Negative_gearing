@@ -19,6 +19,7 @@ use.sample.fy <- "2013-14"
 %\clearpage
 %\chapter{Distribution of negative gearing}
 <<knitrOpts, echo=FALSE>>=
+START.TIME <- Sys.time()
 my_pdf <- function(file, width, height){
   pdf(file = file, width, height = height)
 }
@@ -1157,6 +1158,11 @@ But there are revenue measures that could make a meaningful contribution to budg
 
 <<sessionInfo, results = 'hide'>>=
 devtools::session_info()
+@
+
+<<FINISH-TIME>>=
+FINISH.TIME <- Sys.time()
+write(x = c(START.TIME, FINISH.TIME, difftime(FINISH.TIME, START.TIME)), file = "CGT_and_neg_gearing_parent_time.txt")
 @
 
 \printbibliography[title=References]

@@ -85,24 +85,54 @@ Capital gains also receive other less explicit tax advantages compared to recurr
 First, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan.  This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing if the asset is held for longer.
 
 <<CG-delay-EMTR, eval=FALSE>>=
-value_after <- function(n, init = 1, tax_r = 0.00, cg_discount = 0.50, cg_r = 0.05, div_r = 0.03){
-  asset_value <- function(prev_asset_value, realizeCG = FALSE){
-    dividend <- prev_asset_value * div_r
-    dividend_post_tax <- dividend - dividend * tax_r
-    capital_gain <- prev_asset_value * cg_r
-    capital_gain_post_tax <- ifelse(realizeCG, capital_gain - (prev_asset_value - init) * cg_discount * tax_r, capital_gain)
-    capital_gain_post_tax + dividend_post_tax + prev_asset_value
+value_after <- function(n, initial_principal = 100, tax_r = 0.00, cgt.on.realization = TRUE, cgt_tax_r = 0.00, cgt_discount = 0.50, div_r = 0.03, cg_r = 0.05){
+  if (n == 0){
+    return(initial_principal)
   }
-  if (n == 1){
-    asset_value(init, realizeCG = TRUE)
-  } else {
-    value_after(n - 1, asset_value(init))
+  
+  for (y in 1:n){
+    if (y == 1){
+      start_yr_asset_val <- initial_principal
+    }
+    if (y > 1){
+      start_yr_asset_val <- eoy_assets
+    }
+    
+    dividend_eoy <- div_r * start_yr_asset_val
+    dividend_tax <- dividend_eoy * tax_r
+    capital_gain <- cg_r * start_yr_asset_val
+    
+    
+    
+    if (cgt.on.realization){
+      if (y == n){
+        CGT <- (start_yr_asset_val + capital_gain - initial_principal) * cgt_discount * cgt_tax_r
+      } else {
+        CGT <- 0
+      }
+    } else {
+      CGT <- capital_gain * cgt_tax_r
+    }
+    eoy_assets <- start_yr_asset_val + dividend_eoy + capital_gain - CGT - dividend_tax
   }
+  eoy_assets
 }
 
-emtr <- function(posttax_value, pretax_value){
-  (pretax_value - posttax_value) / pretax_value
+
+## For the EMTR we want to compare
+## Tax / income (EMTR) for world 
+## where CGT is paid on an accruals basis
+## vs realization basis
+emtr <- function(n, cgt_tax_r){
+  tax_accruals <- value_after(n, tax_r = cgt_tax_r, cgt_tax_r = 0) - value_after(n, tax_r = cgt_tax_r, cgt_tax_r = cgt_tax_r, cgt.on.realization = FALSE)
+  tax_realize  <- value_after(n, tax_r = cgt_tax_r, cgt_tax_r = 0) - value_after(n, tax_r = cgt_tax_r, cgt_tax_r = cgt_tax_r, cgt.on.realization = TRUE)
+  
+  income <- value_after(n, tax_r = cgt_tax_r) - value_after(0, tax_r = cgt_tax_r)
+  
+  (tax_accruals - tax_realize) / income
 }
+
+
 
 data.table::CJ(
   year = 1:15, 
@@ -111,7 +141,7 @@ data.table::CJ(
   rowwise %>%
   mutate(value_with_tax = value_after(year, tax_r = marginal_rate), 
          value_without_tax = value_after(year, tax_r = 0.00)) %>%
-  mutate(capital_gain = (1 + 0.05) ^ year) %>% .[]
+  mutate(capital_gain = (1 + 0.05) ^ year) %>% 
   mutate(emtr = emtr(posttax_value = value_with_tax, pretax_value = value_without_tax)) %>% .[]
 
 
@@ -119,4 +149,87 @@ data.table::CJ(
 
 @
 
+
+<<stacked-column-chart, fig.width = 22, out.width = "22in">>=
+new_lines_adder = function(x, interval) {
+  #add spaces after /
+  x = stringr::str_replace_all(x, "/", "/ ")
+  #split at spaces
+  x.split = strsplit(x, " ")[[1]]
+  # get length of snippets, add one for space
+  lens <- nchar(x.split) + 1
+  # now the trick: split the text into lines with
+  # length of at most interval + 1 (including the spaces)
+  lines <- cumsum(lens) %/% (interval + 1)
+  # construct the lines
+  x.lines <- tapply(x.split, lines, function(line)
+    paste0(paste(line, collapse=" "), "\n"), simplify = TRUE)
+  # put everything into a single string
+  result <- paste(x.lines, collapse="")
+  #remove spaces we added after /
+  result = stringr::str_replace_all(result, "/ ", "/")
+  return(result)
+}
+
+#wrapper for the above, meant for users
+add_newlines = function(x, total.length = 85) {
+  # make sure, x is a character array   
+  x = as.character(x)
+  #determine number of groups
+  groups = length(x)
+  # apply splitter to each
+  t = sapply(x, FUN = new_lines_adder, interval = round(total.length/groups), USE.NAMES=FALSE)
+  return(t)
+}
+
+newliner <- function(labels){
+  paste0(c("", "\n"), labels)
+}
+
+pDecile <- 
+  sample_file_1314 %>%
+  group_by(Taxable_Income_decile = ntile(Taxable_Income, 10)) %>%
+  summarise(`No. Taxpayers` = n() * 50, 
+            `Salary` = 50 * sum(as.numeric(Sw_amt)), 
+            `Income tax (excl CGT)` = sum(income_tax(Taxable_Income - Net_CG_amt, "2013-14")), 
+            `Capital gains` = sum(Net_CG_amt) * 50, 
+            `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(Taxable_Income - Net_CG_amt, "2013-14"))) %>%
+  gather(type, value, -Taxable_Income_decile) %>%
+  arrange(type, Taxable_Income_decile) %>%
+  grplot(aes(x = type, y = value, fill = factor(Taxable_Income_decile, levels = 10:1))) + 
+  geom_bar(stat = "identity", position = "fill") +
+  scale_fill_manual(values = gpalx(10)) + 
+  scale_y_continuous(label = percent, breaks = (0:10)/10) + 
+  scale_x_discrete(labels = newliner) + 
+  facet_grid(~"With CG") + 
+  theme(strip.background = element_rect(fill=theGrey), 
+        strip.text = element_text(face = "bold", color = "white"), 
+        axis.title.x = element_blank())
+
+pDecile_no_CG <- 
+  sample_file_1314 %>%
+  group_by(Taxable_Income_decile = ntile(Taxable_Income - Net_CG_amt, 10)) %>%
+  summarise(`No. Taxpayers` = n() * 50, 
+            `Salary` = 50 * sum(as.numeric(Sw_amt)), 
+            `Income tax (excl CGT)` = sum(income_tax(Taxable_Income - Net_CG_amt, "2013-14")), 
+            `Capital gains` = sum(Net_CG_amt) * 50, 
+            `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(Taxable_Income - Net_CG_amt, "2013-14"))) %>%
+  gather(type, value, -Taxable_Income_decile) %>%
+  arrange(Taxable_Income_decile) %>%
+  grplot(aes(x = type, y = value, fill = factor(Taxable_Income_decile, levels = 10:1))) + 
+  geom_bar(stat = "identity", position = "fill") +
+  scale_fill_manual(values = gpalx(10)) + 
+  scale_y_continuous(label = percent, breaks = (0:10)/10) + 
+  scale_x_discrete(labels = newliner) + 
+  facet_grid(~"Without CG") + 
+  theme(strip.background = element_rect(fill=theGrey), 
+        strip.text = element_text(face = "bold", color = "white"), 
+        axis.title.x = element_blank(), 
+        axis.text.x  = element_text())
+
+grid.arrange(pDecile, pDecile_no_CG, ncol = 2)
+@
+\begin{figure*}
+\includegraphics[width = 2\columnwidth]{\Sexpr{atlas}/stacked-column-chart-1}
+\end{figure*}
 
