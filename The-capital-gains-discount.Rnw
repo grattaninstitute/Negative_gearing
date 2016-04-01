@@ -71,7 +71,7 @@ Before 1985, capital gains were not taxed in Australia. Since then, the tax trea
 \begin{smallbox}[!htb]{A short history of capital gains tax changes}{box:Short-History}
 Before 1985 capital gains were untaxed in Australia. Taxes on capital gains were introduced to improve the integrity of the tax system, which was undermined by taxpayers recharacterising regular income as capital to avoid tax.   
 
-Between 1985 and 1999, real capital gains (sale proceeds minus the original purchase price adjusted for inflation) were taxed at a taxpayer’s marginal income tax rate. 
+Between 1985 and 1999, real capital gains (sale proceeds minus the original purchase price adjusted for inflation) were taxed at a taxpayer's marginal income tax rate. 
 
 As recommended by the Ralph Review of Business Taxation, the Howard Government removed indexation adjustments so that tax was applied on nominal gains. To offset the removal of the indexation concession, capital gains tax was discounted by 50 per cent for individuals and 33 per cent for superannuation funds for assets held for more than a year. Capital gains of small unincorporated businesses, but not large businesses, are also discounted by 50 per cent. Small businesses also receive a range of other CGT concessions. When this regime was introduced, it was argued that it would stimulate capital markets and make the Australian regime more internationally competitive.
 \end{smallbox}
@@ -148,7 +148,272 @@ data.table::CJ(
 
 
 @
+Under current rules, this deferral over 15 years for a top marginal rate taxpayer reduces the effective nominal tax rate on capital gains from 32 per cent to 28 per cent (\TBD{FIGURE}).
 
+Second, investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. They can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate. Some Australians, particularly high income earners, wait until retirement to realise capital gains. Those 65 and older are much more likely to sell assets than those who are younger (\Vrefrange{fig:CGT-by-age-income}{fig:CGT-by-age-income-weight-CG}).
+
+<<CG-marginal-tax-rates>>=
+avg_marginal_rate_CG <- 
+  sample_file %>%
+  filter(Net_CG_amt > 0) %>%
+  mutate(marginal_rate = income_tax(Taxable_Income + 1, fy.year = use.sample.fy) - income_tax(Taxable_Income, fy.year = use.sample.fy)) %$% 
+  mean(marginal_rate)
+
+avg_marginal_rate_CG_weighted_by_CG <- 
+  sample_file %>%
+  filter(Net_CG_amt > 0) %>%
+  mutate(marginal_rate = income_tax(Taxable_Income + 1, fy.year = use.sample.fy) - income_tax(Taxable_Income, fy.year = use.sample.fy)) %$% 
+  weighted.mean(marginal_rate, Net_CG_amt)
+
+avg_marginal_rate_CG_weighted_by_CG_20_64 <-
+  sample_file %>%
+  filter(Net_CG_amt > 0, 
+         between(age_imp, 20, 65)) %>%
+  mutate(marginal_rate = income_tax(Taxable_Income + 1, fy.year = use.sample.fy) - income_tax(Taxable_Income, fy.year = use.sample.fy)) %$% 
+  weighted.mean(marginal_rate, Net_CG_amt)
+
+avg_marginal_rate_CG_weighted_by_CG_65p <-
+  sample_file %>%
+  filter(Net_CG_amt > 0, 
+         age_imp >= 65) %>%
+  mutate(marginal_rate = income_tax(Taxable_Income + 1, fy.year = use.sample.fy) - income_tax(Taxable_Income, fy.year = use.sample.fy)) %$% 
+  weighted.mean(marginal_rate, Net_CG_amt)
+
+avg_marginal_rate_b4_CG <- 
+  sample_file %>%
+  filter(Net_CG_amt > 0, 
+         age_imp >= 20) %>%
+  mutate(Taxable_Income_b4_CG = pmaxC(Taxable_Income - Net_CG_amt, 0),
+         marginal_rate_b4_CG = income_tax(Taxable_Income_b4_CG + 1) - income_tax(Taxable_Income_b4_CG)) %>%
+  group_by(is_in_workforce = between(age_imp, 20, 65)) %>%
+  summarise(avg_marginal_rate_weighted = weighted.mean(marginal_rate_b4_CG, Net_CG_amt), 
+            avg_marginal_rate = mean(marginal_rate_b4_CG)) %>%
+  ungroup
+
+avg_marginal_rate_b4_CG_workforce <- 
+  avg_marginal_rate_b4_CG %>%
+  filter(is_in_workforce) %$%
+  avg_marginal_rate
+
+avg_marginal_rate_b4_CG_retired <- 
+  avg_marginal_rate_b4_CG %>%
+  filter(!is_in_workforce) %$%
+  avg_marginal_rate
+  
+@
+
+A person paying the top rate of income tax of 47c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was \Sexpr{latex_percent(avg_marginal_rate_CG)}; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was \Sexpr{latex_percent(avg_marginal_rate_CG_weighted_by_CG)}. The average marginal tax rate on the first dollar of capital gains for people in the workforce is \Sexpr{latex_percent(avg_marginal_rate_b4_CG_workforce)} compared to \Sexpr{latex_percent(avg_marginal_rate_b4_CG_retired)} for people over 65.
+
+<<CGT-by-age-income>>=
+sample_file %>%
+  mutate(Taxable_Income_less_CG = Taxable_Income - Net_CG_amt, 
+         `Taxable income (less CG) percentile` = ntile(Taxable_Income_less_CG, 100)) %>%
+  group_by(
+    `Taxable income (less CG) percentile`,
+    `Age group` = cut(age_imp, 
+                      breaks = c(-Inf, 30, 50, 60, 65, Inf),
+                      labels = c("Below 30", "30-49", "50-59",  "60-64", "65+"), 
+                      include.lowest = TRUE, 
+                      right = FALSE, ## almost not needed
+                      ordered.results = TRUE)
+    ) %>%
+  summarise(probCG = mean(Net_CG_amt > 0), 
+            n_taxpayers = sum(WEIGHT)) %>%
+  ungroup %>%
+  group_by(`Age group`) %>%
+  mutate(
+    text.label = ifelse(`Taxable income (less CG) percentile` == max(`Taxable income (less CG) percentile`),
+                        as.character(`Age group`), 
+                        NA_character_),
+    text.y = mean(probCG[`Taxable income (less CG) percentile` > 96])
+         ) %>%
+         {
+           grplot(., aes(x = `Taxable income (less CG) percentile`, y = probCG, color = rev(`Age group`), weight = n_taxpayers)) + 
+             theme(axis.title.y = element_blank(),
+                   axis.title.x = element_text(hjust = 0.5, face = "bold")) + 
+             # gridlines go to far
+             theme(panel.grid.major.y = element_blank()) + 
+             annotate("segment",
+                      x = -Inf, 
+                      xend = 100, 
+                      color = theGrey,
+                      y = seq(0, 0.20, by = 0.05), 
+                      yend = seq(0, 0.20, by = 0.05), 
+                      size = rel(0.1)) + 
+             geom_smooth(size = 1.5, se = FALSE) + 
+             scale_size(range = c(1, 10)) + 
+             geom_text(aes(label = text.label, y = text.y), 
+                       hjust = 0, 
+                       size = 22/(14/5),
+                       nudge_x = 2,
+                       fontface = "bold") + 
+             scale_y_continuous(label = function(x) paste0("      ", percent(x))) +
+             scale_x_continuous(limits = c(0, 110), breaks = c(0, 25, 50, 75, 100)) 
+         } 
+@
+
+
+<<CGT-by-age-income-weight-CG>>=
+sample_file %>%
+  mutate(Taxable_Income_less_CG = Taxable_Income - Net_CG_amt, 
+         `Taxable income (less CG) percentile` = ntile(Taxable_Income_less_CG, 100)) %>%
+  group_by(
+    `Taxable income (less CG) percentile`,
+    `Age group` = cut(age_imp, 
+                      breaks = c(-Inf, 30, 50, 65, Inf),
+                      labels = c("Below 30", "30-49", "50-64", "65+"), 
+                      include.lowest = TRUE, 
+                      right = FALSE, ## almost not needed
+                      ordered.results = TRUE)
+    ) %>%
+  summarise(avg_CGT = mean(Net_CG_amt[Net_CG_amt > 0]), 
+            n_taxpayers = sum(WEIGHT)) %>%
+  ungroup %>%
+  group_by(`Age group`) %>%
+  mutate(
+    text.label = ifelse(`Taxable income (less CG) percentile` == max(`Taxable income (less CG) percentile`),
+                        as.character(`Age group`), 
+                        NA_character_),
+    text.y = mean(avg_CGT[`Taxable income (less CG) percentile` > 94])
+         ) %>%
+         {
+           grplot(., aes(x = `Taxable income (less CG) percentile`, y = avg_CGT, color = rev(`Age group`), weight = n_taxpayers)) + 
+             theme(axis.title.y = element_blank(),
+                   axis.title.x = element_text(hjust = 0.5, face = "bold")) +  
+             # gridlines go to far
+             theme(panel.grid.major.y = element_blank()) + 
+             annotate("segment",
+                      x = -Inf, 
+                      xend = 100, 
+                      color = theGrey,
+                      y = c(0, 20e3, 40e3, 60e3), 
+                      yend = c(0, 20e3, 40e3, 60e3), 
+                      size = rel(0.1)) +
+             geom_smooth(size = 1.5, se = FALSE) + 
+             geom_text(aes(label = text.label, y = text.y), 
+                       hjust = 0, 
+                       nudge_x = 2,
+                       fontface = "bold", 
+                       size = 22/(14/5),
+                       na.rm = TRUE) + 
+             annotate("blank", x = 0, y = 0) + 
+             scale_y_continuous(label = grattan_dollar) +
+             scale_x_continuous(limits = c(0, 110), breaks = c(0, 25, 50, 75, 100)) 
+
+         }
+@
+\begin{figure}
+\Caption{Older taxpayers are more likely to have capital gains than younger taxpayers, for all age groups at almost all income levels}{Probability of net capital gains}{fig:CGT-by-age-income}
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/CGT-by-age-income-1}
+\Caption{}{Average value of net capital gains}{fig:CGT-by-age-income-weight-CG}
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/CGT-by-age-income-weight-CG-1}
+\end{figure}
+
+\section{Adjusting for inflation}
+After adjusting for inflation, the returns on savings are lower than the nominal returns, and the effective tax rate is higher. Part of the return to savings compensates for inflation, and simply maintains the purchasing power of the original investment. It is not `income' in a true sense.  Effective tax rates on real returns can be high if \emph{nominal} gains are taxed at marginal income tax rates. 
+
+In Australia, taxes on savings income, including capital gains, are levied on nominal returns, which include this inflation component. The capital gains discount results in lower taxes on real (inflation adjusted) returns than taxes on investments that only yield income such as bank interest (\TBD{Figure 4}). 
+
+The effective tax rate on real returns is also affected by the absolute returns. If returns are higher then the effective tax rate is lower. 
+
+Over the last 15 years (the ``historic scenario'' in \TBD{Figure 4}), the real effective marginal tax rate (including capital gains discounts) on a long-term property investment has been less than the nominal income tax rate. The effective tax rate on real returns is reduced both by the capital gains tax discount and by the ability to defer paying tax on capital gains until the asset is sold, as discussed in section \TBD{2.2}. These effects have overcompensated property investors for the cost of inflation over the past 25 years (see \Vref{box:CGTOvercompensates}). Property investors have paid a lower tax on their real returns than on income. As illustrated in \TBD{Figure 4}, investors can pay lower tax rates on their real returns than on income under a wide range of plausible scenarios. 
+
+\begin{smallbox}{The CGT discount has overcompensated property investors for the effects of inflation}{box:CGTOvercompensates}
+The capital gains overcompensates many investors for the effects of inflation, especially when the other tax advantages for capital gains tax are taken into account.  
+
+Under the 50 per cent discount, investors pay less tax compared to a tax on real gains so long as asset values grow at least twice the rate of inflation. The advantage is even larger on longer-term investments because capital gains tax is not paid until the asset is sold.
+
+Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7.3 per cent  while share prices have grown by an average of only 3.6 per cent.  Inflation over this period averaged 2.8 per cent annually.  So the 50 per cent discount has overcompensated housing investors. In contrast, long-term share investors who experienced low average capital returns because of the global financial crisis, would have been better off under a regime that taxed real capital gains. Of course, both sets of investors received ongoing investment income in terms of rents and dividends that meant their net returns were significantly higher than those from capital gains alone.   
+\end{smallbox}
+
+
+
+
+
+\section{Ideal tax rates on savings}
+The ideal tax rate for the earnings on savings, and capital gains in particular, depends on competing considerations.
+\newcounter{consideration}
+\newcommand\consideration{\par\refstepcounter{consideration}\textbf{\textcolor{Orange}{Consideration~\theconsideration:}}\hspace{2ex}}
+\consideration Taxes on savings impose \highlight{costs}.
+\begin{itemize}
+  \item Taxes on savings discourage savings, instead encouraging immediate consumption
+  \item Taxes on savings deter entrepreneurship by taxing the returns from taking a risk
+\end{itemize}
+\consideration The costs of taxes on savings\dots
+
+\subsection{Maintaining the progressivity of the tax system}
+<<Maintaining-the-progressive-tax-system>>=
+prop_sw_top_decile <- 
+  sample_file %>%
+  group_by(top_sw_decile = ntile(Sw_amt, 10) == 10) %>%
+  summarise(tot_sw = sum(Sw_amt)) %>%
+  ungroup %>%
+  mutate(prop_sw = tot_sw / sum(tot_sw)) %>%
+  filter(top_sw_decile) %$%
+  prop_sw
+
+prop_invst_inc_top_decile <- 
+  sample_file %>%
+  filter(ntile(Tot_inc_amt, 10) == 10) %>%
+  mutate(investment_income = Tot_inc_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt - Aust_govt_pnsn_allw_amt - Other_foreign_inc_amt) %$%
+  mean(investment_income / Tot_inc_amt)
+
+prop_invst_inc_from_top_decile <- 
+  sample_file %>%
+  mutate(investment_income = Tot_inc_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt - Aust_govt_pnsn_allw_amt - Other_foreign_inc_amt) %>%
+  group_by(decile = ntile(Tot_inc_amt, 10)) %>%
+  summarise(tot_invest = sum(as.numeric(investment_income))) %>%
+  ungroup %>%
+  mutate(prop_invest = tot_invest / sum(tot_invest)) %>%
+  filter(decile == 10) %$%
+  prop_invest
+
+prop_inc_CG_top_decile <- 
+  sample_file %>%
+  group_by(decile = ntile(Tot_inc_amt, 10)) %>%
+  summarise(tot_CG = sum(Tot_CY_CG_amt)) %>%
+  ungroup %>%
+  mutate(prop_CG = tot_CG/sum(tot_CG)) %>%
+  filter(decile == 10) %$%
+  prop_CG
+
+prop_inc_CG_top_decile_excl_CG <- 
+  sample_file %>%
+  group_by(decile = ntile(Tot_inc_amt - Net_CG_amt, 10)) %>%
+  summarise(tot_CG = sum(Tot_CY_CG_amt)) %>%
+  ungroup %>%
+  mutate(prop_CG = tot_CG/sum(tot_CG)) %>%
+  filter(decile == 10) %$%
+  prop_CG
+
+prop_inc_CG_bottom_decile_excl_CG <- 
+  sample_file %>%
+  group_by(decile = ntile(Tot_inc_amt - Net_CG_amt, 10)) %>%
+  summarise(tot_CG = sum(Tot_CY_CG_amt)) %>%
+  ungroup %>%
+  mutate(prop_CG = tot_CG/sum(tot_CG)) %>%
+  filter(decile == 1) %$%
+  prop_CG
+
+max_inc_bottom_decile_excl_CG <- 
+  sample_file %>%
+  filter(ntile(Tot_inc_amt - Net_CG_amt, 10) == 1) %$%
+  max(Sw_amt, Tot_inc_amt - Net_CG_amt)
+@
+
+If returns to savings are not taxed, then inequality will tend to widen. The top ten per cent of wage and salary earners receive about \Sexpr{latex_percent(prop_sw_top_decile)} of all wages and salaries (before tax). They tend to save a greater proportion of their income than people who earn less, they are more likely to invest in higher risk, higher return assets, and they are more likely to make investments where a higher proportion of the returns are capital gains rather than income.  Consequently, among individual taxpayers, the top decile received \Sexpr{latex_percent(prop_invst_inc_from_top_decile)} of all investment income, and \Sexpr{latex_percent(prop_inc_CG_top_decile)} of all capital gains income (\Vref{fig:DecileStackedChart}). 
+
+<<30-45-with-high-CG-no-other-income>>=
+highCG_3045_no_other_inc <- 
+  sample_file %>%
+  filter(between(age_imp, 30, 45), 
+         Net_CG_amt > 0) %$%
+  mean(Net_CG_amt > 10e3 & Net_CG_amt / Tot_inc_amt > 0.95)
+@
+
+Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes before capital gains, most gains are earned by those in the top 10 per cent of income earners and by those with little or no taxable income.%
+\footnote{Almost \Sexpr{latex_percent(prop_inc_CG_top_decile_excl_CG)} of capital gains are earned by those in the decile of income earners \emph{excluding} capital gains and another \Sexpr{latex_percent(prop_inc_CG_bottom_decile_excl_CG)} -- that is, their other income is less than \TBD{\$X}.}
+Of the latter, many are over 50s that have waited until retirement to realise gains (section 2.2). There is also a sizeable group of 30-45 year olds with very high capital gains but no other taxable incomes (\Sexpr{latex_percent(highCG_3045_no_other_inc)} of taxpayers in this age group have capital gains in excess of \$10,000 and which make up more than 95\%\ of their total income).\marginpar{\textcolor{red}{\textbf{Not borne out.}}} Many are likely to be partners of high income earners that receive distributions of capital income through structures such as trusts. All of this is consistent with the finding that capital gains accrue disproportionately to those that are already well off. 
 
 <<stacked-column-chart, fig.width = 22, out.width = "22in">>=
 new_lines_adder = function(x, interval) {
@@ -195,6 +460,7 @@ pDecile <-
             `Capital gains` = sum(Net_CG_amt) * 50, 
             `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(Taxable_Income - Net_CG_amt, "2013-14"))) %>%
   gather(type, value, -Taxable_Income_decile) %>%
+  mutate(type = factor(type, levels = unique(.$type), ordered = TRUE)) %>%
   arrange(type, Taxable_Income_decile) %>%
   grplot(aes(x = type, y = value, fill = factor(Taxable_Income_decile, levels = 10:1))) + 
   geom_bar(stat = "identity", position = "fill") +
@@ -215,7 +481,8 @@ pDecile_no_CG <-
             `Capital gains` = sum(Net_CG_amt) * 50, 
             `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(Taxable_Income - Net_CG_amt, "2013-14"))) %>%
   gather(type, value, -Taxable_Income_decile) %>%
-  arrange(Taxable_Income_decile) %>%
+  mutate(type = factor(type, levels = unique(.$type), ordered = TRUE)) %>%
+  arrange(type, Taxable_Income_decile) %>%
   grplot(aes(x = type, y = value, fill = factor(Taxable_Income_decile, levels = 10:1))) + 
   geom_bar(stat = "identity", position = "fill") +
   scale_fill_manual(values = gpalx(10)) + 
@@ -230,6 +497,7 @@ pDecile_no_CG <-
 grid.arrange(pDecile, pDecile_no_CG, ncol = 2)
 @
 \begin{figure*}
-\includegraphics[width = 2\columnwidth]{\Sexpr{atlas}/stacked-column-chart-1}
+\Caption{}{Distribution of taxes and income by taxable income decile}{fig:DecileStackedChart}
+\includegraphics[width = \textwidth]{\Sexpr{atlas}/stacked-column-chart-1}
+\the\textwidth
 \end{figure*}
-
