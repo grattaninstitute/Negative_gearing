@@ -110,6 +110,22 @@ options("xtable.sanitize.colnames.function" = function(x) boldxt(x))
 sample_file <- sample_files_all[fy.year == use.sample.fy]
 @
 
+<<create-age-imp>>=
+sample_file <- merge(sample_file, age_range_decoder, by = "age_range")
+
+set.seed(48031)
+sample_file %<>%
+  group_by(age_range_description) %>%
+  mutate(min_age = ifelse(grepl("to", age_range_description), 
+                          as.numeric(stringr::str_extract(age_range_description, "^[0-9]{2}")), 
+                          ifelse(grepl("70", age_range_description),
+                                 70, 
+                                 15)),
+         max_age = min_age + 5, 
+         age_imp = runif(n(), min_age, max_age)) %>%
+  select(-min_age, -max_age)
+@
+
 
 %%% Costings analysis
 
@@ -1127,7 +1143,7 @@ The best way to transition to the new arrangements would be to phase them in ove
 \setcounter{tocdepth}{4}
 \contentspage
 %%%
-\chapter*{Commonwealth budgets under pressure}
+\chapter{Commonwealth budgets under pressure}
 In five of the last six years, the Commonwealth Government has posted headline deficits of more than 2~per cent of GDP.
 Assuming revenue and spending projections are correct, Australia is on track for more than a decade of deficits between 2008 and 2019, with Commonwealth net debt projected to peak at 18~per cent of GDP in 2017, higher than any year since the mid-1990s.\footnote{Net debt was 18.1\%\ of GDP in 1995-96. See \textcite[p.~273]{Treasury2014b}}
  
