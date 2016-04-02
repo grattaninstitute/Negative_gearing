@@ -18,8 +18,29 @@ use.sample.fy <- "2013-14"
 \begin{document}
 %\clearpage
 %\chapter{Distribution of negative gearing}
-<<knitrOpts, echo=FALSE>>=
+<<knitrOpts, echo=FALSE, results='hide'>>=
 library(knitr)
+.finished <- FALSE
+file.create("CGT_and_neg_gearing_parent-CHUNKTIMINGS.txt")
+knit_hooks$set(timeit = function(before) {
+    if (before) {
+      .current.time <<- Sys.time()
+    } else {
+      .duration <- formatC(round(difftime(Sys.time(), .current.time, units = "secs"), 1), 
+                           # ensure one decimal place, right-aligned (width = 5)
+                           format = "f", flag = "#", digits = 1, width = 5)
+      if(!.finished)
+        write(
+          paste0(.duration, 
+                 "\t", 
+                 knitr::opts_current$get(name = "label")),
+          file = "CGT_and_neg_gearing_parent-CHUNKTIMINGS.txt",
+          ncolumns = 1,
+          append = TRUE)
+    }
+})
+
+
 library(devEMF)
 START.TIME <- Sys.time()
 my_pdf <- function(file, width, height){
@@ -32,11 +53,17 @@ my_emf <- function(file, width, height){
 
 # knitr chunk opts
 # fig.width must = out.width and same for *.height
-knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
-                      out.width="11.000in", out.height="7.00in", 
-                      fig.show='hide',echo=FALSE,
+knitr::opts_chunk$set(fig.width=11.000, 
+                      fig.height=7.00, 
+                      out.width="11.000in", 
+                      out.height="7.00in", 
+                      fig.show='hide',
+                      echo=FALSE,
                       fig.path= atlas <- "CGT-NG-atlas/",
-                      message=FALSE, warning=FALSE
+                      message=FALSE, 
+                      warning=FALSE, 
+                      timeit =TRUE
+                      #
                       ,error=FALSE
                       ,results='hide'
                       ,cache=FALSE
@@ -294,16 +321,47 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
 # new.discount <- 0.25  # proposed CGT
 # TARGET.FY <- "2015-16"
 # use.sample.fy <- "2013-14"
-revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY){
+revenue_quarantine_NG <- function(h, sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY){
+  
+  if (sample_file_fy_year != "2013-14"){
+    stop("Correct sample_file year")
+  }
   
   probNoCG_if_investor <- 
     sample_files_all[fy.year == sample_file_fy_year] %>%
     filter(Gross_rent_amt > 0) %$%
     mean(Net_CG_amt > 0)
-    
-  if (sample_file_fy_year != "2013-14"){
-    stop("Correct sample_file year")
-  } 
+  
+  M <- matrix(0, ncol = h, nrow = h)
+  # We assume that an individual with Gross rent accumulates their losses
+  # linearly and that all losses are exhausted completely with probability
+  # probCG.  Put another way, at each iteration we randomly allocate property 
+  # investors into either realizing a capital gain or not.  If they realize, 
+  # all accumulated losses (regardless of size) is deducted from their taxable 
+  # income; otherwise it increases arithmetically.
+  M[row(M) == col(M) - 1] <- 1 - probCG
+  M[col(M) == 1] <- probCG
+  
+  # Losses not permitted to be exhausted in year 1.
+  M[1,2] <- 1
+  M[1,1] <- 0
+  #
+  M[h,h] <- 1 - probCG
+  
+  # require(expm)
+  P <- M %^% h
+  
+  # P[h,j] represents the probabilities of 
+  # having (j - 1)*Net_rent_amt in the hth year
+  # Expected multiplier
+  Ehj <- P[h, ] * seq(0, h - 1, by = 1)
+  
+  cum.ecdf <- cumsum(P[h,])
+  
+  accumulator <- 
+    data.table(rand = cum.ecdf, 
+               multiplier = seq(0, h-1, by = 1)) %>%
+    setkey(rand)
   
   round_cols <- function(column){
     if (!is.numeric(column)){
@@ -331,14 +389,13 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
       # Other_Income means income (possibly -ve) that is 
       # not salary, CG, or rental
       Other_Income = round(Tot_inc_amt - Sw_amt - Net_CG_amt - Net_rent_amt, 2),
-      new_Tot_inc_amt_no_CG = Sw_amt + ifelse(Net_rent_amt >= 0, 
-                                              Other_Income + Net_rent_amt, 
-                                              ifelse(Other_Income <= 0, 
-                                                     # Nothing for rent to deduct against
-                                                     Other_Income,
-                                                     # Net_rent is negative and is allowed to 
-                                                     # reduce Other income till exhausted
-                                                     pmaxC(Other_Income + Net_rent_amt, 0)))
+      new_Tot_inc_amt_no_CG = Sw_amt + ifelse(Other_Income <= 0, 
+                                              # Nothing for rent to deduct against, 
+                                              # but Other_Income is permitted to be -ve
+                                              Other_Income,
+                                              # Net_rent is negative and is allowed to 
+                                              # reduce Other income till exhausted
+                                              pmaxC(Other_Income + Net_rent_amt, 0))
     ) %>% 
     mutate(
       # This is the standard calculation for taxable income
@@ -346,7 +403,7 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
       prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = "2013-14"), 
       post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = "2013-14"), 
       tax_increase = post_tax - prev_tax
-    ) %$% 
+    ) %>% .[] %$% 
     sum(as.numeric(tax_increase * WEIGHT))
 }
 @
@@ -1307,4 +1364,42 @@ write(x = c(START.TIME, FINISH.TIME, difftime(FINISH.TIME, START.TIME)), file = 
 @
 
 \printbibliography[title=References]
+
+\appendix
+\chapter{Markov diagram for negative quarantining}
+\begin{figure*}
+\centering
+\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {circle, draw, minimum width = 36pt}]
+\node[state] (A) {$0$};
+\node[state, right of=A] (B) {$1$};
+\node[right of=B] (C) {\dots};
+\node[above right of=B] (C1) {};
+\node[state, right of=C] (D) {$n-1$};
+\node[above left of =D] (C2) {};
+\node[state, right of=D] (E) {$n$};
+\node[state, right of=E] (F) {$n+1$};
+\node[above right of=F] (G1) {};
+\node[right of=F] (G) {\dots};
+\node[state, right of=G] (H) {$h$};
+\node[above left of =H] (G2) {};
+
+\path (A) edge[out = 45, in = 135] node[anchor = south]{$1$} (B);
+\path (B) edge[out = -135, in = -45] node[anchor = north]{$p$} (A);
+
+\path (B) edge[out = 90, in = 180] node[anchor = south east]{$1 - p$} (C1);
+\path (C2) edge[out = 0, in = 90] node[anchor = south west]{$1 - p$} (D);
+
+\path (D) edge[out = 45, in = 135] node[anchor = south]{$1 - p$} (E);
+\path (E) edge[out = 45, in = 135] node[anchor = south]{$1 - p$} (F);
+\path (D) edge[out = -145, in = -55] node[anchor = south]{$p$} (A);
+\path (E) edge[out = -145, in = -65] node[anchor = south]{$p$} (A);
+\path (F) edge[out = -145, in = -75] node[anchor = south]{$p$} (A);
+
+\path (F) edge[out = 90, in = 180] node[anchor = south east]{$1 - p$} (G1);
+\path (G2) edge[out = 0, in = 90] node[anchor = south west]{$1 - p$} (H);
+
+\path (H) edge[out = -145, in = -85] node[anchor = south]{$p$} (A);
+\path (H) edge [loop right, draw, -latex] node[anchor = west]{$1 - p$} (A);
+\end{tikzpicture}
+\end{figure*}
 \end{document}
