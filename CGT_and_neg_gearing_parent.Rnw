@@ -19,9 +19,15 @@ use.sample.fy <- "2013-14"
 %\clearpage
 %\chapter{Distribution of negative gearing}
 <<knitrOpts, echo=FALSE>>=
+library(knitr)
+library(devEMF)
 START.TIME <- Sys.time()
 my_pdf <- function(file, width, height){
   pdf(file = file, width, height = height)
+}
+
+my_emf <- function(file, width, height){
+  emf(file = file, width = width, height = height)
 }
 
 # knitr chunk opts
@@ -34,8 +40,8 @@ knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00,
                       ,error=FALSE
                       ,results='hide'
                       ,cache=FALSE
-                      ,dev=c('my_pdf', 'png')
-                      ,fig.ext = c("pdf", "png")
+                      ,dev=c('my_pdf', 'my_emf', 'png')
+                      ,fig.ext = c("pdf", 'emf', "png")
 )
 @
 
@@ -214,15 +220,134 @@ revenue_abolish_NG <- function(fy.year = "2016-17"){
 
 @
 
+<<cgt_discount_density>>=
+cgt_discount_distribution <- 
+  sample_file %>%
+  filter(Tot_CY_CG_amt > 0) %>%
+  group_by(apparent_discount = round((1 - Net_CG_amt / Tot_CY_CG_amt) * 4) / 4) %>%
+  summarise(value = sum(Tot_CY_CG_amt)) %>%
+  ungroup %>%
+  mutate(density = value / sum(value)) %>%
+  arrange(apparent_discount) %>% 
+  mutate(cumdensity = cumsum(density))
+
+probNoDiscount <- 
+  cgt_discount_distribution %>% 
+  filter(apparent_discount == 0) %$%
+  cumdensity
+@
+
+<<revenue_quarantine_NG_year0>>=
+# new.discount <- 0.25  # proposed CGT
+# TARGET.FY <- "2015-16"
+# use.sample.fy <- "2013-14"
+revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY){
+
+  if (sample_file_fy_year != "2013-14"){
+    stop("Correct sample_file year")
+  } 
+  
+  round_cols <- function(column){
+    if (!is.numeric(column)){
+      column
+    } else {
+      round(column, 2)
+    }
+  }
+  sample_file %>%
+    project_to(to_fy = TARGET.FY, fy.year.of.sample.file = "2013-14") %>%
+    mutate_each(funs(round_cols)) %>%
+    
+    # We need to work out how much the discount will change Net_CG_amt.
+    # We use the density of the apparent_discount to randomly 
+    # assign a new discount rate.  Note that this does not 
+    # adequately take into account the impact of capital losses
+    mutate(
+      new_Net_CG_amt = Net_CG_amt * ifelse(runif(n()) < probNoDiscount, 
+                                           1, 
+                                           new_CGT_discount / 0.50)) %>%
+    
+    # Excluding CG for the moment, we create a new total income amount 
+    # which quarantines salary.
+    mutate(
+      # Other_Income means income (possibly -ve) that is 
+      # not salary, CG, or rental
+      Other_Income = round(Tot_inc_amt - Sw_amt - Net_CG_amt - Net_rent_amt, 2),
+      new_Tot_inc_amt_no_CG = Sw_amt + ifelse(Net_rent_amt >= 0, 
+                                              Other_Income + Net_rent_amt, 
+                                              ifelse(Other_Income + Net_rent_amt >= 0, 
+                                                     Other_Income + Net_rent_amt, 
+                                                     Other_Income))
+    ) %>% 
+    mutate(
+      # This is the standard calculation for taxable income
+      new_Taxable_Income = pmaxC(new_Tot_inc_amt_no_CG + Net_CG_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
+      prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = "2013-14"), 
+      post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = "2013-14"), 
+      tax_increase = post_tax - prev_tax
+    ) %$% 
+    sum(as.numeric(tax_increase * WEIGHT))
+}
+@
+
 <<revenue_quarantine_NG>>=
 # new.discount <- 0.25  # proposed CGT
 # TARGET.FY <- "2015-16"
 # use.sample.fy <- "2013-14"
-revenue_quarantine_NG <- function(sample_file, new_CGT_discount = new.discount, sample_file_fy_year = "2013-14", target_fy = TARGET.FY){
+revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY){
+  
+  probNoCG_if_investor <- 
+    sample_files_all[fy.year == sample_file_fy_year] %>%
+    filter(Gross_rent_amt > 0) %$%
+    mean(Net_CG_amt > 0)
+    
+  if (sample_file_fy_year != "2013-14"){
+    stop("Correct sample_file year")
+  } 
+  
+  round_cols <- function(column){
+    if (!is.numeric(column)){
+      column
+    } else {
+      round(column, 2)
+    }
+  }
   sample_file %>%
-    project_to(to_fy = TARGET.FY, fy.year.of.sample.file = "2012-13") %>%
-    # We assume that the CGT discount is enjoyed by everyone with a capital gains
-    mutate(new_Net_CG_amt = Net_CG_amt)
+    project_to(to_fy = TARGET.FY, fy.year.of.sample.file = "2013-14") %>%
+    mutate_each(funs(round_cols)) %>%
+    
+    # We need to work out how much the discount will change Net_CG_amt.
+    # We use the density of the apparent_discount to randomly 
+    # assign a new discount rate.  Note that this does not 
+    # adequately take into account the impact of capital losses
+    mutate(
+      new_Net_CG_amt = Net_CG_amt * ifelse(runif(n()) < probNoDiscount, 
+                                           1, 
+                                           new_CGT_discount / 0.50)) %>%
+    
+    # Excluding CG for the moment, we create a new total income amount 
+    # which quarantines salary.
+    mutate(
+      # Other_Income means income (possibly -ve) that is 
+      # not salary, CG, or rental
+      Other_Income = round(Tot_inc_amt - Sw_amt - Net_CG_amt - Net_rent_amt, 2),
+      new_Tot_inc_amt_no_CG = Sw_amt + ifelse(Net_rent_amt >= 0, 
+                                              Other_Income + Net_rent_amt, 
+                                              ifelse(Other_Income <= 0, 
+                                                     # Nothing for rent to deduct against
+                                                     Other_Income,
+                                                     # Net_rent is negative and is allowed to 
+                                                     # reduce Other income till exhausted
+                                                     pmaxC(Other_Income + Net_rent_amt, 0)))
+    ) %>% 
+    mutate(
+      # This is the standard calculation for taxable income
+      new_Taxable_Income = pmaxC(new_Tot_inc_amt_no_CG + Net_CG_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
+      prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = "2013-14"), 
+      post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = "2013-14"), 
+      tax_increase = post_tax - prev_tax
+    ) %$% 
+    sum(as.numeric(tax_increase * WEIGHT))
 }
 @
 
