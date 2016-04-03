@@ -321,18 +321,22 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
 # new.discount <- 0.25  # proposed CGT
 # TARGET.FY <- "2015-16"
 # use.sample.fy <- "2013-14"
-revenue_quarantine_NG <- function(h, sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY){
+revenue_quarantine_NG <- function(h = 10L, sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY, Z = 50){
+  # Z is the extent of the model
+  # h is the number of years the 
   
   if (sample_file_fy_year != "2013-14"){
-    stop("Correct sample_file year")
+    stop("You must correct the sample_file year")
   }
   
-  probNoCG_if_investor <- 
-    sample_files_all[fy.year == sample_file_fy_year] %>%
+  probCG_if_investor <- 
+    sample_file_1314 %>%
     filter(Gross_rent_amt > 0) %$%
     mean(Net_CG_amt > 0)
   
-  M <- matrix(0, ncol = h, nrow = h)
+  probCG <- probCG_if_investor
+  
+  M <- matrix(0, ncol = Z + 1, nrow = Z + 1)
   # We assume that an individual with Gross rent accumulates their losses
   # linearly and that all losses are exhausted completely with probability
   # probCG.  Put another way, at each iteration we randomly allocate property 
@@ -342,25 +346,24 @@ revenue_quarantine_NG <- function(h, sample_file = sample_file_1314, new_CGT_dis
   M[row(M) == col(M) - 1] <- 1 - probCG
   M[col(M) == 1] <- probCG
   
-  # Losses not permitted to be exhausted in year 1.
+  # Losses not permitted to be exhausted in year 1. (Since they have been accounted for.)
   M[1,2] <- 1
   M[1,1] <- 0
   #
-  M[h,h] <- 1 - probCG
+  # (Z+1) represents the node of having no ability to write off-losses, even 
+  # after Z years.
+  M[Z + 1, 1] <- 0
+  M[Z + 1, Z + 1] <- 1
   
   # require(expm)
-  P <- M %^% h
+  P <- M %^% (Z + 1)
   
-  # P[h,j] represents the probabilities of 
-  # having (j - 1)*Net_rent_amt in the hth year
-  # Expected multiplier
-  Ehj <- P[h, ] * seq(0, h - 1, by = 1)
-  
-  cum.ecdf <- cumsum(P[h,])
+  cum.ecdf <- cumsum(c(1, rep(0, Z)) %*% P)
+
   
   accumulator <- 
     data.table(rand = cum.ecdf, 
-               multiplier = seq(0, h-1, by = 1)) %>%
+               loss_multiplier = c(seq(0L, Z - 1, by = 1L), 0)) %>%
     setkey(rand)
   
   round_cols <- function(column){
@@ -370,7 +373,7 @@ revenue_quarantine_NG <- function(h, sample_file = sample_file_1314, new_CGT_dis
       round(column, 2)
     }
   }
-  sample_file %>%
+  sample_file_1314 %>%
     project_to(to_fy = TARGET.FY, fy.year.of.sample.file = "2013-14") %>%
     mutate_each(funs(round_cols)) %>%
     
@@ -384,7 +387,10 @@ revenue_quarantine_NG <- function(h, sample_file = sample_file_1314, new_CGT_dis
                                            new_CGT_discount / 0.50)) %>%
     
     # Excluding CG for the moment, we create a new total income amount 
-    # which quarantines salary.
+    # which quarantines salary from NG.  Rental losses may be deducted 
+    # against investment income (including capital gains).  However, 
+    # we assume that they are deducted against capital gains only
+    # in the future
     mutate(
       # Other_Income means income (possibly -ve) that is 
       # not salary, CG, or rental
@@ -397,6 +403,19 @@ revenue_quarantine_NG <- function(h, sample_file = sample_file_1314, new_CGT_dis
                                               # reduce Other income till exhausted
                                               pmaxC(Other_Income + Net_rent_amt, 0))
     ) %>% 
+    mutate(
+      accumulated_losses_year_0 = round(-1 * (new_Tot_inc_amt_no_CG - (Tot_inc_amt - Net_CG_amt)), 4), 
+      new_Tot_inc_amt = new_Tot_inc_amt_no_CG + Net_CG_amt
+    ) %>% 
+    mutate(rand = runif(n())) %>%
+    setkey(rand) %>%
+    accumulator[., roll = -Inf] %>%
+    mutate(
+      accumulated_losses_year_Z = accumulated_losses_year_0 * loss_multiplier
+    ) %>% filter(Net_rent_amt < 0)
+  
+  %>% select(Sw_amt, contains("net"), contains("new"), Taxable_Income, Other_Income, accumulated_losses_year_0, Tot_inc_amt) %>% .[]
+    
     mutate(
       # This is the standard calculation for taxable income
       new_Taxable_Income = pmaxC(new_Tot_inc_amt_no_CG + Net_CG_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
