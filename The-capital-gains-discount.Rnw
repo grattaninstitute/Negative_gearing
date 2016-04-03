@@ -241,6 +241,7 @@ sample_file %>%
                       yend = seq(0, 0.20, by = 0.05), 
                       size = rel(0.1)) + 
              geom_smooth(size = 1.5, se = FALSE) + 
+             scale_color_manual(values = c(gpal(5)[1:4], theGrey)) + 
              scale_size(range = c(1, 10)) + 
              geom_text(aes(label = text.label, y = text.y), 
                        hjust = 0, 
@@ -463,10 +464,10 @@ pDecile <-
   mutate(type = factor(type, levels = unique(.$type), ordered = TRUE)) %>%
   arrange(type, Taxable_Income_decile) %>%
   grplot(aes(x = type, y = value, fill = factor(Taxable_Income_decile, levels = 10:1))) + 
-  geom_bar(stat = "identity", position = "fill") +
+  geom_bar(stat = "identity", position = "fill", width = 0.8) +
   scale_fill_manual(values = gpalx(10)) + 
   scale_y_continuous(label = percent, breaks = (0:10)/10) + 
-  scale_x_discrete(labels = newliner) + 
+  scale_x_discrete(labels = newliner, expand = c(0,0)) + 
   facet_grid(~"With CG") + 
   theme(strip.background = element_rect(fill=theGrey), 
         strip.text = element_text(face = "bold", color = "white"), 
@@ -484,10 +485,10 @@ pDecile_no_CG <-
   mutate(type = factor(type, levels = unique(.$type), ordered = TRUE)) %>%
   arrange(type, Taxable_Income_decile) %>%
   grplot(aes(x = type, y = value, fill = factor(Taxable_Income_decile, levels = 10:1))) + 
-  geom_bar(stat = "identity", position = "fill") +
+  geom_bar(stat = "identity", position = "fill", width = 0.8) +
   scale_fill_manual(values = gpalx(10)) + 
   scale_y_continuous(label = percent, breaks = (0:10)/10) + 
-  scale_x_discrete(labels = newliner) + 
+  scale_x_discrete(labels = newliner, expand = c(0,0)) + 
   facet_grid(~"Without CG") + 
   theme(strip.background = element_rect(fill=theGrey), 
         strip.text = element_text(face = "bold", color = "white"), 
