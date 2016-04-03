@@ -38,8 +38,21 @@ housing (Appendix C).\footnote{Summaries of international regimes can be
   found in RBA (2014), p. 43; Productivity Commission (2004), p. 86;
   O'Donnell (2005), pp. 92-95.}
 
-\section{Negative gearing provides a (widely used) tax shelter on
+\section{Negative gearing provides a tax shelter against
 wages}\label{negative-gearing-provides-a-widely-used-tax-shelter-on-wages}
+<<Prop-of-costs-interest>>=
+prop_costs_which_are_interest <- 
+  sample_file %>%
+  summarise(prop_interest = sum(Rent_int_ded_amt) / sum(Rent_int_ded_amt + Other_rent_ded_amt + Rent_cap_wks_amt)) %$% 
+  prop_interest
+
+if (between(prop_costs_which_are_interest, 0.45, 0.55)){
+  prop_costs_which_are_interest <- "about half"
+} else {
+  prop_costs_which_are_interest <- latex_percent(prop_costs_which_are_interest)
+}
+@
+Negative gearing allows taxpayers to subtract the losses they make on investments from their taxable income including wages. Losses are defined as investment expenses in excess of rental income.  Expenses include interest on borrowing to purchase the asset, which are \Sexpr{prop_costs_which_are_interest} of the costs of property investors.  
 
 Taxes on capital gains are discounted by 50 per cent and only paid when
 the asset is sold. But negative gearing arrangements allow investors to
