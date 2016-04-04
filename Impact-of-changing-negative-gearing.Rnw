@@ -82,7 +82,7 @@ present.value_benefit_from_NG <-
   grattan::npv(rate = 0.042, values = rep(NG_tax_exps.real, 10))
 
 present.value_benefit_from_Quaran_NG <-
-  -round(grattan::pv(0.042, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)))
+  -round(grattan::pv(0.042, 10, cost_of_NG_only))
 
 housing_finance_commitments.metadata <-
   # This file is Table 8 of Cat. 5671.8 

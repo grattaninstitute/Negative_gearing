@@ -51,7 +51,7 @@ cgt_by_entity_asset %>%
         legend.position = "right")
 @
 
-Australian entities -- individuals, companies, and superannuation funds -- accrued about \Sexpr{texNum(total_CGT, dollar = TRUE)} of income through capital gains in 2013-14. Individuals accrued a plurality (\Sexpr{latex_percent(cgt_by_entity %>% filter(Entity == "Individuals") %$% prop)}) 
+Australian entities -- individuals, companies, and superannuation funds -- accrued \Sexpr{texNum(total_CGT, dollar = TRUE)} of income through capital gains in 2013-14. Individuals accrued a plurality (\Sexpr{latex_percent(cgt_by_entity %>% filter(Entity == "Individuals") %$% prop)}) 
 of capital gains and most of the value of those gains were through real estate. (See \Vref{fig:CGT-by-entity-asset}.)
 \begin{figure}
 \Caption{Capital gains from real estate assets are almost always through individuals}{Taxable net capital gains, 2013-14}{fig:CGT-by-entity-asset}

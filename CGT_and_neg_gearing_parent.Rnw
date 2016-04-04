@@ -225,33 +225,16 @@ interest_losses[!complete.cases(interest_losses), ] %>%
 
 @
 
-
-
 <<cost-new-CGT-discount>>=
-revenue_CGT_discount <- function(CGT.discount = new.discount, fy.year = TARGET.FY, eventual = 20, .old.discount = 0.50){
-  stopifnot(is.fy(fy.year))
-  if (fy.year >= "2012-13"){
-    sample_file <-
-      sample_file_1213 %>%
-      project_to(fy.year) 
-  } else {
-    stopifnot(fy.year < "2003-04")
-    sample_file <- sample_files_all[fy.year == TARGET.FY]
-  }
-  
-  # We assume that 100% of individuals enjoyed the CGT discount
-  revenue_CGT_discount_sample_file <- 
-    sample_file %>%
+revenue_CGT_discount <- function(CGT.discount = new.discount, .old.discount = 0.50){
+    target_sample_file %>%
     mutate(new_Net_CG_amt = (Net_CG_amt / (1 - .old.discount)) * (1 - CGT.discount),
            new_Tot_inc_amt = Tot_inc_amt - Net_CG_amt + new_Net_CG_amt,
            new_Tot_ded_amt = Tot_ded_amt,  # no change
-           new_Taxable_Income = new_Tot_inc_amt - new_Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
-           old_tax = income_tax(Taxable_Income, fy.year = fy.year),
-           new_tax = income_tax(new_Taxable_Income, fy.year = fy.year),
-           taxdiff = new_tax - old_tax)
-  
-  revenue_CGT_discount_sample_file %$%
-    sum(taxdiff * WEIGHT)
+           new_Taxable_Income = pmaxC(new_Tot_inc_amt - new_Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed, 0),
+           old_tax = grattan:::.income_tax(Taxable_Income, fy.year = fy.year),
+           new_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = fy.year),
+           tax_increase = new_tax - old_tax)
 }
 @
 
@@ -261,10 +244,10 @@ revenue_abolish_NG <- function(fy.year = "2016-17"){
     select(-contains("MCS")) %>%  # project not good
     project_to(fy.year, fy.year.of.sample.file = use.sample.fy) %>%
     mutate(new_Tot_inc_amt = Tot_inc_amt - Net_rent_amt + pmaxC(Net_rent_amt, 0),
-           new_Taxable_Income = new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+           new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
            prev_tax = income_tax(Taxable_Income, fy.year = "2015-16"), 
-           new_tax  = income_tax(new_Taxable_Income, fy.year = "2015-16")) %$%
-    sum((new_tax - prev_tax) * WEIGHT)
+           new_tax  = income_tax(new_Taxable_Income, fy.year = "2015-16"), 
+           tax_increase = new_tax - prev_tax)
 }
 
 @
@@ -290,7 +273,7 @@ probNoDiscount <-
 # new.discount <- 0.25  # proposed CGT
 # TARGET.FY <- "2015-16"
 # use.sample.fy <- "2013-14"
-revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy){
+revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, .old.discount = 0.50){
   
   if (sample_file_fy_year != "2013-14"){
     stop("Correct sample_file year")
@@ -304,6 +287,7 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
     }
   }
   target_sample_file %>%
+    # cosmetic for debugging
     mutate_each(funs(round_cols)) %>%
     
     # We need to work out how much the discount will change Net_CG_amt.
@@ -313,33 +297,34 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
     mutate(
       new_Net_CG_amt = ifelse(runif(n()) < probNoDiscount, 
                               Net_CG_amt, 
-                              (Net_CG_amt / (1 - .old.discount)) * (1 - CGT.discount))) %>%
+                              (Net_CG_amt / (1 - .old.discount)) * (1 - new_CGT_discount))) %>%
     
-    # Excluding CG for the moment, we create a new total income amount 
-    # which quarantines salary.
     mutate(
       # Other_Income means income (possibly -ve) that is 
       # not salary, CG, or rental
-      Other_Income = round(Tot_inc_amt - Sw_amt - Net_CG_amt - Net_rent_amt, 2),
-      new_Tot_inc_amt_no_CG = Sw_amt + ifelse(Net_rent_amt >= 0, 
-                                              Other_Income + Net_rent_amt, 
-                                              ifelse(Other_Income + Net_rent_amt >= 0, 
-                                                     Other_Income + Net_rent_amt, 
-                                                     Other_Income))
+      quarantined_income = Sw_amt + Alow_ben_amt + ETP_txbl_amt,
+      # Other_Income may be -ve
+      Other_Income = round(Tot_inc_amt - Net_CG_amt + new_Net_CG_amt - quarantined_income - Net_rent_amt, 2),
+      new_Tot_inc_amt = quarantined_income + ifelse(Other_Income <= 0, 
+                                                    # Nothing for rent to deduct against, 
+                                                    # but Other_Income is permitted to be -ve
+                                                    Other_Income,
+                                                    # If Net_rent is negative it is allowed to 
+                                                    # reduce Other income till exhausted. If
+                                                    # it is positive, pmaxC has no effect, as desired.
+                                                    pmaxC(Other_Income + Net_rent_amt, 0))
     ) %>% 
     mutate(
       # This is the standard calculation for taxable income
-      new_Taxable_Income = pmaxC(new_Tot_inc_amt_no_CG + Net_CG_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
+      new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
       prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = "2013-14"), 
       post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = "2013-14"), 
       tax_increase = post_tax - prev_tax
-    ) %$% 
-      # as.numeric for integer overflow
-    sum(as.numeric(tax_increase * WEIGHT))
+    ) 
 }
 @
 
-<<revenue_quarantine_NG, eval=F>>=
+<<revenue_quarantine_NG>>=
 # new.discount <- 0.25  # proposed CGT
 # TARGET.FY <- "2015-16"
 # use.sample.fy <- "2013-14"
@@ -508,19 +493,35 @@ revenue_quarantine_NG <- function(h = 10L, sample_file = sample_file_1314, new_C
     ) %>% 
     mutate(
       # This is the standard calculation for taxable income
-      new_Taxable_Income = pmaxC(pmaxC(Other_Income + new_Net_CG_amt - accumulated_losses_year_Z, 
-                                       0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
-                                 0),
+      new_Taxable_Income_yearZ = pmaxC(pmaxC(Other_Income + new_Net_CG_amt - accumulated_losses_year_Z, 
+                                             0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+                                       0),
+      new_Taxable_Income_year0 = pmaxC(pmaxC(Other_Income + new_Net_CG_amt, 
+                                             0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+                                       0),
       prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = "2013-14"), 
-      post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = "2013-14"), 
-      tax_increase = post_tax - prev_tax
+      post_tax_yearZ = grattan:::.income_tax(new_Taxable_Income_yearZ, fy.year = "2013-14"), 
+      post_tax_year0 = grattan:::.income_tax(new_Taxable_Income_year0, fy.year = "2013-14"),
+      tax_increase = post_tax_yearZ - prev_tax, 
+      tax_increase_year0 = post_tax_year0 - prev_tax
     )
 }
 @
 
-<<Summary-chunk, results='hide', eval = TRUE>>=
-weighting <- function(year) lf_inflator_fy(to_fy = yr2fy(year))
+<<henry_taxstats>>=
+henry_taxstats <- function(new.discount){
+  target_sample_file %>%
+    mutate(new_capital_gains = 2 * Net_CG_amt * (1 - new.discount), 
+           new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)), 
+           new_investment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount), 
+           new_Taxable_Income = pmaxC(Taxable_Income - Net_CG_amt + new_capital_gains - Net_rent_amt + new_net_rent - Net_fincl_invstmt_lss_amt + new_investment_lss, 0), 
+           prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = TARGET.FY), 
+           post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = TARGET.FY), 
+           tax_increase = post_tax - prev_tax)
+}
+@
 
+<<Summary-chunk, results='hide', eval = TRUE>>=
 # Our proposal
 policy <- revenue_quarantine_NG(h = NULL, 
                                 sample_file = sample_file_1314, 
@@ -528,57 +529,36 @@ policy <- revenue_quarantine_NG(h = NULL,
                                 sample_file_fy_year = "2013-14", 
                                 target_fy = TARGET.FY, 
                                 Z = 50)
+
+policy_year0 <- revenue_quarantine_NG_year0()
 # The Henry proposal
-policy_align_gains_and_losses <- 
-  henry_taxstats(2015, new.discount = new.discount)
+policy_align_gains_and_losses <- henry_taxstats(new.discount = new.discount)
 
-just_negative_gearing_taxstats_year0 %>%
-  mutate(diff = new_tax - current_tax) %$%
-  round(sum(diff) * weighting(2015) / 1e9, 1) ->
-  
-  diff_just_due_NG_year0
-
-
-just_negative_gearing_taxstats %$%
-  round(sum(diff) * weighting(2015) / 1e9, 1) ->
-  
-  diff_just_due_NG
-
-
-policy %$%
-  round(sum(diff)*weighting(2015)/1e9, 1) ->
-  cost_of_policy_2015
-
-costing_policy_2015_year0 <-
-  cost_of_daley_policy_fast(2015, eventual = 0) %$%
-  round(sum(diff) * weighting(2015) / 1e9, 1) 
-
-cost_align_gains_and_losses <- 
-  policy_align_gains_and_losses %$%
-  round(sum(diff)*weighting(2015)/1e9, 1)
-
-cost_align_gains_and_losses_NG <-
-  policy_align_gains_and_losses %>%
-  mutate(
-    new_Taxable_Income = Taxable_Income - Net_rent_amt + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
-    new_tax_only_NG = income_tax(new_Taxable_Income),
-    diff_due_NG = new_tax_only_NG - current_tax
-    ) %$%
-  round(sum(diff_due_NG) * weighting(2015) / 1e9, 1)
+policy_reduce_CGT <- revenue_CGT_discount()
 
 write(x = c(
-  paste("Cost of policy by policy option with CGT discount set at", percent(new.discount)),
+  paste("Cost of policy ($bn) by policy option with CGT discount set at", percent(new.discount), TARGET.FY),
   "===================================="),
   file = "Summary_table.txt")
 
+print_cost <- function(the.policy, bn = TRUE){
+  formatC(round(the.policy$WEIGHT[1] * sum(the.policy$tax_increase) / 1e9, 1), width = 4, digits = 1, flag = "#", format = "f")
+}
+
+cost_of <- function(the.policy){
+  the.policy$WEIGHT[1] * sum(the.policy$tax_increase)
+}
+
+cost_of_NG_only <- 
+  cost_of(policy) - cost_of(policy_reduce_CGT)
+
 write(x = c(
-  costing_policy_2015_year0, "Quarantine NG losses and reduce CGT discount (Year 0)", 
-  cost_of_policy_2015, "Quarantine NG losses and reduce CGT discount", 
-  cost_of_red_CGT_discount, "Reduce CGT discount", 
-  diff_just_due_NG, "Just quarantine losses", 
-  diff_just_due_NG_year0, "Just quarantine losses (year 0)",
-  cost_align_gains_and_losses, "Henry proposal", 
-  cost_align_gains_and_losses_NG, "Henry proposal (just NG)"
+  print_cost(policy_year0), "Quarantine NG losses and reduce CGT discount (Year 0)", 
+  print_cost(policy), "Quarantine NG losses and reduce CGT discount", 
+  print_cost(policy_reduce_CGT), "Reduce CGT discount", 
+  # diff_just_due_NG, "Just quarantine losses", 
+  # diff_just_due_NG_year0, "Just quarantine losses (year 0)",
+  print_cost(policy_align_gains_and_losses), "Henry proposal"
       ),
   file = "Summary_table.txt",
   append = TRUE,
@@ -604,7 +584,7 @@ Together negative gearing and the CGT discount allow investors to use debt finan
 
 Changes to both capital gains tax and negative gearing are needed to address these efficiency and fairness issues. 
  
-The current 50 per cent CGT discount is justified on the basis that it promotes savings and investment. But these benefits can be overstated: tax rates don't do much to affect the total amount that wealthy people save. And entrepreneurs already receive a range of other tax concessions. Some discount remains justified to avoid taxing investors for inflationary gains. But the discount is larger than it needs to be given its budgetary and economic costs. \highlight{Reducing the CGT discount to \Sexpr{latex_percent(new.discount)}} could raise around \Sexpr{texNum(revenue_CGT_discount(CGT.discount = new.discount, fy.year = TARGET.FY), sig.figs = 1L, dollar = TRUE)} annually.
+The current 50 per cent CGT discount is justified on the basis that it promotes savings and investment. But these benefits can be overstated: tax rates don't do much to affect the total amount that wealthy people save. And entrepreneurs already receive a range of other tax concessions. Some discount remains justified to avoid taxing investors for inflationary gains. But the discount is larger than it needs to be given its budgetary and economic costs. \highlight{Reducing the CGT discount to \Sexpr{latex_percent(new.discount)}} could raise around \Sexpr{texNum(cost_of(revenue_CGT_discount(CGT.discount = new.discount)), sig.figs = 1L, dollar = TRUE)} annually.
  
 Negative gearing should also be limited. There is no basis for the claims from the property industry that negative gearing serves a broader social purpose in moderating house prices and rents. Negative gearing puts upward pressure on house prices and plays little role in moderating rents. 
 
@@ -648,6 +628,9 @@ But there are revenue measures that could make a meaningful contribution to budg
 @
 
 <<Impacts, child='Impact-of-changing-negative-gearing.Rnw'>>=
+@
+
+<<OPTIONS-FOR-REFORM, child='Options-for-reform-cgt.Rnw'>>=
 @
 
 <<sessionInfo, results = 'hide'>>=
