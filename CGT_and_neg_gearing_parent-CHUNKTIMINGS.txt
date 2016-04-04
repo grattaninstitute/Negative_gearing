@@ -2,33 +2,33 @@
   0.0	downloadGrattex
   0.2	packcageCitation
   0.0	latex_percent
+  0.0	select_which_
   0.0	xtable-formatting
   2.3	load_sample_file
   0.4	create-age-imp
-  4.2	Determine_future_rental_deductions
+  4.2	target_sample_file
+  4.0	Determine_future_rental_deductions
   0.0	cost-new-CGT-discount
   0.0	revenue_abolish_NG
   0.0	cgt_discount_density
   0.0	revenue_quarantine_NG_year0
   0.0	revenue_quarantine_NG
-  0.0	Functions_For_All_Years
- 20.6	Just_negative_gearing_cost
-  0.0	Henry_proposal_mutate
- 36.1	Summary-chunk
-  0.6	CostofNGtotal
-  1.5	CGT-by-entity-get
+  0.0	henry_taxstats
+  5.8	Summary-chunk
+  0.9	CostofNGtotal
+  1.9	CGT-by-entity-get
   0.2	CGT-by-entity
   0.3	CGT-by-entity-asset
   0.0	CG-delay-EMTR
-  0.5	CG-marginal-tax-rates
+  0.3	CG-marginal-tax-rates
   0.6	CGT-by-age-income
   0.5	CGT-by-age-income-weight-CG
   1.0	Maintaining-the-progressive-tax-system
   0.0	30-45-with-high-CG-no-other-income
-  2.3	stacked-column-chart
+  1.9	stacked-column-chart
   0.0	Prop-of-costs-interest
-  4.8	Impact_of_NG_on_house_prices
-  9.4	What_price_change_req_to_obtain_same_return
+  5.1	Impact_of_NG_on_house_prices
+  6.1	What_price_change_req_to_obtain_same_return
   0.2	Owner_occupiers_loans_are_being_outnumbered_by_investors
   0.0	percent_of_prop_value_due_NG
   0.0	Capital_city_rents_direct_abs_get
@@ -36,11 +36,11 @@
   0.0	cost_NG_limited_to
   0.0	number_affected
   0.0	cost_of_policy_carry_fwd
- 28.9	Results
+ 29.5	Results
   4.4	Import-HILDA
-  0.3	HILDA-Number-of-properties
+  0.4	HILDA-Number-of-properties
   0.7	Import-SIH
   0.1	Number-households-SIH
-  0.3	bizLosses
+  0.2	bizLosses
   0.1	sessionInfo
   0.0	FINISH-TIME
