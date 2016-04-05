@@ -101,13 +101,42 @@ sample_file_1314 %>%
             prop_claiming_losses = mean(Net_PP_BI_amt < 0), 
             n_claimants = 50 * sum(Net_PP_BI_amt < 0)) %>%
   gather(panel, value, -Occupation_description) %>%
-  filter(panel == 'prop_claiming_losses') %>%
   mutate(Occupation_description = gsub("^([A-Z][a-z,]+\\s[A-Za-z]+)\\s.*$", "\\1", gsub(" and", "", Occupation_description)))  %>%
   
   grplot(aes(x = Occupation_description, y = value, fill = panel)) + 
   geom_bar(stat = "identity", width = 0.8) + 
-  coord_flip() + 
-  facet_grid(~panel, scales = "free") 
+  coord_flip() +
+  facet_grid(~panel, scales = "free_x") 
 @
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/PP-losses-by-occ-1}
 \end{figure}
+
+Nevertheless, given the low costs and potentially meaningful benefits the best approach is probably to leave the current tax treatment for losses from unincorporated businesses in place. In other words, only losses from passive investments would be quarantined so they cannot be written off against and wage and salary income. This approach is in place in the United States \TBD{(Appendix C)}. 
+
+\subsubsection{Budget impact}
+Restricting negative gearing by quarantining loss deductions for passive investments would raise additional tax revenue, although the estimates depend on future housing prices and how long investors hold their assets. 
+
+For most investors, the changes will mainly affect the timing, not the amount, of tax deductions. The costs of property and share investments will still be deducted against investment income, including subsequent capital gains, although the tax rate applied to some costs will include the CGT discount. 
+
+<<costing-quarantining-losses>>=
+target_sample_file %>%
+  mutate(quarantined_losses = pminC(Net_rent_amt, 0) + pminC(Net_farm_management_amt, 0) - Net_fincl_invstmt_lss_amt - NPP_loss_claimed - PP_loss_claimed, 
+         quarantined_income = Sw_amt + Alow_ben_amt + ETP_txbl_amt,
+         Other_Income = Tot_inc_amt - quarantined_income - quarantined_losses, 
+         new_Other_Income = ifelse(Other_Income <= 0, 
+                                   Other_Income, 
+                                   pmaxC(Other_Income + quarantined_losses, 0)), 
+         accumulated_loss = new_Other_Income - Other_Income, 
+         new_Taxable_Income = pmaxC(quarantined_income + new_Other_Income - Tot_ded_amt, 0)) %>% 
+  mutate(old_tax = grattan:::.income_tax(Taxable_Income, "2015-16"), 
+         new_tax = grattan:::.income_tax(new_Taxable_Income, "2015-16"), 
+         tax_increase = new_tax - old_tax
+  ) %>% .[] %$% 
+  sum(tax_increase * WEIGHT)
+@
+
+We estimate that quarantining losses for passive investments would increase income tax collections by \TBD{\$1.8 billion} a year in the short term. Over the medium term, accrued losses -- losses not offset against recurrent investment income -- will be deducted from capital gains. Assuming no change in investor behaviour, the additional tax revenue would stabilise at around \TBD{\$1 billion} a year.
+
+If deductions were limited even more to the particular asset or asset class, income tax collections would rise a little more because investors would wait longer on average until they could realise their losses. 
+
+These estimates do not take into account the effects of investors changing their behaviour in response to the policy change. Investments that make income losses are less attractive when the tax benefits are smaller. Negative gearing appeals largely because it can reduce taxes on wage income (section 1.3). Removing the tax incentive for highly leveraged investment should result in investors shifting toward income-producing assets and could therefore further increase income tax collections. On the other hand, if some investment properties are replaced by owner-occupied properties, there will be less revenue collected, because no tax is paid on capital gains on the family home, or on the `imputed rent' -- the value of living in occupier-owned housing.
