@@ -534,7 +534,7 @@ sih201314 %>%
 
 \begin{table*}
 \caption{Taxpayers with wage and salary income claiming business losses by occupation}\label{tbl:bizlosses}
-<<bizLosses, results='asis'>>=
+<<bizLosses-by-occ, results='asis'>>=
 primary_losses <- 
   sample_file_1314 %>%
   merge(occupation_decoder, by = "Occ_code") %>%
