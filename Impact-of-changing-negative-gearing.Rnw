@@ -355,15 +355,23 @@ In any case, general tax breaks like negative gearing are an inefficient way of 
 
 \subsection{Capping loss deductions}
 <<cost_NG_limited_to>>=
-cost_NG_limited_to <- function(Net_rent_amt.limit, h = 0L){
+cost_NG_limited_to <- function(Net_rent_amt.limit){
   stopifnot(Net_rent_amt.limit <= 0)
-  sample_file_1314 %>%
-    taxstats:::project(h = h) %>%
+  target_sample_file %>%
     mutate(new_Net_rent_amt = pmaxC(Net_rent_amt, Net_rent_amt.limit),
-           new_Taxable_Income = Taxable_Income - Net_rent_amt + new_Net_rent_amt,
-           prev_tax = income_tax(Taxable_Income, "2015-16"),
-           new_tax = income_tax(new_Taxable_Income, "2015-16"),
-           diff = new_tax - prev_tax) -> resultant_samplefile
+           rental_loss_exceeding_cap = pmaxC(Net_rent_amt.limit - Net_rent_amt, 0),
+           salary_income = Sw_amt + Alow_ben_amt + ETP_txbl_amt,
+           Other_Income = Tot_inc_amt - salary_income - Net_rent_amt,
+           new_Tot_inc_amt = salary_income + ifelse(Other_Income <= 0, 
+                                                    # Nothing for cap to write off against
+                                                    Other_Income, 
+                                                    # otherwise exhaust Other_Income
+                                                    pmaxC(Other_Income - rental_loss_exceeding_cap, 0)
+                                                    ) + new_Net_rent_amt,
+           new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
+           prev_tax = grattan:::.income_tax(Taxable_Income, "2015-16"),
+           post_tax = grattan:::.income_tax(new_Taxable_Income, "2015-16"),
+           diff = post_tax - prev_tax) -> resultant_samplefile
   resultant_samplefile %$%
     sum(diff * WEIGHT)
 }
@@ -382,18 +390,26 @@ losses of \$20,000 or more means the policy change will make very little
 contribution to the budget bottom line.
 
 <<number_affected>>=
-number_affected <- function(Net_rent_amt.limit, h = 0L){
-  # Net_rent_amt.limit is understood to be negative
+number_affected <- function(Net_rent_amt.limit){
   stopifnot(Net_rent_amt.limit <= 0)
-  sample_file_1314 %>%
-    # This only affects negative gearers
-    filter(Net_rent_amt < 0) %>%
+  target_sample_file %>%
     mutate(new_Net_rent_amt = pmaxC(Net_rent_amt, Net_rent_amt.limit),
-           new_Taxable_Income = Taxable_Income - Net_rent_amt + new_Net_rent_amt,
-           prev_tax = income_tax(Taxable_Income),
-           new_tax = income_tax(new_Taxable_Income),
-           diff = new_tax - prev_tax) %$%
-    sum(diff != 0) * 50 * lf_inflator_fy(from_fy = "2013-14", to_fy = yr2fy(fy2yr("2013-14") + h))
+           rental_loss_exceeding_cap = pmaxC(Net_rent_amt.limit - Net_rent_amt, 0),
+           salary_income = Sw_amt + Alow_ben_amt + ETP_txbl_amt,
+           Other_Income = Tot_inc_amt - salary_income - Net_rent_amt,
+           new_Tot_inc_amt = salary_income + ifelse(Other_Income <= 0, 
+                                                    # Nothing for cap to write off against
+                                                    # but Other_Income may be used for write-offs
+                                                    Other_Income, 
+                                                    # otherwise exhaust Other_Income
+                                                    pmaxC(Other_Income - rental_loss_exceeding_cap, 0)) + new_Net_rent_amt,
+           new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
+           prev_tax = grattan:::.income_tax(Taxable_Income, "2015-16"),
+           post_tax = grattan:::.income_tax(new_Taxable_Income, "2015-16"),
+           diff = post_tax - prev_tax) -> resultant_samplefile
+  resultant_samplefile %$%
+    # floating point
+    sum((diff > 0.5) * WEIGHT)
 }
 
 @
@@ -470,18 +486,17 @@ cost_of_policy_carry_fwd <- function(Net_rent_amt.limit, h = 1L){
 long_term = 10L
 data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3, -Inf)) %>%
   rowwise %>%
-  mutate(Costing = grattan_dollar(round(cost_NG_limited_to(Threshold, h = 2L))),
-         Cost_policy_over_5_yrs = grattan_dollar(round(cost_of_policy_carry_fwd(Threshold, h = long_term))),
-         `Number affected` = comma(round(number_affected(Threshold, h = long_term)))) %>%
+  mutate(Costing = grattan_dollar(round(cost_NG_limited_to(Threshold))),
+         `Number affected` = comma(round(number_affected(Threshold))), 
+         `\\%` = latex_percent(number_affected(Threshold) / (sum(sample_file_1314$Gross_rent_amt > 0) * 50), percentage_symbol = "\\%")) %>%
   mutate(Threshold = paste0("$-$\\$", ifelse(is.infinite(Threshold), "$\\infty$", comma(abs(Threshold)))),
-         LongRunCost = sub("$", "\\$", Cost_policy_over_5_yrs, fixed = TRUE),
          Costing = sub("$", "\\$", Costing, fixed = TRUE)) %>%
-  select(Threshold, Costing, `Long-run costing` = LongRunCost, `Number affected`) %>%
-  xtable(align = "rrrrr") %>% 
+  select(Threshold, Costing, `Number affected`, `\\%`) %>%
+  xtable(align = "rrrrS") %>% 
   print.xtable(include.rownames = FALSE,
                booktabs = TRUE,
                floating = FALSE,
-               align = "rrrrr", 
+               align = "rrrrS", 
                sanitize.text.function = function(x){x})
 @
 \end{table}

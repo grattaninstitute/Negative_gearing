@@ -17,7 +17,7 @@ There is also a strong case for quarantining wage and salary income so that loss
 \subsection{In principle, losses on investments shound not be deducted from wage and salary income}
 \subsection{How should losses be quarantined?}
 \subsection{What losses should be quarantined?}
-Quarantining of loss write offs should also apply to negatively geared share market investments, although this is unlikely to be large in practice (section 3.1). The arguments for limiting negative gearing for these investments – reducing the tax shelter on wages and the tax bias towards speculative investments – are the same as for negatively geared property. And maintaining a consistent tax treatment across housing and share investments also ensures the tax system does not artificially encourage investors to favour one type of investment over another.  
+Quarantining of loss write offs should also apply to negatively geared share market investments, although this is unlikely to be large in practice (section 3.1). The arguments for limiting negative gearing for these investments -- reducing the tax shelter on wages and the tax bias towards speculative investments -- are the same as for negatively geared property. And maintaining a consistent tax treatment across housing and share investments also ensures the tax system does not artificially encourage investors to favour one type of investment over another.  
 
 A more difficult issue is whether there should be additional limits on deducting losses on business activities from wages and salary income.  On balance, these arrangements should be left in place. The losses claimed are relatively small, the activities can be readily distinguished from investment losses, and the policy justification is at least plausible. Nevertheless, some features of these losses suggest that the specific rules could be tightened further as many of the losses being claimed may be funding lifestyle expenses rather than attempts to set up sustainable businesses. 
 
@@ -56,4 +56,58 @@ sample_file %>%
   filter(Net_PP_BI_amt < 0)
 @
 
-The losses claimed are relatively small. In 2013-14 only \Sexpr{texNum(n_bizlosses)}~taxpayers claimed \Sexpr{texNum(val_bizlosses, sig.figs = 1L, dollar = TRUE)} in business losses (compared to \Sexpr{texNum(n_rental_losses)} claiming \Sexpr{texNum(val_rental_losses, sig.figs = 1L, dollar = TRUE)} in losses on property).
+The losses claimed are relatively small. In 2013-14 only \Sexpr{texNum(n_bizlosses)}~taxpayers claimed \Sexpr{texNum(-val_bizlosses, sig.figs = 1L, dollar = TRUE)} in business losses (compared to \Sexpr{texNum(n_rental_losses, sig.figs = 2L)} claiming \Sexpr{texNum(-val_rental_losses, sig.figs = 1L, dollar = TRUE)} in losses on property).
+
+\TBD{\dots}
+
+<<bizLosses-for-PP>>=
+n_bizlosses_in_PP <- 
+  sample_file %>%
+  filter(Net_PP_BI_amt < 0) %$%
+  sum(WEIGHT)
+
+val_bizlosses_in_PP <- 
+  sample_file %$%
+  weighted_sum_where(Net_PP_BI_amt, WEIGHT, Net_PP_BI_amt < 0)
+
+prop_val_bizlosses_in_PP <- 
+  val_bizlosses_in_PP / val_bizlosses
+@
+
+However, many of the losses being claimed may not serve this policy purpose. Around \Sexpr{latex_percent(round(prop_val_bizlosses_in_PP, 1))} of business losses claimed are from primary production -- for example, animal or crop farming, vineyards or animal breeding. \Sexpr{texNum(n_bizlosses_in_PP)}~taxpayers claimed \Sexpr{texNum(-val_bizlosses_in_PP, dollar = TRUE, sig.figs = 2L)}  in primary production losses -- \Sexpr{if(-val_bizlosses_in_PP / n_bizlosses_in_PP < signif(-val_bizlosses_in_PP / n_bizlosses_in_PP, 1)) "almost" else "over"} \Sexpr{texNum(signif(-val_bizlosses_in_PP / n_bizlosses_in_PP, 1), dollar = TRUE)} per claimant. In all occupational categories, average salaries for those claiming primary production losses were substantially higher -- between 30 and 80 per cent -- than the average salaries for their occupation. And the largest tax breaks were for the highest income professions  suggesting that the primary production activity may often be more a lifestyle activity, such as a hobby farm, than a sustainable business. 
+
+<<bizLosses-for-NPP>>=
+n_bizlosses_NPP <- 
+  sample_file %>%
+  filter(Net_NPP_BI_amt < 0) %$% 
+  sum(WEIGHT)
+
+avg_loss_claimed_NPP <- 
+  sample_file %>%
+  filter(Net_NPP_BI_amt < 0) %$%
+  mean(-Net_NPP_BI_amt)
+@
+
+About \Sexpr{texNum(n_bizlosses_NPP)} taxpayers claimed an average of \Sexpr{texNum(avg_loss_claimed_NPP, dollar = TRUE)} of non-farm business losses. It is likely that many of these people were individual contractors in fields related to their main job. Some of the losses may simply be taxpayers claiming lifestyle costs where they will be less scrutinised. Tax returns require less detail for costs claimed as part of running a business rather than in incurring wage and salary income (for example, travel costs do not need to be separately disclosed). 
+
+\begin{figure}
+\caption{Those earning more claim bigger primary production losses}
+<<PP-losses-by-occ>>=
+sample_file_1314 %>%
+  merge(occupation_decoder, by = "Occ_code") %>%
+  group_by(Occupation_description) %>%
+  summarise(average_loss_if_claimed = -1 * mean(Net_PP_BI_amt[Net_PP_BI_amt < 0]), 
+            salary_claiming_vs_not = mean(Sw_amt[Net_PP_BI_amt < 0]) - mean(Sw_amt[Net_PP_BI_amt >= 0]), 
+            prop_claiming_losses = mean(Net_PP_BI_amt < 0), 
+            n_claimants = 50 * sum(Net_PP_BI_amt < 0)) %>%
+  gather(panel, value, -Occupation_description) %>%
+  filter(panel == 'prop_claiming_losses') %>%
+  mutate(Occupation_description = gsub("^([A-Z][a-z,]+\\s[A-Za-z]+)\\s.*$", "\\1", gsub(" and", "", Occupation_description)))  %>%
+  
+  grplot(aes(x = Occupation_description, y = value, fill = panel)) + 
+  geom_bar(stat = "identity", width = 0.8) + 
+  coord_flip() + 
+  facet_grid(~panel, scales = "free") 
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/PP-losses-by-occ-1}
+\end{figure}
