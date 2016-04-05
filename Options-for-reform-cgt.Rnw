@@ -1,0 +1,59 @@
+\chapter{Options for reform}
+The favourable tax treatment of investments -- particularly the interaction of the negative gearing arrangements with the capital gains tax discount -- have promoted speculative investment in housing while also costing the budget bottom line. 
+
+Reducing the capital gains tax discount is the most direct way to reduce the incentive for inefficient investment activity. In addition, negative gearing should be restricted so that losses from investments cannot be deducted against wage and salary income. 
+
+Quarantining loss write offs should apply to all types of passive investments, not just rental properties, so that the tax system does not encourage investors to favour one type of investment over another. Similarly, carve outs for negative gearing -- exempting new property, capping total deductions or limiting the number of properties that can be negatively geared -- produce inferior economic outcomes relative to a blanket restriction against deducting losses on investments from wages.
+
+Over the longer term, a more fundamental rethink of the taxation of savings income may be warranted. The proposal from the Henry review to align the tax treatment of savings including interest income, net rental income, capital gains and interest expenses would provide a more consistent treatment of household savings and remains a worthy longer-term policy goal.  Realistically, however, it is not feasible until budget outcomes markedly improve.
+
+\section{Reducing the capital gains tax discount}
+The 50 per cent \highlight{capital gains tax (CGT) discount} provides an annual discount to individuals and trusts worth \highlight{\$6-7~billion} annually.
+
+\TBD{\dots}
+
+\section{Limiting negative gearing}
+There is also a strong case for quarantining wage and salary income so that losses on investments cannot be deducted from wage and salary income. 
+\subsection{In principle, losses on investments shound not be deducted from wage and salary income}
+\subsection{How should losses be quarantined?}
+\subsection{What losses should be quarantined?}
+Quarantining of loss write offs should also apply to negatively geared share market investments, although this is unlikely to be large in practice (section 3.1). The arguments for limiting negative gearing for these investments – reducing the tax shelter on wages and the tax bias towards speculative investments – are the same as for negatively geared property. And maintaining a consistent tax treatment across housing and share investments also ensures the tax system does not artificially encourage investors to favour one type of investment over another.  
+
+A more difficult issue is whether there should be additional limits on deducting losses on business activities from wages and salary income.  On balance, these arrangements should be left in place. The losses claimed are relatively small, the activities can be readily distinguished from investment losses, and the policy justification is at least plausible. Nevertheless, some features of these losses suggest that the specific rules could be tightened further as many of the losses being claimed may be funding lifestyle expenses rather than attempts to set up sustainable businesses. 
+
+Currently there are more restrictions on deducting business losses than there are on deducting losses from investments. Sole traders and participants in a partnership can write off losses from these business activities against unrelated income (including wages) only if they meet a variety of conditions that generally exclude activities that make persistent losses.  Losses for incorporated businesses cannot be written off against other income. 
+
+<<bizLosses>>=
+n_bizlosses <- 
+  sample_file %>%
+  filter(Net_PP_BI_amt < 0 | Net_NPP_BI_amt < 0) %$%
+  sum(WEIGHT)
+
+weighted_sum_where <- function(x, w, cond){
+  sum(x[cond] * w[cond])
+}
+
+val_bizlosses <- 
+  sample_file %$%
+  {
+    weighted_sum_where(Net_PP_BI_amt, WEIGHT, Net_PP_BI_amt < 0) + weighted_sum_where(Net_NPP_BI_amt, WEIGHT, Net_NPP_BI_amt < 0)
+  }
+
+n_rental_losses <- 
+  sample_file %>%
+  filter(Net_rent_amt < 0) %$%
+  sum(WEIGHT)
+
+val_rental_losses <- 
+  sample_file %$%
+  weighted_sum_where(Net_rent_amt, WEIGHT, Net_rent_amt < 0)
+
+@
+
+<<bizLosses-from-salary>>=
+sample_file %>% 
+  select(Sw_amt, Net_PP_BI_amt, Net_NPP_BI_amt, Tot_inc_amt, Taxable_Income) %>%
+  filter(Net_PP_BI_amt < 0)
+@
+
+The losses claimed are relatively small. In 2013-14 only \Sexpr{texNum(n_bizlosses)}~taxpayers claimed \Sexpr{texNum(val_bizlosses, sig.figs = 1L, dollar = TRUE)} in business losses (compared to \Sexpr{texNum(n_rental_losses)} claiming \Sexpr{texNum(val_rental_losses, sig.figs = 1L, dollar = TRUE)} in losses on property).
