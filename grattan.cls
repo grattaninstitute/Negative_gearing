@@ -19,9 +19,10 @@ parskip=half-,twocolumn,numbers=noenddot]{scrreprt}
 \RequirePackage{placeins}
 \RequirePackage{afterpage}
 \RequirePackage[activate=true, expansion, final, kerning=true, spacing=true]{microtype}
-% defaults are far too flamboyant. Indeed, zero protrusion with the 
-% Helvetica font is a little hard against the box.
-% encoding = T1 as in \usepackage[T1]{fontenc}
+%% defaults are far too flamboyant. Indeed, zero protrusion with the 
+%% Helvetica font appears to be protruding slightly (even though it 
+%% is simply flush with the box).
+%% encoding = T1 as in \usepackage[T1]{fontenc}
 \SetProtrusion{encoding = T1}{\textendash = {-25,}, \textemdash = {-25,}}
 % ------
 % Grattan colors
