@@ -389,12 +389,53 @@ prop_inc_CG_top_decile_excl_CG <-
 
 prop_inc_CG_bottom_decile_excl_CG <- 
   sample_file %>%
-  group_by(decile = ntile(Tot_inc_amt - Net_CG_amt, 10)) %>%
-  summarise(tot_CG = sum(Tot_CY_CG_amt)) %>%
+  mutate(Tot_inc_amt_noCG = Tot_inc_amt - Net_CG_amt, 
+         Taxable_Income_noCG = pmaxC(Tot_inc_amt_noCG - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0)) %>%
+  group_by(Taxable_Income_noCG_decile = ntile(Taxable_Income_noCG, 10))%>%
+  summarise(tot_CG = sum(Net_CG_amt), 
+            mean_age = mean(age_imp[Net_CG_amt > 0]), 
+            age_33pc = quantile(age_imp[Net_CG_amt > 0], prob = 1/3), 
+            age_66pc = quantile(age_imp[Net_CG_amt > 0], prob = 2/3),
+            min_tx_inc_exclCG = min(Taxable_Income_noCG), 
+            max_tx_inc_exclCG = max(Taxable_Income_noCG)) %>%
   ungroup %>%
   mutate(prop_CG = tot_CG/sum(tot_CG)) %>%
-  filter(decile == 1) %$%
+  filter(Taxable_Income_noCG_decile == 1) %$%
   prop_CG
+
+prop_inc_CG_tx_inc_le_10k <- 
+  sample_file %>%
+  mutate(Tot_inc_amt_noCG = Tot_inc_amt - Net_CG_amt, 
+         Taxable_Income_noCG = pmaxC(Tot_inc_amt_noCG - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0)) %>%
+  group_by(le10k = Taxable_Income_noCG < 10e3)%>%
+  summarise(tot_CG = sum(Net_CG_amt), 
+            mean_age = mean(age_imp[Net_CG_amt > 0]), 
+            age_33pc = quantile(age_imp[Net_CG_amt > 0], prob = 1/3), 
+            age_66pc = quantile(age_imp[Net_CG_amt > 0], prob = 2/3),
+            min_tx_inc_exclCG = min(Taxable_Income_noCG), 
+            max_tx_inc_exclCG = max(Taxable_Income_noCG)) %>%
+  ungroup %>%
+  mutate(prop_CG = tot_CG/sum(tot_CG)) %>%
+  filter(le10k) %$%
+  prop_CG
+
+prop_inc_CG_top_decile_excl_CG <- 
+  sample_file %>%
+  mutate(Tot_inc_amt_noCG = Tot_inc_amt - Net_CG_amt, 
+         Taxable_Income_noCG = pmaxC(Tot_inc_amt_noCG - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0)) %>%
+  group_by(Taxable_Income_noCG_decile = ntile(Taxable_Income_noCG, 10))%>%
+  summarise(tot_CG = sum(Net_CG_amt), 
+            mean_age = mean(age_imp[Net_CG_amt > 0]), 
+            age_33pc = quantile(age_imp[Net_CG_amt > 0], prob = 1/3), 
+            age_66pc = quantile(age_imp[Net_CG_amt > 0], prob = 2/3),
+            min_tx_inc_exclCG = min(Taxable_Income_noCG), 
+            max_tx_inc_exclCG = max(Taxable_Income_noCG)) %>%
+  ungroup %>%
+  mutate(prop_CG = tot_CG/sum(tot_CG)) %>%
+  filter(Taxable_Income_noCG_decile == 10) %$%
+  prop_CG
+
+  
 
 max_inc_bottom_decile_excl_CG <- 
   sample_file %>%
@@ -412,8 +453,7 @@ highCG_3045_no_other_inc <-
   mean(Net_CG_amt > 10e3 & Net_CG_amt / Tot_inc_amt > 0.95)
 @
 
-Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes before capital gains, most gains are earned by those in the top 10 per cent of income earners and by those with little or no taxable income.%
-\footnote{Almost \Sexpr{latex_percent(prop_inc_CG_top_decile_excl_CG)} of capital gains are earned by those in the decile of income earners \emph{excluding} capital gains and another \Sexpr{latex_percent(prop_inc_CG_bottom_decile_excl_CG)} -- that is, their other income is less than \TBD{\$X}.}
+Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes \emph{before} capital gains, \Sexpr{latex_percent(prop_inc_CG_top_decile_excl_CG)} of taxable gains are from the top decile. Another \Sexpr{latex_percent(prop_inc_CG_tx_inc_le_10k)} are from those with less than \$10,000 in taxable income before capital gains.
 Of the latter, many are over 50s that have waited until retirement to realise gains (section 2.2). There is also a sizeable group of 30-45 year olds with very high capital gains but no other taxable incomes (\Sexpr{latex_percent(highCG_3045_no_other_inc)} of taxpayers in this age group have capital gains in excess of \$10,000 and which make up more than 95\%\ of their total income).\marginpar{\textcolor{red}{\textbf{Not borne out.}}} Many are likely to be partners of high income earners that receive distributions of capital income through structures such as trusts. All of this is consistent with the finding that capital gains accrue disproportionately to those that are already well off. 
 
 <<stacked-column-chart, fig.width = 22, out.width = "22in">>=
