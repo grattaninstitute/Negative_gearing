@@ -120,8 +120,8 @@ write(package_cite_input, file = "package_cite_input.tex")
 % citations
 %\input{package_cite_input}
 
-% \textheight quite small for flushbottom
-\raggedbottom
+% \textheight may be quite small for flushbottom
+% \raggedbottom
 
 <<latex_percent>>=
 latex_percent <- function (x, percentage_symbol = "~percent") {
@@ -232,8 +232,8 @@ revenue_CGT_discount <- function(CGT.discount = new.discount, .old.discount = 0.
            new_Tot_inc_amt = Tot_inc_amt - Net_CG_amt + new_Net_CG_amt,
            new_Tot_ded_amt = Tot_ded_amt,  # no change
            new_Taxable_Income = pmaxC(new_Tot_inc_amt - new_Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed, 0),
-           old_tax = grattan:::.income_tax(Taxable_Income, fy.year = fy.year),
-           new_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = fy.year),
+           old_tax = income_tax(Taxable_Income, fy.year = fy.year),
+           new_tax = income_tax(new_Taxable_Income, fy.year = fy.year),
            tax_increase = new_tax - old_tax)
 }
 @
@@ -317,8 +317,8 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
     mutate(
       # This is the standard calculation for taxable income
       new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
-      prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = "2013-14"), 
-      post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = "2013-14"), 
+      prev_tax = income_tax(Taxable_Income, fy.year = "2013-14"), 
+      post_tax = income_tax(new_Taxable_Income, fy.year = "2013-14"), 
       tax_increase = post_tax - prev_tax
     ) 
 }
@@ -499,9 +499,9 @@ revenue_quarantine_NG <- function(h = 10L, sample_file = sample_file_1314, new_C
       new_Taxable_Income_year0 = pmaxC(pmaxC(Other_Income + new_Net_CG_amt, 
                                              0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
                                        0),
-      prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = "2013-14"), 
-      post_tax_yearZ = grattan:::.income_tax(new_Taxable_Income_yearZ, fy.year = "2013-14"), 
-      post_tax_year0 = grattan:::.income_tax(new_Taxable_Income_year0, fy.year = "2013-14"),
+      prev_tax = income_tax(Taxable_Income, fy.year = "2013-14"), 
+      post_tax_yearZ = income_tax(new_Taxable_Income_yearZ, fy.year = "2013-14"), 
+      post_tax_year0 = income_tax(new_Taxable_Income_year0, fy.year = "2013-14"),
       tax_increase = post_tax_yearZ - prev_tax, 
       tax_increase_year0 = post_tax_year0 - prev_tax
     )
@@ -515,8 +515,8 @@ henry_taxstats <- function(new.discount){
            new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)), 
            new_investment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount), 
            new_Taxable_Income = pmaxC(Taxable_Income - Net_CG_amt + new_capital_gains - Net_rent_amt + new_net_rent - Net_fincl_invstmt_lss_amt + new_investment_lss, 0), 
-           prev_tax = grattan:::.income_tax(Taxable_Income, fy.year = TARGET.FY), 
-           post_tax = grattan:::.income_tax(new_Taxable_Income, fy.year = TARGET.FY), 
+           prev_tax = income_tax(Taxable_Income, fy.year = TARGET.FY), 
+           post_tax = income_tax(new_Taxable_Income, fy.year = TARGET.FY), 
            tax_increase = post_tax - prev_tax)
 }
 @
@@ -568,15 +568,15 @@ write(x = c(
 
 <<CostofNGtotal>>=
 sample_file_1213 %>%
-  mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt)),
-         diff = new_tax - income_tax(Taxable_Income)) %$%
+  mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt), fy.year = "2012-13"),
+         diff = new_tax - income_tax(Taxable_Income, fy.year = "2012-13")) %$%
   sum(diff) * 50 / 1e9  ->
   NG.tx.exp
 
 NG.tx.exp <- round(NG.tx.exp, 1)
 @
 
-\begin{overview}[-35pt]
+\begin{overview*}[-35pt]
 \addtolength{\columnsep}{1pt}
 Two decades of strong house price growth and falling rates of home ownership have raised questions about the appropriateness of generous tax concessions for property investment. As the Commonwealth Government looks for revenue measures to address its structural budget problems, it is unsurprising that winding back \highlight{negative gearing} and the \highlight{capital gains tax (CGT) discount} are high on the list of many commentators' options. 
 
@@ -588,14 +588,14 @@ The current 50 per cent CGT discount is justified on the basis that it promotes 
  
 Negative gearing should also be limited. There is no basis for the claims from the property industry that negative gearing serves a broader social purpose in moderating house prices and rents. Negative gearing puts upward pressure on house prices and plays little role in moderating rents. 
 
-Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\TBD{3 billion} a year in the short-term. This would decline to around \$\TBD{2 billion} over time as those losses are offset against investment income. 
+Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \Sexpr{texNum(cost_of(policy_year0), dollar = TRUE, sig.figs = 1L)} a year in the short-term. This would decline to around \Sexpr{texNum(cost_of(policy), dollar = TRUE, sig.figs = 1L)} over time as those losses are offset against investment income. 
 
-An alternative reform would align the tax deductions for capital losses with that for gains.  For example, if the capital gains tax discount is reduced to \Sexpr{latex_percent(new.discount)} (investors pay tax on \Sexpr{latex_percent(1 - new.discount)} of their capital gains), then investors could deduct \Sexpr{latex_percent(1 - new.discount)} of their investment losses. Treating capital gains and recurrent losses consistently would reduce tax incentives to borrow to invest. It would contribute around \$\TBD{3.7 billion} a year to the bottom line. 
+An alternative reform would align the tax deductions for capital losses with that for gains.  For example, if the capital gains tax discount is reduced to \Sexpr{latex_percent(new.discount)} (investors pay tax on \Sexpr{latex_percent(1 - new.discount)} of their capital gains), then investors could deduct \Sexpr{latex_percent(1 - new.discount)} of their investment losses. Treating capital gains and recurrent losses consistently would reduce tax incentives to borrow to invest. It would contribute around \Sexpr{texNum(cost_of(policy_align_gains_and_losses), dollar = TRUE, sig.figs = 2L)} a year to the bottom line. 
 
 Other proposals such as only allowing full deductibility of losses for new properties are somewhat less economically desirable but would still be a large improvement on current arrangements. 
 
-The best way to transition to the new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices and reduce resistance to reform. For capital gains tax changes, phasing the changes in for all investors would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors. However, grandfathering tax concessions for properties that are already negatively geared may be a reasonable compromise because properties tend to become positively geared over time as rents increase and the loan principal is repaid. 
-\end{overview}
+The best way to transition to the new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices and reduce resistance to reform. For capital gains tax changes, phasing the changes in for all investors would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors. However, grandfathering tax concessions for properties that are already negatively geared may be a reasonable compromise because properties tend to become positively geared over time as rents increase and the loan principal is~repaid. 
+\end{overview*}
  
 %%%
 \setcounter{tocdepth}{4}

@@ -128,8 +128,8 @@ target_sample_file %>%
                                    pmaxC(Other_Income + quarantined_losses, 0)), 
          accumulated_loss = new_Other_Income - Other_Income, 
          new_Taxable_Income = pmaxC(quarantined_income + new_Other_Income - Tot_ded_amt, 0)) %>% 
-  mutate(old_tax = grattan:::.income_tax(Taxable_Income, "2015-16"), 
-         new_tax = grattan:::.income_tax(new_Taxable_Income, "2015-16"), 
+  mutate(old_tax = income_tax(Taxable_Income, "2015-16"), 
+         new_tax = income_tax(new_Taxable_Income, "2015-16"), 
          tax_increase = new_tax - old_tax
   ) %>% .[] %$% 
   sum(tax_increase * WEIGHT)
@@ -140,3 +140,87 @@ We estimate that quarantining losses for passive investments would increase inco
 If deductions were limited even more to the particular asset or asset class, income tax collections would rise a little more because investors would wait longer on average until they could realise their losses. 
 
 These estimates do not take into account the effects of investors changing their behaviour in response to the policy change. Investments that make income losses are less attractive when the tax benefits are smaller. Negative gearing appeals largely because it can reduce taxes on wage income (section 1.3). Removing the tax incentive for highly leveraged investment should result in investors shifting toward income-producing assets and could therefore further increase income tax collections. On the other hand, if some investment properties are replaced by owner-occupied properties, there will be less revenue collected, because no tax is paid on capital gains on the family home, or on the `imputed rent' -- the value of living in occupier-owned housing.
+
+\section{Alternative policies for limiting negative gearing}
+Our proposed policy of quarantining investment losses from wage and salary income would apply to losses from all passive investments regardless of the nature or the size of the investment. 
+
+Others have proposed less universal changes. For example, Labor's negative gearing policy would allow unrestricted loss write offs for new housing.  It was reported in 2016 that the Coalition contemplated policies to cap loss deductions or limit the number of properties that could be negatively geared. 
+
+These `half way house' policies tend to be sub-optimal. The economic arguments for limiting negative gearing apply regardless of investment size or type. By limiting the changes some of the potential budgetary benefits are lost. And introducing differential tax treatments based on the size or type of investment further increases complexity and distorts investment decisions. 
+
+Nevertheless, limiting negative gearing to new properties or capping loss deductions at modest levels may not impose large costs on the budget or the economy. If these carve outs make changes to negative gearing more politically palatable they may still be worthwhile.
+
+On the other hand, capping the number of properties that can be negatively geared or setting a high threshold for loss deductions, eliminate almost all the revenue gains from policy change while introducing additional distortions. 
+
+\subsection{Limiting negative gearing only to new properties}
+It would be possible to quarantine wage and salary income generally, but to allow losses on new properties to be deducted from wages and salaries. 
+
+Proponents argue that this exemption will maintain the incentives for the provision of new housing.  But in practice it won't make much difference: most of the tax benefits will be reflected in a one of increase in the price of developable land. The supply of land for development is not particularly responsive to price changes as discussed in section 4.4. Therefore the profits to any favourable tax change affected new development will mainly flow to the landholders. 
+
+In any case, the benefits of negative gearing are likely to be small relative to the price of property and the cost of development -- around XX per cent of the property value.  Even if all of this benefit flowed to developers and purchasers, not to the owners of land suitable for development, there wouldn't be much additional development activity. And of course the impact on overall housing supply would be smaller again because few additional properties are built in any year relative to the stock of existing properties. 
+
+Restricting tax benefits to a subset of investments, such as new housing, creates additional complexity and distorts investment choices. But the costs may not be high. Administrative issues such as how to define `new properties' have already been addressed through  other government support schemes targeting new property investments such as first home buyer's grants and stamp duty concessions. 
+
+And there are clear political benefits from such an exemption.  It appeals to intuitions that tax benefits will result in additional new housing, even if theory and history suggest that the effects will be small.  As the additional costs are low, it may be a political price worth paying.
+
+\subsection{Capping loss deductions}
+Capping the total amount of losses that can be deducted each year for negatively geared properties has been proposed as a way to curb the `excesses' of negative gearing policy. 
+
+\begin{figure}
+\Caption{Those on high salaries are much more likely to be negatively gearing}{Incidence of negative gearing}{fig:NG-vs-salary}
+<<NG-vs-salary>>=
+sample_file_1314 %>%
+  filter(between(Sw_amt, 0, 250e3)) %>%
+  rename(Salary = Sw_amt) %>%
+  grplot(aes(x = Salary, y = as.numeric(Net_rent_amt < 0))) + 
+  geom_smooth(colour = DarkOrange, size = 1.5) +
+  scale_y_continuous(label = percent, expand = c(0,0)) + 
+  scale_x_continuous(label = grattan_dollar) + 
+  theme(axis.title.y = element_blank(), 
+        axis.line.y = element_line(size = rel(0.5)), 
+        axis.line.x = element_line(size = rel(0.5))) + 
+  annotate("blank", 
+           y = 0.00, x = 270e3)
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/NG-vs-salary-1}
+\end{figure}
+
+Capping losses is politically attractive because a smaller percentage of landlords will be impacted by the policy. And the landlords affected are more likely to be high income earners because those on high incomes claim much higher losses on average (\Vref{fig:NG-vs-salary}). 
+
+\begin{table}
+\caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
+<<Results, results = 'asis'>>=
+long_term = 10L
+data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3, -Inf)) %>%
+  rowwise %>%
+  mutate(Costing = grattan_dollar(round(cost_NG_limited_to(Threshold))),
+         `Number affected` = comma(round(number_affected(Threshold))), 
+         `\\%` = latex_percent(number_affected(Threshold) / (sum(sample_file_1314$Gross_rent_amt > 0) * 50), percentage_symbol = "\\%")) %>%
+  mutate(Threshold = paste0("$-$\\$", ifelse(is.infinite(Threshold), "$\\infty$", comma(abs(Threshold)))),
+         Costing = sub("$", "\\$", Costing, fixed = TRUE)) %>%
+  select(Threshold, Costing, `Number affected`, `\\%`) %>%
+  xtable(align = "rrrrS") %>% 
+  print.xtable(include.rownames = FALSE,
+               booktabs = TRUE,
+               floating = FALSE,
+               align = "rrrrS", 
+               sanitize.text.function = function(x){x})
+@
+\end{table}
+
+
+The budget impact will depend on the level of the cap, as set out in \Vref{tbl:cap-NG}. A cap on losses of \$20,000 or more would affect very few landlords, and would make very little difference to the budget bottom line.
+
+An alternative is to limit deductions. This could apply to all deductions including work related expenses, interest costs, donations etc. This would ultimately impose a minimum effective rate of tax for high income earners.   A full consideration of such a proposal is beyond the scope of this report. 
+
+\subsection{Limits on number of properties}
+An alternative proposal would limit the number of properties on which investors are able to claim losses.  This is an unattractive option. It would raise little, is poorly targeted, and would increase the distortions in the housing market.
+
+Only 28 per cent of landlords have two or more properties.  A fraction of these would not be taxed as they would the `first property' for a landlord. The relatively small number of taxpayers affected substantially reduces the potential budget gains. 
+
+In any case, capping property numbers is a crude way to target `excessive' negative gearing. Taxpayers can increase their deductions by purchasing fewer but more expensive properties. Consequently the policy will distort investment decisions by discouraging investors from buying more affordable properties. 
+
+\section{Summarising impact of proposed negative gearing and CGT changes}
+Our preferred policy is to reduce the CGT discount to \Sexpr{latex_percent(new.discount)} and limit negative gearing by quarantining all passive investment losses. 
+
+In addition to raising more than \Sexpr{texNum(cost_of(policy))} a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
