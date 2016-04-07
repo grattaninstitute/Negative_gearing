@@ -63,11 +63,12 @@ rental_losses <-
 
 NG_tax_exps <-
   sample_files_all %>%
+  mutate(FYYR = fy.year) %>%
   group_by(fy.year) %>%
-  mutate(current_tax = income_tax(Taxable_Income, fy.year = fy.year),
+  mutate(current_tax = income_tax(Taxable_Income, fy.year = FYYR),
          subseqt_tax = income_tax(ifelse(Net_rent_amt < 0, 
                                          Taxable_Income - Net_rent_amt,
-                                         Taxable_Income), fy.year = fy.year),
+                                         Taxable_Income), fy.year = FYYR),
          diff = subseqt_tax - current_tax) %>%
   group_by(fy.year) %>%
   summarise(avg.diff = sum(diff * WEIGHT))
@@ -110,7 +111,12 @@ housing_finance_commitments <-
   merge(housing_finance_commitments.metadata)
 @
 
-<<What_price_change_req_to_obtain_same_return>>=
+<<should_we_get_ABS>>=
+should_we_get_ABS <- 
+ http_error("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS") || !is.null(readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS"))
+@
+
+<<ABS_GET_RES_VALS, eval=should_we_get_ABS>>=
 res_dwelling_values_metadata <- 
   readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS")
 
@@ -135,13 +141,19 @@ res_dwelling_values <-
   recode_res_dwelling_values("MEASURE") %>%
   recode_res_dwelling_values("FREQUENCY") %>%
   data.table
+@
 
-res_dwelling_values %>% 
+<<What_price_change_req_to_obtain_same_return>>=
+if (exists("res_dwelling_values") && !is.null(res_dwelling_values)){
+value_dwelling_stock_2014 <- 
+  res_dwelling_values %>% 
   filter(label_ASGS_2011 == "Australia",
-         label_MEASURE == "Value of dwelling stock: Owned by non households ($m)")  %>%
-  arrange(obsTime) %>%
-  mutate(r = (lead(obsValue)/obsValue)^ifelse(label_FREQUENCY == "Quarterly", 4, NA_real_) - 1) %>%
-  arrange(obsTime) %>% invisible
+         label_MEASURE == "Value of dwelling stock: Owned by non households ($m)") %>%
+  arrange(obsTime) %$%
+  last(obsValue) * 10^6
+} else {
+  value_dwelling_stock_2014 <- 5400 * 10^9
+}
 
 read_excel("ASX_Returns_by_asset_class.xlsx") %>% 
   filter(`Asset class` == "Residential investment property") %$%
@@ -167,19 +179,8 @@ value_of_NG_perpertuity <- value_of_NG_one_year / RoR_proprty
 value_of_NG_10yrs <-
   -1 * grattan::pv(RoR_proprty, 10, value_of_NG_one_year)
 
-value_dwelling_stock_2014 <- 
-  res_dwelling_values %>% 
-  filter(label_ASGS_2011 == "Australia",
-         label_MEASURE == "Value of dwelling stock: Owned by non households ($m)") %>%
-  arrange(obsTime) %$%
-  last(obsValue) * 10^6
-
 value_of_dwelling_stock_expected_2025 <- 
-  res_dwelling_values %>% 
-   filter(label_ASGS_2011 == "Australia",
-          label_MEASURE == "Value of dwelling stock: Owned by non households ($m)") %>%
-  arrange(obsTime) %$%
-  last(obsValue) * 10^6 *  # millions
+  value_dwelling_stock_2014 *  # millions
   (1 + RoR_proprty)^(10)
 
 NG_inflator <- function(n){
@@ -242,46 +243,6 @@ The first argument is easily refuted. In 1985, the Hawke Government restricted n
 
 But these concerns were ill-founded. Rents did rise rapidly in Perth and rose somewhat in Sydney. Yet inflation-adjusted rents were stable in Melbourne and actually fell in Adelaide and Brisbane (Figure 13). In Sydney and Perth it was population growth and insufficient residential construction -- due to high borrowing rates and competition from the stock market for funds -- not the policy change, led to the rent rises. 
 
-<<Capital_city_rents_direct_abs_get, eval=FALSE>>=
-rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1992") %>% 
-  as.data.frame ->
-  rent.indices
-
-region.decode <- 
-  data.table(
-    REGION = c(1:8,50),
-    city = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "Hobart", "Darwin", "Canberra", "AUST CAP")
-  )
-
-all.cpi <- 
-  data.table::CJ(year = 1982:1990, Quarter = paste0("Q", 1:4)) %>%
-  mutate(year_quarter = paste(year, Quarter, sep = "-")) %>%
-  mutate(rel = cpi_inflator_quarters(nominal.price = 1,
-                                     nominal.date = year_quarter, 
-                                     target.date = "1983-Q4"))
-
-cpi_inflator_quarters2 <- function(amount, from, to){
-  amount * all.cpi[year_quarter == from]$rel / all.cpi[year_quarter == to]$rel 
-}
-
-rent.indices %>%
-  merge(region.decode, by = "REGION") %>%
-  filter(city %in% c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "AUST CAP")) %>%
-  group_by(city) %>%
-  # Why does wrapping up the obs/first(obs) work but not separately? Inflation of an index??
-  mutate(obsValuerel = cpi_inflator_quarters(obsValue/first(obsValue), nominal.date = obsTime, target.date = "1983-Q4"),
-         obsValuerel = obsValuerel/first(obsValuerel)) %>%
-  ungroup %>%
-  mutate(up = city %in% c("Sydney", "Perth")) %>%
-  mutate(city = factor(city, 
-                       levels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "AUST CAP"),
-                       labels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "All\nAustralian\ncapitals"))) %>%
-  mutate(obsTime = as.POSIXct(as.yearqtr(obsTime, format = "%Y-Q%q"))) ->
-  rent.indices.real
-
-saveRDS(rent.indices.real, "rent_indices_real.rds")
-@
-
 <<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
 rent.indices.real <- readRDS("rent_indices_real.rds")
 rent.indices.real  %>%
@@ -317,7 +278,6 @@ rent.indices.real  %>%
             lineheight = 0.8) +
   scale_color_manual(values = c(gpal(6)[1:5], "black")) + 
   facet_wrap(~city, ncol = 3)  + 
-  theme_grattan(base_size = 22) +
   theme(strip.text = element_blank(),
         strip.background = element_blank(),
         panel.margin.x = grid::unit(2, "lines"),
@@ -369,8 +329,8 @@ cost_NG_limited_to <- function(Net_rent_amt.limit){
                                                     pmaxC(Other_Income - rental_loss_exceeding_cap, 0)
                                                     ) + new_Net_rent_amt,
            new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
-           prev_tax = grattan:::.income_tax(Taxable_Income, "2015-16"),
-           post_tax = grattan:::.income_tax(new_Taxable_Income, "2015-16"),
+           prev_tax = income_tax(Taxable_Income, "2015-16"),
+           post_tax = income_tax(new_Taxable_Income, "2015-16"),
            diff = post_tax - prev_tax) -> resultant_samplefile
   resultant_samplefile %$%
     sum(diff * WEIGHT)
@@ -404,8 +364,8 @@ number_affected <- function(Net_rent_amt.limit){
                                                     # otherwise exhaust Other_Income
                                                     pmaxC(Other_Income - rental_loss_exceeding_cap, 0)) + new_Net_rent_amt,
            new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
-           prev_tax = grattan:::.income_tax(Taxable_Income, "2015-16"),
-           post_tax = grattan:::.income_tax(new_Taxable_Income, "2015-16"),
+           prev_tax = income_tax(Taxable_Income, "2015-16"),
+           post_tax = income_tax(new_Taxable_Income, "2015-16"),
            diff = post_tax - prev_tax) -> resultant_samplefile
   resultant_samplefile %$%
     # floating point
@@ -479,27 +439,6 @@ cost_of_policy_carry_fwd <- function(Net_rent_amt.limit, h = 1L){
     sum(diff) * 50 * lf_inflator_fy(from_fy = "2013-14", to_fy = yr2fy(fy2yr("2013-14") + h))
 }
 @
-
-\begin{table}
-\caption{Budgetary impact of caps to negative gearing}
-<<Results, results = 'asis'>>=
-long_term = 10L
-data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3, -Inf)) %>%
-  rowwise %>%
-  mutate(Costing = grattan_dollar(round(cost_NG_limited_to(Threshold))),
-         `Number affected` = comma(round(number_affected(Threshold))), 
-         `\\%` = latex_percent(number_affected(Threshold) / (sum(sample_file_1314$Gross_rent_amt > 0) * 50), percentage_symbol = "\\%")) %>%
-  mutate(Threshold = paste0("$-$\\$", ifelse(is.infinite(Threshold), "$\\infty$", comma(abs(Threshold)))),
-         Costing = sub("$", "\\$", Costing, fixed = TRUE)) %>%
-  select(Threshold, Costing, `Number affected`, `\\%`) %>%
-  xtable(align = "rrrrS") %>% 
-  print.xtable(include.rownames = FALSE,
-               booktabs = TRUE,
-               floating = FALSE,
-               align = "rrrrS", 
-               sanitize.text.function = function(x){x})
-@
-\end{table}
 
 
 \section{\TBD{Number of properties}}

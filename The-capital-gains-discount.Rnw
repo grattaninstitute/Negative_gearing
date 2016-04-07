@@ -184,7 +184,7 @@ avg_marginal_rate_b4_CG <-
   filter(Net_CG_amt > 0, 
          age_imp >= 20) %>%
   mutate(Taxable_Income_b4_CG = pmaxC(Taxable_Income - Net_CG_amt, 0),
-         marginal_rate_b4_CG = income_tax(Taxable_Income_b4_CG + 1) - income_tax(Taxable_Income_b4_CG)) %>%
+         marginal_rate_b4_CG = income_tax(Taxable_Income_b4_CG + 1, fy.year = use.sample.fy) - income_tax(Taxable_Income_b4_CG, fy.year = use.sample.fy)) %>%
   group_by(is_in_workforce = between(age_imp, 20, 65)) %>%
   summarise(avg_marginal_rate_weighted = weighted.mean(marginal_rate_b4_CG, Net_CG_amt), 
             avg_marginal_rate = mean(marginal_rate_b4_CG)) %>%
@@ -497,9 +497,9 @@ pDecile <-
   group_by(Taxable_Income_decile = ntile(Taxable_Income, 10)) %>%
   summarise(`No. Taxpayers` = n() * 50, 
             `Salary` = 50 * sum(as.numeric(Sw_amt)), 
-            `Income tax (excl CGT)` = sum(income_tax(Taxable_Income - Net_CG_amt, "2013-14")), 
+            `Income tax (excl CGT)` = sum(income_tax(pmaxC(Taxable_Income - Net_CG_amt, 0), "2013-14")), 
             `Capital gains` = sum(Net_CG_amt) * 50, 
-            `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(Taxable_Income - Net_CG_amt, "2013-14"))) %>%
+            `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(pmaxC(Taxable_Income - Net_CG_amt, 0), "2013-14"))) %>%
   gather(type, value, -Taxable_Income_decile) %>%
   mutate(type = factor(type, levels = unique(.$type), ordered = TRUE)) %>%
   arrange(type, Taxable_Income_decile) %>%
@@ -518,9 +518,9 @@ pDecile_no_CG <-
   group_by(Taxable_Income_decile = ntile(Taxable_Income - Net_CG_amt, 10)) %>%
   summarise(`No. Taxpayers` = n() * 50, 
             `Salary` = 50 * sum(as.numeric(Sw_amt)), 
-            `Income tax (excl CGT)` = sum(income_tax(Taxable_Income - Net_CG_amt, "2013-14")), 
+            `Income tax (excl CGT)` = sum(income_tax(pmaxC(Taxable_Income - Net_CG_amt, 0), "2013-14")), 
             `Capital gains` = sum(Net_CG_amt) * 50, 
-            `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(Taxable_Income - Net_CG_amt, "2013-14"))) %>%
+            `Capital gains tax` = sum(income_tax(Taxable_Income, "2013-14") - income_tax(pmaxC(Taxable_Income - Net_CG_amt, 0), "2013-14"))) %>%
   gather(type, value, -Taxable_Income_decile) %>%
   mutate(type = factor(type, levels = unique(.$type), ordered = TRUE)) %>%
   arrange(type, Taxable_Income_decile) %>%
