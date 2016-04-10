@@ -101,7 +101,7 @@ library(taxstats)
 @
 
 <<downloadGrattex>>=
-overwrite_grattex <- (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
+overwrite_grattex <- TRUE# && (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
 if (overwrite_grattex){
   GET(url = "https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls", 
       write_disk("grattan.cls", overwrite = TRUE))
@@ -338,6 +338,7 @@ revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discou
       sample_file %>%
       filter(Gross_rent_amt > 0) %$%
       mean(Net_rent_amt < 0)
+  
     M4 <- matrix(0, nrow = 2*Z, ncol = 2*Z)
     M4[row(M4) == col(M4) - 2] <- probNG_if_investor
     M4[row(M4) == col(M4) - 1] <- 1 - probNG_if_investor
@@ -614,26 +615,27 @@ sample_file_1213 %>%
 NG.tx.exp <- round(NG.tx.exp, 1)
 @
 
+\newlength{\overviewextra}
+\setlength{\overviewextra}{4pt}
+\addtolength{\columnsep}{\overviewextra}
 \begin{overview*}[-35pt]
-\addtolength{\columnsep}{1pt}
-Two decades of strong house price growth and falling rates of home ownership have raised questions about the appropriateness of generous tax concessions for property investment. As the Commonwealth Government looks for revenue measures to address its structural budget problems, it is unsurprising that winding back \highlight{negative gearing} and the \highlight{capital gains tax (CGT) discount} are high on the list of many commentators' options. 
+Australia's tax system aims to encourage investment. Capital gains are not taxed at marginal rates of income tax. Negatively geared investors -- those who borrow to invest, usually in housing -- can deduct their annual losses from wage and salary income. 
 
-Together negative gearing and the CGT discount allow investors to use debt financed investment (particularly property investment) to reduce and defer personal income tax. These tax concessions have reduced housing affordability. They increase investor activity by increasing post-tax returns to rental housing, pushing up prices to the disadvantage of young would-be home buyers. Like most tax concessions, these tax breaks largely benefit the wealthy. 
+However, these arrangements do not sufficiently balance the competing considerations. They should be wound back as the Commonwealth Government inevitably turns to revenue measures to address its structural budget problems. 
 
-Changes to both capital gains tax and negative gearing are needed to address these efficiency and fairness issues. 
- 
-The current 50 per cent CGT discount is justified on the basis that it promotes savings and investment. But these benefits can be overstated: tax rates don't do much to affect the total amount that wealthy people save. And entrepreneurs already receive a range of other tax concessions. Some discount remains justified to avoid taxing investors for inflationary gains. But the discount is larger than it needs to be given its budgetary and economic costs. \highlight{Reducing the CGT discount to \Sexpr{latex_percent(new.discount)}} could raise around \Sexpr{texNum(cost_of(revenue_CGT_discount(CGT.discount = new.discount)), sig.figs = 1L, dollar = TRUE)} annually.
- 
-Negative gearing should also be limited. There is no basis for the claims from the property industry that negative gearing serves a broader social purpose in moderating house prices and rents. Negative gearing puts upward pressure on house prices and plays little role in moderating rents. 
+The tax on capital gains is discounted to promote savings and entrepreneurship. A theoretically ideal tax treatment would only tax returns higher than the risk-free rate. But this idealised treatment needs to be balanced against other considerations. The real benefits of the capital gains discount are small because those with high incomes tend to save almost the same amount irrespective of the tax rate on savings. The costs of the discount, however, are high. Other more distorting taxes must be higher. The discount encourages investors away from economic fundamentals towards investments with high capital gains. The discount undermines the integrity of the income tax system by creating opportunities for artificial transactions to reduce tax. And the discount reduces the progressivity of the tax system because high-income earners disproportionately earn capital gains.
 
-Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \Sexpr{texNum(cost_of(policy_year0), dollar = TRUE, sig.figs = 1L)} a year in the short-term. This would decline to around \Sexpr{texNum(cost_of(policy), dollar = TRUE, sig.figs = 1L)} over time as those losses are offset against investment income. 
+A better balance between the competing considerations would reduce the discount so that \Sexpr{latex_percent(1 - new.discount)} of capital gains are taxed, which would raise around \Sexpr{texNum(cost_of(policy_reduce_CGT), dollar = TRUE)} a year.
 
-An alternative reform would align the tax deductions for capital losses with that for gains.  For example, if the capital gains tax discount is reduced to \Sexpr{latex_percent(new.discount)} (investors pay tax on \Sexpr{latex_percent(1 - new.discount)} of their capital gains), then investors could deduct \Sexpr{latex_percent(1 - new.discount)} of their investment losses. Treating capital gains and recurrent losses consistently would reduce tax incentives to borrow to invest. It would contribute around \Sexpr{texNum(cost_of(policy_align_gains_and_losses), dollar = TRUE, sig.figs = 2L)} a year to the bottom line. 
+Negative gearing in Australia goes beyond generally accepted principles for offsetting losses against gains. It distorts investment decisions, diverting capital from more productive investments, increasing volatility in housing markets, and increasing housing churn. It reduces home ownership and reduces the availability of long-term rentals, but does not materially increase housing supply. It is regressive, benefiting those on high incomes much more than those on low incomes. And it substantially reduces tax collections, imposing pressures on the budget so that either other taxes, or deficits, are higher.
 
-Other proposals such as only allowing full deductibility of losses for new properties are somewhat less economically desirable but would still be a large improvement on current arrangements. 
+Consequently, losses from all types of passive investments should not be deductible from wage and salary income. Suggested carve outs to exempt new property, or allow deductions up to a limit or for a limited number of properties, would have worse economic outcomes. In addition to the capital gains tax changes, restricting negative gearing would raise another \Sexpr{texNum(cost_of(policy_year0) - cost_of(policy_reduce_CGT), dollar = TRUE)} a year in the short term, declining to \Sexpr{texNum(cost_of(policy) - cost_of(policy_reduce_CGT), dollar = TRUE)} as losses accumulate.
 
-The best way to transition to the new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices and reduce resistance to reform. For capital gains tax changes, phasing the changes in for all investors would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors. However, grandfathering tax concessions for properties that are already negatively geared may be a reasonable compromise because properties tend to become positively geared over time as rents increase and the loan principal is~repaid. 
+These changes will improve housing affordability -- a little. We estimate housing prices would be up to 2 per cent lower than otherwise. Because there are tight planning constraints on new supply for urban housing, there will be very little impact on rents, or the rate of new development, even in the long term. 
+
+Phasing in these changes would minimise price shocks and make reforms more politically palatable. Alternatively, current arrangements could be grandfathered. For capital gains tax, this would increase complexity and would be unfair to new investors -- particularly younger investors. For negative gearing it may be a reasonable compromise as properties tend to become positively geared over time anyway. 
 \end{overview*}
+\addtolength{\columnsep}{-\overviewextra}
  
 %%%
 \setcounter{tocdepth}{4}
@@ -721,7 +723,7 @@ write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(dif
 \end{tikzpicture}
 \end{figure*}
 \begin{figure*}
-\caption{Positive gearing absorbing ($M4$)}
+\Caption{Positive gearing absorbing ($M4$)}{Diagram of model. $q = {}$ probability of negatively gearing if a property investor}{fig:Markov-M4}
 \begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {circle, draw, minimum width = 36pt}, every loop/.style={-latex}]
 \node[state] (1) {$\ell = 1$};
 \node[left of = 1, align = right] (0) {Negative gearing};
@@ -740,4 +742,48 @@ write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(dif
 \path (4) edge[loop below] node[anchor=north]{$1$} (4L);
 \end{tikzpicture}
 \end{figure*}
+
+\begin{figure*}
+\Caption{Positive gearing absorbing, age-based ($MA$)}{Diagram of model. $q_x = {}$ probability of negatively gearing, given a property investor at age $x$}{fig:Markov-MA}
+\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {circle, draw, minimum width = 36pt}, every loop/.style={-latex}]
+\node[state] (1) {$\ell = 1$};
+\node[left of = 1, align = right] (0) {Negative gearing};
+\node[state, below of = 1] (2) {$\ell = 1$};
+\node[left of = 2, align = right] (0A) {Positive gearing};
+\node[state, right of = 1] (3) {$\ell = 2$};
+\node[right of = 3] (dot1) {\dots};
+\node[state, below of = 3] (4) {$\ell = 2$};
+
+\path (1) edge node[anchor = south]{$q_a$} (3);
+\path (1) edge node[anchor = west]{$1 - q_a$}(2);
+\path (3) edge node[anchor = south]{$q_{a + 1}$} (dot1);
+\path (3) edge node[anchor = west]{$1 - q_{a + 1}$}(4);
+
+\path (2) edge[loop below] node[anchor=north]{$1$} (2L);
+\path (4) edge[loop below] node[anchor=north]{$1$} (4L);
+
+\node[state, right of = dot1] (6) {$\ell = 6$};
+\node[state, below of = 6] (7) {$\ell = 6$}; 
+\node[right of = 6] (dot2) {\dots};
+\node[state, right of = dot2] (11) {$\ell = m + 1$};
+\node[state, below of = 11] (12) {$\ell = m + 1$};
+\node[right of = 11] (dot3) {\dots};
+
+\path (dot1) edge node[anchor = south]{$q_{a + 4}$} (6);
+
+\path (6) edge node[anchor = south]{$q_{a + 5}$} (dot2);
+\path (6) edge node[anchor = west]{$1 - q_{a + 5}$}(7);
+
+\path (7) edge[loop below] node[anchor=north]{$1$} (7L);
+
+\path (dot2) edge node[anchor = south]{$q_{a + m - 1}$} (11);
+\path (11) edge node[anchor = south]{$q_{a + m}$} (dot3);
+\path (11) edge node[anchor = west]{$1 - q_{a + m}$} (12);
+
+\path (12) edge[loop below] node[anchor=north]{$1$} (12L);
+\end{tikzpicture}
+
+\notes{$q_i = q_j$ for all $i,j \in \{a, a + 1, \dots, a + 4\}$ when $a = 0\mod 5$.}
+\end{figure*}
+
 \end{document}
