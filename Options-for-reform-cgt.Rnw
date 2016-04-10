@@ -199,7 +199,8 @@ data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3, -Inf)) %>%
   mutate(Threshold = paste0("$-$\\$", ifelse(is.infinite(Threshold), "$\\infty$", comma(abs(Threshold)))),
          Costing = sub("$", "\\$", Costing, fixed = TRUE)) %>%
   select(Threshold, Costing, `Number affected`, `\\%`) %>%
-  xtable(align = "rrrrS") %>% 
+  # warns about not recognizing siuntix align operator
+  {suppressWarnings(xtable(., align = "rrrrS"))} %>% 
   print.xtable(include.rownames = FALSE,
                booktabs = TRUE,
                floating = FALSE,
@@ -216,7 +217,22 @@ An alternative is to limit deductions. This could apply to all deductions includ
 \subsection{Limits on number of properties}
 An alternative proposal would limit the number of properties on which investors are able to claim losses.  This is an unattractive option. It would raise little, is poorly targeted, and would increase the distortions in the housing market.
 
-Only 28 per cent of landlords have two or more properties.  A fraction of these would not be taxed as they would the `first property' for a landlord. The relatively small number of taxpayers affected substantially reduces the potential budget gains. 
+<<prop_landlords_n_properties>>=
+prop_landlords_geq_n_properties <- function(n){
+  hilda_w14_hh %>%
+    group_by(Owns_n_other_properties = noprntn) %>%
+    summarise(population = sum(nhhwth)) %>%
+    ungroup %>%
+    filter(Owns_n_other_properties > 0) %>%
+    arrange(Owns_n_other_properties) %>%
+    mutate(prop = population / sum(population), 
+           owns_at_least_n = 1 - cumsum(prop)) %>%
+    filter(Owns_n_other_properties == n) %$%
+    owns_at_least_n
+}
+@
+
+Only \Sexpr{latex_percent(prop_landlords_geq_n_properties(2))} of landlords have two or more properties.  A fraction of these would not be taxed as they would the `first property' for a landlord. The relatively small number of taxpayers affected substantially reduces the potential budget gains. 
 
 In any case, capping property numbers is a crude way to target `excessive' negative gearing. Taxpayers can increase their deductions by purchasing fewer but more expensive properties. Consequently the policy will distort investment decisions by discouraging investors from buying more affordable properties. 
 

@@ -116,7 +116,8 @@ should_we_get_ABS <-
  http_error("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS") || !is.null(readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS"))
 @
 
-<<ABS_GET_RES_VALS, eval=should_we_get_ABS>>=
+<<ABS_GET_RES_VALS, eval=TRUE>>=
+if (should_we_get_ABS){
 res_dwelling_values_metadata <- 
   readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS")
 
@@ -141,6 +142,7 @@ res_dwelling_values <-
   recode_res_dwelling_values("MEASURE") %>%
   recode_res_dwelling_values("FREQUENCY") %>%
   data.table
+}
 @
 
 <<What_price_change_req_to_obtain_same_return>>=
