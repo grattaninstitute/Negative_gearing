@@ -1,6 +1,6 @@
 Cost of policy ($bn) by policy option with CGT discount set at 25% 2015-16
 ====================================
  6.1 Quarantine NG losses and reduce CGT discount (Year 0)
- 5.5 Quarantine NG losses and reduce CGT discount
+ 5.4 Quarantine NG losses and reduce CGT discount
  4.1 Reduce CGT discount
  5.0 Henry proposal

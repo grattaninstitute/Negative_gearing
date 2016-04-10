@@ -73,11 +73,10 @@ knitr::opts_chunk$set(fig.width=11.000,
 )
 @
 
-<<loadPackages, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
+<<loadPackages>>=
 library(knitr)
 library(data.table)
 library(dplyr)
-library(car)
 library(devEMF)
 library(gridExtra)
 library(ggplot2)
@@ -232,8 +231,8 @@ revenue_CGT_discount <- function(CGT.discount = new.discount, .old.discount = 0.
            new_Tot_inc_amt = Tot_inc_amt - Net_CG_amt + new_Net_CG_amt,
            new_Tot_ded_amt = Tot_ded_amt,  # no change
            new_Taxable_Income = pmaxC(new_Tot_inc_amt - new_Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed, 0),
-           old_tax = income_tax(Taxable_Income, fy.year = fy.year),
-           new_tax = income_tax(new_Taxable_Income, fy.year = fy.year),
+           old_tax = income_tax(Taxable_Income, fy.year = fy.year, age = age_imp),
+           new_tax = income_tax(new_Taxable_Income, fy.year = fy.year, age = age_imp),
            tax_increase = new_tax - old_tax)
 }
 @
@@ -328,128 +327,166 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
 # new.discount <- 0.25  # proposed CGT
 # TARGET.FY <- "2015-16"
 # use.sample.fy <- "2013-14"
-revenue_quarantine_NG <- function(h = 10L, sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY, Z = 10){
-  # Z is the extent of the model
-  # h is the number of years the 
-  
+# Z is ~ number of iterations of the model for age_based = FALSE
+revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY, age_based = TRUE, Z = 20){
   if (sample_file_fy_year != "2013-14"){
     stop("You must correct the sample_file year")
   }
   
-  probCG_if_investor <- 
-    sample_file_1314 %>%
-    filter(Gross_rent_amt > 0) %$%
-    mean(Net_CG_amt > 0)
-  
-  probCG <- probCG_if_investor
-  
-  M <- matrix(0, ncol = Z + 1, nrow = Z + 1)
-  # We assume that an individual with Gross rent accumulates their losses
-  # linearly and that all losses are exhausted completely with probability
-  # probCG.  Put another way, at each iteration we randomly allocate property 
-  # investors into either realizing a capital gain or not.  If they realize, 
-  # all accumulated losses (regardless of size) is deducted from their taxable 
-  # income; otherwise it increases arithmetically.
-  M[row(M) == col(M) - 1] <- 1 - probCG
-  M[col(M) == 1] <- probCG
-  
-  # This isn't quite enough: too high a chance of large 
-  # accumulated losses
-  
-  # Losses not permitted to be exhausted in year 1. (Since they have been accounted for.)
-  M[1,2] <- 1
-  M[1,1] <- 0
-  #
-  # (Z+1) represents the node of having no ability to write off-losses, even 
-  # after Z years.
-  M[Z + 1, 1] <- 0
-  M[Z + 1, Z + 1] <- 1
-  
-  # An alternative route with (0) as an absorbing state
-  X <- matrix(0, ncol = Z + 1, nrow = Z + 1)
-  X[col(M) == 1] <- probCG
-  X[row(X) == col(X) - 1] <- 1 - probCG
-  X[1,1] <- 1
-  X[1,2] <- 0
-  X[Z+1,1] <- 1
-  
-  # One more alternative, use probability of NG to determine whether to exit
-  probNG <- mean(sample_file$Net_rent_amt < 0)
-  
-  # 1: no accumulated losses
-  # 2: initial state
-  # n: n-1 times accumulated losses
-  M2 <- matrix(0, ncol = Z + 1, nrow = Z + 1)
-  M2[row(M2) == col(M2) - 1] <- 1 - probCG
-  M2[col(M2) == 1] <- probCG
-  
-  # Initial state guaranteed to move to (3)
-  M2[row(M2) == 2] <- 0
-  M2[2,3] <- 1
-  
-  # Exit from (1) governed by probNG
-  M2[row(M2) == 1] <- 0
-  M2[1,2] <- probNG
-  M2[1,1] <- 1 - probNG
-  
-  # Last state: Guaranteed to exhaust.
-  M2[row(M2) == Z + 1] <- 0
-  M2[Z + 1, 1] <- 1
-  
-  stopifnot(all(rowSums(M2) == 1))
-  
-  stopifnot(all(rowSums(X) == 1))
-
-  # require(expm)
-  P <- M2 %^% (Z + 1)
-  
-  probNG_if_investor <- 
-    sample_file %>%
-    filter(Gross_rent_amt > 0) %$%
-    mean(Net_rent_amt < 0)
-  M3 <- matrix(0, nrow = Z + 1, ncol = Z + 1)
-  #
-  # 1: None
-  # 2: 1 accumulated loss (initial)
-  # n: n - 1 accumulated loss
-  M3[row(M3) == col(M3) - 1] <- (1 - probCG) * probNG_if_investor
-  M3[row(M3) == col(M3)] <- 1 - (1 - probCG) * probNG_if_investor
-  M3[Z + 1, Z + 1] <- 1
-  
-  # Next steps? Use age to better estimate p and q
-  stopifnot(all(rowSums(M3) == 1))
-  
-  # +ve gearing absorbing
-  M4 <- matrix(0, nrow = 2*Z, ncol = 2*Z)
-  M4[row(M4) == col(M4) - 2] <- probNG_if_investor
-  M4[row(M4) == col(M4) - 1] <- 1 - probNG_if_investor
-  M4[row(M4) %% 2 == 0] <- 0
-  M4[row(M4) %% 2 == 0 & row(M4) == col(M4)] <- 1
-  M4[2*Z - 1, 2*Z] <- 1
-  
-  stopifnot(all(rowSums(M4) == 1))
-  
-  P <- M4 %^% (Z + 1)
-  
-  init <- c(1,rep(0, Z - 1))
-  
-  # even entries of P are the absorbing states
-  E <- init %*% P[c(TRUE, FALSE),c(FALSE,TRUE)]
-  
-  accumulator <- 
-    data.table(rand = cumsum(E[1,]), 
-               loss_multiplier = 1:(Z)) %>%
-    setkey(rand)
-  
-  round_cols <- function(column){
-    if (!is.numeric(column)){
-      column
-    } else {
-      round(column, 2)
+  if (!age_based){
+    probNG_if_investor <- 
+      sample_file %>%
+      filter(Gross_rent_amt > 0) %$%
+      mean(Net_rent_amt < 0)
+    M4 <- matrix(0, nrow = 2*Z, ncol = 2*Z)
+    M4[row(M4) == col(M4) - 2] <- probNG_if_investor
+    M4[row(M4) == col(M4) - 1] <- 1 - probNG_if_investor
+    M4[row(M4) %% 2 == 0] <- 0
+    M4[row(M4) %% 2 == 0 & row(M4) == col(M4)] <- 1
+    M4[2*Z - 1, 2*Z] <- 1
+    
+    stopifnot(all(rowSums(M4) == 1))
+    
+    P <- M4 %^% (Z + 1)
+    
+    init <- c(1,rep(0, Z - 1))
+    
+    # even entries of P are the absorbing states
+    E <- init %*% P[c(TRUE, FALSE),c(FALSE,TRUE)]
+    
+    accumulator <- 
+      data.table(rand = cumsum(E[1,]), 
+                 loss_multiplier = 1:(Z)) %>%
+      setkey(rand)
+    
+    forecast_loss_multiple <- function(.data){
+      setkey(.data, rand) %>%
+        accumulator[., roll = -Inf]
     }
+  } else {
+    
+    # age based-method
+    # q ~ probNG_if_investor
+    q_by_age <- 
+      sample_file %>%
+      filter(Gross_rent_amt > 0) %>%
+      group_by(age_range) %>%
+      summarise(q = mean(Net_rent_amt < 0))
+    
+    q_by_integer_age <- 
+      data.table(age_range = rep(q_by_age$age_range, each = 5)) %>% 
+      merge(q_by_age, by = "age_range") %>%
+      merge(age_range_decoder) %>%
+      group_by(age_range_description) %>%
+      mutate(min_age = ifelse(grepl("to", age_range_description), 
+                              as.numeric(stringr::str_extract(age_range_description, "^[0-9]{2}")), 
+                              ifelse(grepl("70", age_range_description),
+                                     70, 
+                                     15)), 
+             age = min_age - 1  + 1:n()) %>%
+      ungroup %>%
+      arrange(age) %>%
+      select(-age_range, age_range_description, -min_age) %>%
+      select(age, q)
+    
+    # We want a wide data frame which shows, for each
+    # age, the probability of going from n_ahead to n_ahead + 1
+    # so [i, j] represents the probability that a person aged i
+    # who *will* negative gear for at least j years will negatively gear
+    # in the year j + 1.
+    
+    # All the information to produce this dataframe/matrix is contained in q
+    # so we just need to extract it. 
+    # We keep applying lead until just before there will be a column of pure NA.
+    j <- 1
+    q_by_integer_age %<>% rename(q1 = q)
+    while (TRUE){  
+      j <- j + 1
+      mutate_call = lazyeval::interp(~lead(b), b = as.name(paste0("q", j - 1)))
+      q_by_integer_age %<>% mutate_(.dots = setNames(list(mutate_call), paste0("q", j)))
+      
+      # breaker:
+      if (any(colSums(is.na(q_by_integer_age)) == nrow(q_by_integer_age) - 1)){
+        # We're done. Before we `break;` let's clean up.
+        # We assume that people persist in this model beyond 75
+        na_locf <- function(x){
+          na.locf(x, na.rm = FALSE)
+        }
+        
+        q_by_integer_age %<>%
+          mutate_each(funs(na_locf))
+        break
+      }
+    }
+    
+    q_by_integer_age_long <- 
+      q_by_integer_age %>%
+      gather(n_ahead, prob_NG_if_investor, -age) %>%
+      mutate(n_ahead = as.numeric(gsub("q", "", n_ahead))) %>%
+      arrange(age, n_ahead)
+    
+    E_by_age <- function(the_age){
+      probNG_if_investor <- 
+        q_by_integer_age_long %>%
+        filter(age == the_age) %$%
+        prob_NG_if_investor
+      
+      Z <- length(probNG_if_investor)
+      
+      # Construct a matrix as before: 
+      # odd states represent continuing negative gearing
+      # even states are absorbing
+      #
+      # The idea is that once an individual stop negative gearing
+      # that person never negative gears and their accumulated losses
+      # are those thitherto accumulated. 
+      MA <- matrix(0, nrow = 2*Z, ncol = 2*Z)
+      # if still NG, advance
+      MA[row(MA) == col(MA) - 2] <- rep(probNG_if_investor, each = 2)[-c(1, 2*Z)]  ## dropped indices fall off the 'north' and 'east' the matrix
+      # else fall into absorbing state
+      MA[row(MA) == col(MA) - 1] <- rep(1 - probNG_if_investor, each = 2)[-c(2*Z)]
+      
+      # even entires are absorbing
+      MA[row(MA) %% 2 == 0] <- 0
+      MA[row(MA) %% 2 == 0 & row(MA) == col(MA)] <- 1
+      
+      # Final state hack to ensure stochastic.
+      # We take the last state as absorbing, even if the person is (by some miracle) still NG.
+      MA[2*Z - 1, 2*Z] <- 1
+      
+      # MA must be stochastic
+      stopifnot(all(rowSums(MA) == 1))
+      
+      P <- MA %^% (Z + 1)
+      
+      init <- c(1, rep(0, Z - 1))
+      
+      # even entries of P are the absorbing states
+      E <- init %*% P[c(TRUE, FALSE),c(FALSE,TRUE)]
+      
+      data.table(
+        age = rep(the_age, Z),
+        loss_multiplier = 1:Z, 
+        E = as.numeric(t(E))
+      )
+    }
+    
+    accumulator_by_age <- 
+      lapply(unique(q_by_integer_age_long$age), E_by_age) %>% 
+      rbindlist(.) %>%
+      group_by(age) %>%
+      mutate(rand = cumsum(E)) %>%
+      setkey(age, rand)
+    
+    forecast_loss_multiple <- function(.data){
+      setkey(.data, age, rand) %>%
+        accumulator_by_age[., roll = -Inf]
+    }
+    
   }
+  
   target_sample_file %>%
-    mutate_each(funs(round_cols)) %>%
+    # mutate_each(funs(round_cols)) %>%
     
     # We need to work out how much the discount will change Net_CG_amt.
     # We use the density of the apparent_discount to randomly 
@@ -485,9 +522,10 @@ revenue_quarantine_NG <- function(h = 10L, sample_file = sample_file_1314, new_C
                                               pminC(Other_Income + Net_rent_amt, 0)), 
       new_Tot_inc_amt = new_Tot_inc_amt_no_CG + Net_CG_amt
     ) %>% 
-    mutate(rand = runif(n())) %>%
-    setkey(rand) %>%
-    accumulator[., roll = -Inf] %>%
+    mutate(rand = runif(n()), 
+           age = floor(age_imp)) %>%
+    forecast_loss_multiple %>%
+    
     mutate(
       accumulated_losses_year_Z = accumulated_losses_year_0 * loss_multiplier
     ) %>% 
@@ -498,7 +536,8 @@ revenue_quarantine_NG <- function(h = 10L, sample_file = sample_file_1314, new_C
                                        0),
       new_Taxable_Income_year0 = pmaxC(pmaxC(Other_Income + new_Net_CG_amt, 
                                              0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
-                                       0),
+                                       0)) %>%
+    mutate(
       prev_tax = income_tax(Taxable_Income, fy.year = "2013-14"), 
       post_tax_yearZ = income_tax(new_Taxable_Income_yearZ, fy.year = "2013-14"), 
       post_tax_year0 = income_tax(new_Taxable_Income_year0, fy.year = "2013-14"),
@@ -523,8 +562,7 @@ henry_taxstats <- function(new.discount){
 
 <<Summary-chunk, results='hide', eval = TRUE>>=
 # Our proposal
-policy <- revenue_quarantine_NG(h = NULL, 
-                                sample_file = sample_file_1314, 
+policy <- revenue_quarantine_NG(sample_file = sample_file_1314, 
                                 new_CGT_discount = 0.25, 
                                 sample_file_fy_year = "2013-14", 
                                 target_fy = TARGET.FY, 
@@ -639,7 +677,8 @@ devtools::session_info()
 
 <<FINISH-TIME>>=
 FINISH.TIME <- Sys.time()
-write(x = c(START.TIME, FINISH.TIME, difftime(FINISH.TIME, START.TIME)), file = "CGT_and_neg_gearing_parent_time.txt")
+write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(difftime(FINISH.TIME, START.TIME, units = "secs"), tz = "GMT"), "%H:%M:%S")), 
+      file = "CGT_and_neg_gearing_parent_time.txt")
 @
 
 \printbibliography[title=References]
