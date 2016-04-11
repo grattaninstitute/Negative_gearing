@@ -1,5 +1,5 @@
-  2.7	loadPackages
-  1.1	downloadGrattex
+  2.8	loadPackages
+  0.3	downloadGrattex
   0.2	packcageCitation
   0.0	latex_percent
   0.0	select_which_
@@ -14,15 +14,15 @@
   0.0	revenue_quarantine_NG_year0
   0.0	revenue_quarantine_NG
   0.0	henry_taxstats
-  5.4	Summary-chunk
+  5.3	Summary-chunk
   0.7	CostofNGtotal
-  1.6	CGT-by-entity-get
+  2.0	CGT-by-entity-get
   0.2	CGT-by-entity
   0.3	CGT-by-entity-asset
   0.0	CG-delay-EMTR
   0.4	CG-marginal-tax-rates
-  0.5	CGT-by-age-income
-  0.5	CGT-by-age-income-weight-CG
+  0.6	CGT-by-age-income
+  0.6	CGT-by-age-income-weight-CG
   1.5	Maintaining-the-progressive-tax-system
   0.0	30-45-with-high-CG-no-other-income
   2.7	stacked-column-chart
@@ -32,8 +32,10 @@
   0.2	individuals-share-holdings
   0.1	tot_intrst_unincorp_biz
   0.0	total_bizlosses
+  0.0	emtr_rental
+  0.2	EMTR-by-gearing
   4.3	Impact_of_NG_on_house_prices
-  0.2	should_we_get_ABS
+  0.3	should_we_get_ABS
   0.0	ABS_GET_RES_VALS
   2.9	What_price_change_req_to_obtain_same_return
   0.3	Owner_occupiers_loans_are_being_outnumbered_by_investors
@@ -50,11 +52,11 @@
   0.0	bizLosses-from-salary
   0.0	bizLosses-for-PP
   0.0	bizLosses-for-NPP
-  0.6	PP-losses-by-occ
+  0.7	PP-losses-by-occ
   0.5	costing-quarantining-losses
   3.2	benefit-due-NG
   1.4	NG-vs-salary
-  9.8	Results
+ 10.0	Results
   0.0	prop_landlords_n_properties
   0.1	sessionInfo
   0.0	FINISH-TIME

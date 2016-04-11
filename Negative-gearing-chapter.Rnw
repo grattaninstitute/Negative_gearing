@@ -227,4 +227,156 @@ Some other advanced economies restrict the deduction of rental losses from wage 
 
 Indeed, the Commonwealth Government already implicitly accepts the principle that investment losses should not always be applied in calculating tax and welfare outcomes. Ironically, these restrictions currently only apply to those on lower incomes. Calculations of income support payments do not allow people to reduce their taxable income through investment losses. Income tests for Family Tax Benefit Part A and Part B, Child Care Benefit are based on `adjusted taxable income', which adds back investment losses. 
 
+\section{The tax advantages of negative gearing distory investment choices}
+Investment choices are severely distorted when negative gearing is permitted and capital gains are taxed concessionally and only when realised. This regime encourages investors to leverage more, to favour investments that return capital gains rather than income, and to churn their investments more often.
+
+\subsection{Bias towards higher leverage}
+The asymmetry between the tax treatment of gains and losses makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (Figure 9). 
+
+<<emtr_rental>>=
+emtr_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), n = 15, CGT.discount = 0.50, nominal.return = 0.08, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05){
+  # 
+  # # For debugging
+  # gearing_ratio = 0.80
+  # n = 15; CGT.discount = 0.50; nominal.return = 0.08; inflation = 0.08; risk.free.rate = inflation + 0.02;
+  # marginal.tax.rate = 0.47; investment.value = 100; nominal.rent = 0.03; capital.gains = 0.05; interest.rate = 0.05; 
+  # y = 2
+  # 
+  # constants
+  amount_borrowed <- investment.value * gearing_ratio
+  interest_payments <- interest.rate * amount_borrowed
+  
+  # initial conditions
+  carry_forward_balance <- investment.value
+  rent <- investment.value * nominal.rent
+  tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
+  annual_capital_gains <- carry_forward_balance * capital.gains
+  nominal_gain_since_inception <- annual_capital_gains
+  nominal_investment_value_before_tax <- carry_forward_balance + rent + annual_capital_gains
+  
+  for (y in 2:n){
+    inflation_index <- (1 + inflation) ^ y
+    risk_free_return_index <- (1 + risk.free.rate) ^ y
+    
+    carry_forward_balance <- carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains
+    rent <- carry_forward_balance * nominal.rent
+    tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
+    annual_capital_gains <- carry_forward_balance * capital.gains
+    nominal_gain_since_inception <- nominal_gain_since_inception + annual_capital_gains
+    CGT_if_gain_realized <- nominal_gain_since_inception * (1 - CGT.discount) * marginal.tax.rate 
+    
+    nominal_investment_value_before_tax <- investment.value * (1 + nominal.return) ^ y
+    nominal_investment_value_after_tax <- 
+      carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains - CGT_if_gain_realized
+    
+    real_investment_before_tax <- nominal_investment_value_before_tax / inflation_index
+    real_investment_after_tax  <- nominal_investment_value_after_tax  / inflation_index
+    excess_returns_after_tax   <- nominal_investment_value_after_tax  / risk_free_return_index
+    excess_returns_before_tax  <- nominal_investment_value_before_tax / risk_free_return_index
+    
+    annualized_real_investment_before_tax <- (real_investment_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_real_investment_after_tax  <- (real_investment_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    annualized_nominal_investment_before_tax <- (nominal_investment_value_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_nominal_investment_after_tax  <- (nominal_investment_value_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    annualized_excess_investment_before_tax <- (excess_returns_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_excess_investment_after_tax  <- (excess_returns_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    effective_tax_rate_nominal <- 
+      1 - annualized_nominal_investment_after_tax / annualized_nominal_investment_before_tax
+    
+    effective_tax_rate_real <- 
+      1 - annualized_real_investment_after_tax / annualized_real_investment_before_tax
+    
+    effective_tax_rate_excess <- 
+      1 - annualized_excess_investment_after_tax / annualized_excess_investment_before_tax
+  }
+  
+  if (return_type == "nominal"){
+    return(effective_tax_rate_nominal)
+  } else {
+    if (return_type == "real"){
+      return(effective_tax_rate_real)
+    } else {
+      return(effective_tax_rate_excess)
+    }
+  }
+  
+}
+
+# unit testing
+
+test_emtr <- function(){
+  
+  RT <- sample(c("real", "nominal", "excess"), size = 1)
+  GR <- runif(1)
+  
+  IV1 <- abs(rcauchy(1))
+  IV2 <- abs(rcauchy(1))
+
+  # inflations
+  i1 <- rnorm(1, 0.025, 0.02)
+  i2 <- i1 + abs(rnorm(1, 0.05, 0.02))
+  
+  nr <- rnorm(1, 0.06, 0.03)
+  while (nr < i2){
+    nr <- rnorm(1, 0.06, 0.03)
+  }
+  
+  
+  # Investment value doesn't affect emtr
+  expect_equal(emtr_rental(GR, RT, investment.value = IV1), emtr_rental(GR, RT, investment.value = IV2))
+  
+  # Inflation doesn't affect nominal returns
+  expect_equal(emtr_rental(GR, return_type = "nominal", inflation = i1), emtr_rental(GR, return_type = "nominal", inflation = i2))
+  # but does on real returns (and higher inflation -> higher emtr)
+  # Not true for all rates of returns.
+  # How to deal with negative rates of return?
+  expect_lt(emtr_rental(GR, return_type = "real", nominal.return = nr, inflation = i1), emtr_rental(GR, return_type = "real", nominal.return = nr, inflation = i2))
+  
+  
+}
+
+test_emtr()
+@
+
+\begin{figure}
+\Caption{Effective tax rates depend on amount of borring}{Real effective marginal tax rate}{fig:EMTR-by-gearing}
+<<EMTR-by-gearing>>=
+emtr_defaults <- 
+  formals(emtr_rental)
+
+data.table(
+  gearing_ratio = c(0, 0.40, 0.80)
+) %>% 
+  mutate(emtr = emtr_rental(gearing_ratio, return_type = "real")) %>%
+  mutate(`Gearing ratio` = factor(gearing_ratio, labels = percent(unique(.$gearing_ratio)))) %>%
+  grplot(aes(x = `Gearing ratio`, y = emtr)) + 
+  geom_bar(stat = "identity") +
+  scale_y_continuous(expand = c(0,0), label = percent) 
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/EMTR-by-gearing-1}
+\source{Grattan analysis}
+
+\notes{Assumes 
+\Sexpr{latex_percent(emtr_defaults$nominal.return)} nominal return, 
+\Sexpr{latex_percent(emtr_defaults$capital.gains)} capital gain per year, 
+\Sexpr{latex_percent(emtr_defaults$inflation)} inflation,
+\Sexpr{latex_percent(emtr_defaults$interest.rate)} interest rate on borrowing, 
+\Sexpr{latex_percent(emtr_defaults$CGT.discount)} CGT discount, 
+and
+\Sexpr{latex_percent(emtr_defaults$marginal.tax.rate)} marginal tax rate. 
+The property is held for 
+\Sexpr{emtr_defaults$n} years and then sold.
+}
+\end{figure}
+
+The Henry Tax Review described the asymmetry between gains and losses as ``among the greatest tax induced biases to the savings choices of households''.  This contradicts the rationale for allowing the deductibility of losses -- to maintain tax neutrality of debt and equity financing.
+
+Indeed, the distortions created are so large that it is possible that an investment with a negative pre-tax return over its lifetime can nevertheless provide a positive return to its investor after taking into account the tax benefits.  
+
+While this bias towards higher leverage applies to all investments, in practice, it encourages greater investment in property because bank lending rules allow greater leverage than for others assets such as shares.
+
+
 
