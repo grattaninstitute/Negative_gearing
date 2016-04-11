@@ -196,6 +196,32 @@ hilda_w14_rp <-
   foreign::read.dta("HILDA/Wave14/Rperson_n140c.dta")
 @
 
+<<Import-misc-ATO>>=
+# Individuals - Table 9
+# Selected items from people with business income
+if (!file.exists("./ATO/Individuals_table9.xlsx")){
+  GET("http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/e619aada-deb6-4696-a364-4e87e2d28a1c/download/Taxstats2014Individual09Industry.xlsx", 
+      write_disk("./ATO/Individuals_table9.xlsx"))
+}
+
+# Individuals - Table 1
+# Time series (contains interest deductions for businesses)
+if (!file.exists("./ATO/Individuals_table1.xlsx")){
+  GET("http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/3cd6dee1-785f-4876-a282-ebcf00f9949a/download/Taxstats2014Individual01SelectedItemsByYear.xlsx", 
+      write_disk("./ATO/Individuals_table1.xlsx"))
+}
+
+individuals_table1_201314 <- 
+  read_excel("ATO/Individuals_table1.xlsx", sheet = 2, skip = 2, na = "na") %>%
+  setnames(old = 2, new = "unit") %>%
+  setnames(old = names(.)[grepl("([12][0-9]{3}).([0-9]{2}|2000)", names(.))],
+           # endash -> hyphen
+           new = gsub("1999-2000", "1999-00", fixed = TRUE,
+                      x = gsub("([12][0-9]{3}).([0-9]{2}|2000)", 
+                               "\\1-\\2", 
+                               names(.)[grepl("([12][0-9]{3}).([0-9]{2}|2000)", names(.))])))
+@
+
 
 %%% Costings analysis
 
