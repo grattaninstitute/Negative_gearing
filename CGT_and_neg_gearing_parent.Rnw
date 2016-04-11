@@ -101,7 +101,7 @@ library(taxstats)
 @
 
 <<downloadGrattex>>=
-overwrite_grattex <- TRUE# && (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
+overwrite_grattex <- (!file.exists("grattan.cls") || (difftime(Sys.time(), file.info("grattan.cls")$ctime, units = "days") > 2))
 if (overwrite_grattex){
   GET(url = "https://raw.githubusercontent.com/HughParsonage/grattex/master/grattan.cls", 
       write_disk("grattan.cls", overwrite = TRUE))
