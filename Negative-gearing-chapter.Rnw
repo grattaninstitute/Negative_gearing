@@ -514,6 +514,7 @@ individuals_table1_201314 %>%
   mutate(year = fy2yr(fy_year) + 0.5) %>%
   arrange(fy_year, `Selected items`) %>%
   grplot(aes(x = year, y = real_value)) + 
+  geom_hline(yintercept = 0, colour = theGrey) + 
   geom_bar(stat = "identity") + 
   
   annotate("segment", 
@@ -530,7 +531,6 @@ individuals_table1_201314 %>%
            lineheight = 0.85,
            hjust = 0, 
            vjust = 0.5) + 
-  geom_hline(yintercept = 0, colour = theGrey) + 
   
   scale_y_continuous(label = function(x){paste0(grattan_dollar(x / 1e9), "\u2006bn")}) + 
   theme(plot.margin = grid::unit(c(0.7,0.7,0.5,0.00), "lines"), 
