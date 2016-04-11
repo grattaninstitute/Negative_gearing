@@ -12,23 +12,16 @@ This is a growing concern as accumulated wealth and returns on investments becom
 The key policy question is whether the capital gains discount is set at the right level given these costs and benefits. While there is some justification for retaining a discount -- primarily not taxing inflationary gains -- the current discount is too generous given the range of competing considerations. 
 
 \section{The size and distribution of capital gains}
-<<CGT-by-entity-get>>=
-# 2013-14 figures
-cgt_entity_url <- "http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/4e5cc0c1-a1b5-4bd2-80f4-6845ef78658b/download/Taxstats2014Summary5Index-of-chart-data.xlsx"
 
-
-tempf <- paste0(tempfile(), ".xlsx")
-
-GET(url = cgt_entity_url, write_disk(tempf))
-@
 
 <<CGT-by-entity>>=
 cgt_by_entity_asset <- 
-  readWorkbook(tempf, sheet = "16", rows = c(4:7), cols = 1:4) %>%
+  readWorkbook("./ATO/CGT-by-entity-and-asset-type.xlsx", sheet = "16", rows = c(4:7), cols = 1:4) %>%
   gather(asset_type, value_bn, -Entity) %>%
   mutate(asset_type = factor(gsub(".", " ", gsub(".$b", "", asset_type, fixed = TRUE), fixed = TRUE), 
                              levels = c("Shares", "Other assets", "Real estate"), 
-                             ordered = TRUE))
+                             ordered = TRUE), 
+         value = value_bn * 10^9)
 
 total_CGT <- 
   cgt_by_entity_asset %$%
@@ -42,13 +35,21 @@ cgt_by_entity <-
   mutate(prop = value / sum(value))
 @
 
-<<CGT-by-entity-asset>>=
+% cairo pdf for unicode concordance
+<<CGT-by-entity-asset, dev='cairo_pdf'>>=
 cgt_by_entity_asset %>%
   arrange(desc(asset_type)) %>%
-  grplot(aes(Entity, value_bn, fill = asset_type, order = asset_type)) + 
-  geom_bar(stat = "identity") + 
+  mutate(`Asset type` = asset_type) %>%
+  grplot(aes(Entity, value, fill = `Asset type`, order = `Asset type`)) + 
+  geom_bar(stat = "identity", width = 0.8) + 
+  # \u2006 = half-space = emdash/6 space
+  scale_y_continuous(label = function(x){paste0(grattan_dollar(x / 10^9), "\u2006bn")}, 
+                     expand = c(0,0)) +
   theme(axis.title = element_blank(), 
-        legend.position = "right")
+        legend.key.size = unit(23, "pt"),
+        legend.text = element_text(),
+        legend.title = element_text(),
+        legend.position = "right") 
 @
 
 Australian entities -- individuals, companies, and superannuation funds -- accrued \Sexpr{texNum(total_CGT, dollar = TRUE)} of income through capital gains in 2013-14. Individuals accrued a plurality (\Sexpr{latex_percent(cgt_by_entity %>% filter(Entity == "Individuals") %$% prop)}) 

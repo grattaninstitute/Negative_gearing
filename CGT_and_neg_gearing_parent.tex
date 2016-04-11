@@ -99,6 +99,8 @@
 
 
 
+
+
 %%% Costings analysis
 
 
@@ -184,6 +186,7 @@ The key policy question is whether the capital gains discount is set at the righ
 
 
 
+% cairo pdf for unicode concordance
 
 
 Australian entities -- individuals, companies, and superannuation funds -- accrued \$74.3~billion of income through capital gains in 2013-14. Individuals accrued a plurality (44.7~percent) 
@@ -390,6 +393,15 @@ investment.\footnote{See for example: Brown (2012). There is some
   
 
 
+\begin{figure}[!htb]
+\Caption{More people negatively gear property investments in their peak earning years}{Percentage of 2013-14 taxpayers}{fig:NG-PG-by-age}
+
+\includegraphics[width=\columnwidth]{CGT-NG-atlas//NG-PG-by-age-1}
+\source{2013-14 sample file.}
+
+\notes{Taxpayers over the age of 70 are not disaggregated in taxstats and have been presented as having ages 70-75.}
+\end{figure}
+
 The attractiveness of using investment losses to reduce taxes on wage
 income is evident in the age profile of those negatively gearing
 property. Investing in loss making properties is popular amongst those
@@ -398,15 +410,6 @@ to benefit from the tax write-offs. 68.5~percent of those under 60
 with investment properties make rental losses compared to less than 32.6~percent over 60 (see \Vref{fig:NG-PG-by-age}).
 
 Of course, not all investments are negatively geared. `Positively geared' properties are those where the annual income on the property exceeds the annual costs of maintenance and interest. Typically, positively-geared investors have broowed less of the value of the property, and so they have lower interest costs.
-
-\begin{figure}
-\Caption{More people negatively gear property investments in their peak earning years}{Percentage of 2013-14 taxpayers}{fig:NG-PG-by-age}
-
-\includegraphics[width=\columnwidth]{CGT-NG-atlas//NG-PG-by-age-1}
-\source{2013-14 sample file.}
-
-\notes{Taxpayers over the age of 70 are not disaggregated in taxstats and have been presented as having ages 70-75.}
-\end{figure}
 
 Negative gearing is used much less for investments outside of housing. Investors in assets other than real estate, such as equities or unincorporated businesses, are less likely to borrow some of the funding, and usually do not borrow so much that these investments are negatively geared. 
 
@@ -433,7 +436,7 @@ Indeed, the Commonwealth Government already implicitly accepts the principle tha
 Investment choices are severely distorted when negative gearing is permitted and capital gains are taxed concessionally and only when realised. This regime encourages investors to leverage more, to favour investments that return capital gains rather than income, and to churn their investments more often.
 
 \subsection{Bias towards higher leverage}
-The asymmetry between the tax treatment of gains and losses makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (Figure 9). 
+The asymmetry between the tax treatment of gains and losses makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (\Vref{fig:EMTR-by-gearing}). 
 
 
 
@@ -465,7 +468,7 @@ While this bias towards higher leverage applies to all investments, in practice,
 \subsection{Bias towards capital gains not annual returns}
 As the RBA notes:
 \begin{quote}
-in most countries the earning of rental income is seen as the most important reason for investing in rental properties\dots This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
+\dots\ in most countries the earning of rental income is seen as the most important reason for investing in rental properties\dots. This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
 \end{quote}
 \textcite{seelig2009understanding} echoes the RBA view, finding that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.
 
@@ -476,7 +479,7 @@ These biases are not just theoretical arguments. They are reflected in how inves
 
 
 \begin{figure}
-\Caption{More people are negatively gearing and have higher losses}{Number of people negatively gearing property}{fig:number-NG-time-series} 
+\Caption{More people are negatively gearing and have higher losses}{Number of people negatively gearing property 1993-94 to 2013-14}{fig:number-NG-time-series} 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//number-NG-time-series-1}
 \vspace*{4pt}
 \captionsetup{font = {small, color=theGrey}}
@@ -484,8 +487,31 @@ These biases are not just theoretical arguments. They are reflected in how inves
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//avg-net-losses-time-series-1}
 \end{figure}
 
-Negatively geared residential property investments have grown rapidly over 20 years, particularly after 1999 when the capital gains discount changed from taxing all real gains to taxing half of the nominal gains. Over 15 years the number of taxpayers making losses on residential property has almost doubled, as has the size of the average loss in real terms (\Vrefrange{fig:number-NG-time-series}{fig:number-NG-and-net-losses-time-series}).  
+Negatively geared residential property investments have grown rapidly over 20 years, particularly after 1999 when the capital gains discount changed from taxing all real gains to taxing half of the nominal gains. Over 15 years the number of taxpayers making losses on residential property has almost doubled, as has the size of the average loss in real terms (\Vref{fig:number-NG-time-series}).
 
+\begin{figure}
+\Caption{Almost all the growth in property investment since 1994 has been because of loss-making landlords}%
+{Number of landlords with positive and negative net rental income, 1993-94 to 2013-14}{fig:number-of-investors-by-gearing}
+
+\includegraphics[width=\columnwidth]{CGT-NG-atlas//number-of-investors-by-gearing-1}
+\end{figure}
+
+\textcite{seelig2009understanding} find that around half of investors would not have invested in property if negative gearing had not been available.  Meanwhile there has been little change in the number of positively geared investors. Almost all the additional investors in property over the last 15 years were negatively geared (\Vref{fig:number-of-investors-by-gearing}).
+
+
+ 
+ And the average level of gearing for property investors is increasing.
+ Even though interest rates are falling, interest deductions as a proportion of rents increased from 45.6~per cent of gross rental payments in 1997-98 to 84.2 in 2007-08. With falling interest rates, interest deductions as a proportion of gross rents have fallen to 55.1~per cent in 2013-14.\footcite[p.~65]{Treasury2015a}
+ 
+
+
+As a result, Australian landlords have moved from being collectively profitable, to accruing billions in net rental losses each year. In 2013-14, 1.26~million landlords reported collective losses of $-$\$11~billion. Consequently, total net rents have been consistently negative since the introduction of the CGT discount. (\Vref{fig:Net-rent-time-series}).  Losses are reducing only because interest rates have fallen rapidly.
+
+\begin{figure}
+\Caption{Since the introduction of the capital gain tax discount, rental losses have been large, overwhelming profits}{Total real net rent (profit $-$ loss), individual taxpayers, (2014-15 dollars)}{fig:Net-rent-time-series}
+
+\includegraphics[width=\columnwidth]{CGT-NG-atlas//Net-rent-time-series-1}
+\end{figure}
 
 
 
@@ -616,7 +642,7 @@ contribution to the budget bottom line.
 \begin{table}[!h]
 \begin{center}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Mon Apr 11 18:32:19 2016
+% Tue Apr 12 09:08:15 2016
 \begin{tabular}{rr}
   \toprule
 {\textbf{Investment properties owned}} & {\textbf{Households}} \\ 
@@ -648,7 +674,7 @@ contribution to the budget bottom line.
 
 \begin{table}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Mon Apr 11 18:32:20 2016
+% Tue Apr 12 09:08:16 2016
 \begin{tabular}{rr}
   \toprule
   \midrule
@@ -666,7 +692,7 @@ properties owned and rented out & 316,366 \\
 \begin{table*}
 \caption{Taxpayers with wage and salary income claiming business losses by occupation}\label{tbl:bizlosses}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Mon Apr 11 18:32:20 2016
+% Tue Apr 12 09:08:16 2016
 \begin{tabular}{lrrrrr}
   \toprule
 {\textbf{Occupation}} & {\textbf{Type}} & {\textbf{No. claiming losses}} & {\textbf{\%}} & {\textbf{Average loss}} & {\textbf{Average salary}} \\ 
@@ -798,7 +824,7 @@ Capping losses is politically attractive because a smaller percentage of landlor
 \begin{table}
 \caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Mon Apr 11 18:32:36 2016
+% Mon Apr 11 23:10:53 2016
 \begin{tabular}{rrrS}
   \toprule
 {\textbf{Threshold}} & {\textbf{Costing}} & {\textbf{Number affected}} & {\textbf{\%}} \\ 
@@ -809,7 +835,6 @@ $-$\$0 & \$2,301,531,420 & 739,281 & 36.9\% \\
   $-$\$15,000 & \$476,571,527 & 113,180 & 5.65\% \\ 
   $-$\$20,000 & \$311,345,906 & 65,550 & 3.27\% \\ 
   $-$\$50,000 & \$40,194,373 & 8,466 & 0.423\% \\ 
-  $-$\$$\infty$ & \$0 & 0 & 0\% \\ 
    \bottomrule
 \end{tabular}
 

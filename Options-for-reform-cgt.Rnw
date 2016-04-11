@@ -199,9 +199,9 @@ Capping losses is politically attractive because a smaller percentage of landlor
 
 \begin{table}
 \caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
-<<Results, results = 'asis'>>=
+<<Results, results = 'asis', cache=TRUE>>=
 long_term = 10L
-data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3, -Inf)) %>%
+data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3), -Inf) %>%
   rowwise %>%
   mutate(Costing = grattan_dollar(round(cost_NG_limited_to(Threshold))),
          `Number affected` = comma(round(number_affected(Threshold))), 

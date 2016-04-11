@@ -120,16 +120,7 @@ prop_investors_over60_NG <-
   mean(Net_rent_amt < 0)
 @
 
-The attractiveness of using investment losses to reduce taxes on wage
-income is evident in the age profile of those negatively gearing
-property. Investing in loss making properties is popular amongst those
-of working age, but far less prevalent amongst over 60s who are unlikely
-to benefit from the tax write-offs. \Sexpr{latex_percent(prop_investors_under60_NG)} of those under 60
-with investment properties make rental losses compared to less than \Sexpr{latex_percent(prop_investors_over60_NG)} over 60 (see \Vref{fig:NG-PG-by-age}).
-
-Of course, not all investments are negatively geared. `Positively geared' properties are those where the annual income on the property exceeds the annual costs of maintenance and interest. Typically, positively-geared investors have broowed less of the value of the property, and so they have lower interest costs.
-
-\begin{figure}
+\begin{figure}[!htb]
 \Caption{More people negatively gear property investments in their peak earning years}{Percentage of \Sexpr{latest.sample.fy} taxpayers}{fig:NG-PG-by-age}
 <<NG-PG-by-age>>=
 sample_file %>%
@@ -167,6 +158,15 @@ sample_file %>%
 
 \notes{Taxpayers over the age of 70 are not disaggregated in taxstats and have been presented as having ages 70-75.}
 \end{figure}
+
+The attractiveness of using investment losses to reduce taxes on wage
+income is evident in the age profile of those negatively gearing
+property. Investing in loss making properties is popular amongst those
+of working age, but far less prevalent amongst over 60s who are unlikely
+to benefit from the tax write-offs. \Sexpr{latex_percent(prop_investors_under60_NG)} of those under 60
+with investment properties make rental losses compared to less than \Sexpr{latex_percent(prop_investors_over60_NG)} over 60 (see \Vref{fig:NG-PG-by-age}).
+
+Of course, not all investments are negatively geared. `Positively geared' properties are those where the annual income on the property exceeds the annual costs of maintenance and interest. Typically, positively-geared investors have broowed less of the value of the property, and so they have lower interest costs.
 
 Negative gearing is used much less for investments outside of housing. Investors in assets other than real estate, such as equities or unincorporated businesses, are less likely to borrow some of the funding, and usually do not borrow so much that these investments are negatively geared. 
 <<individuals-share-holdings>>=
@@ -213,7 +213,7 @@ Indeed, the Commonwealth Government already implicitly accepts the principle tha
 Investment choices are severely distorted when negative gearing is permitted and capital gains are taxed concessionally and only when realised. This regime encourages investors to leverage more, to favour investments that return capital gains rather than income, and to churn their investments more often.
 
 \subsection{Bias towards higher leverage}
-The asymmetry between the tax treatment of gains and losses makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (Figure 9). 
+The asymmetry between the tax treatment of gains and losses makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (\Vref{fig:EMTR-by-gearing}). 
 
 <<emtr_rental>>=
 emtr_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), n = 15, CGT.discount = 0.50, nominal.return = 0.08, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05){
@@ -363,7 +363,7 @@ While this bias towards higher leverage applies to all investments, in practice,
 \subsection{Bias towards capital gains not annual returns}
 As the RBA notes:
 \begin{quote}
-in most countries the earning of rental income is seen as the most important reason for investing in rental properties\dots This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
+\dots\ in most countries the earning of rental income is seen as the most important reason for investing in rental properties\dots. This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
 \end{quote}
 \textcite{seelig2009understanding} echoes the RBA view, finding that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.
 
@@ -379,7 +379,13 @@ individuals_table1_201314 %>%
   mutate(avg_loss = -`$` / no., 
          avg_loss_real = cpi_inflator(avg_loss, from_fy = fy_year, to_fy = "2014-15")) %>%
   
-  mutate(year = fy2yr(fy_year) + 0.5) %>%
+  mutate(year = fy2yr(fy_year) + 0.5) %T>%
+  {
+    grattan:::chart_data(.)
+    min.fy <<- min(.$fy_year)
+    max.fy <<- max(.$fy_year)
+    
+  } %>%
   grplot(aes(x = year, y = no.)) + 
   geom_line(group = 1, colour = gpal(2)[2]) + 
   scale_y_continuous(label = comma) + 
@@ -413,7 +419,7 @@ individuals_table1_201314 %>%
 @
 
 \begin{figure}
-\Caption{More people are negatively gearing and have higher losses}{Number of people negatively gearing property}{fig:number-NG-time-series} 
+\Caption{More people are negatively gearing and have higher losses}{Number of people negatively gearing property \Sexpr{min.fy} to \Sexpr{max.fy}}{fig:number-NG-time-series} 
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/number-NG-time-series-1}
 \vspace*{4pt}
 \captionsetup{font = {small, color=theGrey}}
@@ -421,5 +427,115 @@ individuals_table1_201314 %>%
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/avg-net-losses-time-series-1}
 \end{figure}
 
-Negatively geared residential property investments have grown rapidly over 20 years, particularly after 1999 when the capital gains discount changed from taxing all real gains to taxing half of the nominal gains. Over 15 years the number of taxpayers making losses on residential property has almost doubled, as has the size of the average loss in real terms (\Vrefrange{fig:number-NG-time-series}{fig:number-NG-and-net-losses-time-series}).  
+Negatively geared residential property investments have grown rapidly over 20 years, particularly after 1999 when the capital gains discount changed from taxing all real gains to taxing half of the nominal gains. Over 15 years the number of taxpayers making losses on residential property has almost doubled, as has the size of the average loss in real terms (\Vref{fig:number-NG-time-series}).
 
+\begin{figure}
+\Caption{Almost all the growth in property investment since 1994 has been because of loss-making landlords}%
+{Number of landlords with positive and negative net rental income, \Sexpr{min.fy} to \Sexpr{max.fy}}{fig:number-of-investors-by-gearing}
+<<number-of-investors-by-gearing>>=
+individuals_table1_201314 %>%
+  filter(grepl("Net.*rent", `Selected items`)) %>%
+  gather(fy_year, value, -`Selected items`, -unit) %>%
+  spread(unit, value) %>%
+  filter(!is.na(`$`) | !is.na(no.)) %>%
+  filter(grepl("Net.rent.*((loss)|(profit))$", `Selected items`), !grepl("property", `Selected items`)) %>%
+  
+  mutate(year = fy2yr(fy_year) + 0.5) %>%
+  grplot(aes(x = year, y = no., fill = `Selected items`)) + 
+  geom_bar(stat = "identity", position = "stack") + 
+  scale_y_continuous(label = comma, expand = c(0,0)) + 
+  scale_x_continuous(expand = c(0.01,0.01)) + 
+  theme(axis.title.x = element_blank()) + 
+  annotate("text", 
+           x = 2015.35, 
+           y = c(0.5e6, 1.5e6), 
+           label = c("Negative\ngearing", "Positive\ngearing"), 
+           colour = gpal(2),
+           hjust = 0,
+           lineheight = 0.75, 
+           fontface = "bold", 
+           size = 23/(14/5)) + 
+  annotate("blank", 
+           x = 2018.75, 
+           y = 0)
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/number-of-investors-by-gearing-1}
+\end{figure}
+
+\textcite{seelig2009understanding} find that around half of investors would not have invested in property if negative gearing had not been available.  Meanwhile there has been little change in the number of positively geared investors. Almost all the additional investors in property over the last 15 years were negatively geared (\Vref{fig:number-of-investors-by-gearing}).
+
+<<prop_rental_deductions_gross_rent>>=
+individuals_table1_201314 %>%
+  filter(grepl("(Rent.*interest)|(Gross rent)", `Selected items`)) %>%
+  filter(grepl("\\$", unit)) %>%
+  select(-unit) %>%
+  gather(fy_year, value, -`Selected items`) %>%
+  group_by(fy_year) %>%
+  filter(all(!is.na(value))) %>%
+  spread(`Selected items`, value) %>%
+  mutate(prop = `Rent - interest deductions` / `Gross rent`) ->
+  prop_rental_deductions_gross_rent
+
+# proportion of rental deductions against gross rent (as a percentage
+# to three decimal places).
+prdgr <- function(fyyear){ 
+  prop_rental_deductions_gross_rent %>%
+    dplyr::filter(fy_year == fyyear) %$%
+    round(prop, 3)*100
+}
+@
+ 
+ And the average level of gearing for property investors is increasing.
+ Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2007-08")} in 2007-08. With falling interest rates, interest deductions as a proportion of gross rents have fallen to \Sexpr{prdgr("2013-14")}~per cent in 2013-14.\footcite[p.~65]{Treasury2015a}
+ 
+<<NG-basic-stats>>=
+n_NG <- 
+  individuals_table1_201314 %>%
+  filter(grepl("Net.rent...loss", `Selected items`), unit == "no.") %$%
+  `2013-14`
+
+val_NG <- 
+  individuals_table1_201314 %>%
+  filter(grepl("Net.rent...loss", `Selected items`), unit == "$") %$%
+  `2013-14`
+@
+
+As a result, Australian landlords have moved from being collectively profitable, to accruing billions in net rental losses each year. In 2013-14, \Sexpr{texNum(n_NG)} landlords reported collective losses of \Sexpr{texNum(val_NG, dollar = TRUE)}. Consequently, total net rents have been consistently negative since the introduction of the CGT discount. (\Vref{fig:Net-rent-time-series}).  Losses are reducing only because interest rates have fallen rapidly.
+
+\begin{figure}
+\Caption{Since the introduction of the capital gain tax discount, rental losses have been large, overwhelming profits}{Total real net rent (profit $-$ loss), individual taxpayers, (2014-15 dollars)}{fig:Net-rent-time-series}
+<<Net-rent-time-series, dev='cairo_pdf'>>=
+individuals_table1_201314 %>%
+  #filter(grepl("Net.rent...((loss)|(profit))$", `Selected items`), unit == "$") %>%
+  filter(grepl("Net rent2", `Selected items`), unit == "$") %>%
+  gather(fy_year, nominal_value, -`Selected items`, -unit) %>%
+  filter(!is.na(nominal_value)) %>%
+  mutate(real_value = cpi_inflator(nominal_value, from_fy = fy_year, to_fy = "2014-15")) %>%
+  mutate(year = fy2yr(fy_year) + 0.5) %>%
+  arrange(fy_year, `Selected items`) %>%
+  grplot(aes(x = year, y = real_value)) + 
+  geom_bar(stat = "identity") + 
+  
+  annotate("segment", 
+           x = 2000 + 9/12, 
+           xend = 2000 + 9/12, 
+           y = -Inf, 
+           yend = Inf, 
+           linetype = 2) + 
+  annotate("text", 
+           x = 2001, 
+           y = 1.2e9, 
+           label = "CGT discount\nintroduced", 
+           size = 22/(14/5),
+           lineheight = 0.85,
+           hjust = 0, 
+           vjust = 0.5) + 
+  geom_hline(yintercept = 0, colour = theGrey) + 
+  
+  scale_y_continuous(label = function(x){paste0(grattan_dollar(x / 1e9), "\u2006bn")}) + 
+  theme(plot.margin = grid::unit(c(0.7,0.7,0.5,0.00), "lines"), 
+        axis.title.x = element_blank())
+  
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/Net-rent-time-series-1}
+\end{figure}
