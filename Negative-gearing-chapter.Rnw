@@ -183,24 +183,6 @@ Total lending to individuals for share investments is at most \$19 billion, comp
 When individuals do borrow to invest in equities, they are seldom negatively geared. Equities investors will only be negatively geared if they are at least 70 per cent leveraged.  The average leverage of those who do have a margin loan is around 27 per cent.  Few margin lending investors leverage more than 65 per cent. Usually the maximum leverage permitted is around 75 per cent. Most margin lending customers dislike margin calls, and so they tend to create a buffer of at least 10 per cent less than this. 
 
 <<tot_intrst_unincorp_biz>>=
-# Individuals - Table 9
-# Selected items from people with business income
-if (!file.exists("./ATO/Individuals_table9.xlsx")){
-  GET("http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/e619aada-deb6-4696-a364-4e87e2d28a1c/download/Taxstats2014Individual09Industry.xlsx", 
-      write_disk("./ATO/Individuals_table9.xlsx"))
-}
-
-# Individuals - Table 1
-# Time series (contains interest deductions for businesses)
-if (!file.exists("./ATO/Individuals_table1.xlsx")){
-  GET("http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/3cd6dee1-785f-4876-a282-ebcf00f9949a/download/Taxstats2014Individual01SelectedItemsByYear.xlsx", 
-      write_disk("./ATO/Individuals_table1.xlsx"))
-}
-
-individuals_table1_201314 <- 
-  read_excel("ATO/Individuals_table1.xlsx", sheet = 2, skip = 2, na = "na") %>%
-  setnames(old = 2, new = "unit") 
-
 tot_intrst_unincorp_biz <- 
   individuals_table1_201314 %>%
   filter(grepl("Interest expenses within Australia", `Selected items`), 
@@ -378,5 +360,66 @@ Indeed, the distortions created are so large that it is possible that an investm
 
 While this bias towards higher leverage applies to all investments, in practice, it encourages greater investment in property because bank lending rules allow greater leverage than for others assets such as shares.
 
+\subsection{Bias towards capital gains not annual returns}
+As the RBA notes:
+\begin{quote}
+in most countries the earning of rental income is seen as the most important reason for investing in rental properties\dots This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
+\end{quote}
+\textcite{seelig2009understanding} echoes the RBA view, finding that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.
 
+
+These biases are not just theoretical arguments. They are reflected in how investors have changed their behaviour since capital gains tax changes increased the attractiveness of negative gearing from 1999.
+<<number-NG-time-series>>=
+individuals_table1_201314 %>%
+  filter(grepl("Net.*rent", `Selected items`)) %>%
+  gather(fy_year, value, -`Selected items`, -unit) %>%
+  spread(unit, value) %>%
+  filter(!is.na(`$`) | !is.na(no.)) %>%
+  filter(grepl("Net.rent.*loss$", `Selected items`), !grepl("property", `Selected items`)) %>%
+  mutate(avg_loss = -`$` / no., 
+         avg_loss_real = cpi_inflator(avg_loss, from_fy = fy_year, to_fy = "2014-15")) %>%
+  
+  mutate(year = fy2yr(fy_year) + 0.5) %>%
+  grplot(aes(x = year, y = no.)) + 
+  geom_line(group = 1, colour = gpal(2)[2]) + 
+  scale_y_continuous(label = comma) + 
+  theme(axis.title.x = element_blank(), 
+        # nicks axis tick marks otherwise
+        plot.margin = unit(c(0.7, 1, 0.5, 0.1), "lines"), 
+        panel.grid.major.y = element_line())
+@
+
+<<avg-net-losses-time-series>>=
+dollar_stretched <- function(x){
+  paste0("   ", grattan_dollar(x))
+}
+individuals_table1_201314 %>%
+  filter(grepl("Net.*rent", `Selected items`)) %>%
+  gather(fy_year, value, -`Selected items`, -unit) %>%
+  spread(unit, value) %>%
+  filter(!is.na(`$`) | !is.na(no.)) %>%
+  filter(grepl("Net.rent.*loss$", `Selected items`), !grepl("property", `Selected items`)) %>%
+  mutate(avg_loss = -`$` / no., 
+         avg_loss_real = cpi_inflator(avg_loss, from_fy = fy_year, to_fy = "2014-15")) %>%
+  
+  mutate(year = fy2yr(fy_year) + 0.5) %>%
+  grplot(aes(x = year, y = avg_loss_real)) + 
+  geom_line(group = 1, colour = gpal(2)[1]) + 
+  scale_y_continuous(label = dollar_stretched) + 
+  theme(axis.title.x = element_blank(), 
+        # nicks axis tick marks otherwise
+        plot.margin = unit(c(0.7, 1, 0.5, 0.1), "lines"), 
+        panel.grid.major.y = element_line())
+@
+
+\begin{figure}
+\Caption{More people are negatively gearing and have higher losses}{Number of people negatively gearing property}{fig:number-NG-time-series} 
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/number-NG-time-series-1}
+\vspace*{4pt}
+\captionsetup{font = {small, color=theGrey}}
+\caption*{Average net rental loss, (2014-15 dollars)}\label{fig:number-NG-and-net-losses-time-series}
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/avg-net-losses-time-series-1}
+\end{figure}
+
+Negatively geared residential property investments have grown rapidly over 20 years, particularly after 1999 when the capital gains discount changed from taxing all real gains to taxing half of the nominal gains. Over 15 years the number of taxpayers making losses on residential property has almost doubled, as has the size of the average loss in real terms (\Vrefrange{fig:number-NG-time-series}{fig:number-NG-and-net-losses-time-series}).  
 
