@@ -107,11 +107,124 @@ investment.\footnote{See for example: Brown (2012). There is some
   likely to contribute to a tax deductible retirement saving account if
   they owe money to the Internal Revenue Service in excess of taxes
   withheld. Hubbard and Skinner (1996), p.76.}
+  
+<<NG-by-age>>=
+prop_investors_under60_NG <- 
+  sample_file %>%
+  filter(Gross_rent_amt > 0, age_imp < 60) %$%
+  mean(Net_rent_amt < 0)
+
+prop_investors_over60_NG <- 
+  sample_file %>%
+  filter(Gross_rent_amt > 0, age_imp > 60) %$%
+  mean(Net_rent_amt < 0)
+@
 
 The attractiveness of using investment losses to reduce taxes on wage
 income is evident in the age profile of those negatively gearing
 property. Investing in loss making properties is popular amongst those
 of working age, but far less prevalent amongst over 60s who are unlikely
-to benefit from the tax write-offs. Over 70 per cent of those under 60
-with investment properties make rental losses compared to less than 35
-per cent over 60 (see Figure 5).
+to benefit from the tax write-offs. \Sexpr{latex_percent(prop_investors_under60_NG)} of those under 60
+with investment properties make rental losses compared to less than \Sexpr{latex_percent(prop_investors_over60_NG)} over 60 (see \Vref{fig:NG-PG-by-age}).
+
+Of course, not all investments are negatively geared. `Positively geared' properties are those where the annual income on the property exceeds the annual costs of maintenance and interest. Typically, positively-geared investors have broowed less of the value of the property, and so they have lower interest costs.
+
+\begin{figure}
+\Caption{More people negatively gear property investments in their peak earning years}{Percentage of \Sexpr{latest.sample.fy} taxpayers}{fig:NG-PG-by-age}
+<<NG-PG-by-age>>=
+sample_file %>%
+  # filter(Gross_rent_amt > 0) %>%
+  group_by(age_range_description) %>%
+  summarise(prop_NG = mean(Net_rent_amt < 0), 
+            prop_PG = mean(Net_rent_amt > 0), 
+            age = floor(min(age_imp)) + 2.5) %>%
+  ungroup %T>%
+  grattan:::chart_data(.) %>%
+  gather(gearing, prop, -age_range_description, -age) %>%
+  mutate(age_range_description = factor(age_range_description, 
+                                        levels = rev(unique(.$age_range_description)), 
+                                        labels = gsub("\\s", "\n", rev(unique(.$age_range_description))))) %>%
+                                        {
+                                          grplot(., aes(x = age, y = prop, fill = factor(gearing))) + 
+                                            geom_bar(stat = "identity") +
+                                            scale_y_continuous(label = percent, expand = c(0,0)) + 
+                                            scale_x_continuous(breaks = c(30, 50, 70)) + 
+                                            annotate("text", 
+                                                     x = 77, 
+                                                     y = sort(use_series(filter(., age == max(age)), prop)), 
+                                                     label = c("Negative\ngearing", "Positive\ngearing"), 
+                                                     fontface = "bold", 
+                                                     size = 22/(14/5),
+                                                     lineheight = 0.8,
+                                                     hjust = 0,
+                                                     colour = gpal(2)) + 
+                                            annotate("blank", 
+                                                     x = 83, y = 0)
+                                        }
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/NG-PG-by-age-1}
+\source{\Sexpr{sample_file$fy.year[1]} sample file.}
+
+\notes{Taxpayers over the age of 70 are not disaggregated in taxstats and have been presented as having ages 70-75.}
+\end{figure}
+
+Negative gearing is used much less for investments outside of housing. Investors in assets other than real estate, such as equities or unincorporated businesses, are less likely to borrow some of the funding, and usually do not borrow so much that these investments are negatively geared. 
+<<individuals-share-holdings>>=
+individual_dividends <- 
+  indiv_by_taxable_status_residency_taxable_income_range %$%
+  sum(`Dividends unfranked\r\n$` + `Dividends franked\r\n$`)
+
+hh_equity_tot <- 
+  hilda_w14_hh %$%
+  sum(nhweqini * nhhwth)  # Equity investments * WEIGHT
+@
+Total lending to individuals for share investments is at most \$19 billion, compared to individuals' direct share holdings of around \$550~billion,\footnote{The ATO reported that the 2013-14 dividend income for individuals was \Sexpr{texNum(individual_dividends, dollar = TRUE)}. The HILDA survey showed in the same year \Sexpr{texNum(hh_equity_tot, dollar = TRUE)} for household wealth in equities.}  and compared to borrowings of \$548~billion from banks for housing investor lending. 
+
+When individuals do borrow to invest in equities, they are seldom negatively geared. Equities investors will only be negatively geared if they are at least 70 per cent leveraged.  The average leverage of those who do have a margin loan is around 27 per cent.  Few margin lending investors leverage more than 65 per cent. Usually the maximum leverage permitted is around 75 per cent. Most margin lending customers dislike margin calls, and so they tend to create a buffer of at least 10 per cent less than this. 
+
+<<tot_intrst_unincorp_biz>>=
+# Individuals - Table 9
+# Selected items from people with business income
+if (!file.exists("./ATO/Individuals_table9.xlsx")){
+  GET("http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/e619aada-deb6-4696-a364-4e87e2d28a1c/download/Taxstats2014Individual09Industry.xlsx", 
+      write_disk("./ATO/Individuals_table9.xlsx"))
+}
+
+# Individuals - Table 1
+# Time series (contains interest deductions for businesses)
+if (!file.exists("./ATO/Individuals_table1.xlsx")){
+  GET("http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/3cd6dee1-785f-4876-a282-ebcf00f9949a/download/Taxstats2014Individual01SelectedItemsByYear.xlsx", 
+      write_disk("./ATO/Individuals_table1.xlsx"))
+}
+
+individuals_table1_201314 <- 
+  read_excel("ATO/Individuals_table1.xlsx", sheet = 2, skip = 2, na = "na") %>%
+  setnames(old = 2, new = "unit") 
+
+tot_intrst_unincorp_biz <- 
+  individuals_table1_201314 %>%
+  filter(grepl("Interest expenses within Australia", `Selected items`), 
+         grepl("$", unit, fixed = TRUE)) %>%
+  use_series(`2013-14`) 
+@
+
+<<total_bizlosses>>=
+unincorp_bizlosses <- 
+  sample_file_1314 %>%
+  filter(Net_PP_BI_amt < 0 | Net_NPP_BI_amt < 0) %$%
+  sum(-1 *(pminC(Net_PP_BI_amt, 0) + pminC(Net_NPP_BI_amt, 0))) %>%
+  multiply_by(50)
+@
+
+Very few loans to invest in unincorporated businesses will be negatively geared. Banks are understandably reluctant to lend to businesses that do not have enough cashflow to cover interest payments. Total interest costs for unincorporated businesses were \Sexpr{texNum(tot_intrst_unincorp_biz, dollar = TRUE)} in 2013-14  (much smaller than negative gearing against property), and much of this would have been incurred by profitable businesses. And unincorporated business losses totalled \Sexpr{texNum(unincorp_bizlosses, dollar = TRUE)} \TBD{(section 5.2.3)}; many of these businesses would not have borrowed. 
+
+\section{Negative gearing goes beyond generally accepted principles for offsetting losses against gains}
+The ability to deduct expenses incurred in generating assessable income is part of the normal operation of the Australian tax system, and applies to a wide range of investments and business activities. If losses were not deductible but gains were taxed, the asymmetry would make high-risk (high expected return) assets a less attractive investment. Deductibility of interest payments in theory also maintains tax neutrality for investors choosing between debt and equity financing.  
+
+But there is no theoretical basis for deducting losses on investments from entirely unrelated income such as wages. This is reflected in provisions that limit the deduction of business losses from wage and salary income. 
+
+Some other advanced economies restrict the deduction of rental losses from wage and salary income. The United States only allows losses to be written off against other forms of ``passive'' income.  The UK only allows deductions against the same class of income, so for example, losses on investment property can only be used to reduce tax on income or capital gains from other investment properties. Others such as the Netherlands do not allow deductibility of losses from investment housing (Appendix C). 
+
+Indeed, the Commonwealth Government already implicitly accepts the principle that investment losses should not always be applied in calculating tax and welfare outcomes. Ironically, these restrictions currently only apply to those on lower incomes. Calculations of income support payments do not allow people to reduce their taxable income through investment losses. Income tests for Family Tax Benefit Part A and Part B, Child Care Benefit are based on ‘adjusted taxable income’, which adds back investment losses. 
+
+

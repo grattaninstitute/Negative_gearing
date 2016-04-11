@@ -444,10 +444,6 @@ cost_of_policy_carry_fwd <- function(Net_rent_amt.limit, h = 1L){
 
 
 \section{\TBD{Number of properties}}
-<<Import-HILDA, error=FALSE>>=
-hilda_w14_hh <- 
-  foreign::read.dta("HILDA/Wave14/Household_n140c.dta")
-@
 
 \begin{table}[!h]
 \begin{center}
