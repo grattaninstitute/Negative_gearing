@@ -157,6 +157,16 @@ It would be possible to quarantine wage and salary income generally, but to allo
 
 Proponents argue that this exemption will maintain the incentives for the provision of new housing.  But in practice it won't make much difference: most of the tax benefits will be reflected in a one of increase in the price of developable land. The supply of land for development is not particularly responsive to price changes as discussed in section 4.4. Therefore the profits to any favourable tax change affected new development will mainly flow to the landholders. 
 
+<<benefit-due-NG>>=
+benefit_due_NG <- 
+  revenue_abolish_NG() %>%
+  mutate(tax_increase = new_tax - prev_tax) %>%
+  cost_of
+  
+  
+  
+@
+
 In any case, the benefits of negative gearing are likely to be small relative to the price of property and the cost of development -- around XX per cent of the property value.  Even if all of this benefit flowed to developers and purchasers, not to the owners of land suitable for development, there wouldn't be much additional development activity. And of course the impact on overall housing supply would be smaller again because few additional properties are built in any year relative to the stock of existing properties. 
 
 Restricting tax benefits to a subset of investments, such as new housing, creates additional complexity and distorts investment choices. But the costs may not be high. Administrative issues such as how to define `new properties' have already been addressed through  other government support schemes targeting new property investments such as first home buyer's grants and stamp duty concessions. 
@@ -239,4 +249,4 @@ In any case, capping property numbers is a crude way to target `excessive' negat
 \section{Summarising impact of proposed negative gearing and CGT changes}
 Our preferred policy is to reduce the CGT discount to \Sexpr{latex_percent(new.discount)} and limit negative gearing by quarantining all passive investment losses. 
 
-In addition to raising more than \Sexpr{texNum(cost_of(policy))} a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
+In addition to raising more than \Sexpr{texNum(cost_of(policy), dollar = TRUE)} a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 

@@ -6,7 +6,7 @@
   0.0	xtable-formatting
   2.2	load_sample_file
   0.4	create-age-imp
-  4.2	target_sample_file
+  4.1	target_sample_file
   4.1	Determine_future_rental_deductions
   0.0	cost-new-CGT-discount
   0.0	revenue_abolish_NG
@@ -14,9 +14,9 @@
   0.0	revenue_quarantine_NG_year0
   0.0	revenue_quarantine_NG
   0.0	henry_taxstats
-  5.4	Summary-chunk
+  5.3	Summary-chunk
   0.7	CostofNGtotal
-  1.8	CGT-by-entity-get
+  5.2	CGT-by-entity-get
   0.2	CGT-by-entity
   0.3	CGT-by-entity-asset
   0.0	CG-delay-EMTR
@@ -25,20 +25,24 @@
   0.5	CGT-by-age-income-weight-CG
   1.5	Maintaining-the-progressive-tax-system
   0.0	30-45-with-high-CG-no-other-income
-  2.7	stacked-column-chart
+  2.6	stacked-column-chart
   0.0	Prop-of-costs-interest
+  0.1	NG-by-age
+  0.3	NG-PG-by-age
+  0.2	individuals-share-holdings
+  0.0	tot_intrst_unincorp_biz
+  0.0	total_bizlosses
   4.3	Impact_of_NG_on_house_prices
   0.3	should_we_get_ABS
   0.0	ABS_GET_RES_VALS
-  2.7	What_price_change_req_to_obtain_same_return
-  0.4	Owner_occupiers_loans_are_being_outnumbered_by_investors
+  2.8	What_price_change_req_to_obtain_same_return
+  0.3	Owner_occupiers_loans_are_being_outnumbered_by_investors
   0.0	percent_of_prop_value_due_NG
   0.6	Capital_city_rents_direct_abs
   0.0	cost_NG_limited_to
   0.0	number_affected
   0.0	cost_of_policy_carry_fwd
-  4.4	Import-HILDA
-  0.3	HILDA-Number-of-properties
+  0.4	HILDA-Number-of-properties
   0.7	Import-SIH
   0.1	Number-households-SIH
   0.3	bizLosses-by-occ
@@ -46,10 +50,11 @@
   0.0	bizLosses-from-salary
   0.0	bizLosses-for-PP
   0.0	bizLosses-for-NPP
-  0.5	PP-losses-by-occ
-  0.4	costing-quarantining-losses
-  1.3	NG-vs-salary
-  9.7	Results
+  0.6	PP-losses-by-occ
+  0.5	costing-quarantining-losses
+  3.2	benefit-due-NG
+  1.4	NG-vs-salary
+ 10.0	Results
   0.0	prop_landlords_n_properties
   0.1	sessionInfo
   0.0	FINISH-TIME

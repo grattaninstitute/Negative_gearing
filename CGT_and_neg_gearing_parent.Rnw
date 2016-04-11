@@ -117,7 +117,7 @@ package_cite_input <- paste0("\\nocite{", paste0(paste0("R-", citPkgs), collapse
 write(package_cite_input, file = "package_cite_input.tex")
 @
 % citations
-%\input{package_cite_input}
+\input{package_cite_input}
 
 % \textheight may be quite small for flushbottom
 % \raggedbottom
@@ -178,6 +178,21 @@ target_sample_file <-
   project_to(to_fy = TARGET.FY, fy.year.of.sample.file = latest.sample.fy) %>%
   select_(.dots = keep.names)
 rm(keep.names)
+@
+
+<<Import-HILDA, cache=TRUE>>=
+hilda_w14_hh <- 
+  foreign::read.dta("HILDA/Wave14/Household_n140c.dta")
+@
+
+<<Import-HILDA-ep, cache=TRUE>>=
+hilda_w14_ep <- 
+  foreign::read.dta("HILDA/Wave14/Eperson_n140c.dta")
+@
+
+<<Import-HILDA-rp, cache=TRUE>>=
+hilda_w14_rp <- 
+  foreign::read.dta("HILDA/Wave14/Rperson_n140c.dta")
 @
 
 
@@ -625,11 +640,11 @@ However, these arrangements do not sufficiently balance the competing considerat
 
 The tax on capital gains is discounted to promote savings and entrepreneurship. A theoretically ideal tax treatment would only tax returns higher than the risk-free rate. But this idealised treatment needs to be balanced against other considerations. The real benefits of the capital gains discount are small because those with high incomes tend to save almost the same amount irrespective of the tax rate on savings. The costs of the discount, however, are high. Other more distorting taxes must be higher. The discount encourages investors away from economic fundamentals towards investments with high capital gains. The discount undermines the integrity of the income tax system by creating opportunities for artificial transactions to reduce tax. And the discount reduces the progressivity of the tax system because high-income earners disproportionately earn capital gains.
 
-A better balance between the competing considerations would reduce the discount so that \Sexpr{latex_percent(1 - new.discount)} of capital gains are taxed, which would raise around \Sexpr{texNum(cost_of(policy_reduce_CGT), dollar = TRUE)} a year.
+A better balance between the competing considerations would reduce the discount so that \highlight{\Sexpr{latex_percent(1 - new.discount)} of capital gains are taxed}, which would raise around \highlight{\Sexpr{texNum(cost_of(policy_reduce_CGT), dollar = TRUE)}} a year.
 
 Negative gearing in Australia goes beyond generally accepted principles for offsetting losses against gains. It distorts investment decisions, diverting capital from more productive investments, increasing volatility in housing markets, and increasing housing churn. It reduces home ownership and reduces the availability of long-term rentals, but does not materially increase housing supply. It is regressive, benefiting those on high incomes much more than those on low incomes. And it substantially reduces tax collections, imposing pressures on the budget so that either other taxes, or deficits, are higher.
 
-Consequently, losses from all types of passive investments should not be deductible from wage and salary income. Suggested carve outs to exempt new property, or allow deductions up to a limit or for a limited number of properties, would have worse economic outcomes. In addition to the capital gains tax changes, restricting negative gearing would raise another \Sexpr{texNum(cost_of(policy_year0) - cost_of(policy_reduce_CGT), dollar = TRUE)} a year in the short term, declining to \Sexpr{texNum(cost_of(policy) - cost_of(policy_reduce_CGT), dollar = TRUE)} as losses accumulate.
+Consequently, losses from all types of passive investments should not be deductible from wage and salary income. Suggested carve outs to exempt new property, or allow deductions up to a limit or for a limited number of properties, would have worse economic outcomes. In addition to the capital gains tax changes, restricting negative gearing would raise another \highlight{\Sexpr{texNum(cost_of(policy_year0) - cost_of(policy_reduce_CGT), dollar = TRUE)}} a year in the short term, declining to \highlight{\Sexpr{texNum(cost_of(policy) - cost_of(policy_reduce_CGT), dollar = TRUE)}} as losses accumulate.
 
 These changes will improve housing affordability -- a little. We estimate housing prices would be up to 2 per cent lower than otherwise. Because there are tight planning constraints on new supply for urban housing, there will be very little impact on rents, or the rate of new development, even in the long term. 
 
@@ -689,7 +704,7 @@ write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(dif
 \chapter{Markov diagram for negative quarantining}
 \begin{figure*}
 \centering
-\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {circle, draw, minimum width = 36pt}]
+\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {draw, rounded corners, minimum height = 24pt}, every loop/.style={-latex}]
 \node[state] (A) {$0$};
 \node[state, right of=A] (B) {$1$};
 \node[right of=B] (C) {\dots};
@@ -724,7 +739,7 @@ write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(dif
 \end{figure*}
 \begin{figure*}
 \Caption{Positive gearing absorbing ($M4$)}{Diagram of model. $q = {}$ probability of negatively gearing if a property investor}{fig:Markov-M4}
-\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {circle, draw, minimum width = 36pt}, every loop/.style={-latex}]
+\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {draw, rounded corners, minimum height = 24pt}, every loop/.style={-latex}]
 \node[state] (1) {$\ell = 1$};
 \node[left of = 1, align = right] (0) {Negative gearing};
 \node[state, below of = 1] (2) {$\ell = 1$};
@@ -745,7 +760,7 @@ write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(dif
 
 \begin{figure*}
 \Caption{Positive gearing absorbing, age-based ($MA$)}{Diagram of model. $q_x = {}$ probability of negatively gearing, given a property investor at age $x$}{fig:Markov-MA}
-\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {circle, draw, minimum width = 36pt}, every loop/.style={-latex}]
+\begin{tikzpicture}[-latex, auto, node distance = 2.8cm, on grid, semithick, state/.style = {draw, rounded corners, minimum height = 30pt}, every loop/.style={-latex}]
 \node[state] (1) {$\ell = 1$};
 \node[left of = 1, align = right] (0) {Negative gearing};
 \node[state, below of = 1] (2) {$\ell = 1$};
