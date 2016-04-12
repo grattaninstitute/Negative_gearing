@@ -724,9 +724,59 @@ But there are revenue measures that could make a meaningful contribution to budg
 <<OPTIONS-FOR-REFORM, child='Options-for-reform-cgt.Rnw'>>=
 @
 
-<<sessionInfo, results = 'hide'>>=
-devtools::session_info()
+\printbibliography[title=References]
+
+% For longtable.
+\onecolumn
+\appendix
+\chapter{Session info of $\mathsf{R}$ used for compilation}
+This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors are indebted to the creators.
+<<sessionInfo>>=
+SessionInfo <- session_info()
 @
+
+\begin{table*}[!htb]
+\centering
+<<platform_info, results='asis'>>=
+SessionInfo$platform %>%
+  unlist %>%
+  as.data.frame %>%
+  xtable %>%
+  print.xtable(include.colnames = FALSE,
+               align = "lr",
+               floating = FALSE,
+               hline.after = c(-1, nrow(.)),
+               booktabs = TRUE)
+@
+\end{table*}
+
+% for longtable
+<<addtorow>>=
+addtorow          <- list()
+addtorow$pos      <- list()
+addtorow$pos[[1]] <- c(0)
+addtorow$command  <- c(paste("\\hline \n",
+                             "\\endhead \n",
+                             "\\hline \n",
+                             "{\\hfill\\footnotesize Continued on next page} \n",
+                             "\\endfoot \n",
+                             "\\endlastfoot \n",sep=""))
+@
+
+
+<<loaded_packages, results='asis'>>=
+SessionInfo$packages %>%
+  as.data.frame %>%
+  xtable %>%
+  print.xtable(include.rownames = FALSE, 
+               tabular.environment = "longtable",
+               floating = FALSE,
+               booktabs = TRUE, 
+               add.to.row = addtorow, 
+               hline.after = c(-1, nrow(.)))
+@
+$*$\quad Attached.
+
 
 <<FINISH-TIME>>=
 FINISH.TIME <- Sys.time()
@@ -734,9 +784,8 @@ write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(dif
       file = "CGT_and_neg_gearing_parent_time.txt")
 @
 
-\printbibliography[title=References]
 
-\appendix
+
 \chapter{Markov diagram for negative quarantining}
 \begin{figure*}
 \centering
