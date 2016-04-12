@@ -124,9 +124,33 @@ write(package_cite_input, file = "package_cite_input.tex")
 % \raggedbottom
 
 <<latex_percent>>=
-latex_percent <- function (x, percentage_symbol = "~percent") {
+# flexibility in pre.phrase = c("almost", "over")
+# digits = 2  ==>  12.34%
+latex_percent <- function (x, digits = 1, precision, pre.phrase = NULL, percentage_symbol = "~percent") {
+  if (!is.null(pre.phrase)){
+    x.orig <- x
+  }
+  
+  if (is.null(digits) && missing(precision)){
     x <- plyr::round_any(x, scales:::precision(x)/100)
+  } else {
+    if (!missing(precision)){
+      x <- plyr::round_any(x, precision)
+    } else {
+      x <- plyr::round_any(x, 0.01 / 10^digits)
+    }
+  }
+  
+  
+  if (is.null(pre.phrase) || isTRUE(all.equal(x.orig, x))){
     stringr::str_c(comma(x * 100), percentage_symbol)
+  } else {
+    if (x.orig < x){
+      stringr::str_c(pre.phrase[1], comma(x * 100), percentage_symbol)
+    } else {
+      stringr::str_c(pre.phrase[2], comma(x * 100), percentage_symbol)
+    }
+  }
 }
 @
 
@@ -1080,7 +1104,7 @@ The remainder of this section works through these considerations in more detail.
 
 
 
-\subsection{Maintaining the progressivity of the tax system}
+\subsection{Maintaining the progressivity of the tax system}\label{sec:maintaining-progressivity-tax-system}
 <<Maintaining-the-progressive-tax-system>>=
 prop_sw_top_decile <- 
   sample_file %>%
@@ -1491,7 +1515,7 @@ But there is no theoretical basis for deducting losses on investments from entir
 
 Some other advanced economies restrict the deduction of rental losses from wage and salary income. The United States only allows losses to be written off against other forms of ``passive'' income.  The UK only allows deductions against the same class of income, so for example, losses on investment property can only be used to reduce tax on income or capital gains from other investment properties. Others such as the Netherlands do not allow deductibility of losses from investment housing (Appendix C). 
 
-Indeed, the Commonwealth Government already implicitly accepts the principle that investment losses should not always be applied in calculating tax and welfare outcomes. Ironically, these restrictions currently only apply to those on lower incomes. Calculations of income support payments do not allow people to reduce their taxable income through investment losses. Income tests for Family Tax Benefit Part A and Part B, Child Care Benefit are based on `adjusted taxable income', which adds back investment losses. 
+Indeed, the Commonwealth Government already implicitly accepts the principle that investment losses should not always be applied in calculating tax and welfare outcomes. Ironically, these restrictions currently only apply to those on lower incomes. Calculations of income support payments do not allow people to reduce their taxable income through investment losses. Income tests for Family Tax Benefit Part~A and Part~B, Child Care Benefit are based on `adjusted taxable income', which adds back investment losses. 
 
 \section{The tax advantages of negative gearing distory investment choices}
 Investment choices are severely distorted when negative gearing is permitted and capital gains are taxed concessionally and only when realised. This regime encourages investors to leverage more, to favour investments that return capital gains rather than income, and to churn their investments more often.
@@ -1608,7 +1632,7 @@ test_emtr()
 @
 
 \begin{figure}
-\Caption{Effective tax rates depend on amount of borring}{Real effective marginal tax rate}{fig:EMTR-by-gearing}
+\Caption{Effective tax rates depend on amount of borrowing}{Real effective marginal tax rate}{fig:EMTR-by-gearing}
 <<EMTR-by-gearing>>=
 emtr_defaults <- 
   formals(emtr_rental)
@@ -1824,6 +1848,173 @@ individuals_table1_201314 %>%
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/Net-rent-time-series-1}
 \end{figure}
 
+\subsection{Property churn}
+The tax advantages encourage those with negatively geared properties to ``churn'' investments. Properties do not stay negatively geared. Rents tend to rise over time with increases in the value of wages, whereas the tax deductible loan value cannot be increased.  So if an investor wants to stay negatively geared, they need to sell, and then purchase another property with borrowings that are again a large proportion of the investment.
+
+Consequently, negatively geared investors turn over their investments more often. \textcite{Wood2010a} showed that 40 per cent of all investors with rental properties retained their property at the end of a 5 year period.  Amongst investors that were negatively geared, however, only 20 per cent retained ownership. And a greater proportion of negatively geared landlords than other landlords purchased another property after selling.  
+
+\section{The distortions caused by negative gearing have undesirable social consequences}
+Negative gearing has many undesirable social consequences. It reduces rates of home ownership. It reduces the availability of long-term rentals. It increases the volatility of housing markets, increasing the risks of the Australian financial system. 
+
+The favourable tax treatment reduces home ownership because it increases the after-tax returns to geared property investors but not homeowners. The increase in geared investing has crowded out purchases by owner-occupiers. Investors now account for more than 50 per cent of new loans for housing, up from 29 per cent two decades ago.  This is one of the reasons (but by no means the only reason) that rates of home ownership are falling among younger age groups.
+
+The higher churn of properties encouraged by negative gearing also contributes to the lack of secure long-term tenancies in Australia. Most of Australia's housing stock is owned by landlords with only one or two properties, because progressive land taxes significantly reduce the returns from larger landholdings.  As many of these landlords are negatively geared, and want to turn over their properties in order to stay negatively geared, most Australian landlords are reluctant to agree to long-term tenancies. Their political interests have also led to Australian tenancy law providing much less security for tenants than in other countries. 
+
+Negative gearing contributes to volatility in housing markets, as suggested by the Reserve Bank, the Productivity Commission, the Henry Tax Review, and the Murray System Inquiry.  Negative gearing is most attractive as a tax minimisation strategy when asset prices are rising strongly. So in boom times it further increases investor demand for housing. The opposite is true when prices are stable or falling. Consequently, the greater leverage encouraged by negative gearing arrangements also reduces the stability of the Australian financial system.
+
+There is little evidence that negative gearing has the socially desirable outcome of reducing rents, as discussed in \Vref{sec:taxes-not-change-rents-much}.
+
+\section{Negative gearing mainly benefits those on higher incomes}
+Like most tax concessions on investment, tax benefits from negative gearing are regressive, benefiting those on high incomes much more than those on low incomes. A higher proportion of taxpayers on higher incomes negatively gear and the tax break is usually larger for individuals on higher marginal tax rates. 
+
+The fact that negative gearing is regressive is not in itself an argument for change, as discussed above in \Vref{sec:maintaining-progressivity-tax-system}. However, as that section argues, lower taxes on savings can concentrate wealth, and the inherent lack of transparency of tax concessions can undermine the overt choices in income tax scales about the desired level of redistribution. So it is important to understand how the benefits of negative gearing are distributed. This analysis is also relevant to counter claims that negative gearing should be retained because it particularly assists those on middle incomes to build wealth. 
+
+<<prop_le_80k>>=
+prop_le_80k_1314 <- 
+  mean(sample_file_1314$Taxable_Income > 80e3)
+@
+
+A lot of the public debate has centred on claims that most taxpayers negatively gearing have taxable incomes below \$80,000. This is not surprising given that only \Sexpr{latex_percent(prop_le_80k_1314)} of taxpayers have higher taxable incomes. 
+
+\begin{figure}
+\Caption{More taxpayers on higher incomes negatively gear}{Distribution of taxable incomes by negative gearing status, 2013-14}{fig:tx-inc-distr-by-NG}
+<<tx-inc-distr-by-NG>>=
+median_tx_inc_by_NG <- 
+  sample_file_1314 %>%
+  group_by(NG = Net_rent_amt < 0) %>%
+  summarise(median = median(Taxable_Income)) %>%
+  arrange(NG)
+
+
+# For density annotations
+density_NG <- 
+  sample_file_1314 %>%
+  filter(Net_rent_amt < 0, 
+          Taxable_Income < 210e3) %$%
+  density(Taxable_Income)
+
+density_other <- 
+  sample_file_1314 %>% 
+  filter(Net_rent_amt >= 0, 
+         Taxable_Income < 210e3) %$%
+  density(Taxable_Income)
+
+sample_file_1314 %>%
+  filter(Taxable_Income < 210e3) %>%
+  rename(`Taxable Income` = Taxable_Income) %>%
+  # choose >= 0 for colouring purposes only -- bit hard to see segments other way around
+  grplot(aes(`Taxable Income`, color = Net_rent_amt >= 0, fill = Net_rent_amt >= 0)) + 
+  geom_density(alpha = 0.4, size = 1.5) +
+  scale_x_continuous(label = grattan_dollar) + 
+  scale_y_continuous(expand = c(0,0)) + 
+  annotate("blank", 
+           x = 0, 
+           y = max(density_other$y, density_NG$y) * 1.03) + 
+  coord_cartesian() +
+  annotate("segment", 
+           x = median_tx_inc_by_NG$median, 
+           xend = median_tx_inc_by_NG$median,
+           y = -Inf,
+           # use max(x) such that x < median
+           yend = c(density_other$y[which.max(density_other$x[density_other$x < median_tx_inc_by_NG$median[1]])], 
+                    density_NG$y[which.max(density_NG$x[density_NG$x < median_tx_inc_by_NG$median[2]])]),
+           size = 1.2,
+           linetype = "dashed", 
+           colour = rev(gpal(2))
+           ) + 
+  annotate("text", 
+           x = median_tx_inc_by_NG$median + 1000, 
+           y = c(density_other$y[which.max(density_other$x[density_other$x < median_tx_inc_by_NG$median[1]])], 
+                    density_NG$y[which.max(density_NG$x[density_NG$x < median_tx_inc_by_NG$median[2]])]), 
+           label = c(paste("Not negatively gearing\nMedian:", dollar(median_tx_inc_by_NG$median[1])), 
+                     paste("Negatively gearing\nMedian:", dollar(median_tx_inc_by_NG$median[2]))), 
+           size = 20/(14/5),
+           hjust = 0,
+           lineheight = 0.85,
+           fontface = "bold",
+           vjust = 0,
+           colour = rev(gpal(2))) + 
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), 
+        axis.line.y = element_blank())
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/tx-inc-distr-by-NG-1}
+\end{figure}
+
+
+As shown in \Vref{fig:tx-inc-distr-by-NG}, people with higher incomes are more likely to negatively gear. The median taxable incomes for taxpayers that negatively gear is \Sexpr{texNum(median_tx_inc_by_NG %>% filter(NG) %$% median, dollar = TRUE)} compared to  \Sexpr{texNum(median_tx_inc_by_NG %>% filter(!NG) %$% median, dollar = TRUE)} for those taxpayers that don't negatively gear.
+
+
+The tax benefits from negative gearing are even more skewed toward high income earners. They are more likely to borrow more, and with higher marginal tax rates, the deductions are worth more. 
+
+<<Decile_constructor>>=
+benefits_by_taxable_income <- 
+  sample_file_1314 %>%
+  mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
+         Taxable_Income_NoNegGearg = Taxable_Income - pminC(Net_rent_amt, 0),
+         Taxable_Income_NoNegGearg_Decile = ntile(Taxable_Income_NoNegGearg, 10),
+         benefit_due_to_noneggearg = income_tax(Taxable_Income_NoNegGearg, fy.year = "2013-14") - income_tax(Taxable_Income, fy.year = "2013-14")) %>%
+  group_by(Decile = Taxable_Income_Decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_noneggearg)) %>%
+  ungroup %>%
+  mutate(prop_benefit = mean_benefit/sum(mean_benefit)) %>%
+  mutate(Decile_of = "Taxable Income")
+
+benefits_by_taxable_income_before_deductions <- 
+  sample_file_1314 %>%
+  mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
+         #Taxable_Income_NoNegGearg = Taxable_Income + Rent_int_ded_amt,
+         Taxable_Income_NoNegGearg = Taxable_Income - pminC(Net_rent_amt, 0),
+         Taxable_Income_NoNegGearg_Decile = ntile(Taxable_Income_NoNegGearg, 10),
+         benefit_due_to_noneggearg = income_tax(Taxable_Income_NoNegGearg, fy.year = "2013-14") - income_tax(Taxable_Income, fy.year = "2013-14")) %>%
+  group_by(Decile = Taxable_Income_NoNegGearg_Decile) %>%
+  summarise(mean_benefit = mean(benefit_due_to_noneggearg)) %>%
+  ungroup %>%
+  mutate(prop_benefit = mean_benefit/sum(mean_benefit)) %>%
+  mutate(Decile_of = "No negative gearing")
+@
+
+
+<<Benefit-NG-before-after-deductions>>=
+rbind(benefits_by_taxable_income_before_deductions, benefits_by_taxable_income) %>%
+  mutate(Decile_of = factor(Decile_of, 
+                            levels = c("Taxable Income", "Salary", "No negative gearing", 
+                                       "Tot_inc_amt"), 
+                            labels = c("Taxable income deciles\nafter rental deductions",
+                                       "Deciles by salary",
+                                       "Taxable income deciles\nbefore rental deductions",
+                                       "Total income amount")
+                            )) %T>%
+  grattan:::chart_data(.) %>%
+  grplot(aes(x = factor(Decile), y = prop_benefit, fill = Decile_of)) + 
+  scale_fill_manual(values = gpal(2)) +
+  scale_color_manual(values = rev(gpal(2))) + 
+  geom_bar(stat = "identity", position = "dodge", width = 1) + 
+  scale_y_continuous(expand = c(0,0.00), limits = c(0,0.525), label=percent) + 
+  #scale_y_continuous(expand = c(0,0), limits = c(0,3300), label = grattan_dollar) + 
+  facet_grid(~Decile_of) + 
+  theme(strip.text = element_text(angle = 0, vjust = 0.7,
+                                  size = 23,
+                                  face = "bold", colour = "white"),
+        strip.background = element_rect(fill = theGrey),
+        panel.margin.x = unit(1, "lines"),
+        panel.grid.major.y = element_line(),
+        #
+        # Not required with facet lables
+        axis.title = element_blank())
+@
+\begin{figure}
+\Caption{Negative gearing mostly benefits those on high incomes, and the difference is especially stark when incomes are measured before subtracting rental interest deductions}{Percentage of each decile's share of the benefit in reduced income tax due to negative gearing (2012-13)}{fig:Benefit-NG-before-after-deductions}
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/Benefit-NG-before-after-deductions-1}
+\notes{Taxable income before rental deductions means $\text{Taxable Income} - \min(\text{Net rental profit}, 0)$.
+Income tax includes medicare levy, medicare thresholds, but not other tax benefits (\emph{e.g.}~the seniors and pensioners tax offset (SAPTO))}
+
+\source{\gao\ 2013-14 sample file}
+\end{figure}
+
+Overall, the top ten per cent of income earners before rental deductions receive \Sexpr{benefits_by_taxable_income_before_deductions %>% filter(Decile == 10) %$% prop_benefit %>% latex_percent(digits = 0, pre.phrase = c("almost~", "over~"))} 
+of the tax benefits of negative gearing. The skew does not look quite so bad if taxpayers are grouped by their taxable incomes, as shown in the left hand side of \Vref{fig:Benefit-NG-before-after-deductions}. But comparisons based on taxable incomes understate the earnings of those that are negative gearing. Taxable incomes are assessed after rental losses. In other words, people who are negatively gearing have lower taxable incomes because they are negatively gearing. The distribution before rental deductions, shown on the right hand side of \Vref{fig:Benefit-NG-before-after-deductions}, shows that those on higher incomes receive the lion's share of the tax benefits from negative gearing.
 
 
 \chapter{Impact of changing negative gearing and the CGT discount}
@@ -1862,7 +2053,7 @@ Limiting negative gearing and reducing the CGT discount will reduce the post-tax
 
 The impact on prices depends on investor expectations of the size of the lost tax benefit. Average annual rental losses over the last decade were \$12~billion, generating annual tax write-offs on average of \$4.7~billion. If investor expectations are guided by history, then the expected present value of future tax benefits from negative gearing would be around \$110~billion.
 
-If the lost tax benefit were fully capitalised in the value of residential property -- currently worth \$5400~billion -- prices would fall, but only in the order of 2~per cent. For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. If investment losses are quarantined so they can’t be written off against wage and salary income, the present value of tax benefits lost might be \$50~billion, with a maximum impact on property prices of 0.9~per cent. 
+If the lost tax benefit were fully capitalised in the value of residential property -- currently worth \$5400~billion -- prices would fall, but only in the order of 2~per cent. For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. If investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost might be \$50~billion, with a maximum impact on property prices of 0.9~per cent. 
 
 But if there is a more segmented investor housing market, price effects could be larger. To take an extreme example, if \$280~billion of housing owned by investors was an entirely separate market, quarantining negative gearing might reduce prices in this market by as much as 18~per cent. In reality, some owner occupiers will be competing for these same houses and so price reductions are likely to be limited to single digits. 
 \end{smallbox}
@@ -1870,14 +2061,14 @@ But if there is a more segmented investor housing market, price effects could be
 Any impact on prices could well be swamped by the effects of broader changes in the economy. As the CBA Chief Executive Ian Narev recently noted:
 
 \begin{quote}
-I can tell you having a \$400~billion home loan book -- your assumptions on unemployment and what’s happening in global interest rates will dwarf whatever assumptions you’ve got on the modelling about the impact of negative gearing by a factor of \dots\ I can’t tell you the number but it’s a big number.
+I can tell you having a \$400~billion home loan book -- your assumptions on unemployment and what's happening in global interest rates will dwarf whatever assumptions you've got on the modelling about the impact of negative gearing by a factor of \dots\ I can't tell you the number but it's a big number.
 \end{quote}
 
 One concern with downward price pressure is that highly geared investors may end up with negative equity. But given expected one-off price impacts of \TBD{less than 10~per cent},  the risk of negative equity from the tax changes is limited. Only around ten per cent of new property loans go to investors with loan value ratios in excess of 90~per cent.  \TBD{[Impact of new macro-prudential controls]} And ratios for existing loans are falling as property prices continue to grow. For the small proportion of investors that remain highly leveraged, higher interest rates pose a far greater risk than changes to the tax treatment of rental losses.   
 
 Ultimately, the government should not shy away from a sound policy because it generates modest house price corrections. It is incongruous for governments to seek to address housing affordability for new buyers while continuing to offer generous tax breaks to investors that bid up house prices.  
 
-\section{Increases in property taxes will not change rents much}
+\section{Increases in property taxes will not change rents much}\label{sec:taxes-not-change-rents-much}
 
 <<Impact_of_NG_on_house_prices>>=
 rental_losses <- 
@@ -1939,7 +2130,7 @@ housing_finance_commitments <-
 @
 
 <<should_we_get_ABS>>=
-should_we_get_ABS <- 
+should_we_get_ABS <- FALSE ||
  http_error("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS") || !is.null(readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS"))
 @
 
@@ -2070,7 +2261,7 @@ Concerns persist that limiting negative gearing and/or reducing the capital gain
 
 The first argument is easily refuted. In 1985, the Hawke Government restricted negative gearing so that rental losses could not be used to reduce tax payable on other income streams.  Two years later, the policy was abolished out of concern for increasing rental prices. 
 
-But these concerns were ill-founded. Rents did rise rapidly in Perth and rose somewhat in Sydney. Yet inflation-adjusted rents were stable in Melbourne and actually fell in Adelaide and Brisbane (Figure 13). In Sydney and Perth it was population growth and insufficient residential construction -- due to high borrowing rates and competition from the stock market for funds -- not the policy change, led to the rent rises. 
+But these concerns were ill-founded. Rents did rise rapidly in Perth and rose somewhat in Sydney. Yet inflation-adjusted rents were stable in Melbourne and actually fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}). In Sydney and Perth it was population growth and insufficient residential construction -- due to high borrowing rates and competition from the stock market for funds -- not the policy change, led to the rent rises. 
 
 <<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
 rent.indices.real <- readRDS("rent_indices_real.rds")
@@ -2133,7 +2324,7 @@ Existing negatively geared investors will have larger post-tax losses to service
 
 Existing negatively geared investors compete to supply rental properties against other property investors with no imperative to increase rents. Rental incomes for the one-third of landlords making positive rental profits would be unaffected by the tax changes. And new investors would purchase properties at lower prices that factor in the less generous tax treatment of rental losses. Tenants can beat rent rises by threatening to move to properties owned by these other investors. 
 
-Some negatively geared investors may sell their properties if tax concessions are less generous. But in the short term this has no impact on rents.  Every time an investor sells a property to a renter, there is one less rental property, and one less renter. There is no change to the balance between supply and demand of rental properties. Others may sell to another investor, but one that doesn’t rely on negative gearing to make the investment profitable. Again there is no shortage of rental properties. 
+Some negatively geared investors may sell their properties if tax concessions are less generous. But in the short term this has no impact on rents.  Every time an investor sells a property to a renter, there is one less rental property, and one less renter. There is no change to the balance between supply and demand of rental properties. Others may sell to another investor, but one that doesn't rely on negative gearing to make the investment profitable. Again there is no shortage of rental properties. 
 
 Limiting negative gearing could have an impact on rents over the longer term if lower property prices reduce investment in new rental housing. But the effect is unlikely to be large. Currently 93~per cent of all investment property lending is for existing dwellings.  And one-off price impacts of less than XX per cent (Box 5) are unlikely to substantially slow new construction.  
 
@@ -2677,7 +2868,8 @@ FINISH.TIME <- Sys.time()
 write(x = c(as.POSIXct(START.TIME), as.POSIXct(FINISH.TIME), format(.POSIXct(difftime(FINISH.TIME, START.TIME, units = "secs"), tz = "GMT"), "%H:%M:%S")), 
       file = "CGT_and_neg_gearing_parent_time.txt")
 @
-
+\twocolumn
+\chapter{Notes on the 2013-14 sample file benchmarks}
 
 
 \chapter{Markov diagram for negative quarantining}
