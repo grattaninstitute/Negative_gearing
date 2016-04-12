@@ -16,17 +16,17 @@
   0.0	revenue_quarantine_NG_year0
   0.0	revenue_quarantine_NG
   0.0	henry_taxstats
-  5.5	Summary-chunk
+  5.4	Summary-chunk
   0.6	CostofNGtotal
   0.2	CGT-by-entity
-  0.4	CGT-by-entity-asset
+  0.5	CGT-by-entity-asset
   0.0	CG-delay-EMTR
   0.4	CG-marginal-tax-rates
   0.5	CGT-by-age-income
-  0.6	CGT-by-age-income-weight-CG
+  0.5	CGT-by-age-income-weight-CG
   1.5	Maintaining-the-progressive-tax-system
   0.0	30-45-with-high-CG-no-other-income
-  2.7	stacked-column-chart
+  2.6	stacked-column-chart
   0.0	Prop-of-costs-interest
   0.0	NG-by-age
   0.3	NG-PG-by-age
@@ -41,8 +41,8 @@
   0.0	prop_rental_deductions_gross_rent
   0.0	NG-basic-stats
   0.3	Net-rent-time-series
-  4.5	Impact_of_NG_on_house_prices
-  0.2	should_we_get_ABS
+  4.4	Impact_of_NG_on_house_prices
+  0.3	should_we_get_ABS
   0.0	ABS_GET_RES_VALS
   2.9	What_price_change_req_to_obtain_same_return
   0.2	Owner_occupiers_loans_are_being_outnumbered_by_investors
@@ -53,16 +53,16 @@
   0.0	cost_of_policy_carry_fwd
   0.3	HILDA-Number-of-properties
   0.7	Import-SIH
-  0.1	Number-households-SIH
-  0.3	bizLosses-by-occ
+  0.0	Number-households-SIH
+  0.4	bizLosses-by-occ
   0.1	bizLosses
   0.0	bizLosses-from-salary
-  0.0	bizLosses-for-PP
+  0.1	bizLosses-for-PP
   0.0	bizLosses-for-NPP
   0.6	PP-losses-by-occ
-  0.4	costing-quarantining-losses
+  0.5	costing-quarantining-losses
   3.1	benefit-due-NG
-  1.4	NG-vs-salary
+  1.5	NG-vs-salary
   0.0	prop_landlords_n_properties
   0.1	sessionInfo
   0.0	platform_info
