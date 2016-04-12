@@ -1205,7 +1205,29 @@ max_inc_bottom_decile_excl_CG <-
   max(Sw_amt, Tot_inc_amt - Net_CG_amt)
 @
 
-If returns to savings are not taxed, then inequality will tend to widen. The top ten per cent of wage and salary earners receive about \Sexpr{latex_percent(prop_sw_top_decile)} of all wages and salaries (before tax). They tend to save a greater proportion of their income than people who earn less, they are more likely to invest in higher risk, higher return assets, and they are more likely to make investments where a higher proportion of the returns are capital gains rather than income.  Consequently, among individual taxpayers, the top decile received \Sexpr{latex_percent(prop_invst_inc_from_top_decile)} of all investment income, and \Sexpr{latex_percent(prop_inc_CG_top_decile)} of all capital gains income (\Vref{fig:DecileStackedChart}). 
+If returns to savings are not taxed, then inequality will tend to widen. The top ten per cent of wage and salary earners receive about \Sexpr{latex_percent(prop_sw_top_decile)} of all wages and salaries (before tax). They tend to save a greater proportion of their income than people who earn less, they are more likely to invest in higher risk, higher return assets, and they are more likely to make investments where a higher proportion of the returns are capital gains rather than income.  Consequently, among individual taxpayers, the top decile received \Sexpr{latex_percent(prop_invst_inc_from_top_decile)} of all investment income, and \Sexpr{latex_percent(prop_inc_CG_top_decile)} of all capital gains income (\Vref{fig:CG-by-decile} \&\ \Vref{fig:DecileStackedChart}). 
+
+\begin{figure}
+\Caption{Most capital gains are earned by those in the highest income decile}{Proportion of net capital gains by income decile (2013-14)}{fig:CG-by-decile}
+<<CG-by-decile>>=
+sample_file_1314 %>%
+  group_by(`Taxable income decile` = factor(ntile(Taxable_Income, 10), levels = 1:10)) %>%
+  summarise(tot_CG = sum(Net_CG_amt)) %>%
+  ungroup %>%
+  mutate(prop_CG = tot_CG / sum(tot_CG)) %>%
+  arrange(`Taxable income decile`) %>%
+  {
+    grattan:::chart_data(.)
+    grplot(., aes(x = `Taxable income decile`, y = prop_CG)) + 
+      geom_bar(stat = "identity") + 
+      scale_y_continuous(label = percent, 
+                         expand = c(0,0), 
+                         limits = c(0, plyr::round_any(max(.$prop_CG), 0.1, f = ceiling))) + 
+      theme(panel.grid.major.y = element_line())
+  }
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/CG-by-decile-1}
+\end{figure}
 
 <<30-45-with-high-CG-no-other-income>>=
 highCG_3045_no_other_inc <- 
@@ -1216,7 +1238,17 @@ highCG_3045_no_other_inc <-
 @
 
 Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes \emph{before} capital gains, \Sexpr{latex_percent(prop_inc_CG_top_decile_excl_CG)} of taxable gains are from the top decile. Another \Sexpr{latex_percent(prop_inc_CG_tx_inc_le_10k)} are from those with less than \$10,000 in taxable income before capital gains.
+
 Of the latter, many are over 50s that have waited until retirement to realise gains (section 2.2). There is also a sizeable group of 30-45 year olds with very high capital gains but no other taxable incomes (\Sexpr{latex_percent(highCG_3045_no_other_inc)} of taxpayers in this age group have capital gains in excess of \$10,000 and which make up more than 95\%\ of their total income).\marginpar{\textcolor{red}{\textbf{Not borne out.}}} Many are likely to be partners of high income earners that receive distributions of capital income through structures such as trusts. All of this is consistent with the finding that capital gains accrue disproportionately to those that are already well off. 
+
+There is no reason a priori why any particular level of inequality is preferable to another, particularly if those levels of inequality are a consequence of some people working harder, or taking more risks, than others.  
+However, if the returns on savings concentrate resources even more than wage inequality, then the reinvestment of the returns on savings can lead to continued increases in the concentration of wealth -- what Thomas Piketty described as an `endless inegalitarian spiral.'  Critics of Piketty's work, most notably Matthew Rognlie, argue that over the long-term, diminishing marginal returns should ultimately put a brake on the share of total income earnt by capital rather than labour.  However, Rognlie's finding that higher house prices (and associated economic rents) have been the dominant driver of the growth in the capital share of national income  do not undermine the Piketty thesis. Indeed, these findings suggest that so long as tight planning and zoning restrictions remain in place, those that can afford to save (and buy houses) are likely to keep capturing a growing share of national wealth.  
+
+It is difficult to be comfortable with this outcome in which there is an ever-decreasing opportunity to save and garner substantial resources. This provides at least some justification for higher taxes on capital gains to break the cycle -- even taxes on the inflationary component of capital gains which act as de facto wealth taxes.  
+
+Another version of this argument is that tax concessions for capital gains make Australia's income tax system less progressive than is implied by income tax rates. While some may want a less progressive system, tax concessions are generally a poor way to achieve this, because they are inherently less transparent than changing the marginal rates of income tax. For value choices such as the progressivity of the tax system, the public debate is best served by making the distribution of the tax burden as transparent as possible.
+
+
 
 <<stacked-column-chart, fig.width = 22, out.width = "22in">>=
 new_lines_adder = function(x, interval) {
@@ -1794,7 +1826,7 @@ prdgr <- function(fyyear){
 @
  
  And the average level of gearing for property investors is increasing.
- Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2007-08")} in 2007-08. With falling interest rates, interest deductions as a proportion of gross rents have fallen to \Sexpr{prdgr("2013-14")}~per cent in 2013-14.\footcite[p.~65]{Treasury2015a}
+ Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in \mbox{1997-98} to \Sexpr{prdgr("2007-08")} in 2007-08. With falling interest rates, interest deductions as a proportion of gross rents have fallen to \Sexpr{prdgr("2013-14")}~per cent in 2013-14.\footcite[p.~65]{Treasury2015a}
  
 <<NG-basic-stats>>=
 n_NG <- 
@@ -1925,10 +1957,11 @@ sample_file_1314 %>%
   annotate("text", 
            x = median_tx_inc_by_NG$median + 1000, 
            y = c(density_other$y[which.max(density_other$x[density_other$x < median_tx_inc_by_NG$median[1]])], 
-                    density_NG$y[which.max(density_NG$x[density_NG$x < median_tx_inc_by_NG$median[2]])]), 
+                 # 1.02 cosmetic: else label too close to density
+                 density_NG$y[which.max(density_NG$x[density_NG$x < median_tx_inc_by_NG$median[2]])] * 1.02), 
            label = c(paste("Not negatively gearing\nMedian:", dollar(median_tx_inc_by_NG$median[1])), 
                      paste("Negatively gearing\nMedian:", dollar(median_tx_inc_by_NG$median[2]))), 
-           size = 20/(14/5),
+           size = 21/(14/5),
            hjust = 0,
            lineheight = 0.85,
            fontface = "bold",
@@ -2263,6 +2296,62 @@ The first argument is easily refuted. In 1985, the Hawke Government restricted n
 
 But these concerns were ill-founded. Rents did rise rapidly in Perth and rose somewhat in Sydney. Yet inflation-adjusted rents were stable in Melbourne and actually fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}). In Sydney and Perth it was population growth and insufficient residential construction -- due to high borrowing rates and competition from the stock market for funds -- not the policy change, led to the rent rises. 
 
+<<Capital_city_rents_1ROW-2COL>>=
+rent.indices.real <- readRDS("rent_indices_real.rds")
+
+rent.indices.real %>%
+  filter(obsTime > "1985-07-01", obsTime < "1987-09-30") %>%
+  group_by(city) %>%
+  summarise(up2 = last(obsValuerel) - first(obsValuerel))
+
+rent.indices.real  %>%
+  filter(!grepl("All", city)) %>%
+  mutate(up = factor(ifelse(up, "Rents rose", "Rents fell or flattened"))) %>%
+  filter(obsTime < as.POSIXct("1989-06-01")) %>%
+  {
+  # chart_data %>%
+  grplot(., aes(x = obsTime,
+             y = obsValuerel, 
+             color = city,
+             label = city,
+             group = city)) + 
+  annotate("rect", 
+           xmin = as.POSIXct("1985-07-01"),
+           xmax = as.POSIXct("1987-09-30"),
+           ymin = -Inf,
+           ymax = Inf,
+           fill = grey(0.8),
+           alpha = 1) + 
+  annotate("blank", 
+           x = as.POSIXct("1981-07-01"), 
+           y = 1) + 
+  geom_line() + 
+  geom_text(aes(x = obsTime + 60*60*24*60, vjust = vjust, hjust = hjust),
+            data = mutate(filter(., obsTime == unique(obsTime)[14]),
+                          # manual adjustment of vertical justification
+                          vjust = ifelse(grepl("Aust", city), -0.2, 
+                                         ifelse(grepl("Brisbane", city), 2.3,
+                                                ifelse(grepl("Perth", city),1.8, 
+                                                       ifelse(grepl("Sydney", city), -1.4,
+                                                              ifelse(grepl("Adel", city), -0.7, -1.1))))), 
+                          hjust = ifelse(grepl("(Adel)|(Per)", city), -0.175, 1)),
+            size = 22.5/(14/5), 
+            fontface = "bold",
+            lineheight = 0.8) +
+  scale_colour_manual(values = c(gpal(6)[1:5], "black")) + 
+
+  
+  facet_wrap(~up, ncol = 2)  +
+  theme(panel.margin.x = grid::unit(2, "lines"),
+        plot.margin =  grid::unit(c(5,5,5,5), "pt"),
+        axis.title.x = element_blank(), 
+        strip.background = element_rect(fill = theGrey),
+        strip.text = element_text(color = "white", face = "bold"),
+        axis.line.x = element_line(colour = "black", size = 0.5), 
+        axis.line.y = element_line(colour = "black", size = 0.5))
+  }
+@
+
 <<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
 rent.indices.real <- readRDS("rent_indices_real.rds")
 rent.indices.real  %>%
@@ -2284,6 +2373,7 @@ rent.indices.real  %>%
            x = as.POSIXct("1981-07-01"), 
            y = 1) + 
   geom_line() + 
+  # don't use annotate: bad for facets!
   geom_text(aes(x = obsTime + 60*60*24*60, vjust = vjust),
             data = mutate(filter(rent.indices.real, obsTime == unique(obsTime)[14]),
                           # manual adjustment of vertical justification
