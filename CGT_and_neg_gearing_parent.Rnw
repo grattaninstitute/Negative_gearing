@@ -13,6 +13,7 @@ new.discount <- 0.25  # proposed CGT
 TARGET.FY <- "2015-16"
 use.sample.fy <- "2013-14"  # deprecated
 latest.sample.fy <- "2013-14"
+options(warn = 2)
 @
 
 
@@ -55,6 +56,7 @@ my_emf <- function(file, width, height){
 # knitr chunk opts
 # fig.width must = out.width and same for *.height
 knitr::opts_chunk$set(fig.width=11.000, 
+                      # A4 paper dimensions 11 : 7.77
                       fig.height=7.00, 
                       out.width="11.000in", 
                       out.height="7.00in", 
@@ -99,6 +101,26 @@ library(tidyr)
 library(magrittr)
 library(taxstats)
 library(testthat)
+@
+
+<<prohibit_quiet_censoring>>=
+# Use this function to ensure cosmetic alterations to the limits 
+# do not do so unless 
+stop_if_censor <- function(x, range = c(0, 1), only.finite = TRUE){
+  # copied from scales::censor
+  force(range)
+  finite <- if (only.finite) 
+    is.finite(x)
+  else TRUE
+  x[finite & x < range[1]] <- NA_real_
+  x[finite & x > range[2]] <- NA_real_
+  if (any(is.na(x))){
+    stop("Scale cropped (data not plotted). If you're *sure* this is fine, you can use ggplot2::scale_<axis>_continuous(...). However, I strongly recommend you preprocess your data to avoid this error message instead.")
+  }
+  x
+}
+scale_y_continuous <- function(...) ggplot2::scale_y_continuous(..., oob = stop_if_censor)
+scale_x_continuous <- function(...) ggplot2::scale_x_continuous(..., oob = stop_if_censor)
 @
 
 <<downloadGrattex>>=
@@ -951,7 +973,7 @@ sample_file %>%
     `Taxable income (less CG) percentile`,
     `Age group` = cut(age_imp, 
                       breaks = c(-Inf, 30, 50, 60, 65, Inf),
-                      labels = c("Below 30", "30-49", "50-59",  "60-64", "65+"), 
+                      labels = c("Below\n30", "30-49", "50-59",  "60-64", "65+"), 
                       include.lowest = TRUE, 
                       right = FALSE, ## almost not needed
                       ordered.results = TRUE)
@@ -967,7 +989,8 @@ sample_file %>%
     text.y = mean(probCG[`Taxable income (less CG) percentile` > 96])
          ) %>%
          {
-           grplot(., aes(x = `Taxable income (less CG) percentile`, y = probCG, color = rev(`Age group`), weight = n_taxpayers)) + 
+           grplot(., aes(x = `Taxable income (less CG) percentile`, y = probCG, 
+                         color = rev(`Age group`), weight = n_taxpayers)) + 
              theme(axis.title.y = element_blank(),
                    axis.title.x = element_text(hjust = 0.5, face = "bold")) + 
              # gridlines go to far
@@ -980,13 +1003,16 @@ sample_file %>%
                       yend = seq(0, 0.20, by = 0.05), 
                       size = rel(0.1)) + 
              geom_smooth(size = 1.5, se = FALSE) + 
+             # Mark Below\n30 as grey
              scale_color_manual(values = c(gpal(5)[1:4], theGrey)) + 
-             scale_size(range = c(1, 10)) + 
              geom_text(aes(label = text.label, y = text.y), 
                        hjust = 0, 
                        size = 22/(14/5),
+                       lineheight = 1,
                        nudge_x = 2,
-                       fontface = "bold") + 
+                       fontface = "bold", 
+                       # ignore warnings (NAs intentional)
+                       na.rm = TRUE) + 
              scale_y_continuous(label = function(x) paste0("      ", percent(x))) +
              scale_x_continuous(limits = c(0, 110), breaks = c(0, 25, 50, 75, 100)) 
          } 
@@ -1001,9 +1027,9 @@ sample_file %>%
     `Taxable income (less CG) percentile`,
     `Age group` = cut(age_imp, 
                       breaks = c(-Inf, 30, 50, 65, Inf),
-                      labels = c("Below 30", "30-49", "50-64", "65+"), 
+                      labels = c("Below\n30", "30-49", "50-64", "65+"), 
                       include.lowest = TRUE, 
-                      right = FALSE, ## almost not needed
+                      right = FALSE, ## almost surely (probability 1) not needed
                       ordered.results = TRUE)
     ) %>%
   summarise(avg_CGT = mean(Net_CG_amt[Net_CG_amt > 0]), 
@@ -1017,7 +1043,8 @@ sample_file %>%
     text.y = mean(avg_CGT[`Taxable income (less CG) percentile` > 94])
          ) %>%
          {
-           grplot(., aes(x = `Taxable income (less CG) percentile`, y = avg_CGT, color = rev(`Age group`), weight = n_taxpayers)) + 
+           grplot(., aes(x = `Taxable income (less CG) percentile`, y = avg_CGT, 
+                         color = rev(`Age group`), weight = n_taxpayers)) + 
              theme(axis.title.y = element_blank(),
                    axis.title.x = element_text(hjust = 0.5, face = "bold")) +  
              # gridlines go to far
@@ -1030,11 +1057,15 @@ sample_file %>%
                       yend = c(0, 20e3, 40e3, 60e3), 
                       size = rel(0.1)) +
              geom_smooth(size = 1.5, se = FALSE) + 
+             # Mark Below\n30 as grey
+             scale_color_manual(values = c(gpal(5)[1:4], theGrey)) + 
              geom_text(aes(label = text.label, y = text.y), 
                        hjust = 0, 
                        nudge_x = 2,
                        fontface = "bold", 
+                       lineheight = 1,
                        size = 22/(14/5),
+                       # ignore warnings (NAs intentional)
                        na.rm = TRUE) + 
              annotate("blank", x = 0, y = 0) + 
              scale_y_continuous(label = grattan_dollar) +
@@ -2041,7 +2072,7 @@ rbind(benefits_by_taxable_income_before_deductions, benefits_by_taxable_income) 
 \Caption{Negative gearing mostly benefits those on high incomes, and the difference is especially stark when incomes are measured before subtracting rental interest deductions}{Percentage of each decile's share of the benefit in reduced income tax due to negative gearing (2012-13)}{fig:Benefit-NG-before-after-deductions}
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/Benefit-NG-before-after-deductions-1}
 \notes{Taxable income before rental deductions means $\text{Taxable Income} - \min(\text{Net rental profit}, 0)$.
-Income tax includes medicare levy, medicare thresholds, but not other tax benefits (\emph{e.g.}~the seniors and pensioners tax offset (SAPTO))}
+Income tax includes medicare levy, LITO, and the temporary budget repair levy but not other tax benefits (\emph{e.g.}~the seniors and pensioners tax offset (SAPTO))}
 
 \source{\gao\ 2013-14 sample file}
 \end{figure}
