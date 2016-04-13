@@ -70,6 +70,8 @@
 
 
 
+
+
 % citations
 \input{package_cite_input}
 
@@ -578,6 +580,7 @@ A lot of the public debate has centred on claims that most taxpayers negatively 
 
 \begin{figure}
 \Caption{More taxpayers on higher incomes negatively gear}{Distribution of taxable incomes by negative gearing status, 2013-14}{fig:tx-inc-distr-by-NG}
+% dev omit emf due to alpha
 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//tx-inc-distr-by-NG-1}
 \end{figure}
@@ -596,7 +599,7 @@ The tax benefits from negative gearing are even more skewed toward high income e
 \Caption{Negative gearing mostly benefits those on high incomes, and the difference is especially stark when incomes are measured before subtracting rental interest deductions}{Percentage of each decile's share of the benefit in reduced income tax due to negative gearing (2012-13)}{fig:Benefit-NG-before-after-deductions}
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//Benefit-NG-before-after-deductions-1}
 \notes{Taxable income before rental deductions means $\text{Taxable Income} - \min(\text{Net rental profit}, 0)$.
-Income tax includes medicare levy, medicare thresholds, but not other tax benefits (\emph{e.g.}~the seniors and pensioners tax offset (SAPTO))}
+Income tax includes medicare levy, LITO, and the temporary budget repair levy but not other tax benefits (\emph{e.g.}~the seniors and pensioners tax offset (SAPTO))}
 
 \source{\gao\ 2013-14 sample file}
 \end{figure}
@@ -734,7 +737,7 @@ contribution to the budget bottom line.
 \begin{table}[!h]
 \begin{center}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 01:42:14 2016
+% Wed Apr 13 12:02:41 2016
 \begin{tabular}{rr}
   \toprule
 {\textbf{Investment properties owned}} & {\textbf{Households}} \\ 
@@ -766,7 +769,7 @@ contribution to the budget bottom line.
 
 \begin{table}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 01:42:14 2016
+% Wed Apr 13 12:02:42 2016
 \begin{tabular}{rr}
   \toprule
   \midrule
@@ -784,7 +787,7 @@ properties owned and rented out & 316,366 \\
 \begin{table*}
 \caption{Taxpayers with wage and salary income claiming business losses by occupation}\label{tbl:bizlosses}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 01:42:15 2016
+% Wed Apr 13 12:02:43 2016
 \begin{tabular}{lrrrrr}
   \toprule
 {\textbf{Occupation}} & {\textbf{Type}} & {\textbf{No. claiming losses}} & {\textbf{\%}} & {\textbf{Average loss}} & {\textbf{Average salary}} \\ 
@@ -907,6 +910,7 @@ Capping the total amount of losses that can be deducted each year for negatively
 
 \begin{figure}
 \Caption{Those on high salaries are much more likely to be negatively gearing}{Incidence of negative gearing}{fig:NG-vs-salary}
+% dev omit emf due to alpha
 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//NG-vs-salary-1}
 \end{figure}
@@ -916,7 +920,7 @@ Capping losses is politically attractive because a smaller percentage of landlor
 \begin{table}
 \caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Mon Apr 11 23:10:53 2016
+% Wed Apr 13 12:02:58 2016
 \begin{tabular}{rrrS}
   \toprule
 {\textbf{Threshold}} & {\textbf{Costing}} & {\textbf{Number affected}} & {\textbf{\%}} \\ 
@@ -924,9 +928,9 @@ Capping losses is politically attractive because a smaller percentage of landlor
 $-$\$0 & \$2,301,531,420 & 739,281 & 36.9\% \\ 
   $-$\$5,000 & \$1,293,778,657 & 389,404 & 19.4\% \\ 
   $-$\$10,000 & \$763,198,336 & 202,156 & 10.1\% \\ 
-  $-$\$15,000 & \$476,571,527 & 113,180 & 5.65\% \\ 
-  $-$\$20,000 & \$311,345,906 & 65,550 & 3.27\% \\ 
-  $-$\$50,000 & \$40,194,373 & 8,466 & 0.423\% \\ 
+  $-$\$15,000 & \$476,571,527 & 113,180 & 5.6\% \\ 
+  $-$\$20,000 & \$311,345,906 & 65,550 & 3.3\% \\ 
+  $-$\$50,000 & \$40,194,373 & 8,466 & 0.4\% \\ 
    \bottomrule
 \end{tabular}
 
@@ -964,7 +968,7 @@ This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors
 \begin{table*}[!htb]
 \centering
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 01:42:21 2016
+% Wed Apr 13 12:02:58 2016
 \begin{tabular}{rl}
   \toprule
  version & R version 3.2.4 (2016-03-10) \\ 
@@ -984,7 +988,7 @@ This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors
 
 
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 01:42:21 2016
+% Wed Apr 13 12:02:58 2016
 \begin{longtable}{lllll}
   \toprule
 {\textbf{package}} & {\textbf{*}} & {\textbf{version}} & {\textbf{date}} & {\textbf{source}} \\ 
@@ -997,8 +1001,10 @@ This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors
 acepack &  & 1.3-3.3 & 2013-05-03 & CRAN (R 3.2.3) \\ 
   assertthat &  & 0.1 & 2013-12-06 & CRAN (R 3.2.3) \\ 
   bitops &  & 1.0-6 & 2013-08-17 & CRAN (R 3.2.3) \\ 
+  car & * & 2.1-1 & 2015-12-14 & CRAN (R 3.2.3) \\ 
   chron &  & 2.3-47 & 2015-06-24 & CRAN (R 3.2.4) \\ 
   cluster &  & 2.0.3 & 2015-07-21 & CRAN (R 3.2.4) \\ 
+  codetools &  & 0.2-14 & 2015-07-15 & CRAN (R 3.2.4) \\ 
   colorspace &  & 1.2-6 & 2015-03-11 & CRAN (R 3.2.4) \\ 
   crayon &  & 1.3.1 & 2015-07-13 & CRAN (R 3.2.3) \\ 
   curl &  & 0.9.7 & 2016-04-10 & CRAN (R 3.2.4) \\ 
@@ -1027,18 +1033,25 @@ acepack &  & 1.3-3.3 & 2013-05-03 & CRAN (R 3.2.3) \\
   lattice & * & 0.20-33 & 2015-07-14 & CRAN (R 3.2.4) \\ 
   latticeExtra &  & 0.6-28 & 2016-02-09 & CRAN (R 3.2.4) \\ 
   lazyeval &  & 0.1.10 & 2015-01-02 & CRAN (R 3.2.3) \\ 
+  lme4 &  & 1.1-11 & 2016-02-12 & CRAN (R 3.2.4) \\ 
   lubridate &  & 1.5.6 & 2016-04-06 & CRAN (R 3.2.4) \\ 
   magrittr & * & 1.5 & 2014-11-22 & CRAN (R 3.2.4) \\ 
+  MASS &  & 7.3-45 & 2015-11-10 & CRAN (R 3.2.4) \\ 
   Matrix & * & 1.2-4 & 2016-03-02 & CRAN (R 3.2.4) \\ 
+  MatrixModels &  & 0.4-1 & 2015-08-22 & CRAN (R 3.2.3) \\ 
   memoise &  & 1.0.0 & 2016-01-29 & CRAN (R 3.2.4) \\ 
   mgcv &  & 1.8-12 & 2016-03-03 & CRAN (R 3.2.4) \\ 
+  minqa &  & 1.2.4 & 2014-10-09 & CRAN (R 3.2.3) \\ 
   munsell &  & 0.4.3 & 2016-02-13 & CRAN (R 3.2.4) \\ 
   nlme &  & 3.1-125 & 2016-02-27 & CRAN (R 3.2.4) \\ 
+  nloptr &  & 1.0.4 & 2014-08-04 & CRAN (R 3.2.3) \\ 
   nnet &  & 7.3-12 & 2016-02-02 & CRAN (R 3.2.4) \\ 
   openxlsx & * & 3.0.0 & 2015-07-03 & CRAN (R 3.2.4) \\ 
+  pbkrtest &  & 0.4-6 & 2016-01-27 & CRAN (R 3.2.4) \\ 
   plyr &  & 1.8.3 & 2015-06-12 & CRAN (R 3.2.4) \\ 
   purrr &  & 0.2.1 & 2016-03-09 & Github (hadley/purrr@0f9b60a) \\ 
   quadprog &  & 1.5-5 & 2013-04-17 & CRAN (R 3.2.3) \\ 
+  quantreg &  & 5.21 & 2016-02-13 & CRAN (R 3.2.4) \\ 
   R6 &  & 2.1.2 & 2016-01-26 & CRAN (R 3.2.4) \\ 
   RColorBrewer &  & 1.1-2 & 2014-12-07 & CRAN (R 3.2.3) \\ 
   Rcpp &  & 0.12.4 & 2016-03-26 & CRAN (R 3.2.4) \\ 
@@ -1049,6 +1062,7 @@ acepack &  & 1.3-3.3 & 2013-05-03 & CRAN (R 3.2.3) \\
   rpart &  & 4.1-10 & 2015-06-29 & CRAN (R 3.2.4) \\ 
   rsdmx & * & 0.5-3 & 2016-03-16 & CRAN (R 3.2.4) \\ 
   scales & * & 0.4.0 & 2016-02-26 & CRAN (R 3.2.4) \\ 
+  SparseM &  & 1.7 & 2015-08-15 & CRAN (R 3.2.3) \\ 
   stringi &  & 1.0-1 & 2015-10-22 & CRAN (R 3.2.3) \\ 
   stringr &  & 1.0.0 & 2015-04-30 & CRAN (R 3.2.4) \\ 
   survey & * & 3.30-3 & 2014-08-15 & CRAN (R 3.2.3) \\ 

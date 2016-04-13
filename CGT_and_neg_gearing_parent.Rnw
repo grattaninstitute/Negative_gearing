@@ -28,7 +28,7 @@ knit_hooks$set(timeit = function(before) {
     if (before) {
       .current.time <<- Sys.time()
     } else {
-      .duration <- formatC(round(difftime(Sys.time(), .current.time, units = "secs"), 1), 
+      .duration <- formatC(as.numeric(round(difftime(Sys.time(), .current.time, units = "secs"), 1)), 
                            # ensure one decimal place, right-aligned (width = 5)
                            format = "f", flag = "#", digits = 1, width = 5)
       if(!.finished)
@@ -135,7 +135,10 @@ if (overwrite_grattex){
 # Select packages to cite:
 citPkgs <- names(sessionInfo()$otherPkgs)
 # Write the bibtex file:
+# will raise warnings for missing DESCRIPTION entries if left unsuppressed
+suppressWarnings({
 knitr::write_bib(citPkgs, file="bibliography2.bib")      
+})
 package_cite_input <- paste0("\\nocite{", paste0(paste0("R-", citPkgs), collapse=","), "}")
 write(package_cite_input, file = "package_cite_input.tex")
 @
@@ -1140,7 +1143,8 @@ The remainder of this section works through these considerations in more detail.
 prop_sw_top_decile <- 
   sample_file %>%
   group_by(top_sw_decile = ntile(Sw_amt, 10) == 10) %>%
-  summarise(tot_sw = sum(Sw_amt)) %>%
+  # to avoid integer overflow / gforce warning
+  summarise(tot_sw = sum(as.numeric(Sw_amt))) %>%
   ungroup %>%
   mutate(prop_sw = tot_sw / sum(tot_sw)) %>%
   filter(top_sw_decile) %$%
@@ -1886,7 +1890,8 @@ individuals_table1_201314 %>%
   arrange(fy_year, `Selected items`) %>%
   grplot(aes(x = year, y = real_value)) + 
   geom_hline(yintercept = 0, colour = theGrey) + 
-  geom_bar(stat = "identity") + 
+  # avoid negative bar warnings with position = "identity"
+  geom_bar(stat = "identity", position = "identity") + 
   
   annotate("segment", 
            x = 2000 + 9/12, 
@@ -1941,7 +1946,8 @@ A lot of the public debate has centred on claims that most taxpayers negatively 
 
 \begin{figure}
 \Caption{More taxpayers on higher incomes negatively gear}{Distribution of taxable incomes by negative gearing status, 2013-14}{fig:tx-inc-distr-by-NG}
-<<tx-inc-distr-by-NG>>=
+% dev omit emf due to alpha
+<<tx-inc-distr-by-NG, dev = c('my_pdf', 'png'), fig.ext = c("pdf", "png")>>=
 median_tx_inc_by_NG <- 
   sample_file_1314 %>%
   group_by(NG = Net_rent_amt < 0) %>%
@@ -2782,7 +2788,7 @@ sample_file_1314 %>%
   mutate(Occupation_description = gsub("^([A-Z][a-z,]+\\s[A-Za-z]+)\\s.*$", "\\1", gsub(" and", "", Occupation_description)))  %>%
   
   grplot(aes(x = Occupation_description, y = value, fill = panel)) + 
-  geom_bar(stat = "identity", width = 0.8) + 
+  geom_bar(stat = "identity", position = "identity", width = 0.8) + 
   coord_flip() +
   facet_grid(~panel, scales = "free_x") 
 @
@@ -2856,7 +2862,8 @@ Capping the total amount of losses that can be deducted each year for negatively
 
 \begin{figure}
 \Caption{Those on high salaries are much more likely to be negatively gearing}{Incidence of negative gearing}{fig:NG-vs-salary}
-<<NG-vs-salary>>=
+% dev omit emf due to alpha
+<<NG-vs-salary, dev = c('my_pdf', 'png'), fig.ext = c("pdf", "png")>>=
 sample_file_1314 %>%
   filter(between(Sw_amt, 0, 250e3)) %>%
   rename(Salary = Sw_amt) %>%
