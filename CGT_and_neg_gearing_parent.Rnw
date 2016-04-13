@@ -13,6 +13,8 @@ new.discount <- 0.25  # proposed CGT
 TARGET.FY <- "2015-16"
 use.sample.fy <- "2013-14"  # deprecated
 latest.sample.fy <- "2013-14"
+
+# Warnings need to be accounted for.
 options(warn = 2)
 @
 
@@ -105,7 +107,7 @@ library(testthat)
 
 <<prohibit_quiet_censoring>>=
 # Use this function to ensure cosmetic alterations to the limits 
-# do not do so unless 
+# do not omit data.
 stop_if_censor <- function(x, range = c(0, 1), only.finite = TRUE){
   # copied from scales::censor
   force(range)
@@ -975,8 +977,8 @@ sample_file %>%
   group_by(
     `Taxable income (less CG) percentile`,
     `Age group` = cut(age_imp, 
-                      breaks = c(-Inf, 30, 50, 60, 65, Inf),
-                      labels = c("Below\n30", "30-49", "50-59",  "60-64", "65+"), 
+                      breaks = c(-Inf, 30, 50, 65, Inf),
+                      labels = c("Below\n30", "30-49", "50-64", "65+"), 
                       include.lowest = TRUE, 
                       right = FALSE, ## almost not needed
                       ordered.results = TRUE)
@@ -989,6 +991,7 @@ sample_file %>%
     text.label = ifelse(`Taxable income (less CG) percentile` == max(`Taxable income (less CG) percentile`),
                         as.character(`Age group`), 
                         NA_character_),
+    # choice of 96 cosmetic (puts labels in a reasonable place semantically and aesthetically)
     text.y = mean(probCG[`Taxable income (less CG) percentile` > 96])
          ) %>%
          {
@@ -1007,7 +1010,7 @@ sample_file %>%
                       size = rel(0.1)) + 
              geom_smooth(size = 1.5, se = FALSE) + 
              # Mark Below\n30 as grey
-             scale_color_manual(values = c(gpal(5)[1:4], theGrey)) + 
+             scale_color_manual(values = c(gpal(3), theGrey)) + 
              geom_text(aes(label = text.label, y = text.y), 
                        hjust = 0, 
                        size = 22/(14/5),
@@ -1061,7 +1064,7 @@ sample_file %>%
                       size = rel(0.1)) +
              geom_smooth(size = 1.5, se = FALSE) + 
              # Mark Below\n30 as grey
-             scale_color_manual(values = c(gpal(5)[1:4], theGrey)) + 
+             scale_color_manual(values = c(gpal(3), theGrey)) + 
              geom_text(aes(label = text.label, y = text.y), 
                        hjust = 0, 
                        nudge_x = 2,
@@ -2758,7 +2761,40 @@ prop_val_bizlosses_in_PP <-
   val_bizlosses_in_PP / val_bizlosses
 @
 
-However, many of the losses being claimed may not serve this policy purpose. Around \Sexpr{latex_percent(round(prop_val_bizlosses_in_PP, 1))} of business losses claimed are from primary production -- for example, animal or crop farming, vineyards or animal breeding. \Sexpr{texNum(n_bizlosses_in_PP)}~taxpayers claimed \Sexpr{texNum(-val_bizlosses_in_PP, dollar = TRUE, sig.figs = 2L)}  in primary production losses -- \Sexpr{if(-val_bizlosses_in_PP / n_bizlosses_in_PP < signif(-val_bizlosses_in_PP / n_bizlosses_in_PP, 1)) "almost" else "over"} \Sexpr{texNum(signif(-val_bizlosses_in_PP / n_bizlosses_in_PP, 1), dollar = TRUE)} per claimant. In all occupational categories, average salaries for those claiming primary production losses were substantially higher -- between 30 and 80 per cent -- than the average salaries for their occupation. And the largest tax breaks were for the highest income professions  suggesting that the primary production activity may often be more a lifestyle activity, such as a hobby farm, than a sustainable business. 
+\begin{figure}
+\caption{Those earning more claim bigger primary production losses}
+<<PP-losses-by-occ>>=
+PP_losses_by_occ_comparison <- 
+  sample_file_1314 %>%
+  merge(occupation_decoder, by = "Occ_code") %>%
+  group_by(Occupation_description) %>%
+  summarise(average_loss_if_claimed = -1 * mean(Net_PP_BI_amt[Net_PP_BI_amt < 0]), 
+            salary_claiming_vs_not_r = mean(Sw_amt[Net_PP_BI_amt < 0]) / mean(Sw_amt[Net_PP_BI_amt >= 0]),
+            salary_claiming_vs_not   = mean(Sw_amt[Net_PP_BI_amt < 0]) - mean(Sw_amt[Net_PP_BI_amt >= 0]), 
+            prop_claiming_losses = mean(Net_PP_BI_amt < 0), 
+            n_claimants = 50 * sum(Net_PP_BI_amt < 0)) 
+
+range_avg_sw_PP_loss_vs_not <- 
+  PP_losses_by_occ_comparison %>%
+  # Basically no salary in filtered out group: (avg salary $78!)
+  filter(!grepl("Occupation not listed", Occupation_description)) %$%
+  range(salary_claiming_vs_not_r - 1)
+  
+
+PP_losses_by_occ_comparison %>%
+  gather(panel, value, -Occupation_description) %>%
+  # cosmetic only:
+  mutate(Occupation_description = gsub("^([A-Z][a-z,]+\\s[A-Za-z]+)\\s.*$", "\\1", gsub(" and", "", Occupation_description)))  %>%
+  
+  grplot(aes(x = Occupation_description, y = value, fill = panel)) + 
+  geom_bar(stat = "identity", position = "identity", width = 0.8) + 
+  coord_flip() +
+  facet_grid(~panel, scales = "free_x") 
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/PP-losses-by-occ-1}
+\end{figure}
+
+However, many of the losses being claimed may not serve this policy purpose. Around \Sexpr{latex_percent(round(prop_val_bizlosses_in_PP, 1))} of business losses claimed are from primary production -- for example, animal or crop farming, vineyards or animal breeding. \Sexpr{texNum(n_bizlosses_in_PP)}~taxpayers claimed \Sexpr{texNum(-val_bizlosses_in_PP, dollar = TRUE, sig.figs = 2L)}  in primary production losses -- \Sexpr{if(-val_bizlosses_in_PP / n_bizlosses_in_PP < signif(-val_bizlosses_in_PP / n_bizlosses_in_PP, 1)) "almost" else "over"} \Sexpr{texNum(signif(-val_bizlosses_in_PP / n_bizlosses_in_PP, 1), dollar = TRUE)} per claimant. In all occupational categories, average salaries for those claiming primary production losses were substantially higher -- between \Sexpr{latex_percent(range_avg_sw_PP_loss_vs_not[1])} and \Sexpr{latex_percent(range_avg_sw_PP_loss_vs_not[2])} -- than the average salaries for their occupation. And the largest tax breaks were for the highest income professions  suggesting that the primary production activity may often be more a lifestyle activity, such as a hobby farm, than a sustainable business. 
 
 <<bizLosses-for-NPP>>=
 n_bizlosses_NPP <- 
@@ -2774,26 +2810,7 @@ avg_loss_claimed_NPP <-
 
 About \Sexpr{texNum(n_bizlosses_NPP)} taxpayers claimed an average of \Sexpr{texNum(avg_loss_claimed_NPP, dollar = TRUE)} of non-farm business losses. It is likely that many of these people were individual contractors in fields related to their main job. Some of the losses may simply be taxpayers claiming lifestyle costs where they will be less scrutinised. Tax returns require less detail for costs claimed as part of running a business rather than in incurring wage and salary income (for example, travel costs do not need to be separately disclosed). 
 
-\begin{figure}
-\caption{Those earning more claim bigger primary production losses}
-<<PP-losses-by-occ>>=
-sample_file_1314 %>%
-  merge(occupation_decoder, by = "Occ_code") %>%
-  group_by(Occupation_description) %>%
-  summarise(average_loss_if_claimed = -1 * mean(Net_PP_BI_amt[Net_PP_BI_amt < 0]), 
-            salary_claiming_vs_not = mean(Sw_amt[Net_PP_BI_amt < 0]) - mean(Sw_amt[Net_PP_BI_amt >= 0]), 
-            prop_claiming_losses = mean(Net_PP_BI_amt < 0), 
-            n_claimants = 50 * sum(Net_PP_BI_amt < 0)) %>%
-  gather(panel, value, -Occupation_description) %>%
-  mutate(Occupation_description = gsub("^([A-Z][a-z,]+\\s[A-Za-z]+)\\s.*$", "\\1", gsub(" and", "", Occupation_description)))  %>%
-  
-  grplot(aes(x = Occupation_description, y = value, fill = panel)) + 
-  geom_bar(stat = "identity", position = "identity", width = 0.8) + 
-  coord_flip() +
-  facet_grid(~panel, scales = "free_x") 
-@
-\includegraphics[width=\columnwidth]{\Sexpr{atlas}/PP-losses-by-occ-1}
-\end{figure}
+
 
 Nevertheless, given the low costs and potentially meaningful benefits the best approach is probably to leave the current tax treatment for losses from unincorporated businesses in place. In other words, only losses from passive investments would be quarantined so they cannot be written off against and wage and salary income. This approach is in place in the United States \TBD{(Appendix C)}. 
 
