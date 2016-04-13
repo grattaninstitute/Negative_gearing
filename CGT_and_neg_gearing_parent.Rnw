@@ -2263,8 +2263,8 @@ housing_finance_commitments <-
 @
 
 <<should_we_get_ABS>>=
-should_we_get_ABS <- FALSE ||
- http_error("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS") || !is.null(readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS"))
+should_we_get_ABS <- 
+ !http_error("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS") && !is.null(readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS"))
 @
 
 <<ABS_GET_RES_VALS, eval=TRUE>>=
@@ -2671,7 +2671,7 @@ hilda_w14_hh %>%
 \source{HILDA}
 \end{table}
 
-<<Import-SIH>>=
+<<Import-SIH, cache=TRUE>>=
 sih201314 <- 
   read.dta("SIH201314/sih13bh.dta")
 @
