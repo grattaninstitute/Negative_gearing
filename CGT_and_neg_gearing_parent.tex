@@ -103,6 +103,8 @@
 
 
 
+
+
 %%% Costings analysis
 
 
@@ -258,6 +260,28 @@ The capital gains overcompensates many investors for the effects of inflation, e
 Under the 50 per cent discount, investors pay less tax compared to a tax on real gains so long as asset values grow at least twice the rate of inflation. The advantage is even larger on longer-term investments because capital gains tax is not paid until the asset is sold.
 
 Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7.3 per cent  while share prices have grown by an average of only 3.6 per cent.  Inflation over this period averaged 2.8 per cent annually.  So the 50 per cent discount has overcompensated housing investors. In contrast, long-term share investors who experienced low average capital returns because of the global financial crisis, would have been better off under a regime that taxed real capital gains. Of course, both sets of investors received ongoing investment income in terms of rents and dividends that meant their net returns were significantly higher than those from capital gains alone.   
+\end{smallbox}
+
+\begin{smallbox}{Tax rates on real gains vary with inflation and returns}{box:tax-on-CG-vary-inflation-returns}
+When taxes are levied on nominal returns then tax rates on real gains depend on both the inflation rate and the level of returns. 
+
+% caching here might cause Sexpr to evaluate with reference to the wrong chunk.
+
+
+Consider an investor Surya that has \$10,000 worth of shares. The shares pay no dividends so that all her returns are through capital growth.
+Imagine the shares increase in value by 8~percent over the first year while inflation is 2.5~percent. If she sells the shares at the end of the year her nominal return is \$800. Her real (inflation-adjusted) return is \$540.\footnote{All printed numbers are rounded in this box.}
+
+If she paid \highlight{tax directly on her real gain} at the 47\,c top marginal rate, she would pay \$252, and her \highlight{real after-tax return would be \$284.} If instead she paid \highlight{tax on her nominal gains with a 50 per cent discount} then she would pay tax of \$188 ($0.50 \times 0.47 \times \$800$) and she would receive a real after-tax return of \$349 (real return minus the \$190 tax). She is much better off\dots.
+
+
+
+The opposite is true if her returns are low. To repeat myself, except with nominal rate of return set at 3~percent:
+
+Consider an investor Surya that has \$10,000 worth of shares. The shares pay no dividends so that all her returns are through capital growth.
+Imagine the shares increase in value by 3~percent over the first year while inflation is 2.5~percent. If she sells the shares at the end of the year her nominal return is \$300. Her real (inflation-adjusted) return is \$49.
+
+If she paid \highlight{tax directly on her real gain} at the 47\,c top marginal rate, she would pay \$23, and her \highlight{real after-tax return would be \$26.} If instead she paid \highlight{tax on her nominal gains with a 50 per cent discount} then she would pay tax of \$70 ($0.50 \times 0.47 \times \$300$) and she would receive a real after-tax return of $-$\$22 (real return minus the \$70 tax).
+
 \end{smallbox}
 
 
@@ -737,7 +761,7 @@ contribution to the budget bottom line.
 \begin{table}[!h]
 \begin{center}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 12:02:41 2016
+% Wed Apr 13 15:08:39 2016
 \begin{tabular}{rr}
   \toprule
 {\textbf{Investment properties owned}} & {\textbf{Households}} \\ 
@@ -769,7 +793,7 @@ contribution to the budget bottom line.
 
 \begin{table}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 12:02:42 2016
+% Wed Apr 13 15:08:39 2016
 \begin{tabular}{rr}
   \toprule
   \midrule
@@ -787,7 +811,7 @@ properties owned and rented out & 316,366 \\
 \begin{table*}
 \caption{Taxpayers with wage and salary income claiming business losses by occupation}\label{tbl:bizlosses}
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 12:02:43 2016
+% Wed Apr 13 15:08:40 2016
 \begin{tabular}{lrrrrr}
   \toprule
 {\textbf{Occupation}} & {\textbf{Type}} & {\textbf{No. claiming losses}} & {\textbf{\%}} & {\textbf{Average loss}} & {\textbf{Average salary}} \\ 
@@ -854,17 +878,19 @@ The losses claimed are relatively small. In 2013-14 only 240,000~taxpayers claim
 
 
 
-However, many of the losses being claimed may not serve this policy purpose. Around 40~percent of business losses claimed are from primary production -- for example, animal or crop farming, vineyards or animal breeding. 53,000~taxpayers claimed \$1.6~billion  in primary production losses -- almost \$30,000 per claimant. In all occupational categories, average salaries for those claiming primary production losses were substantially higher -- between 30 and 80 per cent -- than the average salaries for their occupation. And the largest tax breaks were for the highest income professions  suggesting that the primary production activity may often be more a lifestyle activity, such as a hobby farm, than a sustainable business. 
-
-
-
-About 190,000 taxpayers claimed an average of \$13,000 of non-farm business losses. It is likely that many of these people were individual contractors in fields related to their main job. Some of the losses may simply be taxpayers claiming lifestyle costs where they will be less scrutinised. Tax returns require less detail for costs claimed as part of running a business rather than in incurring wage and salary income (for example, travel costs do not need to be separately disclosed). 
-
 \begin{figure}
 \caption{Those earning more claim bigger primary production losses}
 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//PP-losses-by-occ-1}
 \end{figure}
+
+However, many of the losses being claimed may not serve this policy purpose. Around 40~percent of business losses claimed are from primary production -- for example, animal or crop farming, vineyards or animal breeding. 53,000~taxpayers claimed \$1.6~billion  in primary production losses -- almost \$30,000 per claimant. In all occupational categories, average salaries for those claiming primary production losses were substantially higher -- between 21~percent and 64~percent -- than the average salaries for their occupation. And the largest tax breaks were for the highest income professions  suggesting that the primary production activity may often be more a lifestyle activity, such as a hobby farm, than a sustainable business. 
+
+
+
+About 190,000 taxpayers claimed an average of \$13,000 of non-farm business losses. It is likely that many of these people were individual contractors in fields related to their main job. Some of the losses may simply be taxpayers claiming lifestyle costs where they will be less scrutinised. Tax returns require less detail for costs claimed as part of running a business rather than in incurring wage and salary income (for example, travel costs do not need to be separately disclosed). 
+
+
 
 Nevertheless, given the low costs and potentially meaningful benefits the best approach is probably to leave the current tax treatment for losses from unincorporated businesses in place. In other words, only losses from passive investments would be quarantined so they cannot be written off against and wage and salary income. This approach is in place in the United States \TBD{(Appendix C)}. 
 
@@ -968,7 +994,7 @@ This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors
 \begin{table*}[!htb]
 \centering
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 12:02:58 2016
+% Wed Apr 13 15:08:46 2016
 \begin{tabular}{rl}
   \toprule
  version & R version 3.2.4 (2016-03-10) \\ 
@@ -988,7 +1014,7 @@ This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors
 
 
 % latex table generated in R 3.2.4 by xtable 1.8-2 package
-% Wed Apr 13 12:02:58 2016
+% Wed Apr 13 15:08:46 2016
 \begin{longtable}{lllll}
   \toprule
 {\textbf{package}} & {\textbf{*}} & {\textbf{version}} & {\textbf{date}} & {\textbf{source}} \\ 
@@ -1001,10 +1027,8 @@ This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors
 acepack &  & 1.3-3.3 & 2013-05-03 & CRAN (R 3.2.3) \\ 
   assertthat &  & 0.1 & 2013-12-06 & CRAN (R 3.2.3) \\ 
   bitops &  & 1.0-6 & 2013-08-17 & CRAN (R 3.2.3) \\ 
-  car & * & 2.1-1 & 2015-12-14 & CRAN (R 3.2.3) \\ 
   chron &  & 2.3-47 & 2015-06-24 & CRAN (R 3.2.4) \\ 
   cluster &  & 2.0.3 & 2015-07-21 & CRAN (R 3.2.4) \\ 
-  codetools &  & 0.2-14 & 2015-07-15 & CRAN (R 3.2.4) \\ 
   colorspace &  & 1.2-6 & 2015-03-11 & CRAN (R 3.2.4) \\ 
   crayon &  & 1.3.1 & 2015-07-13 & CRAN (R 3.2.3) \\ 
   curl &  & 0.9.7 & 2016-04-10 & CRAN (R 3.2.4) \\ 
@@ -1033,25 +1057,18 @@ acepack &  & 1.3-3.3 & 2013-05-03 & CRAN (R 3.2.3) \\
   lattice & * & 0.20-33 & 2015-07-14 & CRAN (R 3.2.4) \\ 
   latticeExtra &  & 0.6-28 & 2016-02-09 & CRAN (R 3.2.4) \\ 
   lazyeval &  & 0.1.10 & 2015-01-02 & CRAN (R 3.2.3) \\ 
-  lme4 &  & 1.1-11 & 2016-02-12 & CRAN (R 3.2.4) \\ 
   lubridate &  & 1.5.6 & 2016-04-06 & CRAN (R 3.2.4) \\ 
   magrittr & * & 1.5 & 2014-11-22 & CRAN (R 3.2.4) \\ 
-  MASS &  & 7.3-45 & 2015-11-10 & CRAN (R 3.2.4) \\ 
   Matrix & * & 1.2-4 & 2016-03-02 & CRAN (R 3.2.4) \\ 
-  MatrixModels &  & 0.4-1 & 2015-08-22 & CRAN (R 3.2.3) \\ 
   memoise &  & 1.0.0 & 2016-01-29 & CRAN (R 3.2.4) \\ 
   mgcv &  & 1.8-12 & 2016-03-03 & CRAN (R 3.2.4) \\ 
-  minqa &  & 1.2.4 & 2014-10-09 & CRAN (R 3.2.3) \\ 
   munsell &  & 0.4.3 & 2016-02-13 & CRAN (R 3.2.4) \\ 
   nlme &  & 3.1-125 & 2016-02-27 & CRAN (R 3.2.4) \\ 
-  nloptr &  & 1.0.4 & 2014-08-04 & CRAN (R 3.2.3) \\ 
   nnet &  & 7.3-12 & 2016-02-02 & CRAN (R 3.2.4) \\ 
   openxlsx & * & 3.0.0 & 2015-07-03 & CRAN (R 3.2.4) \\ 
-  pbkrtest &  & 0.4-6 & 2016-01-27 & CRAN (R 3.2.4) \\ 
   plyr &  & 1.8.3 & 2015-06-12 & CRAN (R 3.2.4) \\ 
   purrr &  & 0.2.1 & 2016-03-09 & Github (hadley/purrr@0f9b60a) \\ 
   quadprog &  & 1.5-5 & 2013-04-17 & CRAN (R 3.2.3) \\ 
-  quantreg &  & 5.21 & 2016-02-13 & CRAN (R 3.2.4) \\ 
   R6 &  & 2.1.2 & 2016-01-26 & CRAN (R 3.2.4) \\ 
   RColorBrewer &  & 1.1-2 & 2014-12-07 & CRAN (R 3.2.3) \\ 
   Rcpp &  & 0.12.4 & 2016-03-26 & CRAN (R 3.2.4) \\ 
@@ -1062,7 +1079,6 @@ acepack &  & 1.3-3.3 & 2013-05-03 & CRAN (R 3.2.3) \\
   rpart &  & 4.1-10 & 2015-06-29 & CRAN (R 3.2.4) \\ 
   rsdmx & * & 0.5-3 & 2016-03-16 & CRAN (R 3.2.4) \\ 
   scales & * & 0.4.0 & 2016-02-26 & CRAN (R 3.2.4) \\ 
-  SparseM &  & 1.7 & 2015-08-15 & CRAN (R 3.2.3) \\ 
   stringi &  & 1.0-1 & 2015-10-22 & CRAN (R 3.2.3) \\ 
   stringr &  & 1.0.0 & 2015-04-30 & CRAN (R 3.2.4) \\ 
   survey & * & 3.30-3 & 2014-08-15 & CRAN (R 3.2.3) \\ 

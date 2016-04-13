@@ -150,6 +150,15 @@ write(package_cite_input, file = "package_cite_input.tex")
 % \textheight may be quite small for flushbottom
 % \raggedbottom
 
+<<latex_dollar>>=
+latex_dollar <- function (x, digits = 0){
+    nsmall <- digits
+    commaz <- format(abs(x), nsmall = nsmall, trim = TRUE, big.mark = ",", 
+                     scientific = FALSE, digits = 1L)
+    ifelse(x < 0, paste0("$-$", "\\$", commaz), paste0("\\$", commaz))
+}
+@
+
 <<latex_percent>>=
 # flexibility in pre.phrase = c("almost", "over")
 # digits = 2  ==>  12.34%
@@ -1101,6 +1110,57 @@ The capital gains overcompensates many investors for the effects of inflation, e
 Under the 50 per cent discount, investors pay less tax compared to a tax on real gains so long as asset values grow at least twice the rate of inflation. The advantage is even larger on longer-term investments because capital gains tax is not paid until the asset is sold.
 
 Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7.3 per cent  while share prices have grown by an average of only 3.6 per cent.  Inflation over this period averaged 2.8 per cent annually.  So the 50 per cent discount has overcompensated housing investors. In contrast, long-term share investors who experienced low average capital returns because of the global financial crisis, would have been better off under a regime that taxed real capital gains. Of course, both sets of investors received ongoing investment income in terms of rents and dividends that meant their net returns were significantly higher than those from capital gains alone.   
+\end{smallbox}
+
+\begin{smallbox}{Tax rates on real gains vary with inflation and returns}{box:tax-on-CG-vary-inflation-returns}
+When taxes are levied on nominal returns then tax rates on real gains depend on both the inflation rate and the level of returns. 
+
+% caching here might cause Sexpr to evaluate with reference to the wrong chunk.
+<<surya, cache=FALSE>>=
+options(scipen = 99)
+options(digits = 3)
+surya <- list()
+surya$assump <- list()
+surya$assump$inflation <- 0.025
+surya$assump$init_invest <- 10e3
+surya$assump$nom_r <- 0.08
+surya$year1 <- list()
+surya$year1$nom_ret <- 
+  surya$assump$init_invest * surya$assump$nom_r
+
+surya$year1$real_ret <- 
+  surya$assump$init_invest * ((1 + surya$assump$nom_r) / (1 + surya$assump$inflation) - 1)
+@
+
+Consider an investor Surya that has \Sexpr{latex_dollar(surya$assump$init_invest)} worth of shares. The shares pay no dividends so that all her returns are through capital growth.
+Imagine the shares increase in value by \Sexpr{latex_percent(surya$assump$nom_r)} over the first year while inflation is \Sexpr{latex_percent(surya$assump$inflation)}. If she sells the shares at the end of the year her nominal return is \$\Sexpr{surya$year1$nom_ret}. Her real (inflation-adjusted) return is \Sexpr{texNum(surya$year1$real_ret, dollar = TRUE)}.\footnote{All printed numbers are rounded in this box.}
+
+If she paid \highlight{tax directly on her real gain} at the 47\,c top marginal rate, she would pay \$\Sexpr{comma(0.47 * surya$year1$real_ret)}, and her \highlight{real after-tax return would be \Sexpr{latex_dollar(surya$year1$real_ret - 0.47 * surya$year1$real_ret)}.} If instead she paid \highlight{tax on her nominal gains with a 50 per cent discount} then she would pay tax of \Sexpr{latex_dollar(0.50 * 0.47 * surya$year1$nom_ret)} ($0.50 \times 0.47 \times \$\Sexpr{surya$year1$nom_ret}$) and she would receive a real after-tax return of \Sexpr{latex_dollar(surya$year1$real_ret - 0.50 * 0.47 * surya$year1$nom_ret)} (real return minus the \Sexpr{texNum(0.50 * 0.47 * surya$year1$nom_ret, dollar = TRUE)} tax). She is much better off\dots.
+
+<<surya-low-returns, cache=FALSE>>=
+options(scipen = 99)
+surya <- list()
+surya$assump <- list()
+surya$assump$inflation <- 0.025
+surya$assump$init_invest <- 10e3
+######
+surya$assump$nom_r <- 0.03
+######
+surya$year1 <- list()
+surya$year1$nom_ret <- 
+  surya$assump$init_invest * surya$assump$nom_r
+
+surya$year1$real_ret <- 
+  surya$assump$init_invest * ((1 + surya$assump$nom_r) / (1 + surya$assump$inflation) - 1)
+@
+
+The opposite is true if her returns are low. To repeat myself, except with nominal rate of return set at \Sexpr{latex_percent(surya$assump$nom_r)}:
+
+Consider an investor Surya that has \$\Sexpr{comma(surya$assump$init_invest)} worth of shares. The shares pay no dividends so that all her returns are through capital growth.
+Imagine the shares increase in value by \Sexpr{latex_percent(surya$assump$nom_r)} over the first year while inflation is \Sexpr{latex_percent(surya$assump$inflation)}. If she sells the shares at the end of the year her nominal return is \$\Sexpr{surya$year1$nom_ret}. Her real (inflation-adjusted) return is \Sexpr{latex_dollar(surya$year1$real_ret)}.
+
+If she paid \highlight{tax directly on her real gain} at the 47\,c top marginal rate, she would pay \Sexpr{latex_dollar(0.47 * surya$year1$real_ret)}, and her \highlight{real after-tax return would be \Sexpr{latex_dollar(surya$year1$real_ret - 0.47 * surya$year1$real_ret)}.} If instead she paid \highlight{tax on her nominal gains with a 50 per cent discount} then she would pay tax of \Sexpr{latex_dollar(0.50 * 0.47 * surya$year1$nom_ret)} ($0.50 \times 0.47 \times \$\Sexpr{surya$year1$nom_ret}$) and she would receive a real after-tax return of \Sexpr{latex_dollar(surya$year1$real_ret - 0.50 * 0.47 * surya$year1$nom_ret)} (real return minus the \Sexpr{latex_dollar(0.50 * 0.47 * surya$year1$nom_ret)} tax).
+
 \end{smallbox}
 
 
