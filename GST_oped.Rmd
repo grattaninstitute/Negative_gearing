@@ -1,7 +1,0 @@
----
-title: ""
-author: "Hugh Parsonage"
-date: "2 October 2015"
-output: html_document
----
-
