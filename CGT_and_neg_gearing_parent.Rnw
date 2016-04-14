@@ -241,17 +241,17 @@ target_sample_file <-
 rm(keep.names)
 @
 
-<<Import-HILDA, cache=TRUE>>=
+<<Import-HILDA, eval=FALSE, cache=TRUE>>=
 hilda_w14_hh <- 
   foreign::read.dta("HILDA/Wave14/Household_n140c.dta")
 @
 
-<<Import-HILDA-ep, cache=TRUE>>=
+<<Import-HILDA-ep, eval=FALSE, cache=TRUE>>=
 hilda_w14_ep <- 
   foreign::read.dta("HILDA/Wave14/Eperson_n140c.dta")
 @
 
-<<Import-HILDA-rp, cache=TRUE>>=
+<<Import-HILDA-rp, eval=FALSE, cache=TRUE>>=
 hilda_w14_rp <- 
   foreign::read.dta("HILDA/Wave14/Rperson_n140c.dta")
 @
@@ -259,6 +259,7 @@ hilda_w14_rp <-
 <<Import-misc-ATO>>=
 # Individuals - Table 9
 # Selected items from people with business income
+dir.create("ATO", showWarnings = FALSE)
 if (!file.exists("./ATO/Individuals_table9.xlsx")){
   GET("http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/e619aada-deb6-4696-a364-4e87e2d28a1c/download/Taxstats2014Individual09Industry.xlsx", 
       write_disk("./ATO/Individuals_table9.xlsx"))
@@ -285,6 +286,7 @@ individuals_table1_201314 <-
 
 <<CGT-by-entity-get>>=
 # 2013-14 figures
+# keep outside for \url later
 cgt_entity_url <- "http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/4e5cc0c1-a1b5-4bd2-80f4-6845ef78658b/download/Taxstats2014Summary5Index-of-chart-data.xlsx"
 if (!file.exists("./ATO/CGT-by-entity-and-asset-type.xlsx")){
   GET(url = cgt_entity_url, write_disk("./ATO/CGT-by-entity-and-asset-type.xlsx"))
@@ -1613,8 +1615,10 @@ individual_dividends <-
   sum(`Dividends unfranked\r\n$` + `Dividends franked\r\n$`)
 
 hh_equity_tot <- 
-  hilda_w14_hh %$%
-  sum(nhweqini * nhhwth)  # Equity investments * WEIGHT
+  389e9
+  # Jim QC unable due to no access HILDA
+  # hilda_w14_hh %$%
+  # sum(nhweqini * nhhwth)  # Equity investments * WEIGHT
 @
 Total lending to individuals for share investments is at most \$19 billion, compared to individuals' direct share holdings of around \$550~billion,\footnote{The ATO reported that the 2013-14 dividend income for individuals was \Sexpr{texNum(individual_dividends, dollar = TRUE)}. The HILDA survey showed in the same year \Sexpr{texNum(hh_equity_tot, dollar = TRUE)} for household wealth in equities.}  and compared to borrowings of \$548~billion from banks for housing investor lending. 
 
@@ -2267,7 +2271,7 @@ should_we_get_ABS <-
  !http_error("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS") && !is.null(readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS"))
 @
 
-<<ABS_GET_RES_VALS, eval=TRUE>>=
+<<ABS_GET_RES_VALS, eval=FALSE>>=
 if (should_we_get_ABS){
 res_dwelling_values_metadata <- 
   readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS")
@@ -2655,7 +2659,9 @@ cost_of_policy_carry_fwd <- function(Net_rent_amt.limit, h = 1L){
 
 \begin{table}[!h]
 \begin{center}
-<<HILDA-Number-of-properties, results='asis'>>=
+% Jim QC
+% eval=FALSE due no access to HILDA
+<<HILDA-Number-of-properties, eval=FALSE, results='asis'>>=
 hilda_w14_hh %>%
   group_by(Owns_other_property = noprntn) %>%
   summarise(population = comma(round(sum(nhhwth)))) %>%
@@ -2671,7 +2677,7 @@ hilda_w14_hh %>%
 \source{HILDA}
 \end{table}
 
-<<Import-SIH, cache=TRUE>>=
+<<Import-SIH, cache=FALSE>>=
 sih201314 <- 
   read.dta("SIH201314/sih13bh.dta")
 @
@@ -2961,7 +2967,7 @@ Capping losses is politically attractive because a smaller percentage of landlor
 
 \begin{table}
 \caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
-<<Results, results = 'asis', cache=TRUE>>=
+<<Results, results = 'asis', cache=FALSE>>=
 long_term = 10L
 data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3), -Inf) %>%
   rowwise %>%
@@ -2991,16 +2997,25 @@ An alternative proposal would limit the number of properties on which investors 
 
 <<prop_landlords_n_properties>>=
 prop_landlords_geq_n_properties <- function(n){
-  hilda_w14_hh %>%
-    group_by(Owns_n_other_properties = noprntn) %>%
-    summarise(population = sum(nhhwth)) %>%
-    ungroup %>%
-    filter(Owns_n_other_properties > 0) %>%
-    arrange(Owns_n_other_properties) %>%
-    mutate(prop = population / sum(population), 
-           owns_at_least_n = 1 - cumsum(prop)) %>%
-    filter(Owns_n_other_properties == n) %$%
-    owns_at_least_n
+  # Access to HILDA restricts function readability
+  if (exists("hilda_w14_hh")){
+    hilda_w14_hh %>%
+      group_by(Owns_n_other_properties = noprntn) %>%
+      summarise(population = sum(nhhwth)) %>%
+      ungroup %>%
+      filter(Owns_n_other_properties > 0) %>%
+      arrange(Owns_n_other_properties) %>%
+      mutate(prop = population / sum(population), 
+             owns_at_least_n = 1 - cumsum(prop)) %>%
+      filter(Owns_n_other_properties == n) %$%
+      owns_at_least_n
+  } else {
+    c(0.254201817206767, 0.447606547652629, 0.150507942975066, 0.0696366057573841, 
+      0.034251162376073, 0.0160092433657749, 0.006376063781114, 0.00209289375147836, 
+      0.00670913078535628, 0.00215607358236844, 0.00359542510547999, 
+      0.00176674721737442, 0.00239724087613748, 0.00269310556699695
+    )[n]
+  }
 }
 @
 
