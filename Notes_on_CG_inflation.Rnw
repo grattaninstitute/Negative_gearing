@@ -1,0 +1,204 @@
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\title{Notes on projecting capital gains}
+\author{Hugh Parsonage}
+\begin{document}
+\maketitle
+<<knitrOpts, include=FALSE>>=
+library(knitr)
+options(digits = 3, scipen = 99)
+@
+
+<<loadPackages>>=
+library(taxstats)  ## devtools("hughparsonage/...")
+library(grattan)
+
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(magrittr)
+library(xtable)
+library(ggrepel)
+@
+
+<<xtable-formatting, echo = FALSE>>=
+# bold column names
+boldxt <- function(x, sanitize = TRUE) {
+  # Replace $ without \\
+  x <- ifelse(grepl("((?<!\\\\)\\$)", x, perl = TRUE), gsub("$", "\\$", x, fixed = TRUE), x)
+  paste('{\\textbf{',x,'}}', sep ='')
+}
+options("xtable.sanitize.colnames.function" = function(x) boldxt(x))
+@
+
+\section{The problem}
+The revenue foregone estimates for the capital gains tax discount for individuals and trusts from the Treasury Tax Expenditure statement do not align with estimates taken from sample files.
+
+We can approximate the tax expenditure from the ATO's sample files.
+
+<<revenue-foregone-from-sample-files>>=
+revenue_foregone_from_sample_files <- 
+  sample_files_all %>%
+  select(fy.year, Taxable_Income, Net_CG_amt, WEIGHT) %>%
+  # since the discount is 50%, the undiscounted amount is 2 * Net_CG_amt
+  mutate(Taxable_Income_if_no_CG_discount = Taxable_Income + Net_CG_amt,
+         tax_no_change   = income_tax(Taxable_Income, fy.year = fy.year), 
+         tax_no_discount = income_tax(Taxable_Income_if_no_CG_discount, fy.year = fy.year)) %>%
+  group_by(fy.year) %>%
+  summarise(revenue_foregone_ATO = sum((tax_no_discount - tax_no_change) * WEIGHT))
+@
+
+<<comparison-Treasury-sample-files>>=
+comparison_Treasury_ATO <- 
+  grattan:::cgt_expenditures %>%
+  select(fy.year = FY, revenue_foregone_Treasury = CGT_discount_for_individuals_and_trusts_millions) %>%
+  mutate(revenue_foregone_Treasury = revenue_foregone_Treasury * 10^6) %>%
+  merge(revenue_foregone_from_sample_files, by = "fy.year", all = TRUE) %>%
+  mutate(`Treasury - ATO` = revenue_foregone_Treasury - revenue_foregone_ATO)
+@
+
+\begin{table}[!h]
+\centering
+<<comparison-Treasury-sample-files-xtable, echo=FALSE, results='asis'>>=
+comma_million <- function(x) comma(x/1e6)
+percent1 <- function(x){
+  paste0(formatC(round(100*x, 1), 
+         format = "f", flag = "#", digits = 1, width = 3), "%")
+}
+
+comparison_Treasury_ATO %>%
+  select(fy.year, `Treasury ($m)` = revenue_foregone_Treasury, `Sample files ($m)` = revenue_foregone_ATO, `Treasury - ATO`) %>%
+  mutate_each(funs(comma_million), -fy.year) %>%
+  xtable(align = "rlrrr") %>%
+  print(include.rownames = FALSE, 
+        floating = FALSE,
+        booktabs = TRUE)
+@
+\caption{Comparison of the Treasury estimates of revenue foregone due to CGT discount.}
+\end{table}
+
+\section{No correlation with trusts}
+
+<<trust-cg, fig.cap='The capital gains from trusts do not explain the difference between the two estimates'>>=
+trusts_table1_201314 %>%
+  filter(Selected_items == "Net capital gain") %>%
+  select(fy.year = fy_year, `Trust Net CG` = Sum) %>% 
+  merge(comparison_Treasury_ATO, by = "fy.year", all.y = TRUE) %>%
+  filter(!is.na(`Trust Net CG`), !is.na(`Treasury - ATO`)) %>%
+  rename(`CGT exp.` = revenue_foregone_Treasury) %>%
+  ggplot(aes(x = `Trust Net CG`, y = `Treasury - ATO` )) + 
+  geom_point(aes(size = `CGT exp.`)) + 
+  scale_size_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  geom_text_repel(aes(label = fy.year)) + 
+  scale_y_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  scale_x_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) 
+@ 
+
+\section{Discount}
+It's possible that not all 
+\begin{table}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+<<apparent-discount-avg-by-fy, results='asis'>>=
+apparent_discount_by_fy <- 
+  sample_files_all %>%
+  filter(Tot_CY_CG_amt > 0) %>% 
+  group_by(fy.year) %>%
+  summarise(apparent_discount = weighted.mean(Net_CG_amt / Tot_CY_CG_amt, Net_CG_amt), 
+            n_no_discount = mean(Net_CG_amt / Tot_CY_CG_amt > 0.95), 
+            n_no_discount_w = weighted.mean(Net_CG_amt / Tot_CY_CG_amt > 0.95, Net_CG_amt))
+
+apparent_discount_by_fy %>%
+  rename(`FY` = fy.year, 
+         `Apparent discount` = apparent_discount, 
+         `\\% with 0\\% discount` = n_no_discount, 
+         `\\% with 0\\% discount (weighted)` = n_no_discount_w) %>%
+  mutate_each(funs(percent1), -FY) %>%
+  {suppressWarnings(xtable(., align = "llRRR"))} %>%
+  print(include.rownames = FALSE,
+        tabular.environment = "tabularx", 
+        width = "\\linewidth",
+        floating = FALSE,
+        booktabs = TRUE)
+@
+\caption{.}
+\end{table}
+
+
+<<add-to-row, results = 'asis'>>=
+print_2heading_xtable <- function(.data, separator = "__", xtable.align = NULL){
+  orig_names <- names(.data)
+  if (!any(grepl(separator, orig_names))){
+    stop("No separator found in column names. As such, there is no point in using this function. Just use print().")
+  }
+  
+  
+  split_names <-  grep(separator, orig_names, value = TRUE)
+  split_positions <- grep(separator, orig_names, value = FALSE)
+ 
+  # get the names before the separator
+  top_headers <- gsub(paste0("^(.*)", separator, ".*$"), "\\1", split_names)
+  # Where in the original table is there a new top header?
+  
+  orig_names_no_suffix <- 
+    gsub(paste0("^(.*)", separator, ".*$"), paste0("\\1", separator), orig_names)
+  
+  # For cmidrule{}
+  position_of_header_instance <- 
+     which(orig_names_no_suffix == dplyr::lead(orig_names_no_suffix) & orig_names_no_suffix != dplyr::lag(orig_names_no_suffix))
+  position_of_header_final <- 
+    which(orig_names_no_suffix != dplyr::lead(orig_names_no_suffix) & orig_names_no_suffix == dplyr::lag(orig_names_no_suffix))
+  
+  double_row_column_names <- 
+    rbind(gsub("^(.*)__(.*)$", "\\1", orig_names), gsub("^(.*)__(.*)$", "\\2", orig_names))
+  
+  # factor etc in table to preserve order
+  top_headers_widths <- 
+    as.data.frame(table(factor(double_row_column_names[1,], levels = unique(double_row_column_names[1,]))))
+  
+  first_row <- 
+    unique(double_row_column_names[1,])
+  
+  top_row <- character(length(first_row))
+  
+  # Could do paste0() directly but decided that it would 
+  # avoid the point which is to add \multicolumn only to the rows that call for it.
+  for (ii in seq_along(first_row)){
+    if (first_row[ii] %in% top_headers){
+      top_row[ii] <- paste0("\\multicolumn{", top_headers_widths$Freq[ii], "}{c}{", first_row[ii], "}")
+    }
+  }
+  rm(ii)
+  
+  for_latex_top_row <- 
+    paste0(paste0(top_row, collapse = " & "), "\\\\")
+  
+  # (lr) to avoid cmidrule touching adjacent groups
+  between_row <- paste0("\\cmidrule(lr){",  position_of_header_instance, "-", position_of_header_final, "}")
+  
+  for_latex_between_row <- 
+    paste0(paste0(between_row, collapse = ""))
+  
+  for_latex_second_row <- 
+    paste0(paste0(double_row_column_names[2,], collapse = " & "), "\\\\")
+    
+  addtorow <- list()
+  addtorow$pos <- list(0, 0, 0)
+  addtorow$command <- 
+    paste0(paste0(c(for_latex_top_row, for_latex_between_row, for_latex_second_row)), "\n")
+  
+  print(xtable(.data, align = xtable.align), 
+        type = "latex",
+        add.to.row = addtorow, 
+        include.colnames = FALSE, 
+        include.rownames = FALSE,
+        booktabs = TRUE)
+  
+}
+@
+
+
+\end{document}
