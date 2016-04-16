@@ -229,23 +229,23 @@ rm(keep.names)
 
 <<Import-HILDA, cache=TRUE>>=
 hilda_w14_hh <- 
-  foreign::read.dta("HILDA/Wave14/Household_n140c.dta")
+  foreign::read.dta("../Data/HILDA/Wave14/Household_n140c.dta")
 hilda_used <- TRUE
 @
 
 <<Import-HILDA-ep, cache=TRUE>>=
 hilda_w14_ep <- 
-  foreign::read.dta("HILDA/Wave14/Eperson_n140c.dta")
+  foreign::read.dta("../Data/HILDA/Wave14/Eperson_n140c.dta")
 @
 
 <<Import-HILDA-rp, cache=TRUE>>=
 hilda_w14_rp <- 
-  foreign::read.dta("HILDA/Wave14/Rperson_n140c.dta")
+  foreign::read.dta("../Data/HILDA/Wave14/Rperson_n140c.dta")
 @
 
 <<Import-SIH, cache=TRUE>>=
 sih201314 <- 
-  read.dta("SIH201314/sih13bh.dta")
+  read.dta("../Data/SIH201314/sih13bh.dta")
 @
 
 <<Import-misc-ATO>>=
