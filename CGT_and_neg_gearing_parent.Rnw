@@ -772,7 +772,7 @@ It has deferred any significant changes in its revenue mix until after its \emph
  
 But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
 
-\flushcolsend
+%\flushcolsend
 \chapter{The capital gains discount}
 A capital gain is the increase in the value of an asset. Capital gains are taxed when the asset is sold and the gains are realised. The 50 per cent capital gains tax discount means the tax rate paid on capital gains is half the rate for other forms of income. 
 
@@ -1483,10 +1483,16 @@ It is difficult to be comfortable with this outcome in which there is an ever-de
 Another version of this argument is that tax concessions for capital gains make Australia's income tax system less progressive than is implied by income tax rates. While some may want a less progressive system, tax concessions are generally a poor way to achieve this, because they are inherently less transparent than changing the marginal rates of income tax. For value choices such as the progressivity of the tax system, the public debate is best served by making the distribution of the tax burden as transparent as possible.
 
 \subsection{Distortion of investment choices}
-Providing a tax discount for capital gains but not for other investment income distorts investment choices. 
-Capital gains have substantial tax advantages relative to annual earnings. The capital gains discount magnifies the tax advantages because capital gains are not taxed until they are realised (Figure 2). In contrast, Australia’s current tax system does not adjust for the effects of inflation on bank deposits -- assets disproportionately held by the least well off.  Rental income, bond yields and returns from overseas shares are also taxed at full marginal rates. 
+When policy makers consider the taxation of capital gains, they  must balance the competing considerations discussed above. 
 
-Taxing capital gains more lightly than most other savings income creates an incentive for investors to choose riskier assets that return more via capital gain. In conjunction with generous rules for deductibility of interest costs, the tax system creates strong incentives for debt-financed and speculative investments (section 3.1). As a result, Australians invest more in property and less in bank deposits than economic fundamentals would suggest.
+This is a challenge for all tax systems. Most OECD countries offer some type of discount or concession for capital gains,  although the hurdles to qualify for the most generous concessions can be high (Appendix B).
+
+An idealised tax treatment on nominal capital gains that aims for neutrality between immediate consumption and savings depends on expected returns. Assuming that returns on property over the last 15 years have been unusually high (driven by the fall in interest rates), a neutral approach for most scenarios would tax capital gains more lightly than at present. 
+
+Yet this idealised treatment needs to be balanced against other considerations. Perhaps the most important is that people tend to save almost the same amount irrespective of the tax rate on savings.  Higher taxes on capital gains would increase tax collections, contribute to repair of the Commonwealth government budget and provide room to reduce other taxes with higher economic costs. Higher taxes on capital gains would also reduce the tax bias toward capital gains and away from income producing assets, so that investment patterns would better reflect the economic fundamentals. They would also improve the integrity of the income tax system.
+
+However, given that the tax is calculated on nominal (pre-inflation) capital gains are taxed, there remains some basis for continuing to offer a tax discount on gains. Reducing the discount from 50 per cent to zero -- in other words, taxing capital gains at the income tax rate -- would substantially increase the real effective tax rate on savings. As we show in chapter 4, a 25 per cent discount for capital gains would provide a fairer balance.
+
 
 
 <<stacked-column-chart, fig.width = 22, out.width = "22in">>=
@@ -1570,13 +1576,12 @@ pDecile_no_CG <-
 
 grid.arrange(pDecile, pDecile_no_CG, ncol = 2)
 @
-\begin{figure*}
-\Caption{}{Distribution of taxes and income by taxable income decile}{fig:DecileStackedChart}
-\includegraphics[width = \textwidth]{\Sexpr{atlas}/stacked-column-chart-1}
-\the\textwidth
-\end{figure*}
+% \begin{figure*}
+% \Caption{}{Distribution of taxes and income by taxable income decile}{fig:DecileStackedChart}
+% \includegraphics[width = \textwidth]{\Sexpr{atlas}/stacked-column-chart-1}
+% \the\textwidth
+% \end{figure*}
 
-\flushcolsend
 \chapter{Negative gearing}
 Negative gearing allows taxpayers to subtract the losses they make on
 investments (after costs including mortgage interest payments) from
@@ -2355,7 +2360,7 @@ Income tax includes medicare levy, LITO, and the temporary budget repair levy bu
 Overall, the top ten per cent of income earners before rental deductions receive \Sexpr{benefits_by_taxable_income_before_deductions %>% filter(Decile == 10) %$% prop_benefit %>% latex_percent(digits = 0, pre.phrase = c("almost~", "over~"))} 
 of the tax benefits of negative gearing. The skew does not look quite so bad if taxpayers are grouped by their taxable incomes, as shown in the left hand side of \Vref{fig:Benefit-NG-before-after-deductions}. But comparisons based on taxable incomes understate the earnings of those that are negative gearing. Taxable incomes are assessed after rental losses. In other words, people who are negatively gearing have lower taxable incomes because they are negatively gearing. The distribution before rental deductions, shown on the right hand side of \Vref{fig:Benefit-NG-before-after-deductions}, shows that those on higher incomes receive the lion's share of the tax benefits from negative gearing.
 
-\flushcolsend
+%\flushcolsend
 \chapter{Impact of changing negative gearing and the CGT discount}
 Much of the political debate surrounding changes to negative gearing and the CGT discount have centred around the impact on investor demand, rents and property prices. 
 
@@ -3035,7 +3040,7 @@ bind_rows("Primary" = primary_losses, "Non-Primary" = non_primary_losses, .id = 
 \source{2\%\ sample file 2013-14}
 \end{table*}
 
-\flushcolsend
+%\flushcolsend
 \chapter{Options for reform}
 The favourable tax treatment of investments -- particularly the interaction of the negative gearing arrangements with the capital gains tax discount -- have promoted speculative investment in housing while also costing the budget bottom line. 
 
