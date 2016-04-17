@@ -77,7 +77,7 @@ knitr::opts_chunk$set(fig.width=11.000,
 )
 @
 
-<<loadPackages>>=
+<<loadPackages, cache=FALSE>>=
 library(knitr)
 library(data.table)
 library(dplyr)
@@ -344,7 +344,7 @@ revenue_CGT_discount <- function(CGT.discount = new.discount, .old.discount = 0.
 @
 
 <<revenue_abolish_NG>>=
-revenue_abolish_NG <- function(fy.year = "2016-17"){
+revenue_abolish_NG <- function(fy.year = "2015-16"){
   sample_file_1314 %>%
     select(-contains("MCS")) %>%  # project not good
     project_to(fy.year, fy.year.of.sample.file = use.sample.fy) %>%
@@ -727,22 +727,27 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 @
 
 \newlength{\overviewextra}
-\setlength{\overviewextra}{4pt}
+\setlength{\overviewextra}{-2pt}
 \addtolength{\columnsep}{\overviewextra}
-\begin{overview*}[-35pt]
-Australia's tax system aims to encourage investment. Capital gains are not taxed at marginal rates of income tax. Negatively geared investors -- those who borrow to invest, usually in housing -- can deduct their annual losses from wage and salary income. 
+\begin{overview*}[-35pt] \addcontentsline{toc}{chapter}{Overview}
+Capital gains are only taxed at half the rate of personal income tax. Negative gearing allows those who borrow to invest -- usually in housing -- to use losses to reduce tax on wages and salaries. These tax settings are designed to encourage investment.
 
-However, these arrangements do not sufficiently balance the competing considerations. They should be wound back as the Commonwealth Government inevitably turns to revenue measures to address its structural budget problems. 
+However, they do not balance appropriately other considerations, such as the economic costs of other taxes. Winding them back would raise around \highlight{\Sexpr{texNum(cost_of(policy), 2L, dollar = TRUE)}} a year and reduce other economic distortions, while imposing little cost on those who can afford it least. This could help to reduce the Commonwealth Government's persistent budget deficits. 
 
-The tax on capital gains is discounted to promote savings and entrepreneurship. A theoretically ideal tax treatment would only tax returns higher than the risk-free rate. But this idealised treatment needs to be balanced against other considerations. The real benefits of the capital gains discount are small because those with high incomes tend to save almost the same amount irrespective of the tax rate on savings. The costs of the discount, however, are high. Other more distorting taxes must be higher. The discount encourages investors away from economic fundamentals towards investments with high capital gains. The discount undermines the integrity of the income tax system by creating opportunities for artificial transactions to reduce tax. And the discount reduces the progressivity of the tax system because high-income earners disproportionately earn capital gains.
+A theoretically ideal tax treatment of savings wouldn't tax capital gains in line with inflation or the rewards for patience – the `risk free rate of return'. However, tax policy should also take into account other factors. The actual economic benefits of the capital gains discount are small because it doesn't increase savings much: those with high incomes tend to save almost the same amount irrespective of the tax rate. But the costs of the discount are high. Discounting capital gains means that other, more distorting, taxes must be higher. The discount also encourages investors to focus too much on investments with capital growth rather than annual income. The discount undermines the integrity of the income tax system by creating opportunities for artificial transactions to reduce tax. And the discount particularly helps high-income earners who earn most of the capital gains.
 
-A better balance between the competing considerations would reduce the discount so that \highlight{\Sexpr{latex_percent(1 - new.discount)} of capital gains are taxed}, which would raise around \highlight{\Sexpr{texNum(cost_of(policy_reduce_CGT), dollar = TRUE)}} a year.
+A better balance between the competing considerations would reduce the discount so that \highlight{\Sexpr{latex_percent(1 - new.discount)} of capital gains are taxed}, which would raise around \highlight{\Sexpr{texNum(cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} a year.
 
-Negative gearing in Australia goes beyond generally accepted principles for offsetting losses against gains. It distorts investment decisions, diverting capital from more productive investments, increasing volatility in housing markets, and increasing housing churn. It reduces home ownership and reduces the availability of long-term rentals, but does not materially increase housing supply. It is regressive, benefiting those on high incomes much more than those on low incomes. And it substantially reduces tax collections, imposing pressures on the budget so that either other taxes, or deficits, are higher.
+Negative gearing in Australia goes beyond generally accepted principles for offsetting losses against gains. It distorts investment decisions, diverting capital from more productive investments, increasing volatility in housing markets, and increasing housing churn. It reduces home ownership and reduces the availability of long-term rentals, but does not materially increase housing supply. It is regressive, benefiting those on high incomes much more than those on low incomes. And it reduces tax collections, so that other costly taxes, or deficits, are higher.
 
-Consequently, losses from all types of passive investments should not be deductible from wage and salary income. Suggested carve outs to exempt new property, or allow deductions up to a limit or for a limited number of properties, would have worse economic outcomes. In addition to the capital gains tax changes, restricting negative gearing would raise another \highlight{\Sexpr{texNum(cost_of(policy_year0) - cost_of(policy_reduce_CGT), dollar = TRUE)}} a year in the short term, declining to \highlight{\Sexpr{texNum(cost_of(policy) - cost_of(policy_reduce_CGT), dollar = TRUE)}} as losses accumulate.
+Australia should follow international practice, and not deduct losses from passive investments from wage and salary income. Suggested carve-outs to deduct losses on new property, or up to a limit, or for a limited number of properties, leave too many of the problems in place.  In addition to the capital gains tax changes, restricting negative gearing would raise another \highlight{\Sexpr{texNum(cost_of(policy_year0) - cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} a year in the short term, declining to \highlight{\Sexpr{texNum(cost_of(policy) - cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} as losses accumulate.
 
-These changes will improve housing affordability -- a little. We estimate housing prices would be up to 2 per cent lower than otherwise. Because there are tight planning constraints on new supply for urban housing, there will be very little impact on rents, or the rate of new development, even in the long term. 
+% We insert this now rather than pulling up the whole chunk from the box below.
+<<impact_policy_after_tax_returns_weighted_all>>=
+load("impact_policy_after_tax_returns_weighted_all.rda")
+@
+
+These changes will improve housing affordability -- a little. We estimate housing prices would be up to \Sexpr{latex_percent(-impact_policy_after_tax_returns_weighted_all)} lower than otherwise. Because there are tight planning constraints on new supply for urban housing, there will be very little impact on rents, or the rate of new development, even in the long term. 
 
 Phasing in these changes would minimise price shocks and make reforms more politically palatable. Alternatively, current arrangements could be grandfathered. For capital gains tax, this would increase complexity and would be unfair to new investors -- particularly younger investors. For negative gearing it may be a reasonable compromise as properties tend to become positively geared over time anyway. 
 \end{overview*}
@@ -1183,7 +1188,7 @@ data.table(
 The benefits of waiting can be substantial. A person paying the top rate of income tax of 47\,c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower (34.5\,c) tax bracket would reduce the annual nominal tax rate on that investment from \Sexpr{latex_percent(emtr_savings(n = 15, CGT_marginal_rate = 0.47))} to \Sexpr{latex_percent(emtr_savings(n = 15, CGT_marginal_rate = 0.345))} \Vref{fig:delaying-realization-causes-reduction-in-effective-tax-rate}.
 
 \section{Adjusting for inflation}
-In Australia, taxes on savings income, including capital gains, are levied on nominal returns, which include inflation. Because inflationary gains are not ‘income’ in a true sense,  some discount on returns to savings is justified. But the 50 per cent discount has overcompensated property investors for inflation over time. 
+In Australia, taxes on savings income, including capital gains, are levied on nominal returns, which include inflation. Because inflationary gains are not `income' in a true sense,  some discount on returns to savings is justified. But the 50 per cent discount has overcompensated property investors for inflation over time. 
 
 A capital gains tax discount is an imperfect adjustment for inflation. The effective tax rate on real returns will depend on both the rate of inflation and the level of returns (Box x).  Under the 50 per cent discount, investors pay less tax compared to a tax on real gains so long as their asset values grow at least twice the rate of inflation. 
 
@@ -2481,7 +2486,7 @@ Reducing the capital gains tax discount and limiting scope for loss write offs b
 
 Some investors will switch to other investment opportunities that offer higher post-tax returns. Others might choose to spend more and invest less. But some will also continue to invest in the housing market, and either borrow less, or simply accept a lower return on investment.
 
-But the extent to which investors will vacate the property market will ultimately depend on how much post-tax returns fall, and how sensitive is investor demand for property to changes in returns (what economists would call the “elasticity of demand”).
+But the extent to which investors will vacate the property market will ultimately depend on how much post-tax returns fall, and how sensitive is investor demand for property to changes in returns (what economists would call the ``elasticity of demand”).
 
 Our analysis shows that the effective tax increases from our proposed changes to negative gearing and capital gains tax are relatively modest (Chapter 5). 
 As a result, the changes in after tax returns are unlikely to have much effect on demand for investment property. Other investments that generate capital gains, such as shares, will also be subject to a more stringent tax treatment under most proposed changes to tax arrangements (Chapter 5). Other investments that will be relatively more attractive after the change -- for example, superannuation and bank deposits -- have a very different profile of risk, return and liquidity, which is likely to limit the extent of switching. 
@@ -2514,7 +2519,8 @@ impact_policy_after_tax_returns <-
   rowwise %>%
   mutate(
     `Return BAU` = return_rental(gearing_ratio = gearing_ratio, return_type = "nominal", after_tax = TRUE), 
-    `Return Proposed`  = return_rental(gearing_ratio = gearing_ratio, CGT.discount = 0.25, return_type = "nominal", after_tax = TRUE)
+    `Return Proposed`  = return_rental(gearing_ratio = gearing_ratio, CGT.discount = 0.25, 
+                                       return_type = "nominal", after_tax = TRUE)
   ) 
 
 impact_policy_after_tax_returns_weighted_all <- 
@@ -2528,6 +2534,9 @@ impact_policy_after_tax_returns_weighted_investor_property_only <-
   impact_policy_after_tax_returns %>%
   filter(`Owner type` != "Owner-occupier") %$%
   weighted.mean((`Return Proposed` - `Return BAU`)/`Return BAU`, `Share of property`, na.rm = TRUE)
+
+save(impact_policy_after_tax_returns_weighted_all, 
+     file = "impact_policy_after_tax_returns_weighted_all.rda")
 @
 
 But the overall decrease in house prices is not likely to be large. Around two thirds of buyers -- owner occupiers -- will be not be affected by the tax changes. Even assuming that the change in tax benefits are fully passed through to prices, the price impact will be less than \Sexpr{latex_percent(abs(impact_policy_after_tax_returns_weighted_investor_property_only))} (\Vref{tbl:Impact-house-prices}). Indeed, house prices may not actually fall if market dynamics continue to push prices upwards. But prices will be lower than they would have been in the absence of the tax changes.
@@ -2544,7 +2553,7 @@ val_quaran_NG_tax_benefits_perpertuity <-
   cost_of_NG_only / discount_rate
 @
 
-The proposed changes to negative gearing would reduce tax write-offs for property investment by about \Sexpr{texNum(cost_of_NG_only_year0, dollar = TRUE)} initially and \Sexpr{texNum(cost_of_NG_only_year0, dollar = TRUE)} over time. Assuming a discount rate of 
+The proposed changes to negative gearing would reduce tax write-offs for property investment by about \Sexpr{texNum(cost_of_NG_only_year0, sig = 2L, dollar = TRUE)} initially and \Sexpr{texNum(cost_of_NG_only, sig = 2L, dollar = TRUE)} over time. Assuming a discount rate of 
 \Sexpr{latex_percent(discount_rate)}, the present value of these lost tax benefits would be approximately \Sexpr{texNum(val_quaran_NG_tax_benefits_perpertuity, dollar = TRUE)}.
 <<price-changes-due-CG-box>>=
 val_reduce_CG_discount_25pc_perpertuity <- 
@@ -2925,7 +2934,27 @@ Limiting negative gearing could have an impact on rents over the longer term if 
 
 The main constraint on new housing is land release and zoning restrictions -- especially in established suburbs with good access to jobs and transport.    In housing markets with restricted supply, and where locational factors such as transport links and amenities are important determinants of rental demand, then tax changes have little impact on rents even over time. 
 
-In any case, general tax breaks like negative gearing are an inefficient way of supporting the rental market.   Blanket tax concessions for investors that primarily accrue to existing property owners through higher house prices are poorly targeted way of alleviating rental stress.  
+<<ABS-lending-data>>=
+prop_investment_housing_finance_commitments_to_dwelling_construction <- 
+  housing_finance_commitments %>%
+  filter(grepl("Investment", Long_name), Date == max(Date), Series_Type == "Trend") %>%
+  mutate(new_property = grepl("Construction of dwelling", Long_name)) %>%
+  mutate(prop = value / sum(value)) %>%
+  filter(new_property) %$%
+  sum(prop)
+
+prop_owner_occupier_housing_finance_commitments_to_new_dwellings <- 
+  housing_finance_commitments %>%
+  filter(Date == max(Date), !grepl("Total", Long_name), Series_Type == "Trend") %>% .[] %>%
+  mutate(For_new_properties = grepl("(Constr.* of dwelling)|(new dwelling)", Long_name, ignore.case = TRUE)) %>% 
+  mutate(prop = value / sum(as.numeric(value))) %>%
+  filter(For_new_properties) %>% .[] %$%
+  sum(prop)
+  
+@
+
+In any case, general tax breaks like negative gearing are an inefficient way of supporting the rental market.\footnote{ 
+  The most recent ABS lending data suggests that only \Sexpr{latex_percent(prop_investment_housing_finance_commitments_to_dwelling_construction)} of recent lending to investors is for constructed properties (ABS Cat. 5671.0 Table 8). One recent paper suggests the \Sexpr{latex_percent(prop_investment_housing_finance_commitments_to_dwelling_construction)} figure might be understated because the ABS data do not separately identify investor purchase of new housing (as opposed to construction of new housing). Assuming the share of lending for new dwellings by investors is a similar proportion as for owner occupiers, then \Sexpr{latex_percent(prop_owner_occupier_housing_finance_commitments_to_new_dwellings)} of lending for investment properties would be for new dwellings (either constructed or bought new). }   Blanket tax concessions for investors that primarily accrue to existing property owners through higher house prices are poorly targeted way of alleviating rental stress.  
 
 
 \subsection{Capping loss deductions}
@@ -3298,11 +3327,11 @@ target_sample_file %>%
   sum(tax_increase * WEIGHT)
 @
 
-We estimate that quarantining losses for passive investments would increase income tax collections by \TBD{\$1.8 billion} a year in the short term. Over the medium term, accrued losses -- losses not offset against recurrent investment income -- will be deducted from capital gains. Assuming no change in investor behaviour, the additional tax revenue would stabilise at around \TBD{\$1 billion} a year.
+We estimate that quarantining losses for passive investments would increase income tax collections by \Sexpr{texNum(cost_of_NG_only_year0, dollar=TRUE)} a year in the short term. Over the medium term, accrued losses -- losses not offset against recurrent investment income -- will be deducted from capital gains. Assuming no change in investor behaviour, the additional tax revenue would stabilise at around \Sexpr{texNum(cost_of_NG_only, dollar=TRUE)} a year.
 
 If deductions were limited even more to the particular asset or asset class, income tax collections would rise a little more because investors would wait longer on average until they could realise their losses. 
 
-These estimates do not take into account the effects of investors changing their behaviour in response to the policy change. Investments that make income losses are less attractive when the tax benefits are smaller. Negative gearing appeals largely because it can reduce taxes on wage income (section 1.3). Removing the tax incentive for highly leveraged investment should result in investors shifting toward income-producing assets and could therefore further increase income tax collections. On the other hand, if some investment properties are replaced by owner-occupied properties, there will be less revenue collected, because no tax is paid on capital gains on the family home, or on the `imputed rent' -- the value of living in occupier-owned housing.
+These estimates do not take into account the effects of investors changing their behaviour in response to the policy change. Investments that make income losses are less attractive when the tax benefits are smaller. Negative gearing appeals largely because it can reduce taxes on wage income (\cref{negative-gearing-provides-a-widely-used-tax-shelter-on-wages}, \Vref{box:NG-to-reduce-tax-on-wages}). Removing the tax incentive for highly leveraged investment should result in investors shifting toward income-producing assets and could therefore further increase income tax collections. On the other hand, if some investment properties are replaced by owner-occupied properties, there will be less revenue collected, because no tax is paid on capital gains on the family home, or on the `imputed rent' -- the value of living in occupier-owned housing.
 
 \section{Alternative policies for limiting negative gearing}
 Our proposed policy of quarantining investment losses from wage and salary income would apply to losses from all passive investments regardless of the nature or the size of the investment. 
@@ -3363,7 +3392,7 @@ Capping losses is politically attractive because a smaller percentage of landlor
 
 \begin{table}
 \caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
-<<Results, results = 'asis', cache=FALSE>>=
+<<Results, results = 'asis'>>=
 long_term = 10L
 data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3), -Inf) %>%
   rowwise %>%
@@ -3384,7 +3413,7 @@ data_frame(Threshold = c(seq(0, -20e3, by = -5e3), -50e3), -Inf) %>%
 \end{table}
 
 
-The budget impact will depend on the level of the cap, as set out in \Vref{tbl:cap-NG}. A cap on losses of \$20,000 or more would affect very few landlords, and would make very little difference to the budget bottom line.
+The budget impact will depend on the level of the cap, as set out in \Vref{tbl:cap-NG}. A cap on losses of \$20,000  would affect very few landlords, and would make very little difference to the budget bottom line.
 
 An alternative is to limit deductions. This could apply to all deductions including work related expenses, interest costs, donations etc. This would ultimately impose a minimum effective rate of tax for high income earners.   A full consideration of such a proposal is beyond the scope of this report. 
 
@@ -3427,9 +3456,115 @@ In addition to raising more than \Sexpr{texNum(cost_of(policy), dollar = TRUE)} 
 
 \printbibliography[title=References]
 
+
+\appendix
+\chapter{Capital gains tax and asset lock-in}
+One reason often provided for lower taxes on capital gains is to reduce ``asset lock-in''. If investors are less likely to realise gains when tax rates are higher than increasing taxes on gains could actually reduce tax collections in the short to medium term. But the empirical evidence of lock-in in not settled. In Australia, the primary driver of asset lock-in appears to be people waiting until retirement to sell their assets. This incentive is still strong even with a 50 per cent discount. 
+
+\section{Why does asset lock-in occur?}
+Asset lock-in occurs because taxes are only paid when gains are realised. This provides an incentive for investors to hold on to assets with large accumulated gains.  In effect, the investor seeks to maintain the implicit interest free loan on accrued gains. Crystallising a capital gain is only worthwhile if an investor can achieve a materially higher return elsewhere, or if they want the resources for consumption (\Vref{box:CGT-asset-lock-in}).   
+
+Lock-in can discourage investors from moving their money to the investments with the highest pre-tax returns, so assets do not always go to their highest value use.  Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.  
+
+\begin{bigbox*}{Capital gains tax and asset lock-in}{box:CGT-asset-lock-in}
+The tax treatment of capital gains can deter investors from taking up otherwise profitable investment opportunities. 
+
+<<haley-box>>=
+haley_boxer <- function(initial_house_value = 700e3, 
+                        holding_period = 10, 
+                        final_value = 1e6, 
+                        net_rent_return = 0.05, 
+                        marginal_rate = 0.49,
+                        cgt_discount = 0.50){
+  
+  cap_gain <- final_value - initial_house_value
+  income_final <- final_value * net_rent_return
+  CGT <- cap_gain * (1 - cgt_discount) * marginal_rate
+  net_gain <- cap_gain - CGT
+  
+  list(
+    initial_house_value = initial_house_value,
+    holding_period = holding_period,
+    final_value = final_value,
+    net_rent_return = net_rent_return,
+    cap_gain = cap_gain,
+    income_final = income_final, 
+    CGT_discount = cgt_discount,
+    CGT = CGT, 
+    marginal_rate = marginal_rate,
+    net_gain = net_gain,
+    value_sale = initial_house_value + net_gain,
+    hurdle_rate = income_final / (initial_house_value + net_gain)
+  )
+}
+
+haley_box <- haley_boxer()
+@
+
+Suppose Hayley, an investor in the top tax bracket purchases a house for \Sexpr{latex_dollar(haley_box$initial_house_value)} and holds it for \Sexpr{haley_box$holding_period} years. During that time the market price of the house increases to \Sexpr{latex_dollar(haley_box$final_value)}. She makes a net rental return of \Sexpr{latex_percent(haley_box$net_rent_return)} a year, giving her \Sexpr{latex_dollar(haley_box$income_final)} income at the end of the ten years. 
+
+If she were to sell the house she would crystallise the \Sexpr{latex_dollar(haley_box$cap_gain)} in gains, paying tax on \Sexpr{latex_percent(haley_box$CGT_discount)} of the gains at her marginal tax rate of \Sexpr{latex_percent(haley_box$marginal_rate)} (\Sexpr{latex_dollar(haley_box$CGT)}). This would leave her with around \Sexpr{latex_dollar(haley_box$value_sale)} from the sale: \Sexpr{latex_dollar(haley_box$net_gain)} in net gains and her initial investment of \Sexpr{latex_dollar(haley_box$initial_house_value)}. 
+
+The sale will only be worthwhile if Hayley can find an alternative property that yields more than her current rental income of \Sexpr{latex_dollar(haley_box$income_final)}  with the same opportunity for capital gains. With her \Sexpr{latex_dollar(haley_box$value_sale)} sale proceeds she would need to find a property with net rental return of more than \Sexpr{latex_percent(haley_box$hurdle_rate)} a year. 
+
+Properties with rental yields below \Sexpr{latex_percent(haley_box$hurdle_rate)} but higher than her current \Sexpr{latex_percent(haley_box$net_rent_return, percentage_symbol = "")} would not be attractive because realising the tax liability on her current property erodes her capital base for investment.  
+
+The higher the tax rate on capital gains the less willing she will be to realise gains to pursue new investment opportunities. If capital gains were taxed in full, rather than with a 50 per cent discount, her hurdle rate for the new investment would be \Sexpr{latex_percent(haley_boxer(cgt_discount = 0)$hurdle_rate)}.
+\end{bigbox*}
+
 % For longtable.
 \onecolumn
-\appendix
+\chapter{International comparisons of capital gains tax}
+Internationally, there are a range of approaches to taxing capital gains. Most countries offer some form of tax discount for capital income but the amount of the discount and the holding period to qualify vary widely. Contrary to the claims of some, taxes on capital gains are more concessional than in many other OECD countries (vide infra).
+
+\newcommand{\cella}[1]{{\cellcolor{Color2}\makecell[tr]{#1}}}
+\newcommand{\cellb}[1]{{\cellcolor{Color3}\makecell[tr]{#1}}}
+\newcommand{\cellc}[1]{\cellcolor{Color4}\makecell[tr]{#1}}
+\newcommand{\celld}[1]{\cellcolor{Color5}\makecell[tr]{#1}}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{Property} & \multicolumn{2}{c}{Shares} &  & \\
+ \cmidrule(lr){2-3}\cmidrule(lr){4-5} 
+ Country & CGT & Holding test? & CGT & Holding test? & Top MTR & Adj for inflation? \\ 
+ \midrule
+ \endhead
+ \bottomrule
+ \endfoot
+ Australia & \cellcolor{Color3}{50\%\ exempt, rest at MTR} & \cellcolor{Color3}{1\,yr} & \cellcolor{Color3}{50\%\ exempt, rest at MTR} & \cellb{1\,yr} & 47 & N\\ 
+ Austria   & \cellc{Progressive rise to 50\% from 10-35 years,\\ rest at MTR} & \cellcolor{Color4}10-35\,yr & \cellcolor{Color4} 25\% exempt, rest at MTR & -- & \cellcolor{Color3}{50} & \cellcolor{Color3}{N} \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+ Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
+%\bottomrule
+\end{longtable}
+
 \chapter{Session info of $\mathsf{R}$ used for compilation}
 \begin{multicols*}{2}
 This report was woven from  \textrm{\LaTeX2e} and $\mathsf{R}$ by \textbf{knitr}. 
