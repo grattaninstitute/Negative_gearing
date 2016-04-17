@@ -1652,29 +1652,135 @@ in the tax treatment of gains and losses to pay less tax in total and
 later despite receiving additional investment income (\Vref{box:NG-to-reduce-tax-on-wages}).
 
 \begin{smallbox}{Using negative gearing to reduce taxes on wage income}{box:NG-to-reduce-tax-on-wages}
-
 High income investors can maximise the tax shelter on their wage income
 by borrowing to invest in assets that generate less in recurrent income
 and more through capital gains.
 
-Suppose Dan, a lawyer earning \$250,000 a year, borrows \$750,000 to
-purchase an investment property. Interest on the loan is 6 per cent a
-year and the property generates a rental return of 2.5 per cent each
-year. Most of the return is via capital appreciation of 7 per cent each
-year.
+<<dan-box>>=
+dan_boxer <- function(n, 
+                      interest_only = TRUE, 
+                      loan_period = 20,
+                      sw = 250e3, 
+                      borrow = 750e3,
+                      initial_property_value = 750e3, 
+                      loan.interest = 0.06, 
+                      rent_return = 0.025, 
+                      capital_return = 0.05, 
+                      cgt_discount = 0.50, 
+                      verbose = FALSE){
+  # intial
+  if (verbose){
+    cat("year", "Property value", "Net rent", "Tax red.", "Cap. gain", "\n", 
+        "------------------------------------------------------------------", "\n", sep = "\t")
+  }
+  property_value <- initial_property_value
+  
+  
+  if (interest_only){
+    loan_repayment <- loan.interest * borrow  # interest-only
+    interest_payment <- loan_repayment
+  } else {
+    loan_outstanding <- borrow
+    loan_repayment <- loan.interest * borrow / (1 - (1 + loan.interest) ^ (-loan_period))
+    interest_payment <- loan_outstanding * loan.interest
+  }
+  
+  rent <- rent_return * property_value
+  net_rent <- rent - interest_payment
+  tax <- income_tax(sw + net_rent, "2015-16")
+  tax_reduction <- income_tax(sw, "2015-16") - tax
+  property_value <- property_value * (1 + capital_return)
+  loan_outstanding <- borrow - loan_repayment
+  
+  total_tax_paid <- tax
+  total_tax_redu <- tax_reduction
+  nominal_pre_tax_profit <- net_rent
+  y <- 1
+  
+  
+  if (verbose){
+    .d <- function(x) grattan_dollar(x)
+    cat(y, .d(property_value), .d(net_rent), .d(tax_reduction), "\n", sep = "\t")
+    Sys.sleep(1)
+  }
+  if (n >= 2){
+    for (y in 2:n){
+      loan_repayment <- loan_repayment
+      if (!interest_only)
+        interest_payment <- loan_outstanding * loan.interest
+      
+      rent <- rent_return * property_value  # soy
+      net_rent <- rent - interest_payment
+      tax <- income_tax(sw + net_rent, "2015-16")
+      tax_reduction <- income_tax(sw, "2015-16") - tax
+      total_tax_paid <- total_tax_paid + tax
+      total_tax_redu <- total_tax_redu + tax_reduction
+      property_value <- property_value * (1 + capital_return)  # eoy
+      loan_outstanding <- loan_outstanding - loan_repayment
+      nominal_pre_tax_profit <- nominal_pre_tax_profit + net_rent
+      if (verbose){
+        cat(y, .d(property_value), .d(net_rent), .d(tax_reduction), "\n", sep = "\t")
+        Sys.sleep(1)
+      }
+    }
+  }
+  
+  if (verbose){
+    vcapital_gain <- property_value - initial_property_value
+    vtax_redu <- total_tax_redu + income_tax(sw, 
+                                           "2015-16") - income_tax(sw + vcapital_gain * (1 - cgt_discount), 
+                                                                   "2015-16")
+    cat(y, .d(property_value), .d(net_rent), .d(vtax_redu), "", .d(property_value - initial_property_value), 
+        "\n",
+        sep = "\t")
+    Sys.sleep(2)
+  }
+  
+  list(
+    net_rent = net_rent,
+    tax_reduction = tax_reduction, 
+    capital_gain = capital_gain <- property_value - initial_property_value,
+    tax_final = tax_final <- income_tax(sw + net_rent + capital_gain * (1 - cgt_discount), "2015-16"),
+    tax_redu_no_CGT = total_tax_redu + income_tax(sw, "2015-16") - income_tax(sw + net_rent, "2015-16"),
+    tax_redu = total_tax_redu + income_tax(sw, 
+                                           "2015-16") - income_tax(sw + capital_gain * (1 - cgt_discount), 
+                                                                   "2015-16"),
+    CGT = tax_final - tax,
+    total_tax_paid = total_tax_paid + tax_final,
+    # profit already incorporates net rent
+    nominal_pre_tax_profit = nominal_pre_tax_profit + capital_gain
+  )
+}
 
-In the first year, Dan makes a loss of \$26,000 on the property and
-reduces the tax he pays on his \$250,000 salary by \$12,000. His rental
+dan_1yr <- dan_boxer(1)
+dan_5yr <- dan_boxer(5)
+
+# defaults
+dan.fml <- formals(dan_boxer)
+@
+
+Suppose Dan, a lawyer earning \Sexpr{texNum(dan.fml$sw, dollar = TRUE)} a year, 
+borrows \Sexpr{texNum(dan.fml$borrow, dollar = TRUE)} %
+\Sexpr{if (dan.fml$interest_only) "(interest only)" else paste("over", dan.fml$loan_period, "years")}
+to purchase a \Sexpr{texNum(dan.fml$initial_property_value, dollar = TRUE)} investment property. Interest on the loan is \Sexpr{latex_percent(dan.fml$loan.interest)} a
+year and the property generates a rental return of \Sexpr{latex_percent(dan.fml$rent_return)} each
+year. Most of the property's return is via capital appreciation of \Sexpr{latex_percent(dan.fml$capital_return)} each year.
+
+In the first year, Dan makes a loss of \Sexpr{texNum(-1 * dan_1yr$net_rent, dollar = TRUE)} 
+on the property and
+reduces the tax he pays on his \Sexpr{texNum(dan.fml$sw, dollar = TRUE)} salary by 
+\Sexpr{texNum(dan_1yr$tax_reduction, dollar = TRUE)}. His rental
 losses decline over time as the property appreciates. After five years,
-Dan has reduced taxes on his wage income by a total of \$55,000. If he
+Dan has reduced taxes on his wage income by a total of 
+\Sexpr{texNum(dan_5yr$tax_redu_no_CGT, dollar = TRUE)}. If he
 sells the property after five years he will realise a capital gain of
-\$233,000 and pay tax on the gain of just under \$55,000.
+\Sexpr{texNum(dan_5yr$capital_gain, dollar = TRUE)} and pay tax on 
+the gain of \Sexpr{texNum(dan_5yr$CGT, dollar = TRUE, pre.phrase = c("just under", "just over"))}.
 
 Because of the asymmetry of tax treatment of gains and losses, Dan pays
-\$294 less tax in total over five years than he if he had not purchased
-the house. So despite his profit of more than \$115,000 on the
-investment, in effect he pays no tax on this profit, actually receiving
-a small tax reduction.
+\Sexpr{texNum(dan_5yr$tax_redu, dollar = TRUE)} less tax in total over five years than if he had not purchased
+the house. So despite his profit of more than \Sexpr{texNum(dan_5yr$nominal_pre_tax_profit, dollar = TRUE)} on the
+investment, he has reduced his tax considerably.
 \end{smallbox}
 Tax deductions from wage income may also generate ``psychic payoff'' for
 some investors -- the pleasure of denying the Tax Office its due. As an
