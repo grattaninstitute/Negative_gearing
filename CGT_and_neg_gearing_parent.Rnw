@@ -393,7 +393,7 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
   }
   target_sample_file %>%
     # cosmetic for debugging
-    mutate_each(funs(round_cols)) %>%
+    # mutate_each(funs(round_cols)) %>%
     
     # We need to work out how much the discount will change Net_CG_amt.
     # We use the density of the apparent_discount to randomly 
@@ -3431,13 +3431,30 @@ In addition to raising more than \Sexpr{texNum(cost_of(policy), dollar = TRUE)} 
 \onecolumn
 \appendix
 \chapter{Session info of $\mathsf{R}$ used for compilation}
-This report was compiled with \textrm{\LaTeX}, using \textbf{knitr}. The authors are indebted to the creators.
+\begin{multicols*}{2}
+This report was woven from  \textrm{\LaTeX2e} and $\mathsf{R}$ by \textbf{knitr}. 
+
+\textrm{\LaTeX2e} is a document preparation system implemented as a macro package for Donald E.\ Knuth's \textrm{\TeX} typesetting program. \textrm{\LaTeX} was originally conceived by Leslie Lamport. 
+
+$\mathsf{R}$ is a language and environment for statistical computing derived from the S programming language of John Chambers. $\mathsf{R}$ was created by Ross Ihaka and Robert Gentlement at the University of Auckland. 
+
+\textbf{knitr} a general-purpose package for dynamic, literate report generation in $\mathsf{R}$ developed from Sweave. Yihui Xie is the author and developer of \textbf{knitr}. 
+
+The authors are indebted to the creators.
+
+The \verb=devtools::session_info()= is printed below.
+% \eject
+% \phantom{.}
+% \vfill
+% \phantom{.}
+\end{multicols*}
 <<sessionInfo>>=
 SessionInfo <- session_info()
 @
 
 \begin{table*}[!htb]
 \centering
+\caption{Platform}
 <<platform_info, results='asis'>>=
 SessionInfo$platform %>%
   unlist %>%
@@ -3469,8 +3486,9 @@ addtorow$command  <- c(paste("\\hline \n",
 <<loaded_packages, results='asis'>>=
 SessionInfo$packages %>%
   as.data.frame %>%
-  xtable %>% 
-  print.xtable(include.rownames = FALSE, 
+  xtable(caption = "Packages") %>% 
+  print.xtable(caption.placement = "top", 
+               include.rownames = FALSE, 
                tabular.environment = "longtable",
                floating = FALSE,
                booktabs = TRUE, 
