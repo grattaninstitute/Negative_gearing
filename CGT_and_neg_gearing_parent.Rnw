@@ -16,6 +16,10 @@ latest.sample.fy <- "2013-14"
 
 # Warnings need to be accounted for.
 options(warn = 2)
+
+# HILDA takes 7 minutes to load and tidy
+reload_all_data <- FALSE
+cache_most <- FALSE && !reload_all_data
 @
 
 
@@ -71,7 +75,7 @@ knitr::opts_chunk$set(fig.width=11.000,
                       #
                       ,error=FALSE
                       ,results='hide'
-                      ,cache=FALSE
+                      ,cache=cache_most # override by chunk options
                       ,dev=c('my_pdf', 'my_emf', 'png')
                       ,fig.ext = c("pdf", 'emf', "png")
 )
@@ -239,12 +243,12 @@ hilda_w14_ep <-
   foreign::read.dta("../Data/HILDA/Wave14/Eperson_n140c.dta")
 @
 
-<<Import-HILDA-rp, cache=FALSE>>=
+<<Import-HILDA-rp, eval=reload_all_data, cache=FALSE>>=
 hilda_w14_rp <- 
   foreign::read.dta("../Data/HILDA/Wave14/Rperson_n140c.dta")
 @
 
-<<Import-HILDA-all-waves-step-1, cache=FALSE>>=
+<<Import-HILDA-all-waves-step-1, eval=reload_all_data, cache=FALSE>>=
 read_hilda_file <- 
   function(filename, max_wave = 14){
     temp <- dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
@@ -288,9 +292,17 @@ hilda_list <-
 names(hilda_list) <- enumerate.person.files.names
 @
 
-<<Import-HILDA-all-waves-step-2, cache=FALSE>>=
+<<Import-HILDA-all-waves-step-2, eval=reload_all_data, cache=FALSE>>=
 hilda_all_waves_rp <- 
   rbindlist(hilda_list, use.names = TRUE, fill = TRUE)
+
+write_csv(hilda_all_waves_rp, "../Data/HILDA/Wave14/hilda-all-waves-rp.csv")
+@
+
+<<Use-prepared-hilda-all-waves, eval=!reload_all_data>>=
+hilda_all_waves_rp <- 
+  fread("../Data/HILDA/Wave14/hilda-all-waves-rp.csv", 
+        select = c("xwaveid", "wave", "Year", "oifrntp", "lnwtrp"))
 @
 
 <<Import-SIH, cache=TRUE>>=
@@ -794,7 +806,11 @@ Australia should follow international practice, and not deduct losses from passi
 
 % We insert this now rather than pulling up the whole chunk from the box below.
 <<impact_policy_after_tax_returns_weighted_all>>=
-load("impact_policy_after_tax_returns_weighted_all.rda")
+if (!file.exists("impact_policy_after_tax_returns_weighted_all.rda")){
+  impact_policy_after_tax_returns_weighted_all <- "!!! unknown ! re-run knitr !!!"
+} else {
+  load("impact_policy_after_tax_returns_weighted_all.rda")
+}
 @
 
 These changes will improve housing affordability -- a little. We estimate housing prices would be up to \Sexpr{latex_percent(-impact_policy_after_tax_returns_weighted_all)} lower than otherwise. Because there are tight planning constraints on new supply for urban housing, there will be very little impact on rents, or the rate of new development, even in the long term. 
@@ -1243,7 +1259,8 @@ In Australia, taxes on savings income, including capital gains, are levied on no
 A capital gains tax discount is an imperfect adjustment for inflation. The effective tax rate on real returns will depend on both the rate of inflation and the level of returns (Box x).  Under the 50 per cent discount, investors pay less tax compared to a tax on real gains so long as their asset values grow at least twice the rate of inflation. 
 
 <<should_we_get_ABS>>=
-should_we_get_ABS <- 
+# set to FALSE for home stretch -- data will not change
+should_we_get_ABS <- FALSE &&
  !http_error("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS") && !is.null(readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS"))
 @
 
@@ -3303,7 +3320,7 @@ prop_val_bizlosses_in_PP <-
 @
 
 \begin{figure}
-\caption{Those earning more claim bigger primary production losses}
+\caption{Those earning more claim bigger primary production losses}{Salary}{fig:PP-losses-by-occ}
 <<PP-losses-by-occ>>=
 PP_losses_by_occ_comparison <- 
   sample_file_1314 %>%
@@ -3354,7 +3371,7 @@ sample_file_1314 %>%
       coord_flip() 
   }
 @
-<<PP-losers-salary-comparison>>=
+<<PP-losers-salary-comparison-horiz-bar, cache=FALSE>>=
 sample_file_1314 %>%
   merge(occupation_decoder, by = "Occ_code") %>%
   mutate(Sw_amt = as.double(Sw_amt)) %>%  # integer overflow on mean
@@ -3362,13 +3379,15 @@ sample_file_1314 %>%
                                                                 "Claiming PP losses", 
                                                                 "Not claiming"), 
                                                          levels = c("Claiming PP losses", "Not claiming"))) %>%
-  summarise(average_salary = mean(Sw_amt)) %>%
+  summarise(average_salary = mean(Sw_amt), 
+            n_individuals = 50 * n()) %>%
   group_by(Occupation_description) %>%
   mutate(salary_difference = ifelse(Claiming_PP == "Not claiming", 
                                     average_salary, 
                                     first(average_salary, 
                                           order_by = Claiming_PP) - last(average_salary, 
-                                                                         order_by = Claiming_PP))) %>%
+                                                                         order_by = Claiming_PP)), 
+         prop_claim_losses = first(n_individuals, order_by = Claiming_PP) / sum(n_individuals)) %>%
   ungroup %>%
   filter(!grepl("Occupation not listed", Occupation_description)) %>%
   
@@ -3382,9 +3401,48 @@ sample_file_1314 %>%
          Occupation_description = ifelse(grepl("^Clerica", Occupation_description), 
                                          "Clerical/Admin.", 
                                          Occupation_description)) %>%
-  mutate(`Average salary` = average_salary) %>%
+  mutate(`Average salary` = average_salary) %>% 
+  arrange(Claiming_PP, average_salary) %>%
+  mutate(Occupation_description = factor(Occupation_description, 
+                                         levels = unique(.$Occupation_description), 
+                                         ordered = TRUE)) %T>%
+                                         {
+                                           # chart data for supply to pptx etc
+                                           data <- .
+                                           
+                                           salaries <- 
+                                             data %>% 
+                                             select(Occupation_description, 
+                                                    Claiming_PP, 
+                                                    average_salary) %>% 
+                                             spread(Claiming_PP, average_salary)
+                                           prop_indiv_PP <-
+                                             data %>% 
+                                             select(Occupation_description, 
+                                                           Claiming_PP, 
+                                                           prop_claim_losses) %>% 
+                                             spread(Claiming_PP, prop_claim_losses) 
+                                           
+                                           # salaries
+                                           grattan:::chart_data(data)
+                                           
+                                           # proportions are also desired
+                                           current_chunk_label <- knitr::opts_current$get(name = "label")
+                                           if (!is.null(current_chunk_label)) {
+                                             if (!exists("atlas")) {
+                                               atlas <- knitr::opts_chunk$get(name = "fig.path")
+                                             }
+                                             readr::write_csv(x = prop_indiv_PP, 
+                                                              path = file.path(atlas, 
+                                                                               paste0(current_chunk_label, 
+                                                                                      "-prop_indiv",
+                                                                                      ".csv")))
+                                           }
+    
+                                         } %>%
+  
   {
-    grplot(., aes(x = Occupation_description, y = `Average salary`, fill = Claiming_PP)) + 
+    grplot(., aes(x = Occupation_description, y = `Average salary`, fill = rev(Claiming_PP))) + 
       geom_bar(stat = "identity", position = "dodge") + 
       scale_y_continuous(label = grattan_dollar,
                          expand = c(0,0), 
@@ -3394,7 +3452,6 @@ sample_file_1314 %>%
       coord_flip() 
   }
 @
-
 
 <<PP-losers-salary-comparison-ggrepel>>=
 sample_file_1314 %>%
@@ -3430,7 +3487,7 @@ sample_file_1314 %>%
                       fontface = "bold", 
                       point.padding = unit(0.01, 'npc'),
                       box.padding = unit(0.25, "lines"),
-                      size = 22/(14/5), 
+                      size = 20/(14/5), 
                       
                       max.iter = max.iter) +
       geom_text_repel(data = filter(., !grepl("Not claiming", Claiming)), 
@@ -3442,8 +3499,9 @@ sample_file_1314 %>%
                       size = 22/(14/5), 
                       
                       max.iter = max.iter) + 
-      scale_x_continuous(label = grattan_dollar) + 
-      scale_y_continuous(label = percent) + 
+      scale_x_continuous(label = grattan_dollar, limits = c(0.8*min(.$average_salary), 
+                                                            1.2*max(.$average_salary))) + 
+      scale_y_continuous(label = percent, limits = c(0.8*min(.$prop_claiming), 1.2*max(.$prop_claiming))) + 
       theme(legend.position = "right")
   }
 @
@@ -3487,7 +3545,7 @@ sample_file_1314 %>%
 \end{figure}
 
 \begin{figure}
-\Caption{Relative salaries are higher }
+\Caption{Relative salaries are higher for those earning PP}{Salary, 2013-14}{fig:density-salary-by-PP-losses}
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/density-salary-by-PP-losses-1}
 \end{figure}
 
@@ -3953,7 +4011,7 @@ hilda_rp_who_negatively_gearing %>%
   
 @
 \begin{figure}
-\Caption{Negative gearing spells are short}{Survival curve of negative gearing responding persons}
+\Caption{Negative gearing spells are short}{Survival curve of negative gearing responding persons}{fig:NG-spells-are-short}
 <<NG-survival-curve, dev="my_pdf", fig.ext="pdf">>=
 hilda_surv_data_weights <- 
   merge(hilda_surv_data, weights_by_waveid)
@@ -4089,6 +4147,7 @@ Internationally, there are a range of approaches to taxing capital gains. Most c
  Australia & 50\%\ exempt, rest at MTR & 1\,yr & 50\%\ exempt, rest at MTR & 1 yr \\ 
 %\bottomrule
 \end{longtable}
+\renewcommand{\arraystretch}{1.0}
 
 \chapter{Session info of $\mathsf{R}$ used for compilation}
 \begin{multicols*}{2}
