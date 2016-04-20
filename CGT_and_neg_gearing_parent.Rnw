@@ -317,17 +317,19 @@ rba_interest <-
 interest_losses <-
   merge(total.investor.loans, rba_interest) %>%
   merge(., historical.interest.losses, all.x = TRUE) %>%
-  mutate(interestXloans = mean.i * loans_amt)
+  mutate(interestXloans = mean.i * loans_amt) # So this is interest paid on investment loans
 
 # Good enough 
-# plot(lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses))
+#plot(interest_losses$tot.rent_interest_deds, interest_losses$interestXloans)
+#summary(lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses))
 rental.losses <-
 interest_losses[!complete.cases(interest_losses), ] %>%
   do({
-    model <- lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses)
+    model <- lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses) # Should it be data = . ? 
     pred <- predict(model, newdata = .[c("interestXloans")])
     data.frame(., pred)
   }) %>%
+  # Why replace this with a linear estimate? 
   mutate(tot.rent_interest_deds = pred) %>%
   select(year, tot.rent_interest_deds) %>%
   rbind(select(interest_losses, year, tot.rent_interest_deds)) %>%
@@ -351,6 +353,14 @@ revenue_CGT_discount <- function(CGT.discount = new.discount, .old.discount = 0.
            new_tax = income_tax(new_Taxable_Income, fy.year = fy.year, age = age_imp),
            tax_increase = new_tax - old_tax)
 }
+# The calculation seems legit... 
+# So the assumption here is that capital gains are unchanged. I think this is a HUGE assumption. 
+#' Let's say a firm earns profits of 10% of its equity a year and it was started with $1000. 
+# Now what happens if it retains the earnings (capital gain of $100 a year). Under this scenario, it pays $30 in corporate income tax
+# and has a capital gain of $70 in cash + $30 in franking credits. The owner, on a MTR of 45% pays $45 in taxes up front (but has a claim on future franking credits). Under the old regime, they only paid $22.50 and had a claim on the $30 of franking credits. So the change in income for the owner has gone from $77.50 to $55 a year--- the rate of return has fallen by 2%!
+# In asset pricing, the equilibrium asset price growth is equal to the earnings growth (Cochrane 1994). So my fairly strong view is that you need to reduce assumed asset price growth by the reduction in earnings in the medium run. Imagine what would be true if 
+# this equilibrium relationship were not true! There would be a long-run time trend in PE ratios... 
+
 @
 
 <<revenue_abolish_NG>>=
@@ -358,19 +368,22 @@ revenue_abolish_NG <- function(fy.year = "2015-16"){
   sample_file_1314 %>%
     select(-contains("MCS")) %>%  # project not good
     project_to(fy.year, fy.year.of.sample.file = use.sample.fy) %>%
+    # I'm pretty sure this is why they invented ifelse()...
     mutate(new_Tot_inc_amt = Tot_inc_amt - Net_rent_amt + pmaxC(Net_rent_amt, 0),
            new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
            prev_tax = income_tax(Taxable_Income, fy.year = "2015-16"), 
            new_tax  = income_tax(new_Taxable_Income, fy.year = "2015-16"), 
            tax_increase = new_tax - prev_tax)
 }
-
+# Looks fine
 @
 
 <<cgt_discount_density>>=
 cgt_discount_distribution <- 
   sample_file %>%
   filter(Tot_CY_CG_amt > 0) %>%
+  # I'm not sure I like this. If you're a trader with 0 profits, your Tot_CY_CG_amt is huge, but your Net_CG_amt is small. 
+  # This explains a lot of the bulk at apparent_discount = 1
   group_by(apparent_discount = round((1 - Net_CG_amt / Tot_CY_CG_amt) * 4) / 4) %>%
   summarise(value = sum(Tot_CY_CG_amt)) %>%
   ungroup %>%
@@ -402,6 +415,12 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
     }
   }
   target_sample_file %>%
+    
+    # What does this mean, given you have filtered  the above using filter(Tot_CY_CG_amt > 0). So you calculate the probability
+    # of not getting a discount conditional on having some positive gross capital gains, and then 
+    # apply this to the full dataset... 
+    # Makes my puny brain hurt, but it doesn't feel right. If we hand out discounts to everyone, why would somebody have no (or less than 50%) discount? 
+    
     # cosmetic for debugging
     # mutate_each(funs(round_cols)) %>%
     
@@ -410,6 +429,7 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
     # assign a new discount rate.  Note that this does not 
     # adequately take into account the impact of capital losses
     mutate(
+      # Why the rejection sampling? Please explain. 
       new_Net_CG_amt = ifelse(runif(n()) < probNoDiscount, 
                               Net_CG_amt, 
                               (Net_CG_amt / (1 - .old.discount)) * (1 - new_CGT_discount))) %>%
@@ -437,6 +457,8 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
       tax_increase = post_tax - prev_tax
     ) 
 }
+
+# Up to here. Need to go to sleep. 
 @
 
 <<revenue_quarantine_NG>>=
@@ -455,6 +477,7 @@ revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discou
       filter(Gross_rent_amt > 0) %$%
       mean(Net_rent_amt < 0)
   
+    # Comments please!
     M4 <- matrix(0, nrow = 2*Z, ncol = 2*Z)
     M4[row(M4) == col(M4) - 2] <- probNG_if_investor
     M4[row(M4) == col(M4) - 1] <- 1 - probNG_if_investor
@@ -491,7 +514,7 @@ revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discou
       summarise(q = mean(Net_rent_amt < 0))
     
     q_by_integer_age <- 
-      data.table(age_range = rep(q_by_age$age_range, each = 5)) %>% 
+      data.table(age_range = rep(q_by_age$age_range, each = 5)) %>% # This is not working. 
       merge(q_by_age, by = "age_range") %>%
       merge(age_range_decoder) %>%
       group_by(age_range_description) %>%
