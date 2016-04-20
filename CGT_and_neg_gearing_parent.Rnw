@@ -148,6 +148,7 @@ latex_dollar <- function (x, digits = 0){
 <<latex_percent>>=
 # flexibility in pre.phrase = c("almost", "over")
 # digits = 2  ==>  12.34%
+digits <- 2
 latex_percent <- function (x, digits = 1, precision, pre.phrase = NULL, percentage_symbol = "~percent") {
   if (!is.null(pre.phrase)){
     x.orig <- x
@@ -216,6 +217,8 @@ sample_file %<>%
                                  15)),
          max_age = min_age + 5, 
          age_imp = runif(n(), min_age, max_age)) 
+
+# Better ways of infering the distribution, but I'll let it slip! 
 @
 
 <<target_sample_file>>=
@@ -225,27 +228,29 @@ target_sample_file <-
   project_to(to_fy = TARGET.FY, fy.year.of.sample.file = latest.sample.fy) %>%
   select_(.dots = keep.names)
 rm(keep.names)
+
+# Are there any checks for what the inflating factors are? Have John and Dani sense-checked these? Ideally I'd want to see a plot of historical price and projection for all the series you're using to inflate. 
 @
 
 <<Import-HILDA, cache=TRUE>>=
-hilda_w14_hh <- 
-  foreign::read.dta("../Data/HILDA/Wave14/Household_n140c.dta")
-hilda_used <- TRUE
+# hilda_w14_hh <- 
+#   foreign::read.dta("../Data/HILDA/Wave14/Household_n140c.dta")
+hilda_used <- F
 @
 
 <<Import-HILDA-ep, cache=TRUE>>=
-hilda_w14_ep <- 
-  foreign::read.dta("../Data/HILDA/Wave14/Eperson_n140c.dta")
+# hilda_w14_ep <- 
+#   foreign::read.dta("../Data/HILDA/Wave14/Eperson_n140c.dta")
 @
 
 <<Import-HILDA-rp, cache=TRUE>>=
-hilda_w14_rp <- 
-  foreign::read.dta("../Data/HILDA/Wave14/Rperson_n140c.dta")
+# hilda_w14_rp <- 
+#   foreign::read.dta("../Data/HILDA/Wave14/Rperson_n140c.dta")
 @
 
 <<Import-SIH, cache=TRUE>>=
-sih201314 <- 
-  read.dta("../Data/SIH201314/sih13bh.dta")
+# sih201314 <- 
+#   read.dta("../Data/SIH201314/sih13bh.dta")
 @
 
 <<Import-misc-ATO>>=
@@ -289,6 +294,8 @@ if (!file.exists("./ATO/CGT-by-entity-and-asset-type.xlsx")){
 %%% Costings analysis
 
 <<Determine_future_rental_deductions>>=
+
+# So these are nominal losses? 
 historical.interest.losses <- 
   sample_files_all %>%
   group_by(year = fy2yr(fy.year)) %>%
@@ -298,12 +305,15 @@ total.investor.loans <-
   read_excel("ABS_Household_financing.xlsx", sheet = "Investment_loans_outstanding") %>%
   group_by(year = lubridate::year(Date)) %>%
   summarise(loans_amt = mean(Investment_housing_all_deposit_taking_institutions) * 10^6)
+# Again, not a huge sin but it's more standard to use geometric averages for TTY stocks
 
 rba_interest <- 
   read_excel("RBA_Household_interest_rates.xlsx", sheet = "Housing_lending_rates") %>%
   group_by(year = lubridate::year(Date)) %>%
   summarise(mean.i = mean(Housing_lending_rate)/100)
 
+
+# Probably won't make a material difference, but it'd be more standard to do the calculations at high frequency then aggregate. 
 interest_losses <-
   merge(total.investor.loans, rba_interest) %>%
   merge(., historical.interest.losses, all.x = TRUE) %>%
@@ -745,6 +755,7 @@ Australia should follow international practice, and not deduct losses from passi
 % We insert this now rather than pulling up the whole chunk from the box below.
 <<impact_policy_after_tax_returns_weighted_all>>=
 load("impact_policy_after_tax_returns_weighted_all.rda")
+
 @
 
 These changes will improve housing affordability -- a little. We estimate housing prices would be up to \Sexpr{latex_percent(-impact_policy_after_tax_returns_weighted_all)} lower than otherwise. Because there are tight planning constraints on new supply for urban housing, there will be very little impact on rents, or the rate of new development, even in the long term. 
@@ -816,14 +827,14 @@ cgt_by_entity <-
 @
 
 % cairo pdf for unicode concordance
-<<CGT-by-entity-asset, dev='cairo_pdf'>>=
+<<CGT-by-entity-asset>>=
 cgt_by_entity_asset %>%
   arrange(desc(asset_type)) %>%
   mutate(`Asset type` = asset_type) %>%
   grplot(aes(Entity, value, fill = `Asset type`, order = `Asset type`)) + 
   geom_bar(stat = "identity", width = 0.8) + 
   # \u2006 = half-space = emdash/6 space
-  scale_y_continuous(label = function(x){paste0(grattan_dollar(x / 10^9), "\u2006bn")}, 
+  scale_y_continuous(label = function(x){paste0(grattan_dollar(x / 10^9), "bn")}, 
                      expand = c(0,0)) +
   theme(axis.title = element_blank(), 
         legend.key.size = unit(23, "pt"),
@@ -2264,7 +2275,7 @@ As a result, Australian landlords have moved from being collectively profitable,
 
 \begin{figure}
 \Caption{Since the introduction of the capital gain tax discount, rental losses have been large, overwhelming profits}{Total real net rent (profit $-$ loss), individual taxpayers, (2014-15 dollars)}{fig:Net-rent-time-series}
-<<Net-rent-time-series, dev='cairo_pdf'>>=
+<<Net-rent-time-series>>=
 individuals_table1_201314 %>%
   #filter(grepl("Net.rent...((loss)|(profit))$", `Selected items`), unit == "$") %>%
   filter(grepl("Net rent2", `Selected items`), unit == "$") %>%
@@ -2293,7 +2304,7 @@ individuals_table1_201314 %>%
            hjust = 0, 
            vjust = 0.5) + 
   
-  scale_y_continuous(label = function(x){paste0(grattan_dollar(x / 1e9), "\u2006bn")}) + 
+  scale_y_continuous(label = function(x){paste0(dollar(x / 1e9), "bn")}) + 
   theme(plot.margin = grid::unit(c(0.7,0.7,0.5,0.00), "lines"), 
         axis.title.x = element_blank())
   
@@ -3108,7 +3119,7 @@ hilda_w14_hh %>%
 \end{table}
 
 \begin{table}
-<<Number-households-SIH, results='asis'>>=
+<<Number-households-SIH, results='asis', eval = F>>=
 sih201314 %>%
   group_by(var = NUMRPRCF) %>%
   summarise(comma(round(sum(SIHHHWT)))) %>%
