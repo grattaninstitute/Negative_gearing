@@ -1,0 +1,261 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\title{Notes on projecting capital gains}
+\author{Hugh Parsonage}
+\begin{document}
+\maketitle
+<<knitrOpts, include=FALSE>>=
+library(knitr)
+options(digits = 3, scipen = 99)
+@
+
+<<loadPackages>>=
+library(taxstats)  ## devtools("hughparsonage/...")
+library(grattan)
+
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(magrittr)
+library(xtable)
+library(ggrepel)
+@
+
+<<xtable-formatting, echo = FALSE>>=
+# bold column names
+boldxt <- function(x, sanitize = TRUE) {
+  # Replace $ without \\
+  x <- ifelse(grepl("((?<!\\\\)\\$)", x, perl = TRUE), gsub("$", "\\$", x, fixed = TRUE), x)
+  paste('{\\textbf{',x,'}}', sep ='')
+}
+options("xtable.sanitize.colnames.function" = function(x) boldxt(x))
+@
+
+<<latex_dollar>>=
+latex_dollar <- function (x, digits = 0){
+    nsmall <- digits
+    commaz <- format(abs(x), nsmall = nsmall, trim = TRUE, big.mark = ",", 
+                     scientific = FALSE, digits = 1L)
+    ifelse(x < 0, paste0("$-$", "\\$", commaz), paste0("\\$", commaz))
+}
+
+@
+
+\section{The problem}
+The revenue foregone estimates for the capital gains tax discount for individuals and trusts from the Treasury Tax Expenditure statement do not align with estimates taken from sample files.
+
+We can approximate the tax expenditure from the ATO's sample files.
+
+<<revenue-foregone-from-sample-files>>=
+revenue_foregone_from_sample_files <- 
+  sample_files_all %>%
+  select(fy.year, Taxable_Income, Net_CG_amt, WEIGHT) %>%
+  # since the discount is 50%, the undiscounted amount is 2 * Net_CG_amt
+  mutate(Taxable_Income_if_no_CG_discount = Taxable_Income + Net_CG_amt,
+         tax_no_change   = income_tax(Taxable_Income, fy.year = fy.year), 
+         tax_no_discount = income_tax(Taxable_Income_if_no_CG_discount, fy.year = fy.year)) %>%
+  group_by(fy.year) %>%
+  summarise(revenue_foregone_ATO = sum((tax_no_discount - tax_no_change) * WEIGHT))
+@
+
+<<comparison-Treasury-sample-files>>=
+comparison_Treasury_ATO <- 
+  grattan:::cgt_expenditures %>%
+  select(fy.year = FY, revenue_foregone_Treasury = CGT_discount_for_individuals_and_trusts_millions) %>%
+  mutate(revenue_foregone_Treasury = revenue_foregone_Treasury * 10^6) %>%
+  merge(revenue_foregone_from_sample_files, by = "fy.year", all = TRUE) %>%
+  mutate(`Treasury - ATO` = revenue_foregone_Treasury - revenue_foregone_ATO, 
+         `Treasury / ATO` = revenue_foregone_Treasury / revenue_foregone_ATO)
+@
+
+\begin{table}[!h]
+\centering
+<<comparison-Treasury-sample-files-xtable, echo=FALSE, results='asis'>>=
+comma_million <- function(x) comma(x/1e6)
+percent1 <- function(x){
+  paste0(formatC(round(100*x, 1), 
+         format = "f", flag = "#", digits = 1, width = 3), "%")
+}
+
+comparison_Treasury_ATO %>%
+  select(fy.year, `Treasury ($m)` = revenue_foregone_Treasury, `Sample files ($m)` = revenue_foregone_ATO, `Treasury - ATO`) %>%
+  mutate_each(funs(comma_million), -fy.year) %>%
+  xtable(align = "rlrrr") %>%
+  print(include.rownames = FALSE, 
+        floating = FALSE,
+        booktabs = TRUE)
+@
+\caption{Comparison of the Treasury estimates of revenue foregone due to CGT discount.}
+\end{table}
+
+\section{No correlation with trusts}
+
+<<trust-cg-diff, fig.cap='The capital gains from trusts do not explain the difference between the two estimates'>>=
+trusts_table1_201314 %>%
+  filter(Selected_items == "Net capital gain") %>%
+  select(fy.year = fy_year, `Trust Net CG` = Sum) %>% 
+  merge(comparison_Treasury_ATO, by = "fy.year", all.y = TRUE) %>%
+  filter(!is.na(`Trust Net CG`), !is.na(`Treasury - ATO`)) %>%
+  rename(`CGT exp.` = revenue_foregone_Treasury) %>%
+  ggplot(aes(x = `Trust Net CG`, y = `Treasury - ATO` )) + 
+  geom_point(aes(size = `CGT exp.`)) + 
+  scale_size_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  geom_text_repel(aes(label = fy.year)) + 
+  scale_y_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  scale_x_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) 
+@ 
+
+<<trust-cg-prop, fig.cap='The capital gains from trusts do not explain the relative difference between the two estimates'>>=
+trusts_table1_201314 %>%
+  filter(Selected_items == "Net capital gain") %>%
+  select(fy.year = fy_year, `Trust Net CG` = Sum) %>% 
+  merge(comparison_Treasury_ATO, by = "fy.year", all.y = TRUE) %>%
+  filter(!is.na(`Trust Net CG`), !is.na(`Treasury - ATO`)) %>%
+  rename(`CGT exp.` = revenue_foregone_Treasury) %>%
+  ggplot(aes(x = `Trust Net CG`, y = `Treasury / ATO` )) + 
+  geom_point(aes(size = `CGT exp.`),  alpha = 0.5) + 
+  scale_size_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  geom_text_repel(aes(label = fy.year),  point.padding = unit(1, "lines"), fontface = "bold") + 
+  scale_y_continuous(label = percent) + 
+  scale_x_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) +
+  theme(legend.position = "none")
+@ 
+
+<<trust-individual-ratio-cg-prop, fig.cap='The capital gains from trusts do not explain the relative difference between the two estimates'>>=
+indiv_tot_net_cg_by_fy <- 
+  sample_files_all %>%
+  group_by(fy.year) %>%
+  summarise(tot_indiv_net_cg = sum(Net_CG_amt * WEIGHT))
+
+trusts_table1_201314 %>%
+  filter(Selected_items == "Net capital gain") %>%
+  select(fy.year = fy_year, `Trust Net CG` = Sum) %>% 
+  merge(comparison_Treasury_ATO, by = "fy.year", all.y = TRUE) %>%
+  merge(indiv_tot_net_cg_by_fy, by = "fy.year", all.y = TRUE) %>%
+  mutate(`(Individuals - Trusts) / Individuals` = 1 - `Trust Net CG` / tot_indiv_net_cg) %>%
+  filter(!is.na(`Trust Net CG`), !is.na(`Treasury - ATO`)) %>%
+  rename(`CGT exp.` = revenue_foregone_Treasury) %>%
+  ggplot(aes(x = `(Individuals - Trusts) / Individuals`, y = `Treasury / ATO` )) + 
+  geom_point(aes(size = `CGT exp.`),  alpha = 0.5) + 
+  scale_size_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  geom_text_repel(aes(label = fy.year),  point.padding = unit(1, "lines"), fontface = "bold") + 
+  scale_y_continuous(label = percent) + 
+  scale_x_continuous(label = percent) +
+  theme(legend.position = "none") 
+@ 
+
+<<trusts-individuals-hyphothesis, dev='pdf'>>=
+trusts_table1_201314 %>%
+  filter(Selected_items == "Net capital gain") %>%
+  select(fy.year = fy_year, `Trust Net CG` = Sum) %>% 
+  merge(comparison_Treasury_ATO, by = "fy.year", all.y = TRUE) %>%
+  merge(indiv_tot_net_cg_by_fy, by = "fy.year", all.y = TRUE) %>%
+  mutate(
+    `30% x (Total NG from individuals - Trust Net CG losses)` = 0.3 * (tot_indiv_net_cg - `Trust Net CG`)
+    ) %>%
+  ggplot(aes(x = `30% x (Total NG from individuals - Trust Net CG losses)`, 
+             y = `Treasury - ATO`)) + 
+  geom_text_repel(aes(label = fy.year),  point.padding = unit(1, "lines"), 
+                  fontface = "bold") + 
+  coord_equal() + 
+  scale_y_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  scale_x_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) 
+@
+
+\section{Discount}
+It's possible that not all taxpayers with capital gains enjoy the capital gains tax discount. 
+\begin{table}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+<<apparent-discount-avg-by-fy, results='asis'>>=
+apparent_discount_by_fy <- 
+  sample_files_all %>%
+  filter(Tot_CY_CG_amt > 0) %>% 
+  group_by(fy.year) %>%
+  summarise(apparent_discount = weighted.mean(Net_CG_amt / Tot_CY_CG_amt, Net_CG_amt), 
+            n_no_discount = mean(Net_CG_amt / Tot_CY_CG_amt > 0.95), 
+            n_no_discount_w = weighted.mean(Net_CG_amt / Tot_CY_CG_amt > 0.95, Net_CG_amt))
+
+apparent_discount_by_fy %>%
+  rename(`FY` = fy.year, 
+         `Apparent discount` = apparent_discount, 
+         `\\% with 0\\% discount` = n_no_discount, 
+         `\\% with 0\\% discount (weighted)` = n_no_discount_w) %>%
+  mutate_each(funs(percent1), -FY) %>%
+  {suppressWarnings(xtable(., align = "llRRR"))} %>%
+  print(include.rownames = FALSE,
+        tabular.environment = "tabularx", 
+        width = "\\linewidth",
+        floating = FALSE,
+        booktabs = TRUE)
+@
+\caption{.}
+\end{table}
+\begin{figure}
+<<apparent-discount-predicts-discrepancy>>=
+comparison_Treasury_ATO %>%
+  merge(apparent_discount_by_fy, by = "fy.year") %>%
+  rename(`% no discount (weighted)` = n_no_discount_w) %>%
+  ggplot(aes(x = `% no discount (weighted)`, y = `Treasury - ATO`)) + 
+  geom_point() + 
+  geom_text_repel(aes(label = fy.year)) + 
+  scale_y_continuous(label = function(x) paste0(grattan_dollar(x / 1e9), "bn")) + 
+  scale_x_continuous(label = percent) 
+@
+\caption{There is no visible relationship between the discrepancy in revenue foregone and the percentage of taxpayers whose net capital gains are not discounted (weighted by the size of the capital gain).}
+\end{figure}
+
+\section{Average marginal rates}
+<<Treasury-methodology-uses-average-marginal-rates>>=
+# Should be 29.3 - 32.6 according to Clarke from Treasury
+avg_marginal_rate_of_CG <- 
+  sample_files_all %>%
+  filter(Net_CG_amt > 0) %>%
+  group_by(fy.year) %>%
+  summarise(avg_marginal_rate = mean(income_tax(Taxable_Income + 1, fy.year = fy.year) - income_tax(Taxable_Income, fy.year = fy.year)), 
+            avg_marginal_rate_on_gains = mean((income_tax(Taxable_Income, fy.year = fy.year) - income_tax(pmaxC(Taxable_Income - Net_CG_amt, 0), fy.year = fy.year)) / Net_CG_amt), 
+            # Taxable_Income + 1 permissible because avg_rate will be zero anyway
+            avg_rate = mean(income_tax(Taxable_Income, fy.year = fy.year) / (Taxable_Income + 1)), 
+            avg_rate_gains = mean((income_tax(Taxable_Income, fy.year = fy.year) - income_tax(pmaxC(Taxable_Income - Net_CG_amt, 0), fy.year = fy.year)) / Net_CG_amt))
+@
+            
+\begin{table}
+\makebox[\textwidth][c]{
+<<Treasury-methodology-uses-average-marginal-rates-tbl, results='asis', echo=FALSE>>=
+avg_marginal_rate_of_CG %>%
+  rename(FY = fy.year) %>%
+  rename(`Average marginal__Taxable income` = avg_marginal_rate, 
+         `Average marginal__Net capital gains` = avg_marginal_rate_on_gains, 
+         `Average__Taxable income` = avg_rate, 
+         `Average__Net capital gains` = avg_rate_gains) %>%
+  mutate_each(funs(percent1), -FY) %>%
+  {suppressWarnings(print_2heading_xtable(., 
+                                          xtable.align = "llrrrr", 
+                                          floating = FALSE, 
+                                          #width = "\\linewidth",
+                                          tabular.environment = "tabular"))}
+            
+@
+}
+\end{table}
+
+\subsection{Apply marginal rates to sample files}
+<<use-marginal-rates-to-calculate-revenue-foregone>>=
+sample_files_all %>%
+  group_by(fy.year) %>%
+  summarise(total_cg_ato = sum(Net_CG_amt * WEIGHT)) %>%
+  merge(comparison_Treasury_ATO, by = "fy.year") %>%
+  mutate(prop_treasy = revenue_foregone_Treasury / total_cg_ato, 
+         prop_ato = revenue_foregone_ATO / total_cg_ato, 
+         rd = revenue_foregone_ATO / revenue_foregone_Treasury) %>% .[]
+
+@
+
+
+
+
+
+\end{document}
