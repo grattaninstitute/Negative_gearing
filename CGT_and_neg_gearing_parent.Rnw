@@ -204,6 +204,23 @@ boldxt <- function(x, sanitize = TRUE) {
 options("xtable.sanitize.colnames.function" = function(x) boldxt(x))
 @
 
+% We insert this now rather than pulling up the whole chunk from the box below.
+<<impact_policy_after_tax_returns_weighted_all>>=
+if (!file.exists("impact_policy_after_tax_returns_weighted_all.rda") || 
+    !file.exists("price_pc_change_of_both_tax_changes_fully_capitalized.rda")){
+  impact_policy_after_tax_returns_weighted_all <- 99999
+  cgt_reducer_due_to_policy <- 0
+} else {
+  load("impact_policy_after_tax_returns_weighted_all.rda")
+  load("price_pc_change_of_both_tax_changes_fully_capitalized.rda")
+  cgt_reducer_due_to_policy <- 
+    (-1 * impact_policy_after_tax_returns_weighted_all + price_pc_change_of_both_tax_changes_fully_capitalized) / 2
+}
+@
+<<cgt_reducer_due_to_policy>>=
+cgt_reducer_due_to_policy <- cgt_reducer_due_to_policy
+@
+
 <<load_sample_file>>=
 sample_file <- sample_files_all[fy.year == use.sample.fy]
 @
@@ -236,16 +253,6 @@ rm(keep.names)
 hilda_w14_hh <- 
   foreign::read.dta("../Data/HILDA/Wave14/Household_n140c.dta")
 hilda_used <- TRUE
-@
-
-<<Import-HILDA-ep, cache=TRUE>>=
-hilda_w14_ep <- 
-  foreign::read.dta("../Data/HILDA/Wave14/Eperson_n140c.dta")
-@
-
-<<Import-HILDA-rp, eval=reload_all_data, cache=FALSE>>=
-hilda_w14_rp <- 
-  foreign::read.dta("../Data/HILDA/Wave14/Rperson_n140c.dta")
 @
 
 <<Import-HILDA-all-waves-step-1, eval=reload_all_data, cache=FALSE>>=
@@ -391,34 +398,6 @@ interest_losses[!complete.cases(interest_losses), ] %>%
 
 @
 
-<<cost-new-CGT-discount>>=
-revenue_CGT_discount <- function(CGT.discount = new.discount, .old.discount = 0.50){
-    target_sample_file %>%
-    mutate(fy.year = "2015-16") %>%
-    mutate(new_Net_CG_amt = (Net_CG_amt / (1 - .old.discount)) * (1 - CGT.discount),
-           new_Tot_inc_amt = Tot_inc_amt - Net_CG_amt + new_Net_CG_amt,
-           new_Tot_ded_amt = Tot_ded_amt,  # no change
-           new_Taxable_Income = pmaxC(new_Tot_inc_amt - new_Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed, 0),
-           old_tax = income_tax(Taxable_Income, fy.year = fy.year, age = age_imp),
-           new_tax = income_tax(new_Taxable_Income, fy.year = fy.year, age = age_imp),
-           tax_increase = new_tax - old_tax)
-}
-@
-
-<<revenue_abolish_NG>>=
-revenue_abolish_NG <- function(fy.year = "2015-16"){
-  sample_file_1314 %>%
-    select(-contains("MCS")) %>%  # project not good
-    project_to(fy.year, fy.year.of.sample.file = use.sample.fy) %>%
-    mutate(new_Tot_inc_amt = Tot_inc_amt - Net_rent_amt + pmaxC(Net_rent_amt, 0),
-           new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
-           prev_tax = income_tax(Taxable_Income, fy.year = "2015-16"), 
-           new_tax  = income_tax(new_Taxable_Income, fy.year = "2015-16"), 
-           tax_increase = new_tax - prev_tax)
-}
-
-@
-
 <<cgt_discount_density>>=
 cgt_discount_distribution <- 
   sample_file %>%
@@ -434,6 +413,39 @@ probNoDiscount <-
   cgt_discount_distribution %>% 
   filter(apparent_discount == 0) %$%
   cumdensity
+@
+
+<<cost-new-CGT-discount>>=
+revenue_CGT_discount <- function(CGT.discount = new.discount, .old.discount = 0.50){
+    target_sample_file %>%
+    mutate(fy.year = "2015-16") %>%
+    # Assume 2 % fall in gains. 
+    mutate(
+      new_Net_CG_amt = (1 - cgt_reducer_due_to_policy) * ifelse(runif(n()) < probNoDiscount,
+                                                                Net_CG_amt,
+                                                                (Net_CG_amt / (1 - .old.discount)) * (1 - CGT.discount)),
+      new_Tot_inc_amt = Tot_inc_amt - Net_CG_amt + new_Net_CG_amt,
+      new_Tot_ded_amt = Tot_ded_amt,  # no change
+      new_Taxable_Income = pmaxC(Taxable_Income - Net_CG_amt + new_Net_CG_amt, 0),
+      old_tax = income_tax(Taxable_Income, fy.year = fy.year, age = age_imp),
+      new_tax = income_tax(new_Taxable_Income, fy.year = fy.year, age = age_imp),
+      tax_increase = new_tax - old_tax
+    )
+}
+@
+
+<<revenue_abolish_NG>>=
+revenue_abolish_NG <- function(fy.year = "2015-16"){
+  sample_file_1314 %>%
+    select(-contains("MCS")) %>%  # project not good
+    project_to(fy.year, fy.year.of.sample.file = use.sample.fy) %>%
+    mutate(new_Tot_inc_amt = Tot_inc_amt - Net_rent_amt + pmaxC(Net_rent_amt, 0),
+           new_Taxable_Income = pmaxC(new_Tot_inc_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 0),
+           prev_tax = income_tax(Taxable_Income, fy.year = "2015-16"), 
+           new_tax  = income_tax(new_Taxable_Income, fy.year = "2015-16"), 
+           tax_increase = new_tax - prev_tax)
+}
+
 @
 
 <<revenue_quarantine_NG_year0>>=
@@ -464,14 +476,14 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
     mutate(
       new_Net_CG_amt = ifelse(runif(n()) < probNoDiscount, 
                               Net_CG_amt, 
-                              (Net_CG_amt / (1 - .old.discount)) * (1 - new_CGT_discount))) %>%
+                              (1 - cgt_reducer_due_to_policy) * (Net_CG_amt / (1 - .old.discount)) * (1 - new_CGT_discount))) %>%
     
     mutate(
       # Other_Income means income (possibly -ve) that is 
       # not salary, CG, or rental
       quarantined_income = Sw_amt + Alow_ben_amt + ETP_txbl_amt,
       # Other_Income may be -ve
-      Other_Income = round(Tot_inc_amt - Net_CG_amt + new_Net_CG_amt - quarantined_income - Net_rent_amt, 2),
+      Other_Income = Tot_inc_amt - Net_CG_amt + new_Net_CG_amt - quarantined_income - Net_rent_amt,
       new_Tot_inc_amt = quarantined_income + ifelse(Other_Income <= 0, 
                                                     # Nothing for rent to deduct against, 
                                                     # but Other_Income is permitted to be -ve
@@ -496,16 +508,20 @@ revenue_quarantine_NG_year0 <- function(sample_file = sample_file_1314, new_CGT_
 # TARGET.FY <- "2015-16"
 # use.sample.fy <- "2013-14"
 # Z is ~ number of iterations of the model for age_based = FALSE
-revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY, age_based = TRUE, Z = 20){
+revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY, age_based = TRUE, Z = 20, probNG = NULL){
   if (sample_file_fy_year != "2013-14"){
     stop("You must correct the sample_file year")
   }
   
   if (!age_based){
-    probNG_if_investor <- 
-      sample_file %>%
-      filter(Gross_rent_amt > 0) %$%
-      mean(Net_rent_amt < 0)
+    if (!missing(probNG)){
+      probNG_if_investor <- 
+        sample_file %>%
+        filter(Gross_rent_amt > 0) %$%
+        mean(Net_rent_amt < 0)
+    } else {
+      probNG_if_investor <- probNG
+    }
   
     M4 <- matrix(0, nrow = 2*Z, ncol = 2*Z)
     M4[row(M4) == col(M4) - 2] <- probNG_if_investor
@@ -662,9 +678,10 @@ revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discou
     # assign a new discount rate.  Note that this does not 
     # adequately take into account the impact of capital losses
     mutate(
-      new_Net_CG_amt = Net_CG_amt * ifelse(runif(n()) < probNoDiscount, 
-                                           1, 
-                                           (1 - new_CGT_discount) / 0.50)) %>%
+      # capital gains are impacted by the policy itself.  Assume 2% fall in gains. 
+      new_Net_CG_amt = (1 - cgt_reducer_due_to_policy) * Net_CG_amt * ifelse(runif(n()) < probNoDiscount, 
+                                                                             1, 
+                                                                             (1 - new_CGT_discount) / 0.50)) %>%
     
     # Excluding CG for the moment, we create a new total income amount 
     # which quarantines salary from NG.  Rental losses may be deducted 
@@ -675,7 +692,7 @@ revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discou
       # Other_Income means income (possibly -ve) that is 
       # not salary, CG, or rental
       quarantined_income = Sw_amt + Alow_ben_amt + ETP_txbl_amt,
-      Other_Income = round(Tot_inc_amt - quarantined_income - Net_CG_amt - Net_rent_amt, 2),
+      Other_Income = Tot_inc_amt - quarantined_income - Net_CG_amt - Net_rent_amt,
       new_Tot_inc_amt_no_CG = quarantined_income + ifelse(Other_Income <= 0, 
                                                           # Nothing for rent to deduct against, 
                                                           # but Other_Income is permitted to be -ve
@@ -716,13 +733,311 @@ revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discou
 }
 @
 
+
+<<revenue_quarantine_NG_2>>=
+# new.discount <- 0.25  # proposed CGT
+# TARGET.FY <- "2015-16"
+# use.sample.fy <- "2013-14"
+# Z is ~ number of iterations of the model for age_based = FALSE
+# Try to account for differences in CG by age by guessing the CG losses
+# that will be write-offable when the accumulated losses conclude
+revenue_quarantine_NG_2 <- function(sample_file = sample_file_1314, new_CGT_discount = new.discount, sample_file_fy_year = use.sample.fy, target_fy = TARGET.FY, age_based = TRUE, Z = 20){
+  if (sample_file_fy_year != "2013-14"){
+    stop("You must correct the sample_file year")
+  }
+  
+  probCG_by_age <- 
+    target_sample_file %>%
+    filter(Gross_rent_amt > 0) %>%
+    group_by(age = floor(age_imp)) %>%
+    summarise(probCG_overall = mean(Net_CG_amt > 0), 
+              # after discount
+              average_CG = 1.5 * mean(Net_CG_amt)) %>%
+
+    ungroup %>%
+    arrange(age) 
+  
+  cg_by_age <- 
+    target_sample_file %>% 
+    filter(Net_CG_amt > 0 | Gross_rent_amt > 0) %>%
+    group_by(age = floor(age_imp)) %>%
+    summarise(probCG_overall = mean(Net_CG_amt > 0), 
+              total_cg = (1 - cgt_reducer_due_to_policy) *sum(Tot_CY_CG_amt),
+              expected_cg = (1 - cgt_reducer_due_to_policy) * mean(Tot_CY_CG_amt), 
+              expected_tot_cg_given_cg_occurs = (1 - cgt_reducer_due_to_policy) * mean(Tot_CY_CG_amt[Net_CG_amt > 0])) %>%
+
+    ungroup %>%
+    arrange(age) 
+  
+  
+  marginal_tax_rate_CG <- 
+    sample_file_1314 %>%
+    filter(Net_CG_amt > 0) %>%
+    mutate(marginal_rate = income_tax(Taxable_Income + 1, "2013-14") - income_tax(Taxable_Income, "2013-14")) %$%
+    mean(marginal_rate)
+  
+  if (!age_based){
+    probNG_if_investor <- 
+      sample_file %>%
+      filter(Gross_rent_amt > 0) %$$%
+      {mean(Net_rent_amt < 0) * (1 - mean(Net_CG_amt > 0))}
+  
+    M4 <- matrix(0, nrow = 2*Z, ncol = 2*Z)
+    M4[row(M4) == col(M4) - 2] <- probNG_if_investor
+    M4[row(M4) == col(M4) - 1] <- 1 - probNG_if_investor
+    M4[row(M4) %% 2 == 0] <- 0
+    M4[row(M4) %% 2 == 0 & row(M4) == col(M4)] <- 1
+    M4[2*Z - 1, 2*Z] <- 1
+    
+    stopifnot(all(rowSums(M4) == 1))
+    
+    P <- M4 %^% (Z + 1)
+    
+    init <- c(1,rep(0, Z - 1))
+    
+    # even entries of P are the absorbing states
+    E <- init %*% P[c(TRUE, FALSE),c(FALSE,TRUE)]
+    
+    accumulator <- 
+      data.table(rand = cumsum(E[1,]), 
+                 loss_multiplier = 1:(Z)) %>%
+      setkey(rand)
+    
+    forecast_loss_multiple <- function(.data){
+      setkey(.data, rand) %>%
+        accumulator[., roll = -Inf]
+    }
+    
+  } else {
+    
+    # age based-method
+    # q ~ probNG_if_investor
+    q_by_age <- 
+      sample_file %>%
+      filter(Gross_rent_amt > 0) %>%
+      group_by(age_range) %>%
+      summarise(q = mean(Net_rent_amt < 0) * (1 - mean(Net_CG_amt > 0)))
+    
+    q_by_integer_age <- 
+      data.table(age_range = rep(q_by_age$age_range, each = 5)) %>% 
+      merge(q_by_age, by = "age_range") %>%
+      merge(age_range_decoder) %>%
+      group_by(age_range_description) %>%
+      mutate(min_age = ifelse(grepl("to", age_range_description), 
+                              as.numeric(stringr::str_extract(age_range_description, "^[0-9]{2}")), 
+                              ifelse(grepl("70", age_range_description),
+                                     70, 
+                                     15)), 
+             age = min_age - 1  + 1:n()) %>%
+      ungroup %>%
+      arrange(age) %>%
+      select(-age_range, age_range_description, -min_age) %>%
+      select(age, q)
+    
+    # We want a wide data frame which shows, for each
+    # age, the probability of going from n_ahead to n_ahead + 1
+    # so [i, j] represents the probability that a person aged i
+    # who *will* negative gear for at least j years will negatively gear
+    # in the year j + 1.
+    
+    # All the information to produce this dataframe/matrix is contained in q
+    # so we just need to extract it. 
+    # We keep applying lead until just before there will be a column of pure NA.
+    j <- 1
+    q_by_integer_age %<>% rename(q1 = q)
+    while (TRUE){  
+      j <- j + 1
+      mutate_call = lazyeval::interp(~lead(b), b = as.name(paste0("q", j - 1)))
+      q_by_integer_age %<>% mutate_(.dots = setNames(list(mutate_call), paste0("q", j)))
+      
+      # breaker:
+      if (any(colSums(is.na(q_by_integer_age)) == nrow(q_by_integer_age) - 1)){
+        # We're done. Before we `break;` let's clean up.
+        # We assume that people persist in this model beyond 75
+        na_locf <- function(x){
+          na.locf(x, na.rm = FALSE)
+        }
+        
+        q_by_integer_age %<>%
+          mutate_each(funs(na_locf))
+        break
+      }
+    }
+    
+    q_by_integer_age_long <- 
+      q_by_integer_age %>%
+      gather(n_ahead, prob_NG_if_investor, -age) %>%
+      mutate(n_ahead = as.numeric(gsub("q", "", n_ahead))) %>%
+      arrange(age, n_ahead)
+    
+    E_by_age <- function(the_age){
+      probNG_if_investor <- 
+        q_by_integer_age_long %>%
+        filter(age == the_age) %$%
+        prob_NG_if_investor
+      
+      Z <- length(probNG_if_investor)
+      
+      # Construct a matrix as before: 
+      # odd states represent continuing negative gearing
+      # even states are absorbing
+      #
+      # The idea is that once an individual stop negative gearing
+      # that person never negative gears and their accumulated losses
+      # are those thitherto accumulated. 
+      MA <- matrix(0, nrow = 2*Z, ncol = 2*Z)
+      # if still NG, advance
+      MA[row(MA) == col(MA) - 2] <- rep(probNG_if_investor, each = 2)[-c(1, 2*Z)]  ## dropped indices fall off the 'north' and 'east' the matrix
+      # else fall into absorbing state
+      MA[row(MA) == col(MA) - 1] <- rep(1 - probNG_if_investor, each = 2)[-c(2*Z)]
+      
+      # even entires are absorbing
+      MA[row(MA) %% 2 == 0] <- 0
+      MA[row(MA) %% 2 == 0 & row(MA) == col(MA)] <- 1
+      
+      # Final state hack to ensure stochastic.
+      # We take the last state as absorbing, even if the person is (by some miracle) still NG.
+      MA[2*Z - 1, 2*Z] <- 1
+      
+      # MA must be stochastic
+      stopifnot(all(rowSums(MA) == 1))
+      
+      P <- MA %^% (Z + 1)
+      
+      init <- c(1, rep(0, Z - 1))
+      
+      # even entries of P are the absorbing states
+      E <- init %*% P[c(TRUE, FALSE),c(FALSE,TRUE)]
+      
+      data.table(
+        age = rep(the_age, Z),
+        loss_multiplier = 1:Z, 
+        E = as.numeric(t(E))
+      )
+    }
+    
+    accumulator_by_age <- 
+      lapply(unique(q_by_integer_age_long$age), E_by_age) %>% 
+      rbindlist(.) %>%
+      group_by(age) %>%
+      mutate(rand = cumsum(E)) %>%
+      setkey(age, rand)
+    
+    forecast_loss_multiple <- function(.data){
+      setkey(.data, age, rand) %>%
+        accumulator_by_age[., roll = -Inf]
+    }
+    
+    probCG__by_age <- 
+      target_sample_file %>%
+      group_by(age_at_Z = floor(age_imp)) %>%
+      summarise(prob__CG_event = mean(Tot_CY_CG_amt > 0)) %>%
+      ungroup %>%
+      setkey(age_at_Z)
+    
+    forecast_cg_event <- function(.data){
+      setkey(.data, age_at_Z) %>%
+        merge(probCG__by_age)
+    }
+    
+  }
+  
+  target_sample_file %>%
+    select(Net_CG_amt, Sw_amt, ETP_txbl_amt, 
+           Tot_ded_amt, NPP_loss_claimed, PP_loss_claimed, 
+           Alow_ben_amt, Tot_inc_amt, Net_rent_amt, Taxable_Income, age_imp, 
+           WEIGHT) %>%
+    # mutate_each(funs(round_cols)) %>%
+    
+    # We need to work out how much the discount will change Net_CG_amt.
+    # We use the density of the apparent_discount to randomly 
+    # assign a new discount rate.  Note that this does not 
+    # adequately take into account the impact of capital losses
+    mutate(
+      new_Net_CG_amt = (1 - cgt_reducer_due_to_policy) * Net_CG_amt * ifelse(runif(n()) < probNoDiscount, 
+                                                                             1, 
+                                                                             (1 - new_CGT_discount) / 0.50)) %>%
+    
+    # Excluding CG for the moment, we create a new total income amount 
+    # which quarantines salary from NG.  Rental losses may be deducted 
+    # against investment income (including capital gains).  However, 
+    # we assume that they are deducted against capital gains only
+    # in the future
+    mutate(
+      # Other_Income means income (possibly -ve) that is 
+      # not salary, CG, or rental
+      quarantined_income = Sw_amt + Alow_ben_amt + ETP_txbl_amt,
+      Other_Income = Tot_inc_amt - quarantined_income - Net_CG_amt - Net_rent_amt,
+      new_Tot_inc_amt_no_CG = quarantined_income + ifelse(Other_Income <= 0, 
+                                                          # Nothing for rent to deduct against, 
+                                                          # but Other_Income is permitted to be -ve
+                                                          Other_Income,
+                                                          # Net_rent is negative and is allowed to 
+                                                          # reduce Other income till exhausted
+                                                          pmaxC(Other_Income + Net_rent_amt, 0))
+    ) %>% 
+    mutate(
+      # should be positive
+      accumulated_losses_year_0 = -1 * ifelse(Net_rent_amt >= 0, 
+                                              0, 
+                                              pminC(pmaxC(Other_Income, 0) + Net_rent_amt, 0)) 
+      # Not required.
+      # ,new_Tot_inc_amt = new_Tot_inc_amt_no_CG + Net_CG_amt
+    ) %>% 
+    mutate(rand = runif(n()), 
+           age = floor(age_imp)) %>%
+    forecast_loss_multiple %>%
+    
+    mutate(
+      accumulated_losses_year_Z = accumulated_losses_year_0 * loss_multiplier, 
+      age_at_Z = age + loss_multiplier
+    ) %>% 
+    merge(cg_by_age, by.x = "age_at_Z", by.y = "age") %>%
+    forecast_cg_event %>%
+    
+    mutate(
+      income_reduction = ifelse(rand < prob__CG_event & accumulated_losses_year_Z > 0, 
+                                # in this case we expect a capital gain
+                                # and the concommitant income reduction is
+                                # ither the gain (if the accumulated losses exceed it)
+                                # or the losses themselves
+                                pmaxV(expected_tot_cg_given_cg_occurs, accumulated_losses_year_Z), 
+                                accumulated_losses_year_Z), 
+      gain_residual = ifelse(rand < prob__CG_event & accumulated_losses_year_Z > 0,
+                             pmaxC(expected_tot_cg_given_cg_occurs - accumulated_losses_year_Z, 0), 
+                             0)) %>%
+    mutate(
+      # This is the standard calculation for taxable income
+      new_Taxable_Income_yearZ = pmaxC(pmaxC(Other_Income + new_Net_CG_amt + ((1 - new_CGT_discount) / 0.50) * gain_residual - income_reduction, 
+                                             0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+                                       0),
+      new_Taxable_Income_year0 = pmaxC(pmaxC(Other_Income + new_Net_CG_amt, 
+                                             0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+                                       0)) %>%
+    mutate(
+      # pmaxC redundant because taxstats have already done it
+      prev_tax = income_tax(pmaxC(Taxable_Income, 0), fy.year = "2015-16"), 
+      post_tax_yearZ = income_tax(pmaxC(new_Taxable_Income_yearZ, 0),
+                                        fy.year = "2015-16"), 
+      post_tax_year0 = income_tax(new_Taxable_Income_year0, fy.year = "2015-16"),
+      tax_increase = post_tax_yearZ - prev_tax, 
+      tax_increase_year0 = post_tax_year0 - prev_tax, 
+      residual_gain_effect = income_tax(pmaxC(pmaxC(Other_Income + new_Net_CG_amt - income_reduction, 
+                                                    0) + quarantined_income - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+                                              0),
+                                        fy.year = "2015-16") - post_tax_yearZ
+    )
+}
+@
+
 <<henry_taxstats>>=
 henry_taxstats <- function(new.discount){
   target_sample_file %>%
     mutate(new_capital_gains = 2 * Net_CG_amt * (1 - new.discount), 
            new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)), 
            new_investment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount), 
-           new_Taxable_Income = pmaxC(Taxable_Income - Net_CG_amt + new_capital_gains - Net_rent_amt + new_net_rent - Net_fincl_invstmt_lss_amt + new_investment_lss, 0), 
+           new_Taxable_Income = pmaxC(Taxable_Income - Net_CG_amt + new_capital_gains - Net_rent_amt + new_net_rent - Net_fincl_invstmt_lss_amt + new_investment_lss, 
+                                      0), 
            prev_tax = income_tax(Taxable_Income, fy.year = TARGET.FY), 
            post_tax = income_tax(new_Taxable_Income, fy.year = TARGET.FY), 
            tax_increase = post_tax - prev_tax)
@@ -737,6 +1052,13 @@ policy <- revenue_quarantine_NG(sample_file = sample_file_1314,
                                 target_fy = TARGET.FY, 
                                 Z = 50)
 
+policy_alternate_method <- 
+  revenue_quarantine_NG_2(sample_file = sample_file_1314, 
+                          new_CGT_discount = 0.25, 
+                          sample_file_fy_year = "2013-14", 
+                          target_fy = TARGET.FY, 
+                          Z = 50)
+
 policy_year0 <- revenue_quarantine_NG_year0()
 # The Henry proposal
 policy_align_gains_and_losses <- henry_taxstats(new.discount = new.discount)
@@ -749,15 +1071,27 @@ write(x = c(
   file = "Summary_table.txt")
 
 print_cost <- function(the.policy, bn = TRUE){
-  formatC(round(the.policy$WEIGHT[1] * sum(the.policy$tax_increase) / 1e9, 1), width = 4, digits = 1, flag = "#", format = "f")
+  stopifnot(!is.null(the.policy$WEIGHT[1]), !is.null(the.policy$tax_increase))
+  
+  if (bn)
+    divisor <- 1e9
+  else 
+    divisor <- 1
+  
+  formatC(round(the.policy$WEIGHT[1] * sum(the.policy$tax_increase) / 1e0, divisor), 
+          width = 4, digits = 1, flag = "#", format = "f")
 }
 
 cost_of <- function(the.policy){
+  stopifnot(!is.null(the.policy$WEIGHT[1]), !is.null(the.policy$tax_increase))
   the.policy$WEIGHT[1] * sum(the.policy$tax_increase)
 }
 
+total_cost_of_proposed_policy <- 
+  (cost_of(policy) + cost_of(policy_alternate_method)) / 2
+
 cost_of_NG_only <- 
-  cost_of(policy) - cost_of(policy_reduce_CGT)
+  total_cost_of_proposed_policy - cost_of(policy_reduce_CGT)
 
 cost_of_NG_only_year0 <- 
   cost_of(policy_year0) - cost_of(policy_reduce_CGT)
@@ -770,7 +1104,8 @@ write(x = c(
   print_cost(policy_reduce_CGT), "Reduce CGT discount", 
   # diff_just_due_NG, "Just quarantine losses", 
   # diff_just_due_NG_year0, "Just quarantine losses (year 0)",
-  print_cost(policy_align_gains_and_losses), "Henry proposal"
+  print_cost(policy_align_gains_and_losses), "Henry proposal", 
+  print_cost(policy_alternate_method), "Quarantine NG losses and reduce CGT discount (alternate)"
       ),
   file = "Summary_table.txt",
   append = TRUE,
@@ -778,10 +1113,15 @@ write(x = c(
   )
 @
 
+<<revenue_foregone_CG_and_NG>>=
+revenue_foregone_CG_and_NG <- 
+  cost_of(revenue_abolish_NG()) + cost_of(revenue_CGT_discount(CGT.discount = 0))
+@
+
 <<CostofNGtotal>>=
-sample_file_1213 %>%
-  mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt), fy.year = "2012-13"),
-         diff = new_tax - income_tax(Taxable_Income, fy.year = "2012-13")) %$%
+sample_file_1314 %>%
+  mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt), fy.year = "2013-14"),
+         diff = new_tax - income_tax(Taxable_Income, fy.year = "2013-14")) %$%
   sum(diff) * 50 / 1e9  ->
   NG.tx.exp
 
@@ -791,36 +1131,55 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 \newlength{\overviewextra}
 \setlength{\overviewextra}{-2pt}
 \addtolength{\columnsep}{\overviewextra}
-\begin{overview*}[-35pt] \addcontentsline{toc}{chapter}{Overview}
-Capital gains are only taxed at half the rate of personal income tax. Negative gearing allows those who borrow to invest -- usually in housing -- to use losses to reduce tax on wages and salaries. These tax settings are designed to encourage investment.
+\begin{overview}[-35pt] %\addcontentsline{toc}{chapter}{Overview}
+A substantial change to Australia's tax arrangements is long overdue. The interaction of a fifty per cent capital gains tax (CGT) discount with negative gearing distorts investment decisions, makes housing markets more volatile and reduces home ownership. Like most tax concessions, these tax breaks largely benefit the wealthy.
 
-However, they do not balance appropriately other considerations, such as the economic costs of other taxes. Winding them back would raise around \highlight{\Sexpr{texNum(cost_of(policy), 2L, dollar = TRUE)}} a year and reduce other economic distortions, while imposing little cost on those who can afford it least. This could help to reduce the Commonwealth Government's persistent budget deficits. 
+These two measures in combination allow investors to reduce and defer personal income tax, at an annual cost of \Sexpr{texNum(revenue_foregone_CG_and_NG, 2L, dollar = TRUE)} to the public purse. Our proposals to wind back the discount and negative gearing would save the Commonwealth Government about \highlight{\Sexpr{texNum(total_cost_of_proposed_policy, 2L, dollar = TRUE)} a year}. 
 
-A theoretically ideal tax treatment of savings wouldn't tax capital gains in line with inflation or the rewards for patience – the `risk free rate of return'. However, tax policy should also take into account other factors. The actual economic benefits of the capital gains discount are small because it doesn't increase savings much: those with high incomes tend to save almost the same amount irrespective of the tax rate. But the costs of the discount are high. Discounting capital gains means that other, more distorting, taxes must be higher. The discount also encourages investors to focus too much on investments with capital growth rather than annual income. The discount undermines the integrity of the income tax system by creating opportunities for artificial transactions to reduce tax. And the discount particularly helps high-income earners who earn most of the capital gains.
+The discount on capital gains tax is designed to maintain incentives to save and invest.  Because taxes apply to nominal income, inflation would otherwise erode part of an investor's capital gains. Given actual returns, many investors have been overcompensated for inflation. 
 
-A better balance between the competing considerations would reduce the discount so that \highlight{\Sexpr{latex_percent(1 - new.discount)} of capital gains are taxed}, which would raise around \highlight{\Sexpr{texNum(cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} a year.
+Policy has overzealously protected savings at the expense of competing considerations. The economic benefits of tax neutrality for savings are small: those with high incomes save almost the same amount regardless of the tax rate. Providing a discount means that other taxes must be higher, and they impose greater economic costs. The 50 per cent discount also encourages investors to focus too much on investments with capital growth rather than annual income. And it undermines income tax integrity by creating opportunities for artificial transactions to reduce tax. 
 
-Negative gearing in Australia goes beyond generally accepted principles for offsetting losses against gains. It distorts investment decisions, diverting capital from more productive investments, increasing volatility in housing markets, and increasing housing churn. It reduces home ownership and reduces the availability of long-term rentals, but does not materially increase housing supply. It is regressive, benefiting those on high incomes much more than those on low incomes. And it reduces tax collections, so that other costly taxes, or deficits, are higher.
+\highlight{Reducing the capital gains discount to \Sexpr{latex_percent(1 - new.discount)}} would provide a better balance between these competing considerations and would raise about \highlight{\Sexpr{texNum(cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} a year.
 
-Australia should follow international practice, and not deduct losses from passive investments from wage and salary income. Suggested carve-outs to deduct losses on new property, or up to a limit, or for a limited number of properties, leave too many of the problems in place.  In addition to the capital gains tax changes, restricting negative gearing would raise another \highlight{\Sexpr{texNum(cost_of(policy_year0) - cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} a year in the short term, declining to \highlight{\Sexpr{texNum(cost_of(policy) - cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} as losses accumulate.
+Negative gearing allows those who borrow to invest to use losses to reduce tax on wages and salaries. In Australia negative gearing goes beyond broadly accepted principles for offsetting losses against gains. It diverts capital from more productive investments without greatly increasing housing supply. Like the CGT discount, negative gearing primarily benefits those on high incomes.
 
-% We insert this now rather than pulling up the whole chunk from the box below.
-<<impact_policy_after_tax_returns_weighted_all>>=
-if (!file.exists("impact_policy_after_tax_returns_weighted_all.rda")){
-  impact_policy_after_tax_returns_weighted_all <- "!!! unknown ! re-run knitr !!!"
-} else {
-  load("impact_policy_after_tax_returns_weighted_all.rda")
-}
-@
+Australia should follow international practice, and not deduct losses from passive investments from wage and salary income.  This change would raise \highlight{\Sexpr{texNum(cost_of(policy_year0) - cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} a year in the short term, falling to \highlight{\Sexpr{texNum(total_cost_of_proposed_policy - cost_of(policy_reduce_CGT), 2L, dollar = TRUE)}} as losses start to be written off against positive investment income. Other proposals, such as restricting negative gearing to new properties or limiting the dollar value of deductions, leave too many problems in place and introduce additional distortions. 
 
-These changes will improve housing affordability -- a little. We estimate housing prices would be up to \Sexpr{latex_percent(-impact_policy_after_tax_returns_weighted_all)} lower than otherwise. Because there are tight planning constraints on new supply for urban housing, there will be very little impact on rents, or the rate of new development, even in the long term. 
+These changes will improve housing affordability -- a little. We estimate housing prices would be up to \Sexpr{latex_percent(-impact_policy_after_tax_returns_weighted_all)} lower than otherwise. Rents won't change much, nor will the rate of new development.  With tight constraints on supply of land suitable for urban housing, most of the impact will be felt via lower land prices. The changes will not cause housing markets to collapse: their effects on prices are small compared to factors such as interest rates and supply of land.
 
-Phasing in these changes would minimise price shocks and make reforms more politically palatable. Alternatively, current arrangements could be grandfathered. For capital gains tax, this would increase complexity and would be unfair to new investors -- particularly younger investors. For negative gearing it may be a reasonable compromise as properties tend to become positively geared over time anyway. 
-\end{overview*}
+Phasing in change would reduce price shocks and make the reforms easier to sell. It is better than grandfathering current holdings, which would increase complexity, limit the additional tax collected for many years, and be unfair to new investors, especially younger ones.
+\end{overview}
 \addtolength{\columnsep}{-\overviewextra}
- 
+\renewcommand{\labelitemi}{\color{DarkOrange}\parbox[c]{.5em}{\ensuremath{\bullet}}}
+\renewcommand{\labelenumi}{\color{DarkOrange}{\bfseries \arabic{enumi}.~}}
+\begin{recommendations}[-35pt]
+\begin{enumerate}
+\item \textcolor{DarkOrange}{Reduce the capital gains tax discount for individuals and trusts to \Sexpr{latex_percent(1 - new.discount)}} 
+\begin{itemize}
+  \item Phase in a 25 per cent discount over ten years through reducing the value of the CGT discount by 2.5 percentage points each year.
+\end{itemize}
+\item \textcolor{DarkOrange}{Limit negative gearing. Quarantine passive investment losses so they can only be written off against other investment income}
+\begin{itemize}
+  \item 	Do not allow losses on passive investments to be written off against unrelated labour (wage and salary) income 
+\item 	Allow losses on passive investment to be written-off against all current year and future positive investment income, including interest, rental income and capital gains 
+\item 	Continue to allow losses from unincorporated business -- sole traders and partnerships -- to be written off against wage and salary income, subject to current restrictions
+\item 	Do not create other exceptions -- allowing the write off of losses up to a limit, on one or two properties, or on new properties
+\item 	Phase in over ten years by reducing the proportion of losses that can be written off against wage and salary by ten percentage points each year.
+\end{itemize}
+
+\item \textcolor{DarkOrange}{In the longer term, aim to align the tax treatment across different types of savings}
+\begin{itemize}
+\item	Reduce taxes on other savings income such as net rental income and bank deposits so as to align with the tax treatment of capital gains
+\item	Reduce and target the tax incentives for superannuation in line with the recommendations in Grattan's \textit{Super tax targeting} report. 
+\end{itemize}
+\end{enumerate}
+
+\end{recommendations}
+\renewcommand{\labelitemi}{\color{Orange}\parbox[c]{.5em}{\ensuremath{\bullet}}}
+\renewcommand{\labelenumi}{\color{Orange}{\bfseries \arabic{enumi}.~}}
 %%%
-\setcounter{tocdepth}{4}
+\setcounter{tocdepth}{1}
 \contentspage
 %%%
 \chapter{Commonwealth budgets under pressure}
@@ -1555,15 +1914,34 @@ It is difficult to be comfortable with this outcome in which there is an ever-de
 Another version of this argument is that tax concessions for capital gains make Australia's income tax system less progressive than is implied by income tax rates. While some may want a less progressive system, tax concessions are generally a poor way to achieve this, because they are inherently less transparent than changing the marginal rates of income tax. For value choices such as the progressivity of the tax system, the public debate is best served by making the distribution of the tax burden as transparent as possible.
 
 \subsection{Distortion of investment choices}
-When policy makers consider the taxation of capital gains, they  must balance the competing considerations discussed above. 
+Providing a tax discount for capital gains but not for other investment income distorts investment choices. 
 
-This is a challenge for all tax systems. Most OECD countries offer some type of discount or concession for capital gains,  although the hurdles to qualify for the most generous concessions can be high (Appendix B).
+Capital gains have substantial tax advantages relative to annual earnings. The capital gains discount magnifies the tax advantages because capital gains are not taxed until they are realised (Figure 2). In contrast, Australia's current tax system does not adjust for the effects of inflation on bank deposits, which are assets disproportionately held by the least well off.  Rental income, bond yields and returns from overseas shares are also taxed at full marginal rates.
 
-An idealised tax treatment on nominal capital gains that aims for neutrality between immediate consumption and savings depends on expected returns. Assuming that returns on property over the last 15 years have been unusually high (driven by the fall in interest rates), a neutral approach for most scenarios would tax capital gains more lightly than at present. 
+Taxing capital gains more lightly than most other savings income creates an incentive for investors to choose riskier assets that return more via capital gain. In conjunction with generous rules for deductibility of interest costs, the tax system creates strong incentives for debt-financed and speculative investments (section 3.1). As a result, Australians invest more in property and less in bank deposits than economic fundamentals would suggest is ideal.
 
-Yet this idealised treatment needs to be balanced against other considerations. Perhaps the most important is that people tend to save almost the same amount irrespective of the tax rate on savings.  Higher taxes on capital gains would increase tax collections, contribute to repair of the Commonwealth government budget and provide room to reduce other taxes with higher economic costs. Higher taxes on capital gains would also reduce the tax bias toward capital gains and away from income producing assets, so that investment patterns would better reflect the economic fundamentals. They would also improve the integrity of the income tax system.
+The efficiency losses generated by the different tax treatment of different forms of savings are likely to be much larger than from the weight of taxes on capital in general.   Of course, the economic cost of differing tax treatments is also an argument for taxing savings earnings less rather than taxing capital gains more. But substantial budget deficits leave little room to reduce taxes on other forms of savings income. Consequently, the most plausible way in practice to reduce the distortions between different forms of savings is to increase the taxes on capital gains (section 4.4). 
 
-However, given that the tax is calculated on nominal (pre-inflation) capital gains are taxed, there remains some basis for continuing to offer a tax discount on gains. Reducing the discount from 50 per cent to zero -- in other words, taxing capital gains at the income tax rate -- would substantially increase the real effective tax rate on savings. As we show in chapter 4, a 25 per cent discount for capital gains would provide a fairer balance.
+However, increasing taxes on capital gains will increase the incentives to invest in owner-occupied properties and in superannuation, which already enjoy even larger tax concessions than capital gains. People would be encouraged to invest even more in their principal residence, by renovating, and purchasing bigger and better-located homes. 
+
+There is some truth to these concerns, but they shouldn't be overstated. 
+
+First, there is at least a plausible rationale for encouraging additional investment in owner-occupied housing,  the biggest single component of wealth.  Governments have deliberately promoted home ownership because of the social benefits including enforced savings, social stability and community involvement.  Therefore, further widening the tax advantage for owner occupied housing by reducing the CGT discount may not be a net social cost. 
+
+While some tax incentives for superannuation might be justified, the current regime is too generous and poorly targeted. Grattan Institute's 2015 report, \textit{Super tax targeting}, argues that they should be wound back.  In the meantime, failure to reform superannuation should not hold back capital gains tax reform. 
+
+<<sih_prop_assets_in_OO_super>>=
+sih_prop_assets_in_OO_and_super <- 
+  # From website at 2016-04-19
+  # Cat 6523.0 Household Income and Wealth, Australia 2013-14
+  # 16 December 2015
+  # Table 8.4
+  0.418 + 0.167
+  
+@
+
+Second, reducing the discount might not lead to much greater investment in owner-occupied housing and superannuation. Households already hold \Sexpr{latex_percent(1 - sih_prop_assets_in_OO_and_super)} of their assets outside these areas, even though they have substantial tax advantages. This is presumably because people want savings in forms that are available for use before retirement and without having to sell their home.  
+
 
 
 
@@ -1937,10 +2315,8 @@ individual_dividends <-
   sum(`Dividends unfranked\r\n$` + `Dividends franked\r\n$`)
 
 hh_equity_tot <- 
-  389e9
-  # Jim QC unable due to no access HILDA
-  # hilda_w14_hh %$%
-  # sum(nhweqini * nhhwth)  # Equity investments * WEIGHT
+  hilda_w14_hh %$%
+  sum(nhweqini * nhhwth)  # Equity investments * WEIGHT
 @
 Total lending to individuals for share investments is at most \$19 billion, compared to individuals' direct share holdings of around \$550~billion,\footnote{The ATO reported that the 2013-14 dividend income for individuals was \Sexpr{texNum(individual_dividends, dollar = TRUE)}. The HILDA survey showed in the same year \Sexpr{texNum(hh_equity_tot, dollar = TRUE)} for household wealth in equities.}  and compared to borrowings of \$548~billion from banks for housing investor lending. 
 
@@ -2644,6 +3020,9 @@ value_of_dwelling_stock_2014Q4 <-
 
 price_pc_change_of_both_tax_changes_fully_capitalized <- 
   (val_reduce_CG_discount_25pc_real_estate_perpertuity + val_reduce_CG_discount_25pc_real_estate_perpertuity) / value_of_dwelling_stock_2014Q4
+
+save(price_pc_change_of_both_tax_changes_fully_capitalized, 
+     file = "price_pc_change_of_both_tax_changes_fully_capitalized.rda")
 @
 
 If these lost benefits (\Sexpr{texNum(val_reduce_CG_discount_25pc_real_estate_perpertuity, dollar = TRUE)} + \Sexpr{texNum(val_quaran_NG_tax_benefits_perpertuity, dollar = TRUE)}) were fully capitalized into the value of residential property -- currently worth \Sexpr{texNum(value_of_dwelling_stock_2014Q4, dollar = TRUE)} -- prices would fall in the order of \Sexpr{latex_percent(price_pc_change_of_both_tax_changes_fully_capitalized)}.
@@ -2694,6 +3073,8 @@ impact_policy_after_tax_returns %>%
 @
 
 }
+\vspace*{5.5pt}
+
 \notes{Negatively geared property had 80\%\ of the value of the property borrowed; positively geared is 40\%.}
 \end{table}
 Alternatively, we can calculate the impact of tax changes on returns as a proportion of asset values for different classes of owners as shown in
@@ -3158,7 +3539,7 @@ cost_of_policy_carry_fwd <- function(Net_rent_amt.limit, h = 1L){
 \begin{center}
 % Jim QC
 % eval=FALSE due no access to HILDA
-<<HILDA-Number-of-properties, eval=FALSE, results='asis'>>=
+<<HILDA-Number-of-properties, eval=TRUE, results='asis'>>=
 hilda_w14_hh %>%
   group_by(Owns_other_property = noprntn) %>%
   summarise(population = comma(round(sum(nhhwth)))) %>%
@@ -3712,7 +4093,7 @@ In any case, capping property numbers is a crude way to target `excessive' negat
 \section{Summarising impact of proposed negative gearing and CGT changes}
 Our preferred policy is to reduce the CGT discount to \Sexpr{latex_percent(new.discount)} and limit negative gearing by quarantining all passive investment losses. 
 
-In addition to raising more than \Sexpr{texNum(cost_of(policy), dollar = TRUE)} a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
+In addition to raising more than \Sexpr{texNum(total_cost_of_proposed_policy, dollar = TRUE)} a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
 
 \chapter{Transition arrangements}
 <<HILDA-duration-of-NG>>=
@@ -4049,7 +4430,7 @@ Asset lock-in occurs because taxes are only paid when gains are realised. This p
 
 Lock-in can discourage investors from moving their money to the investments with the highest pre-tax returns, so assets do not always go to their highest value use.  Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.  
 
-\begin{bigbox*}{Capital gains tax and asset lock-in}{box:CGT-asset-lock-in}
+\begin{smallbox}[!htbp]{Capital gains tax and asset lock-in}{box:CGT-asset-lock-in}
 The tax treatment of capital gains can deter investors from taking up otherwise profitable investment opportunities. 
 
 <<haley-box>>=
@@ -4084,7 +4465,7 @@ haley_boxer <- function(initial_house_value = 700e3,
 haley_box <- haley_boxer()
 @
 
-Suppose Hayley, an investor in the top tax bracket purchases a house for \Sexpr{latex_dollar(haley_box$initial_house_value)} and holds it for \Sexpr{haley_box$holding_period} years. During that time the market price of the house increases to \Sexpr{latex_dollar(haley_box$final_value)}. She makes a net rental return of \Sexpr{latex_percent(haley_box$net_rent_return)} a year, giving her \Sexpr{latex_dollar(haley_box$income_final)} income at the end of the ten years. 
+Suppose Hayley, an investor in the top tax bracket purchases a house for \Sexpr{latex_dollar(haley_box$initial_house_value)} and holds it for \Sexpr{haley_box$holding_period} years. During that time the market price of the house increases to \Sexpr{latex_dollar(haley_box$final_value)}. She makes a net rental return of \Sexpr{latex_percent(haley_box$net_rent_return)} a year, so her  final income is \Sexpr{latex_dollar(haley_box$income_final)}. 
 
 If she were to sell the house she would crystallise the \Sexpr{latex_dollar(haley_box$cap_gain)} in gains, paying tax on \Sexpr{latex_percent(haley_box$CGT_discount)} of the gains at her marginal tax rate of \Sexpr{latex_percent(haley_box$marginal_rate)} (\Sexpr{latex_dollar(haley_box$CGT)}). This would leave her with around \Sexpr{latex_dollar(haley_box$value_sale)} from the sale: \Sexpr{latex_dollar(haley_box$net_gain)} in net gains and her initial investment of \Sexpr{latex_dollar(haley_box$initial_house_value)}. 
 
@@ -4093,7 +4474,7 @@ The sale will only be worthwhile if Hayley can find an alternative property that
 Properties with rental yields below \Sexpr{latex_percent(haley_box$hurdle_rate)} but higher than her current \Sexpr{latex_percent(haley_box$net_rent_return, percentage_symbol = "")} would not be attractive because realising the tax liability on her current property erodes her capital base for investment.  
 
 The higher the tax rate on capital gains the less willing she will be to realise gains to pursue new investment opportunities. If capital gains were taxed in full, rather than with a 50 per cent discount, her hurdle rate for the new investment would be \Sexpr{latex_percent(haley_boxer(cgt_discount = 0)$hurdle_rate)}.
-\end{bigbox*}
+\end{smallbox}
 
 % For longtable.
 \onecolumn
