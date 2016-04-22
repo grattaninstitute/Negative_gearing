@@ -656,7 +656,7 @@ revenue_quarantine_NG <- function(sample_file = sample_file_1314, new_CGT_discou
       )
     }
     
-    accumulator_by_age <- 
+    accumulator_by_age <<- 
       lapply(unique(q_by_integer_age_long$age), E_by_age) %>% 
       rbindlist(.) %>%
       group_by(age) %>%
@@ -1003,7 +1003,8 @@ revenue_quarantine_NG_2 <- function(sample_file = sample_file_1314, new_CGT_disc
                                 # or the losses themselves
                                 pmaxV(expected_tot_cg_given_cg_occurs, accumulated_losses_year_Z), 
                                 accumulated_losses_year_Z), 
-      gain_residual = ifelse(rand < prob__CG_event & accumulated_losses_year_Z > 0,
+      income_reduction = pminV(40e3, accumulated_losses_year_Z),
+      gain_residual = 0* ifelse(rand < prob__CG_event & accumulated_losses_year_Z > 0,
                              pmaxC(expected_tot_cg_given_cg_occurs - accumulated_losses_year_Z, 0), 
                              0)) %>%
     mutate(
@@ -1020,6 +1021,8 @@ revenue_quarantine_NG_2 <- function(sample_file = sample_file_1314, new_CGT_disc
       post_tax_yearZ = income_tax(pmaxC(new_Taxable_Income_yearZ, 0),
                                         fy.year = "2015-16"), 
       post_tax_year0 = income_tax(new_Taxable_Income_year0, fy.year = "2015-16"),
+      minimum_taxable_income = pmaxC(quarantined_income + new_Net_CG_amt - Tot_ded_amt - NPP_loss_claimed - PP_loss_claimed, 
+                                     0),
       tax_increase = post_tax_yearZ - prev_tax, 
       tax_increase_year0 = post_tax_year0 - prev_tax, 
       residual_gain_effect = income_tax(pmaxC(pmaxC(Other_Income + new_Net_CG_amt - income_reduction, 
@@ -1241,7 +1244,7 @@ cgt_by_entity <-
 @
 
 % cairo pdf for unicode concordance
-<<CGT-by-entity-asset, dev='cairo_pdf'>>=
+<<CGT-by-entity-asset, dev=c('cairo_pdf', 'png'), fig.ext=c('pdf', 'png')>>=
 cgt_by_entity_asset %>%
   arrange(desc(asset_type)) %>%
   mutate(`Asset type` = asset_type) %>%
@@ -1766,6 +1769,274 @@ All of considerations 2 to 5 above suggest that the tax rate on savings should b
 
 The remainder of this section works through these considerations in more detail.
 
+\subsection{Not distorting decisions between consumption today and saving for tomorrow}
+On the other hand, the theoretical ideal implicitly assumes losses and gains are taxed symmetrically. But this is not the case. Capital gains are taxed on realisation and at the time of the investors' choosing (section XX) whereas losses can be written off against taxable income each year. As we show in Chapter 4, this means that effective tax rates are lower for negatively geared investments than for investments fully financed from savings as is assumed in \Vref{fig:EMTR-savings}. Effective tax rates for investors under a range of alternative return scenarios and at different tax brackets are summarised in \Cref{appendix:EMTR}.
+
+<<emtr_rental>>=
+return_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), after_tax = FALSE, n = 15, CGT.discount = 0.50, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05){
+  nominal.return <- capital.gains + nominal.rent
+  
+  # constants
+  amount_borrowed <- investment.value * gearing_ratio
+  interest_payments <- interest.rate * amount_borrowed
+  
+  # initial conditions
+  carry_forward_balance <- investment.value
+  rent <- investment.value * nominal.rent
+  tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
+  annual_capital_gains <- carry_forward_balance * capital.gains
+  nominal_gain_since_inception <- annual_capital_gains
+  nominal_investment_value_before_tax <- carry_forward_balance + rent + annual_capital_gains
+  
+  for (y in 2:n){
+    inflation_index <- (1 + inflation) ^ y
+    risk_free_return_index <- (1 + risk.free.rate) ^ y
+    
+    carry_forward_balance <- carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains
+    rent <- carry_forward_balance * nominal.rent
+    tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
+    annual_capital_gains <- carry_forward_balance * capital.gains
+    nominal_gain_since_inception <- nominal_gain_since_inception + annual_capital_gains
+    CGT_if_gain_realized <- nominal_gain_since_inception * (1 - CGT.discount) * marginal.tax.rate 
+    
+    nominal_investment_value_before_tax <- investment.value * (1 + nominal.return) ^ y
+    nominal_investment_value_after_tax <- 
+      carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains - CGT_if_gain_realized
+    
+    real_investment_before_tax <- nominal_investment_value_before_tax / inflation_index
+    real_investment_after_tax  <- nominal_investment_value_after_tax  / inflation_index
+    excess_returns_after_tax   <- nominal_investment_value_after_tax  / risk_free_return_index
+    excess_returns_before_tax  <- nominal_investment_value_before_tax / risk_free_return_index
+    
+    annualized_real_investment_before_tax <- (real_investment_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_real_investment_after_tax  <- (real_investment_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    annualized_nominal_investment_before_tax <- 
+      (nominal_investment_value_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_nominal_investment_after_tax  <- 
+      (nominal_investment_value_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    annualized_excess_investment_before_tax <- (excess_returns_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_excess_investment_after_tax  <- (excess_returns_after_tax  / investment.value) ^ (1 / y) - 1
+  }
+  
+  if (return_type == "nominal"){
+    if (after_tax)
+      return(annualized_nominal_investment_after_tax)
+    else 
+      return(annualized_nominal_investment_before_tax)
+  } else {
+    if (return_type == "real"){
+      if (after_tax)
+        return(annualized_real_investment_after_tax)
+      else 
+        return(annualized_real_investment_before_tax)
+    }
+    stop("return_type not found.")
+  }
+}
+
+emtr_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), n = 15, CGT.discount = 0.50, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05, cgt_indexed = FALSE){
+  # 
+  # # For debugging
+  # gearing_ratio = 0.80
+  # n = 15; CGT.discount = 0.50; nominal.return = 0.08; inflation = 0.08; risk.free.rate = inflation + 0.02;
+  # marginal.tax.rate = 0.47; investment.value = 100; nominal.rent = 0.03; capital.gains = 0.05; interest.rate = 0.05; 
+  # y = 2
+  # 
+  # constants
+  amount_borrowed <- investment.value * gearing_ratio
+  interest_payments <- interest.rate * amount_borrowed
+  
+  # initial conditions
+  carry_forward_balance <- investment.value
+  rent <- investment.value * nominal.rent
+  tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
+  annual_capital_gains <- carry_forward_balance * capital.gains
+  nominal_gain_since_inception <- annual_capital_gains
+  nominal_investment_value_before_tax <- carry_forward_balance + rent + annual_capital_gains
+  
+  for (y in 2:n){
+    inflation_index <- (1 + inflation) ^ y
+    risk_free_return_index <- (1 + risk.free.rate) ^ y
+    
+    carry_forward_balance <- carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains
+    rent <- carry_forward_balance * nominal.rent
+    tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
+    annual_capital_gains <- carry_forward_balance * capital.gains
+    nominal_gain_since_inception <- nominal_gain_since_inception + annual_capital_gains
+    if (!cgt_indexed){
+      CGT_if_gain_realized <- nominal_gain_since_inception * (1 - CGT.discount) * marginal.tax.rate 
+    } else {
+      CGT_if_gain_realized <- (nominal_gain_since_inception / inflation_index) * marginal.tax.rate
+    }
+    
+    nominal_investment_value_before_tax <- investment.value * (1 + nominal.rent + capital.gains) ^ y
+    nominal_investment_value_after_tax <- 
+      carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains - CGT_if_gain_realized
+    
+    real_investment_before_tax <- nominal_investment_value_before_tax / inflation_index
+    real_investment_after_tax  <- nominal_investment_value_after_tax  / inflation_index
+    excess_returns_after_tax   <- nominal_investment_value_after_tax  / risk_free_return_index
+    excess_returns_before_tax  <- nominal_investment_value_before_tax / risk_free_return_index
+    
+    annualized_real_investment_before_tax <- (real_investment_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_real_investment_after_tax  <- (real_investment_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    annualized_nominal_investment_before_tax <- (nominal_investment_value_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_nominal_investment_after_tax  <- (nominal_investment_value_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    annualized_excess_investment_before_tax <- (excess_returns_before_tax / investment.value) ^ (1 / y) - 1
+    annualized_excess_investment_after_tax  <- (excess_returns_after_tax  / investment.value) ^ (1 / y) - 1
+    
+    effective_tax_rate_nominal <- 
+      1 - annualized_nominal_investment_after_tax / annualized_nominal_investment_before_tax
+    
+    effective_tax_rate_real <- 
+      1 - annualized_real_investment_after_tax / annualized_real_investment_before_tax
+    
+    effective_tax_rate_excess <- 
+      1 - annualized_excess_investment_after_tax / annualized_excess_investment_before_tax
+  }
+  
+  if (return_type == "nominal"){
+    return(effective_tax_rate_nominal)
+  } else {
+    if (return_type == "real"){
+      return(effective_tax_rate_real)
+    } else {
+      return(effective_tax_rate_excess)
+    }
+  }
+  
+}
+
+# unit testing
+
+test_emtr <- function(){
+  
+  RT <- sample(c("real", "nominal", "excess"), size = 1)
+  GR <- runif(1)
+  
+  IV1 <- abs(rcauchy(1))
+  IV2 <- abs(rcauchy(1))
+
+  # inflations
+  i1 <- rnorm(1, 0.025, 0.02)
+  i2 <- i1 + abs(rnorm(1, 0.05, 0.02))
+  
+  nr <- rnorm(1, 0.06, 0.03)
+  while (nr < i2){
+    nr <- rnorm(1, 0.06, 0.03)
+  }
+  
+  
+  # Investment value doesn't affect emtr
+  expect_equal(emtr_rental(GR, RT, investment.value = IV1), emtr_rental(GR, RT, investment.value = IV2))
+  
+  # Inflation doesn't affect nominal returns
+  expect_equal(emtr_rental(GR, return_type = "nominal", inflation = i1), 
+               emtr_rental(GR, return_type = "nominal", inflation = i2))
+  # but does on real returns (and higher inflation -> higher emtr)
+  # Not true for all rates of returns.
+  # How to deal with negative rates of return?
+  expect_lt(emtr_rental(GR, return_type = "real", nominal.rent = nr, inflation = i1), 
+            emtr_rental(GR, return_type = "real", nominal.rent = nr, inflation = i2))
+  
+  
+}
+
+test_emtr()
+@
+
+\begin{figure}
+\Caption{The effective tax rate on excess returns for property has been close the income tax rate over the past 15 years}{Effective marginal tax rates on savings}{fig:EMTR-savings}
+<<EMTR-nominal-real-excess-historic-vs-lower>>=
+data.table::CJ(
+  return_type = c("nominal", "real", "excess"), 
+  scenario = c("historic", "lower")
+) %>% 
+  mutate(marginal_tax_rate = 0.47, 
+         marginal_tax_rate_label = ifelse(return_type == "nominal" & scenario == "historic", 
+                                          "Nominal tax rate", 
+                                          NA_character_)) %>%
+  rowwise %>%
+  mutate(
+    emtr = emtr_rental(return_type = return_type,  
+                       marginal.tax.rate = marginal_tax_rate, 
+                       capital.gains = if (scenario == "historic") 0.073 else 0.050,
+                       risk.free.rate = if (scenario == "historic") 0.056 else 0.045,
+                       inflation = if (scenario == "historic") 0.028 else 0.025,  
+                       CGT.discount = 0.5, 
+                       n = 15, gearing = 0, 
+                       nominal.rent = 0.03)
+  ) %>%
+  mutate(`Return type` = factor(return_type, 
+                                levels = c("nominal", "real", "excess"), 
+                                label = c("Nominal", "Real", "Excess"))) %>%
+  grplot(aes(x = `Return type`, fill = scenario, y = emtr)) + 
+  geom_bar(stat = "identity", position = "dodge") + 
+  scale_y_continuous(label = percent, expand = c(0,0)) + 
+  geom_hline(aes(yintercept = marginal_tax_rate), linetype = "dashed") + 
+  geom_text(aes(label = marginal_tax_rate_label, y = marginal_tax_rate), 
+            nudge_y = 0.05, # position = position_dodge(width = 0.9), 
+            nudge_x = -0.5,
+            size = 22/(14/5),
+            color = DarkOrange,
+            vjust = -0.1, 
+            hjust = 0,
+            na.rm = TRUE)
+@
+<<emtr_nominal_historic_lower_assumptions>>=
+emtr_nominal_historic_lower_assumptions <- function(){
+  percent1 <- function(x){
+    paste0(formatC(round(100 * x, 1), 
+                   format = "f", flag = "#", digits = 1, width = 3), "%")
+  }
+  
+  percent1_01 <- function(x){
+    if (is.numeric(x) && between(x, 0, 1)){
+      percent1(x)
+    } else {
+      x
+    }
+  }
+  
+  data.table::CJ(
+    return_type = c("nominal", "real", "excess"), 
+    scenario = c("historic", "lower")
+  ) %>% 
+    mutate(marginal_tax_rate = 0.47) %>%
+    rowwise %>%
+    mutate(return_type = return_type,  
+           marginal.tax.rate = marginal_tax_rate, 
+           capital.gains = if (scenario == "historic") 0.073 else 0.050,
+           risk.free.rate = if (scenario == "historic") 0.056 else 0.045,
+           inflation = if (scenario == "historic") 0.028 else 0.025,  
+           CGT.discount = 0.5, 
+           n = 15, 
+           nominal.rent = 0.03) %>%
+    mutate_each(funs(percent1_01))
+}
+@
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/EMTR-nominal-real-excess-historic-vs-lower-1}
+\end{figure}
+\begin{table*}
+\centering
+\caption{Assumptions for figure \Vref{fig:EMTR-savings}}
+\small
+<<assumptions-table, results='asis'>>=
+emtr_nominal_historic_lower_assumptions() %>%
+  select(-marginal.tax.rate) %>%  # duplicated
+  setnames(names(.), gsub("[._]", " ", names(.))) %>% .[] %>%
+  xtable(align = "lllrrrrrrr") %>%
+  print.xtable(floating = FALSE, 
+               booktabs = TRUE, 
+               include.rownames = FALSE, 
+               add.to.row = list(pos = list(which(.$`return type`[-1] != .$`return type`[-nrow(.)])), 
+                                 command = "[4pt]"))
+@
+\end{table*}
 
 
 \subsection{Maintaining the progressivity of the tax system}\label{sec:maintaining-progressivity-tax-system}
@@ -2355,177 +2626,6 @@ Investment choices are severely distorted when negative gearing is permitted and
 \subsection{Bias towards higher leverage}
 The asymmetry between the tax treatment of gains and losses makes debt financing of investment more attractive. For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing. The higher the gearing, the lower the effective marginal tax rate (\Vref{fig:EMTR-by-gearing}). 
 
-<<emtr_rental>>=
-return_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), after_tax = FALSE, n = 15, CGT.discount = 0.50, nominal.return = 0.08, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05){
-  # constants
-  amount_borrowed <- investment.value * gearing_ratio
-  interest_payments <- interest.rate * amount_borrowed
-  
-  # initial conditions
-  carry_forward_balance <- investment.value
-  rent <- investment.value * nominal.rent
-  tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
-  annual_capital_gains <- carry_forward_balance * capital.gains
-  nominal_gain_since_inception <- annual_capital_gains
-  nominal_investment_value_before_tax <- carry_forward_balance + rent + annual_capital_gains
-  
-  for (y in 2:n){
-    inflation_index <- (1 + inflation) ^ y
-    risk_free_return_index <- (1 + risk.free.rate) ^ y
-    
-    carry_forward_balance <- carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains
-    rent <- carry_forward_balance * nominal.rent
-    tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
-    annual_capital_gains <- carry_forward_balance * capital.gains
-    nominal_gain_since_inception <- nominal_gain_since_inception + annual_capital_gains
-    CGT_if_gain_realized <- nominal_gain_since_inception * (1 - CGT.discount) * marginal.tax.rate 
-    
-    nominal_investment_value_before_tax <- investment.value * (1 + nominal.return) ^ y
-    nominal_investment_value_after_tax <- 
-      carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains - CGT_if_gain_realized
-    
-    real_investment_before_tax <- nominal_investment_value_before_tax / inflation_index
-    real_investment_after_tax  <- nominal_investment_value_after_tax  / inflation_index
-    excess_returns_after_tax   <- nominal_investment_value_after_tax  / risk_free_return_index
-    excess_returns_before_tax  <- nominal_investment_value_before_tax / risk_free_return_index
-    
-    annualized_real_investment_before_tax <- (real_investment_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_real_investment_after_tax  <- (real_investment_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    annualized_nominal_investment_before_tax <- 
-      (nominal_investment_value_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_nominal_investment_after_tax  <- 
-      (nominal_investment_value_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    annualized_excess_investment_before_tax <- (excess_returns_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_excess_investment_after_tax  <- (excess_returns_after_tax  / investment.value) ^ (1 / y) - 1
-  }
-  
-  if (return_type == "nominal"){
-    if (after_tax)
-      return(annualized_nominal_investment_after_tax)
-    else 
-      return(annualized_nominal_investment_before_tax)
-  } else {
-    if (return_type == "real"){
-      if (after_tax)
-        return(annualized_real_investment_after_tax)
-      else 
-        return(annualized_real_investment_before_tax)
-    }
-    stop("return_type not found.")
-  }
-}
-
-emtr_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), n = 15, CGT.discount = 0.50, nominal.return = 0.08, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05){
-  # 
-  # # For debugging
-  # gearing_ratio = 0.80
-  # n = 15; CGT.discount = 0.50; nominal.return = 0.08; inflation = 0.08; risk.free.rate = inflation + 0.02;
-  # marginal.tax.rate = 0.47; investment.value = 100; nominal.rent = 0.03; capital.gains = 0.05; interest.rate = 0.05; 
-  # y = 2
-  # 
-  # constants
-  amount_borrowed <- investment.value * gearing_ratio
-  interest_payments <- interest.rate * amount_borrowed
-  
-  # initial conditions
-  carry_forward_balance <- investment.value
-  rent <- investment.value * nominal.rent
-  tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
-  annual_capital_gains <- carry_forward_balance * capital.gains
-  nominal_gain_since_inception <- annual_capital_gains
-  nominal_investment_value_before_tax <- carry_forward_balance + rent + annual_capital_gains
-  
-  for (y in 2:n){
-    inflation_index <- (1 + inflation) ^ y
-    risk_free_return_index <- (1 + risk.free.rate) ^ y
-    
-    carry_forward_balance <- carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains
-    rent <- carry_forward_balance * nominal.rent
-    tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
-    annual_capital_gains <- carry_forward_balance * capital.gains
-    nominal_gain_since_inception <- nominal_gain_since_inception + annual_capital_gains
-    CGT_if_gain_realized <- nominal_gain_since_inception * (1 - CGT.discount) * marginal.tax.rate 
-    
-    nominal_investment_value_before_tax <- investment.value * (1 + nominal.return) ^ y
-    nominal_investment_value_after_tax <- 
-      carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains - CGT_if_gain_realized
-    
-    real_investment_before_tax <- nominal_investment_value_before_tax / inflation_index
-    real_investment_after_tax  <- nominal_investment_value_after_tax  / inflation_index
-    excess_returns_after_tax   <- nominal_investment_value_after_tax  / risk_free_return_index
-    excess_returns_before_tax  <- nominal_investment_value_before_tax / risk_free_return_index
-    
-    annualized_real_investment_before_tax <- (real_investment_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_real_investment_after_tax  <- (real_investment_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    annualized_nominal_investment_before_tax <- (nominal_investment_value_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_nominal_investment_after_tax  <- (nominal_investment_value_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    annualized_excess_investment_before_tax <- (excess_returns_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_excess_investment_after_tax  <- (excess_returns_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    effective_tax_rate_nominal <- 
-      1 - annualized_nominal_investment_after_tax / annualized_nominal_investment_before_tax
-    
-    effective_tax_rate_real <- 
-      1 - annualized_real_investment_after_tax / annualized_real_investment_before_tax
-    
-    effective_tax_rate_excess <- 
-      1 - annualized_excess_investment_after_tax / annualized_excess_investment_before_tax
-  }
-  
-  if (return_type == "nominal"){
-    return(effective_tax_rate_nominal)
-  } else {
-    if (return_type == "real"){
-      return(effective_tax_rate_real)
-    } else {
-      return(effective_tax_rate_excess)
-    }
-  }
-  
-}
-
-# unit testing
-
-test_emtr <- function(){
-  
-  RT <- sample(c("real", "nominal", "excess"), size = 1)
-  GR <- runif(1)
-  
-  IV1 <- abs(rcauchy(1))
-  IV2 <- abs(rcauchy(1))
-
-  # inflations
-  i1 <- rnorm(1, 0.025, 0.02)
-  i2 <- i1 + abs(rnorm(1, 0.05, 0.02))
-  
-  nr <- rnorm(1, 0.06, 0.03)
-  while (nr < i2){
-    nr <- rnorm(1, 0.06, 0.03)
-  }
-  
-  
-  # Investment value doesn't affect emtr
-  expect_equal(emtr_rental(GR, RT, investment.value = IV1), emtr_rental(GR, RT, investment.value = IV2))
-  
-  # Inflation doesn't affect nominal returns
-  expect_equal(emtr_rental(GR, return_type = "nominal", inflation = i1), emtr_rental(GR, return_type = "nominal", inflation = i2))
-  # but does on real returns (and higher inflation -> higher emtr)
-  # Not true for all rates of returns.
-  # How to deal with negative rates of return?
-  expect_lt(emtr_rental(GR, return_type = "real", nominal.return = nr, inflation = i1), emtr_rental(GR, return_type = "real", nominal.return = nr, inflation = i2))
-  
-  test_that("return is always lower after tax", expect_lt(return_rental(GR, RT, after_tax = TRUE), return_rental(GR, RT, after_tax = FALSE)))
-  
-  
-}
-
-test_emtr()
-@
-
 \begin{figure}
 \Caption{Effective tax rates depend on amount of borrowing}{Real effective marginal tax rate}{fig:EMTR-by-gearing}
 <<EMTR-by-gearing>>=
@@ -2545,7 +2645,7 @@ data.table(
 \source{Grattan analysis}
 
 \notes{Assumes 
-\Sexpr{latex_percent(emtr_defaults$nominal.return)} nominal return, 
+\Sexpr{latex_percent(emtr_defaults$nominal.rent)} nominal rent income, 
 \Sexpr{latex_percent(emtr_defaults$capital.gains)} capital gain per year, 
 \Sexpr{latex_percent(emtr_defaults$inflation)} inflation,
 \Sexpr{latex_percent(emtr_defaults$interest.rate)} interest rate on borrowing, 
@@ -2796,6 +2896,11 @@ density_other <-
          Taxable_Income < 210e3) %$%
   density(Taxable_Income)
 
+grattan:::chart_data(bind_rows("NG" = data_frame(Taxable_Income = density_NG$x, 
+                                                 Density = density_NG$y), 
+                               "Not_NG" = data_frame(Taxable_Income = density_other$x, 
+                                                     Density = density_other$y)))
+
 sample_file_1314 %>%
   filter(Taxable_Income < 210e3) %>%
   rename(`Taxable Income` = Taxable_Income) %>%
@@ -2984,7 +3089,7 @@ save(impact_policy_after_tax_returns_weighted_all,
 
 But the overall decrease in house prices is not likely to be large. Around two thirds of buyers -- owner occupiers -- will be not be affected by the tax changes. Even assuming that the change in tax benefits are fully passed through to prices, the price impact will be less than \Sexpr{latex_percent(abs(impact_policy_after_tax_returns_weighted_investor_property_only))} (\Vref{tbl:Impact-house-prices}). Indeed, house prices may not actually fall if market dynamics continue to push prices upwards. But prices will be lower than they would have been in the absence of the tax changes.
 
-\begin{bigbox*}{Impact of limiting negative gearing \TBD{and CGT} tax concessions on house prices}{box:ImpactOfPrice}
+\begin{bigbox*}{Impact of limiting negative gearing {and CGT} tax concessions on house prices}{box:ImpactOfPrice}
 
 We model the impact of our policy proposal detailed in chapter 5: quarantining rental loss deductions and reducing the CGT discount to \Sexpr{latex_percent(new.discount)}. Other reforms would have different effects, although they are likely to be similar order of magnitude.
 
@@ -3030,7 +3135,7 @@ If these lost benefits (\Sexpr{texNum(val_reduce_CG_discount_25pc_real_estate_pe
 \eject
 \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
 \begin{table}[H]
-\captionsetup{labelfont = {small, bf, theGrey}, font = {small, theGrey}}
+\captionsetup{labelfont = {small, bf, theGrey}, position=above, aboveskip=-1pt, font = {small, theGrey}} % 1pt magical for baseline alignment with first column
 \caption{Impact of policy changes on after-tax returns}\label{tbl:Impact-house-prices}
 \makebox[\linewidth][c]{
 <<impact-of-policy-changes-on-after-tax-returns-tbl, eval = FALSE, results='asis'>>=
@@ -3269,7 +3374,11 @@ rent.indices.real %>%
 rent.indices.real  %>%
   filter(!grepl("All", city)) %>%
   mutate(up = factor(ifelse(up, "Rents rose", "Rents fell or flattened"))) %>%
-  filter(obsTime < as.POSIXct("1989-06-01")) %>%
+  filter(obsTime < as.POSIXct("1989-06-01")) %T>%
+  {
+    data <- .
+    grattan:::chart_data(data)
+    } %>%
   {
   # chart_data %>%
   grplot(., aes(x = obsTime,
@@ -4529,7 +4638,82 @@ Internationally, there are a range of approaches to taxing capital gains. Most c
 %\bottomrule
 \end{longtable}
 \renewcommand{\arraystretch}{1.0}
+\twocolumn
+\chapter{Effective tax rates by investment return and tax bracket}
+Effective tax rates measure the tax paid on investment returns as a share of the pre-tax returns. Effective tax rates vary by the investor’s tax rate and the level of returns. When looking at effective tax rate on real returns (returns adjusted for inflation) or on `excess returns' (returns above the risk free rate) the level of inflation and the returns will also affect the effective tax rate paid by the investor. 
 
+\Vref{fig:EMTR-savings} presents effective rates for two different return scenarios for an investor in the 47\,c tax bracket. \Vref{tbl:Real-EMTR-appendix} below presents calculations for a broader range of return scenarios and investor tax brackets. 
+\begin{table*}
+\centering
+\caption{Effective marginal tax rates}\label{tbl:Real-EMTR-appendix}
+\newcolumntype{Q}{>{\raggedleft\arraybackslash}X}
+<<emtr-long-appendix, results='asis'>>=
+percent1_01_TeX <- function(x){
+  if (is.numeric(x) && between(x, 0, 1)){
+    paste0(formatC(round(100*x, 1), 
+                   format = "f", flag = "#", digits = 1, width = 3), "\\%")
+  } else {
+    x
+  }
+}
+
+omit_repeated <- function(x){
+  ifelse(x != lag(x) | is.na(lag(x)), x, NA_character_)
+}
+
+data.table::CJ(
+  capital_gain_return = c(0.10, 0.073, 0.06, 0.04), 
+  marginal_tax_rate = c(0.47, 0.39, 0.345),
+  CGT_discount = c(0.50, 0.25, 0), 
+  Indexed = c(TRUE, FALSE), 
+  return_type = c("real", "excess")
+) %>%
+  filter(!(Indexed & CGT_discount != 0.00)) %>%  # if indexed, CGT is ignored, so just choose keep one CGT discount
+  rowwise %>%
+  mutate(
+    emtr = emtr_rental(return_type = return_type, 
+                       CGT.discount = CGT_discount, 
+                       marginal.tax.rate = marginal_tax_rate, 
+                       capital.gains = capital_gain_return, 
+                       gearing_ratio = 0, 
+                       cgt_indexed = Indexed)
+  ) %>%
+  arrange(desc(capital_gain_return)) %>%
+  # cosmetics
+  mutate(capital_gain_return = paste0("Nominal annual capital gain__", latex_percent(capital_gain_return, percentage_symbol = "\\%"))) %>%
+  spread(capital_gain_return, emtr) %>% 
+  ungroup %>%
+  arrange(desc(marginal_tax_rate)) %>%
+  group_by(marginal_tax_rate, return_type) %>%
+  arrange(desc(`Nominal annual capital gain__10.0\\%`)) %>%
+  ungroup %>%
+  mutate(`CGT treatment` = ifelse(Indexed, "Indexed", paste(latex_percent(CGT_discount, digits = 0, percentage_symbol = "\\%"), "discount"))) %>%
+  select(-Indexed, -CGT_discount) %>%
+  mutate_each(funs(percent1_01_TeX)) %>%
+  mutate_each(funs(omit_repeated)) %>%
+  setnames(old = grep("_[a-z]", names(.), value = TRUE), 
+           new = sapply(gsub("_([a-z])", " \\1", grep("_[a-z]", names(.), value = TRUE)), capitalize)) %>% .[] %>%
+  mutate(`\\phantom{.}` = ifelse(!is.na(`Marginal tax rate`) & `Marginal tax rate` != first(`Marginal tax rate`), 
+                                 "[6pt]", 
+                                 ifelse(!is.na(`Return type`) & `Return type` != first(`Return type`), 
+                                        "[3pt]",
+                                        ""))) %>%
+  select(`\\phantom{.}`, 
+         `Marginal tax rate`, `Return type`, `CGT treatment`,
+         `Nominal annual capital gain__10.0\\%`, 
+         `Nominal annual capital gain__7.3\\%`, 
+         `Nominal annual capital gain__6.0\\%`, 
+         `Nominal annual capital gain__4.0\\%`) %>%
+  {suppressWarnings(print_2heading_xtable(., 
+                                          sanitize.text.function = function(x) x, 
+                                          tabular.environment = "tabular", 
+                                          xtable.align = "lllllrrrr",
+                                          floating = FALSE))}
+  
+  
+@
+\end{table*}
+\onecolumn
 \chapter{Session info of $\mathsf{R}$ used for compilation}
 \begin{multicols*}{2}
 This report was woven from  \textrm{\LaTeX2e} and $\mathsf{R}$ by \textbf{knitr}. 
@@ -4577,7 +4761,7 @@ addtorow$command  <- c(paste("\\hline \n",
                              "\\endhead \n",
                              "\\hline \n",
                              # 5 = n columns
-                             "\\multicolumn{5}{r}{\\footnotesize Continued on next page} \n",
+                             "&\\multicolumn{2}{l}{\\footnotesize ${}^*$ attached} & \\multicolumn{2}{r}{\\footnotesize Continued on next page} \n",
                              "\\endfoot \n",
                              "\\endlastfoot \n", sep=""))
 @
@@ -4595,11 +4779,12 @@ SessionInfo$packages %>%
                add.to.row = addtorow, 
                hline.after = c(-1, nrow(.)))
 @
-$*$\quad Attached.
+
 
 
 \twocolumn
-\chapter{Notes on the 2013-14 sample file benchmarks}
+\chapter{Benchmarking 2013-14 sample file benchmarks}
+
 
 
 \chapter{Markov diagram for negative quarantining}
