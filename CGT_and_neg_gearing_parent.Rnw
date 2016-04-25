@@ -19,7 +19,7 @@ options(warn = 2)
 
 # HILDA takes 7 minutes to load and tidy
 reload_all_data <- FALSE
-cache_most <- FALSE && !reload_all_data
+cache_most <- TRUE && !reload_all_data
 @
 
 
@@ -258,15 +258,20 @@ hilda_used <- TRUE
 <<Import-HILDA-all-waves-step-1, eval=reload_all_data, cache=FALSE>>=
 read_hilda_file <- 
   function(filename, max_wave = 14){
-    temp <- dplyr::mutate(data.table::data.table(foreign::read.dta(filename)),
-                          orig.filename = filename)
+    library(magrittr)
+    library(dplyr)
+    library(data.table)
+    temp <- mutate(data.table(foreign::read.dta(filename)),
+                   orig.filename = filename)
     nms <- names(temp)
     # detect the prefix if it is the wave id.
     nms.prefixes <- unique(gsub("^(.).*$", "\\1", nms))
     yearid <- nms.prefixes[nms.prefixes %in% letters[1:max_wave]]
     # we're interested in stripping the names that specify the wave id (a-<letter-of-max-wave-id>>)
     
-    setnames(temp, old = nms, new = gsub(paste0("^[a-", letters[max_wave], "]"), "", nms))
+    setnames(temp, 
+             old = nms, 
+             new = gsub(paste0("^[a-", letters[max_wave], "]"), "", nms))
     
     wave.decoder <- 
       data.table(
@@ -293,8 +298,17 @@ enumerate.person.files.names <-
                     ,full.names = FALSE) %>%
   gsub(".dta", "", ., fixed = TRUE)
 
-hilda_list <-
-  lapply(enumerate.person.files, read_hilda_file) 
+library(parallel)
+cores <- detectCores()
+
+if (Sys.info()[names(Sys.info()) == "sysname"] == "Windows"){
+  cluster <- makePSOCKcluster(cores)
+  hilda_list <-
+    parLapply(cl = cluster, X = enumerate.person.files, fun = read_hilda_file) 
+} else {
+  hilda_list <-
+    mclapply(X = enumerate.person.files, FUN = read_hilda_file, mc.cores = cores)
+}
 
 names(hilda_list) <- enumerate.person.files.names
 @
@@ -303,7 +317,7 @@ names(hilda_list) <- enumerate.person.files.names
 hilda_all_waves_rp <- 
   rbindlist(hilda_list, use.names = TRUE, fill = TRUE)
 
-write_csv(hilda_all_waves_rp, "../Data/HILDA/Wave14/hilda-all-waves-rp.csv")
+data.table::fwrite(hilda_all_waves_rp, file.path = "../Data/HILDA/Wave14/hilda-all-waves-rp.csv")
 @
 
 <<Use-prepared-hilda-all-waves, eval=!reload_all_data>>=
@@ -1207,21 +1221,16 @@ But there are revenue measures that could make a meaningful contribution to budg
 
 %\flushcolsend
 \chapter{The capital gains discount}
-A capital gain is the increase in the value of an asset. Capital gains are taxed when the asset is sold and the gains are realised. The 50 per cent capital gains tax discount means the tax rate paid on capital gains is half the rate for other forms of income. 
+A capital gain is the increase in the value of an asset. Capital gains are taxed when the asset is sold and the gains are realised. The 50 per cent capital gains tax discount means that the tax rate paid on capital gains is half the rate for other forms of income. 
 
-The purpose of providing a tax discount for capital gains is to promote savings and entrepreneurship. But the benefits of a discount need to be balanced against the costs. Tax concessions for capital gains reduce government revenue collections. They also distort investment choices because other forms of investment income -- such as bank interest -- are taxed without discount. 
+The purpose of providing a tax discount for capital gains is to reduce the bias income tax creates against savings and investment. But this efficiency benefit needs to be balanced against the costs. 
 
-They also undermine the integrity of the income tax system by creating opportunities for artificial transactions to reduce income tax. Some well-advised taxpayers structure receipts that many would see as recurrent earnings so that they are legally characterised as capital gains.
+Tax concessions for capital gains reduce government revenue collections. Other, more distorting taxes, must then be higher. They also distort investment choices because other forms of investment income – such as bank interest – are taxed without discount. Tax concessions for capital gains undermine the integrity of the income tax system by creating opportunities for artificial transactions to reduce income tax. They also reduce the progressivity of the tax system because capital gains are far less evenly distributed than other forms of income. 
 
-And tax concessions for capital gains reduce the progressivity of the tax system because capital gains are far less evenly distributed than other forms of income. 
+Given these costs and benefits, is the capital gains discount set at the right level? While retaining some discount can be justified – primarily because a part of the capital gain is produced by inflation that in principle should not be taxed – the current discount is too generous given the range of competing considerations.
 
-This is a growing concern as accumulated wealth and returns on investments become more important relative to labour income to a person's lifetime resources.
-
-The key policy question is whether the capital gains discount is set at the right level given these costs and benefits. While there is some justification for retaining a discount -- primarily not taxing inflationary gains -- the current discount is too generous given the range of competing considerations. 
 
 \section{The size and distribution of capital gains}
-
-
 <<CGT-by-entity>>=
 cgt_by_entity_asset <- 
   readWorkbook("./ATO/CGT-by-entity-and-asset-type.xlsx", sheet = "16", rows = c(4:7), cols = 1:4) %>%
@@ -1260,21 +1269,18 @@ cgt_by_entity_asset %>%
         legend.position = "right") 
 @
 
-Australian entities -- individuals, companies, and superannuation funds -- accrued \Sexpr{texNum(total_CGT, dollar = TRUE)} of income through capital gains in 2013-14. Individuals accrued a plurality (\Sexpr{latex_percent(cgt_by_entity %>% filter(Entity == "Individuals") %$% prop)}) 
-of capital gains and most of the value of those gains were through real estate. (See \Vref{fig:CGT-by-entity-asset}.)
+Australian entities -- individuals, companies, and superannuation funds -- accrued \Sexpr{texNum(total_CGT, dollar = TRUE)} of income through capital gains in 2013-14. Individuals accrued \Sexpr{latex_percent(cgt_by_entity %>% filter(Entity == "Individuals") %$% prop)}
+of capital gains and gained more from real estate than any other source. (See \Vref{fig:CGT-by-entity-asset}.)
+
 \begin{figure}
 \Caption{Capital gains from real estate assets are almost always through individuals}{Taxable net capital gains, 2013-14}{fig:CGT-by-entity-asset}
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/CGT-by-entity-asset-1}
 \source{\url{\Sexpr{cgt_entity_url}}}
 \end{figure}
 
-An explanation for the larger proportion of assets in real estate for individuals might be the existence of progressive state land taxes which discourage large property holdings and institutional real estate investment.
-
 Capital gains are taxed as part of the income of individuals, companies and superannuation funds. In 2013-14, capital gains tax raised around \$7.5~billion, around 3\%\ of total income. This is expected to have climbed to \$8.9~billion in the following year.\footnote{2015-16 Budget Paper 1. Table 5 memoranda. \url{http://www.budget.gov.au/2015-16/content/bp1/html/bp1_bs4-03.htm}}
 
 \section{Capital gains receive a range of tax advantages}
-At present, capital gains are taxed for individuals at half their marginal rate of income tax. Superannuation funds pay tax on capital gains at 10 per cent (compared to 15 per cent for income). Large corporations pay tax on their capital gains at the corporate tax rate of 30 per cent, which also applies to their income.
-
 Before 1985, capital gains were not taxed in Australia. Since then, the tax treatment of capital gains has varied, but they have always been taxed at a lower rate than wage and salary income \Vref{box:Short-History}. 
 
 \begin{smallbox}[!htb]{A short history of capital gains tax changes}{box:Short-History}
@@ -1285,13 +1291,13 @@ Between 1985 and 1999, real capital gains (sale proceeds minus the original purc
 As recommended by the Ralph Review of Business Taxation, the Howard Government removed indexation adjustments so that tax was applied on nominal gains. To offset the removal of the indexation concession, capital gains tax was discounted by 50 per cent for individuals and 33 per cent for superannuation funds for assets held for more than a year. Capital gains of small unincorporated businesses, but not large businesses, are also discounted by 50 per cent. Small businesses also receive a range of other CGT concessions. When this regime was introduced, it was argued that it would stimulate capital markets and make the Australian regime more internationally competitive.
 \end{smallbox}
 
-Under the current rules, net capital gains are included as part of assessable income.  For individuals and small businesses, \highlight{50 per cent of capital gains are excluded from taxable income} for assets held for more than one year. This means the effective tax rate paid on these gains is half the rate for other forms of income. 
+For individuals and unincorporated small businesses, 50 per cent of their capital gains on assets held for more than one year are excluded from income. This means the effective tax rate paid on these gains is half the rate applied to other forms of income. Owner-occupied housing is an exception – capital gains on homes are not taxed at all. 
 
-Capital gains on owner-occupied housing are not taxed at all.
+Superannuation funds pay tax on capital gains at 10 per cent (a discount to the 15 per cent they pay on earnings). 
 
-Capital gains also receive other less explicit tax advantages compared to recurrent income.
+Large corporations pay tax on their capital gains at the corporate rate of 30 per cent, which is the same rate as their income.
 
-First, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan.  This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing if the asset is held for longer.
+Capital gains also receive other less explicit tax advantages compared to recurrent income. First, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan.  This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing if the asset is held for longer.
 
 <<CG-delay-EMTR, eval=FALSE>>=
 value_after <- function(n, initial_principal = 100, tax_r = 0.00, cgt.on.realization = TRUE, cgt_tax_r = 0.00, cgt_discount = 0.50, div_r = 0.03, cg_r = 0.05){
@@ -1357,7 +1363,7 @@ data.table::CJ(
 
 
 @
-Under current rules, this deferral over 15 years for a top marginal rate taxpayer reduces the effective nominal tax rate on capital gains from 32 per cent to 28 per cent (\TBD{FIGURE}).
+With the 50 per cent discount, this deferral over 15 years for a top marginal rate taxpayer reduces the effective nominal tax rate on capital gains from 32 per cent to 28 per cent. (\Vref{fig:CG-marginal-tax-rates})
 
 Second, investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. They can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate. Some Australians, particularly high income earners, wait until retirement to realise capital gains. Those 65 and older are much more likely to sell assets than those who are younger (\Vrefrange{fig:CGT-by-age-income}{fig:CGT-by-age-income-weight-CG}).
 
@@ -1411,7 +1417,7 @@ avg_marginal_rate_b4_CG_retired <-
   
 @
 
-A person paying the top rate of income tax of 47c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was \Sexpr{latex_percent(avg_marginal_rate_CG)}; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was \Sexpr{latex_percent(avg_marginal_rate_CG_weighted_by_CG)}. The average marginal tax rate on the first dollar of capital gains for people in the workforce is \Sexpr{latex_percent(avg_marginal_rate_b4_CG_workforce)} compared to \Sexpr{latex_percent(avg_marginal_rate_b4_CG_retired)} for people over 65.
+The benefits of waiting can be substantial. A person paying the top rate of income tax of 47c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was \Sexpr{latex_percent(avg_marginal_rate_CG)}; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was \Sexpr{latex_percent(avg_marginal_rate_CG_weighted_by_CG)}. The average marginal tax rate on the first dollar of capital gains for people in the workforce is \Sexpr{latex_percent(avg_marginal_rate_b4_CG_workforce)} compared to \Sexpr{latex_percent(avg_marginal_rate_b4_CG_retired)} for people over 65.
 
 
 
@@ -1542,13 +1548,21 @@ ROR_CG <- function(n = 15,
                    return_type = "rate",
                    nominal.income.return.pa = 0.03, 
                    nominal.capital.gain.pa = 0.05, 
-                   .initial.investment = 100){
+                   .initial.investment = 100, 
+                   verbose = FALSE){
   
   # Initially
   asset_value <- .initial.investment
   income <- asset_value * nominal.income.return.pa
   tax <- tax_on_savings * marginal_rate * income
+  accumulated_capital_gain <- asset_value * nominal.capital.gain.pa
   asset_value <- asset_value * (1 + nominal.capital.gain.pa) + (income - tax)
+  
+  if (verbose){
+    cat("n", "INC", "TX", "AV", "CG", "CGT", "\n", sep = "\t")
+    cat("===============================================", "\n")
+    cat(1, dollar(income), dollar(tax), dollar(asset_value), "\n", sep = "\t")
+  }
   
   if (n >= 2){
     for (y in 2:n){
@@ -1559,16 +1573,28 @@ ROR_CG <- function(n = 15,
       } else {
         cgt <- 0
       }
+      accumulated_capital_gain <- accumulated_capital_gain + asset_value * nominal.capital.gain.pa
+      # EOY
       asset_value <- asset_value * (1 + nominal.capital.gain.pa) + (income - tax) - cgt
+      if (verbose){
+        cat(y, dollar(income), dollar(tax), dollar(asset_value), "\n", sep = "\t")
+      }
     }
+    
   }
   # CGT discount only applies if holding period (n) exceeds minimum (discount_avbl_after)
   if (CGT_on_realization){
+    taxable_gain <- 
     capital_gains_tax <- 
-      tax_on_savings * (asset_value - .initial.investment) * CGT_marginal_rate * (1 - CGT_discount * (n > CGT_avbl_after))
+      tax_on_savings * (accumulated_capital_gain) * CGT_marginal_rate * (1 - CGT_discount * (n > CGT_avbl_after))
   } else {
     capital_gains_tax <- 0
   }
+  
+  if (verbose){
+    cat(" ", " ", " ", " ", accumulated_capital_gain, capital_gains_tax, "\n", "\n", sep = "\t")
+  }
+  
   asset_value <- asset_value - capital_gains_tax
   
   if (return_type == "rate"){
@@ -1614,6 +1640,11 @@ data.table(
 @
 
 The benefits of waiting can be substantial. A person paying the top rate of income tax of 47\,c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower (34.5\,c) tax bracket would reduce the annual nominal tax rate on that investment from \Sexpr{latex_percent(emtr_savings(n = 15, CGT_marginal_rate = 0.47))} to \Sexpr{latex_percent(emtr_savings(n = 15, CGT_marginal_rate = 0.345))} \Vref{fig:delaying-realization-causes-reduction-in-effective-tax-rate}.
+
+\begin{figure}
+\Caption{The delay in realizing capital gains subsantially reduces the effective tax rate}{Nominal effective marginal tax rates on savings}{fig:delaying-realization-causes-reduction-in-effective-tax-rate}
+\includegraphics[width=\columnwidth]{\Sexpr{atlas}/delaying-realization-causes-reduction-in-effective-tax-rate-1}
+\end{figure}
 
 \section{Adjusting for inflation}
 In Australia, taxes on savings income, including capital gains, are levied on nominal returns, which include inflation. Because inflationary gains are not `income' in a true sense,  some discount on returns to savings is justified. But the 50 per cent discount has overcompensated property investors for inflation over time. 
@@ -1772,7 +1803,7 @@ The remainder of this section works through these considerations in more detail.
 \subsection{Not distorting decisions between consumption today and saving for tomorrow}
 On the other hand, the theoretical ideal implicitly assumes losses and gains are taxed symmetrically. But this is not the case. Capital gains are taxed on realisation and at the time of the investors' choosing (section XX) whereas losses can be written off against taxable income each year. As we show in Chapter 4, this means that effective tax rates are lower for negatively geared investments than for investments fully financed from savings as is assumed in \Vref{fig:EMTR-savings}. Effective tax rates for investors under a range of alternative return scenarios and at different tax brackets are summarised in \Cref{appendix:EMTR}.
 
-<<emtr_rental>>=
+<<return_rental>>=
 return_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), after_tax = FALSE, n = 15, CGT.discount = 0.50, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05){
   nominal.return <- capital.gains + nominal.rent
   
@@ -1835,8 +1866,10 @@ return_rental <- function(gearing_ratio, return_type = c("real", "nominal", "exc
     stop("return_type not found.")
   }
 }
+@
 
-emtr_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), n = 15, CGT.discount = 0.50, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05, cgt_indexed = FALSE){
+<<emtr_rental>>=
+emtr_rental <- function(gearing_ratio, return_type = c("real", "nominal", "excess"), n = 15, CGT.discount = 0.50, inflation = 0.025, risk.free.rate = inflation + 0.02, marginal.tax.rate = 0.47, investment.value = 100, nominal.rent = 0.03, capital.gains = 0.05, interest.rate = 0.05, cgt_indexed = FALSE, verbose = FALSE){
   # 
   # # For debugging
   # gearing_ratio = 0.80
@@ -1854,50 +1887,85 @@ emtr_rental <- function(gearing_ratio, return_type = c("real", "nominal", "exces
   tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
   annual_capital_gains <- carry_forward_balance * capital.gains
   nominal_gain_since_inception <- annual_capital_gains
-  nominal_investment_value_before_tax <- carry_forward_balance + rent + annual_capital_gains
+  # nominal_investment_value_before_tax <- carry_forward_balance + rent + annual_capital_gains
+  
+  if (verbose){
+    cat("y", "fwd_bal", "rent", "rent_tx", "ann_CG", "nom_gain", "\n", sep = "\t\t")
+    cat("============================================================================================================", "\n")
+  }
   
   for (y in 2:n){
-    inflation_index <- (1 + inflation) ^ y
-    risk_free_return_index <- (1 + risk.free.rate) ^ y
-    
     carry_forward_balance <- carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains
     rent <- carry_forward_balance * nominal.rent
     tax_on_rent_minus_interest <- marginal.tax.rate * (rent - interest_payments)
     annual_capital_gains <- carry_forward_balance * capital.gains
     nominal_gain_since_inception <- nominal_gain_since_inception + annual_capital_gains
-    if (!cgt_indexed){
-      CGT_if_gain_realized <- nominal_gain_since_inception * (1 - CGT.discount) * marginal.tax.rate 
-    } else {
-      CGT_if_gain_realized <- (nominal_gain_since_inception / inflation_index) * marginal.tax.rate
+    if (verbose){
+      cat(y, 
+          dollar(carry_forward_balance), 
+          dollar(rent), 
+          dollar(tax_on_rent_minus_interest), 
+          dollar(annual_capital_gains), 
+          dollar(nominal_gain_since_inception), "\n", sep = "\t\t")
+      Sys.sleep(1/4)
     }
-    
-    nominal_investment_value_before_tax <- investment.value * (1 + nominal.rent + capital.gains) ^ y
-    nominal_investment_value_after_tax <- 
-      carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains - CGT_if_gain_realized
-    
-    real_investment_before_tax <- nominal_investment_value_before_tax / inflation_index
-    real_investment_after_tax  <- nominal_investment_value_after_tax  / inflation_index
-    excess_returns_after_tax   <- nominal_investment_value_after_tax  / risk_free_return_index
-    excess_returns_before_tax  <- nominal_investment_value_before_tax / risk_free_return_index
-    
-    annualized_real_investment_before_tax <- (real_investment_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_real_investment_after_tax  <- (real_investment_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    annualized_nominal_investment_before_tax <- (nominal_investment_value_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_nominal_investment_after_tax  <- (nominal_investment_value_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    annualized_excess_investment_before_tax <- (excess_returns_before_tax / investment.value) ^ (1 / y) - 1
-    annualized_excess_investment_after_tax  <- (excess_returns_after_tax  / investment.value) ^ (1 / y) - 1
-    
-    effective_tax_rate_nominal <- 
-      1 - annualized_nominal_investment_after_tax / annualized_nominal_investment_before_tax
-    
-    effective_tax_rate_real <- 
-      1 - annualized_real_investment_after_tax / annualized_real_investment_before_tax
-    
-    effective_tax_rate_excess <- 
-      1 - annualized_excess_investment_after_tax / annualized_excess_investment_before_tax
+  }  
+  
+  inflation_index <- (1 + inflation) ^ n
+  risk_free_return_index <- (1 + risk.free.rate) ^ n
+  
+  nominal_gain_since_inception <- nominal_gain_since_inception
+  
+  if (!cgt_indexed){
+    CGT_if_gain_realized <- nominal_gain_since_inception * (1 - CGT.discount) * marginal.tax.rate 
+  } else {
+    real_gain <- investment.value  + nominal_gain_since_inception - investment.value * inflation_index
+    CGT_if_gain_realized <- real_gain * marginal.tax.rate
   }
+  
+  if (verbose){
+    cat("\n", "CGT:", "\t", dollar(CGT_if_gain_realized), "\n\n")
+    Sys.sleep(1)
+  }
+  
+  nominal_investment_value_before_tax <- 
+    investment.value * (1 + nominal.rent + capital.gains) ^ n
+  
+  real_investment_before_tax <- nominal_investment_value_before_tax / inflation_index
+  excess_returns_before_tax  <- nominal_investment_value_before_tax / risk_free_return_index
+  
+  nominal_investment_value_after_tax <- 
+    carry_forward_balance + rent - tax_on_rent_minus_interest + annual_capital_gains - CGT_if_gain_realized
+  real_investment_after_tax  <- nominal_investment_value_after_tax  / inflation_index
+  excess_returns_after_tax   <- nominal_investment_value_after_tax  / risk_free_return_index
+  
+  
+  if (verbose){
+    cat("Investment values:\n", 
+        "Nominal-post:" , "\t", dollar(nominal_investment_value_after_tax), "\n",
+        "Nominal-ante:", "\t", dollar(nominal_investment_value_before_tax),"\n",
+        "Real:", "\t\t", dollar(real_investment_after_tax), "\n\n")
+  }
+  
+  
+  annualized_real_investment_before_tax <- (real_investment_before_tax / investment.value) ^ (1 / n) - 1
+  annualized_real_investment_after_tax  <- (real_investment_after_tax  / investment.value) ^ (1 / n) - 1
+  
+  annualized_nominal_investment_before_tax <- (nominal_investment_value_before_tax / investment.value) ^ (1 / n) - 1
+  annualized_nominal_investment_after_tax  <- (nominal_investment_value_after_tax  / investment.value) ^ (1 / n) - 1
+  
+  annualized_excess_investment_before_tax <- (excess_returns_before_tax / investment.value) ^ (1 / n) - 1
+  annualized_excess_investment_after_tax  <- (excess_returns_after_tax  / investment.value) ^ (1 / n) - 1
+  
+  effective_tax_rate_nominal <- 
+    1 - annualized_nominal_investment_after_tax / annualized_nominal_investment_before_tax
+  
+  effective_tax_rate_real <- 
+    1 - annualized_real_investment_after_tax / annualized_real_investment_before_tax
+  
+  effective_tax_rate_excess <- 
+    1 - annualized_excess_investment_after_tax / annualized_excess_investment_before_tax
+  
   
   if (return_type == "nominal"){
     return(effective_tax_rate_nominal)
@@ -2532,7 +2600,7 @@ prop_investors_over60_NG <-
 @
 
 \begin{figure}[!htb]
-\Caption{More people negatively gear property investments in their peak earning years}{Percentage of \Sexpr{latest.sample.fy} taxpayers}{fig:NG-PG-by-age}
+\Caption{More people negatively gear property investments in their peak earning years}{Percentage of \Sexpr{latest.sample.fy} taxpayers with }{fig:NG-PG-by-age}
 <<NG-PG-by-age>>=
 sample_file %>%
   # filter(Gross_rent_amt > 0) %>%
@@ -2554,14 +2622,14 @@ sample_file %>%
                                             annotate("text", 
                                                      x = 77, 
                                                      y = sort(use_series(filter(., age == max(age)), prop)), 
-                                                     label = c("Negative\ngearing", "Positive\ngearing"), 
+                                                     label = c("Negative\ngearing", "Earning\nrental income\nbut not\nnegatively\ngeared"), 
                                                      fontface = "bold", 
                                                      size = 22/(14/5),
                                                      lineheight = 0.8,
                                                      hjust = 0,
                                                      colour = gpal(2)) + 
                                             annotate("blank", 
-                                                     x = 83, y = 0)
+                                                     x = 84, y = 0)
                                         }
 @
 \includegraphics[width=\columnwidth]{\Sexpr{atlas}/NG-PG-by-age-1}
@@ -4643,15 +4711,36 @@ Internationally, there are a range of approaches to taxing capital gains. Most c
 Effective tax rates measure the tax paid on investment returns as a share of the pre-tax returns. Effective tax rates vary by the investor’s tax rate and the level of returns. When looking at effective tax rate on real returns (returns adjusted for inflation) or on `excess returns' (returns above the risk free rate) the level of inflation and the returns will also affect the effective tax rate paid by the investor. 
 
 \Vref{fig:EMTR-savings} presents effective rates for two different return scenarios for an investor in the 47\,c tax bracket. \Vref{tbl:Real-EMTR-appendix} below presents calculations for a broader range of return scenarios and investor tax brackets. 
+
+
 \begin{table*}
 \centering
-\caption{Effective marginal tax rates}\label{tbl:Real-EMTR-appendix}
-\newcolumntype{Q}{>{\raggedleft\arraybackslash}X}
+\captionsetup{justification=centering}
+\caption{Effective marginal tax rates for a rental property}\label{tbl:Real-EMTR-appendix}
+\newcolumntype{Q}{@{}l@{}}
 <<emtr-long-appendix, results='asis'>>=
 percent1_01_TeX <- function(x){
-  if (is.numeric(x) && between(x, 0, 1)){
+  if (is.numeric(x) && mean(between(x, 0, 1) > 0.5)){
     paste0(formatC(round(100*x, 1), 
                    format = "f", flag = "#", digits = 1, width = 3), "\\%")
+  } else {
+    x
+  }
+}
+
+shade_cell <- function(x){
+  color <- cut(as.numeric(x), breaks = c(-Inf, 100*(1:6)/6, Inf), labels = c(paste0("Color", 1:6), "black"))
+  # black background -> white text
+  ifelse(as.numeric(x) > 100, 
+         paste0("\\cellcolor{", color, "}{\\textcolor{white}{", x, "}}"),
+         paste0("\\cellcolor{", color, "}{", x, "}"))
+}
+
+
+digit1_01_TeX <- function(x){
+  if (is.numeric(x) && between(x, 0, 1)){
+    formatC(round(100*x, 1), 
+                   format = "f", flag = "#", digits = 1, width = 3)
   } else {
     x
   }
@@ -4662,7 +4751,7 @@ omit_repeated <- function(x){
 }
 
 data.table::CJ(
-  capital_gain_return = c(0.10, 0.073, 0.06, 0.04), 
+  capital_gain_return = c(0.10, 0.08, 0.06, 0.05, 0.04), 
   marginal_tax_rate = c(0.47, 0.39, 0.345),
   CGT_discount = c(0.50, 0.25, 0), 
   Indexed = c(TRUE, FALSE), 
@@ -4673,46 +4762,58 @@ data.table::CJ(
   mutate(
     emtr = emtr_rental(return_type = return_type, 
                        CGT.discount = CGT_discount, 
-                       marginal.tax.rate = marginal_tax_rate, 
+                       marginal.tax.rate = marginal_tax_rate,
+                       inflation = 0.025,
+                       risk.free.rate = 0.045,
                        capital.gains = capital_gain_return, 
                        gearing_ratio = 0, 
                        cgt_indexed = Indexed)
   ) %>%
   arrange(desc(capital_gain_return)) %>%
   # cosmetics
-  mutate(capital_gain_return = paste0("Nominal annual capital gain__", latex_percent(capital_gain_return, percentage_symbol = "\\%"))) %>%
+  mutate(capital_gain_return = paste0("Nominal annual capital gain__", formatC(100*capital_gain_return, flag = "#", format = "f", digits = 1), percentage_symbol = "\\%")) %>%
   spread(capital_gain_return, emtr) %>% 
   ungroup %>%
   arrange(desc(marginal_tax_rate)) %>%
   group_by(marginal_tax_rate, return_type) %>%
-  arrange(desc(`Nominal annual capital gain__10.0\\%`)) %>%
+  arrange(`Nominal annual capital gain__5.0\\%`) %>%
   ungroup %>%
   mutate(`CGT treatment` = ifelse(Indexed, "Indexed", paste(latex_percent(CGT_discount, digits = 0, percentage_symbol = "\\%"), "discount"))) %>%
-  select(-Indexed, -CGT_discount) %>%
-  mutate_each(funs(percent1_01_TeX)) %>%
+  select(-Indexed, -CGT_discount) %T>%
+  {grattan:::chart_data(.)} %>%
+  mutate_each(funs(digit1_01_TeX)) %>%
   mutate_each(funs(omit_repeated)) %>%
   setnames(old = grep("_[a-z]", names(.), value = TRUE), 
            new = sapply(gsub("_([a-z])", " \\1", grep("_[a-z]", names(.), value = TRUE)), capitalize)) %>% .[] %>%
+  mutate_each(funs(shade_cell), -`Marginal tax rate`, -`Return type`, -`CGT treatment`) %>%
+  # Increase space between groups by putting a newline with -6pt height (-9pt) for smaller
   mutate(`\\phantom{.}` = ifelse(!is.na(`Marginal tax rate`) & `Marginal tax rate` != first(`Marginal tax rate`), 
-                                 "[6pt]", 
+                                 "&\\phantom{.}\\\\[-6pt]", 
                                  ifelse(!is.na(`Return type`) & `Return type` != first(`Return type`), 
-                                        "[3pt]",
+                                        "&\\phantom{.}\\\\[-9pt]",
                                         ""))) %>%
   select(`\\phantom{.}`, 
          `Marginal tax rate`, `Return type`, `CGT treatment`,
-         `Nominal annual capital gain__10.0\\%`, 
-         `Nominal annual capital gain__7.3\\%`, 
+         `Nominal annual capital gain__4.0\\%`, 
+         `Nominal annual capital gain__5.0\\%`, 
          `Nominal annual capital gain__6.0\\%`, 
-         `Nominal annual capital gain__4.0\\%`) %>%
+         `Nominal annual capital gain__8.0\\%`,
+         `Nominal annual capital gain__10.0\\%`) %>%
   {suppressWarnings(print_2heading_xtable(., 
                                           sanitize.text.function = function(x) x, 
                                           tabular.environment = "tabular", 
-                                          xtable.align = "lllllrrrr",
+                                          xtable.align = "lQlllrrrrr",
                                           floating = FALSE))}
   
   
 @
+\footnotesize
+\begin{tabular}{lp{0.5\textwidth}}
+\footnotesize Notes: & {\footnotesize Inflation 2.5\%. Property earns 3\%\ nominal rent in addition to the capital growth and which is reinvested in the property till maturity. Risk free rate 4.5\%. Property is held for 15 years then disposed and capital gain realized without losses.}
+\end{tabular}
 \end{table*}
+
+
 \onecolumn
 \chapter{Session info of $\mathsf{R}$ used for compilation}
 \begin{multicols*}{2}
