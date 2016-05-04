@@ -1,0 +1,2868 @@
+\documentclass{grattan}
+
+<<MODELLING-PARAMETERS, echo=FALSE>>=
+new.discount <- 0.25  # CGT
+@
+
+\usepackage{amsmath}
+\renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
+\usepackage{grfext}
+\PrependGraphicsExtensions*{.pdf}
+
+\title{Negative gearing and the capital gains discount}
+\usepackage[normalem]{ulem}
+\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{3pt}}}\ULon}
+\author{\redsout{John Daley and Danielle Wood}}
+
+\newcommand{\TBD}[1]{\colorbox{yellow}{#1}}
+
+\addbibresource{bibliography.bib}
+\addbibresource{bibliography2.bib} % r packages
+
+\newcommand\gao{Grattan analysis of}
+\newcommand{\mpfootnotes}[1][1]{
+  \renewcommand{\thempfootnote}{\thefootnote}
+  \addtocounter{footnote}{-#1}
+  \renewcommand{\footnote}{\stepcounter{footnote}\footnotetext[\value{footnote}]}}
+
+\usetikzlibrary{shapes,arrows,automata,positioning}
+\tikzstyle{block} = [rectangle, draw, text width=6em, text centered, rounded corners, minimum height=4em]
+    
+    \tikzstyle{line} = [draw, thick, -latex']
+
+\newcommand{\Act}[2]{\emph{#1} (#2)}
+\newcommand{\EMPH}[1]{\textbf{#1}}
+\newcommand{\highlight}[1]{\textbf{#1}}
+\newcommand\ie{\emph{i.e.~}}
+
+\usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
+\AtBeginEnvironment{quote}{\smaller}
+
+\begin{document}
+\clearpage
+%\chapter{Distribution of negative gearing}
+<<knitrOpts, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE>>=
+my_pdf <- function(file, width, height){
+  pdf(file = file, width, height = height)
+}
+
+# knitr chunk opts
+# fig.width must = out.width and same for *.height
+knitr::opts_chunk$set(fig.width=11.000, fig.height=7.00, 
+                      out.width="11.000in", out.height="7.00in", 
+                      fig.show='hide',echo=FALSE,
+                      message=FALSE, warning=FALSE
+                      ,cache=FALSE
+                      ,dev=c('my_pdf', 'my_emf', 'png')
+                      ,fig.ext = c("pdf", "emf", "png")
+)
+@
+
+<<loadPackages, echo=FALSE, dev='pdf', echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE>>=
+# library(Rcell)
+library(knitr)
+# library(dtplyr)
+library(data.table)
+library(dplyr)
+library(car)
+library(devEMF)
+library(gridExtra)
+library(ggplot2)
+library(scales)
+library(directlabels)
+library(grattan)
+library(xtable)
+library(readxl)
+library(readr)
+library(rsdmx)
+library(httr)
+library(zoo)
+library(foreign)
+library(survey)
+library(foreign)
+library(Hmisc)
+library(devtools)
+library(grattan)
+library(taxstats)
+library(tidyr)
+library(magrittr)
+library(taxstats)
+@
+
+<<packcageCitation>>=
+# Select packages to cite:
+citPkgs <- names(sessionInfo()$otherPkgs)
+# Write the bibtex file:
+knitr::write_bib(citPkgs, file="bibliography2.bib")      
+package_cite_input <- paste0("\\nocite{", paste0(paste0("R-", citPkgs), collapse=","), "}")
+write(package_cite_input, file = "package_cite_input.tex")
+@
+% citations
+\input{package_cite_input}
+
+% \textheight quite small for flushbottom
+\raggedbottom
+
+<<latex_percent>>=
+latex_percent <- function (x) {
+    x <- plyr::round_any(x, scales:::precision(x)/100)
+    stringr::str_c(comma(x * 100), "\\%")
+}
+@
+
+
+%%% Costings analysis
+
+\onecolumn
+<<Determine_future_rental_deductions>>=
+historical.interest.losses <- 
+  sample_files_all %>%
+  group_by(year = fy2yr(fy.year)) %>%
+  summarise(tot.rent_interest_deds = sum(as.numeric(Rent_int_ded_amt * WEIGHT)))
+
+total.investor.loans <- 
+  read_excel("ABS_Household_financing.xlsx", sheet = "Investment_loans_outstanding") %>%
+  group_by(year = lubridate::year(Date)) %>%
+  summarise(loans_amt = mean(Investment_housing_all_deposit_taking_institutions) * 10^6)
+
+rba_interest <- 
+  read_excel("RBA_Household_interest_rates.xlsx", sheet = "Housing_lending_rates") %>%
+  group_by(year = lubridate::year(Date)) %>%
+  summarise(mean.i = mean(Housing_lending_rate)/100)
+
+interest_losses <-
+  merge(total.investor.loans, rba_interest) %>%
+  merge(., historical.interest.losses, all.x = TRUE) %>%
+  mutate(interestXloans = mean.i * loans_amt)
+
+# Good enough 
+# plot(lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses))
+rental.losses <-
+interest_losses[!complete.cases(interest_losses), ] %>%
+  do({
+    model <- lm(tot.rent_interest_deds ~ interestXloans, data = interest_losses)
+    pred <- predict(model, newdata = .[c("interestXloans")])
+    data.frame(., pred)
+  }) %>%
+  mutate(tot.rent_interest_deds = pred) %>%
+  select(year, tot.rent_interest_deds) %>%
+  rbind(select(interest_losses, year, tot.rent_interest_deds)) %>%
+  filter(!is.na(tot.rent_interest_deds)) %>%
+  arrange(year) %>% 
+  mutate(ratio = tot.rent_interest_deds/tot.rent_interest_deds[which(year == 2013)])
+
+# It's about 1 for 2015, (certainly if se is taken into acct), so I'm not going to bother
+
+@
+
+
+
+
+<<Functions_For_All_Years>>=
+# This is a functional version of the above.
+# It's designed to be easier to read,
+# not fast to run.
+# Beware.
+
+cost_of_daley_policy <- function(year = 2013, eventual = 20, CGT.discount = new.discount){
+  fy.year <- yr2fy(year)
+  
+  if (year >= 2014){
+    CG_inflator <-
+      read_excel("Tax-Expenditures-CGT Historical.xlsx") %>%
+      select(FY, CGT_discount_for_individuals_and_trusts_millions) %>%
+      filter(FY %in% c("2012-13", yr2fy(year))) %>%
+      arrange(FY) %>%
+      mutate(cgt_inflation = CGT_discount_for_individuals_and_trusts_millions/first(CGT_discount_for_individuals_and_trusts_millions)) %$% 
+      last(cgt_inflation)
+
+    # Inflate the wages for future years.
+    # Adjust the variables which depend on Sw_amt
+    # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
+    daley_taxstats <- 
+      sample_file_1213 %>%  
+      mutate(
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
+      )
+  } else {
+    daley_taxstats <- 
+      # fread(sample_file_of(2013)) %>%
+      get_sample_file(year = year)
+  }
+  
+  # Year specific housekeeping
+  # Before 2011-12, there is no variable Net_fincl_lss_amt
+  if (!("Net_fincl_invstmt_lss_amt" %in% names(daley_taxstats)))
+    daley_taxstats[,Net_fincl_invstmt_lss_amt := 0]
+  
+  if (!("ETP_txbl_amt" %in% names(daley_taxstats)))
+    daley_taxstats[,ETP_txbl_amt := 0]
+  
+  prop_full_discount <-
+    get_sample_file(year) %>%
+    filter(Net_CG_amt > 0) %>%
+    mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
+           apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
+    group_by(apparent.discount) %>%
+    tally() %>%
+    arrange(n) %>%
+    ungroup %>%
+    filter(apparent.discount %in% c(0.5,1)) %>%
+    mutate(n.p = n/sum(n),
+           discount.key = cumsum(n.p))
+  
+  # More things to consider
+  # This is a problem.
+  #   sample_file_1213 %>%
+  #     filter(Net_CG_amt > 0) %>%
+  #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
+  #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
+  #     grplot(aes(x = discount, y = Net_CG_amt)) + 
+  #     geom_point() + 
+  #     coord_cartesian(ylim = c(1e4,1e6)) + 
+  #     scale_y_continuous(label = grattan_dollar) + 
+  #     facet_grid(tax.bracket~.)
+  
+  daley_taxstats %<>%
+    #
+    # One silly entry has a CG of $25M!
+    filter(Net_CG_amt < 5e6) %>%
+    # These next steps attempt to estimate the size of the typical discount.
+    # Previously, we assumed that all capital gains events enjoyed the full 50% 
+    # discount. This was erroneous, but thought not to be a major problem. It is
+    # somewhat of a problem.
+    #
+    #   sample_file_1213 %>%
+    #     filter(Net_CG_amt > 0) %>%
+    #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
+    #     grplot(aes(x = discount, y = Net_CG_amt)) + 
+    #     geom_point() + 
+    #     coord_cartesian(ylim = c(1e4,1e6)) +  scale_y_continuous(label = grattan_dollar)
+  #     
+  #
+  # so we estimate the number of capital gains events at each discount 0%, 10%, 20%, 30%, 
+  # based on Net capital gains / Total capital gains.
+  # It's important to note
+  # that this is polluted by losses carried forward.
+  #
+  # The dice roll.  
+  mutate(randCG = runif(nrow(.))) %>%
+    rowwise %>%
+    # If the dice rolls between the discount.keys in prop_full_discount 
+    # we choose the lowest prop
+    mutate(discount.key = min(prop_full_discount$discount.key[prop_full_discount$discount.key > randCG])) %>%
+    ungroup %>%
+    merge(prop_full_discount, by = "discount.key") %>%
+    # avoid NaNs when we 1/apparent.discount
+    mutate(apparent.discount = ifelse(apparent.discount < 0.1, 0.05, apparent.discount)) %>%
+    mutate(
+      # Adjust the capital gains.The Net_CG_amt = (Gross CG - Losses) discounted by 50%, 
+      # if the discount applies.But we use the apparent discount to adjust it, based on the
+      # dice roll.
+      new_capital_gains = ifelse(apparent.discount == 0.5, 
+                                 2 * Net_CG_amt * (1 - CGT.discount),
+                                 Net_CG_amt),
+      Taxable_Income_Red_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
+      new_tot_inc = Tot_inc_amt - Net_CG_amt + new_capital_gains,
+      # component of income from neither salary nor rent
+      income_no_salary = new_tot_inc - Net_rent_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt,  
+      #
+      # This is not quite true: it doesn't include medical offsets.
+      # You can only deduct Net_rent down to zero.  
+      # Include financial losses in deductions
+      # Full tax on Sw_amt. Then deductions
+      new_Taxable_Income =  pmax(0, income_no_salary + Net_rent_amt - Net_fincl_invstmt_lss_amt) + Sw_amt + Alow_ben_amt + ETP_txbl_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+      old_Taxable_Income_no_offset = Tot_inc_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+      loss_ignore_CG = -1 * pmin(0, pmax(0, income_no_salary - new_capital_gains) + Net_rent_amt),
+      #
+      loss_carry_fwd = -1 * pmin(0, income_no_salary + Net_rent_amt),  
+      loss_carry_fwd_not_CG = ifelse(new_capital_gains > abs(Net_rent_amt) & Net_rent_amt < 0, Net_rent_amt, 0),
+      #
+      # Ratio of (new?) capital gains to losses is the proportion of each taxpayer's 
+      # capital gains that may be deducted from the rental losses which, due
+      # to the abolition of negative gearing in this proposal, cannot be immediately
+      # deducted from one's income.The sums represent the overall ratio in the population
+      # which we assume to be constant year-on-year.
+      #
+      # pmin sinces can't claim more than your losses
+      annualized_loss = pmin(1, abs(sum(new_capital_gains) / sum(loss_carry_fwd))) * loss_carry_fwd,  # nonnegative
+      #
+      # The consequence of the following calc is that some new_Taxable_Income_post_carryfwd will be NEGATIVE 
+      # -- i.e.unexhausted (especially if the Taxable_Income (originally) was zero).This error will
+      # overestimate the amount of extra tax collected.However
+      #
+      #   daley_taxstats %>% 
+      #     filter(new_Taxable_Income_post_carryfwd < 0) %$% sum(new_Taxable_Income) * 50 / 1e9
+      #   # [1] 0.224  # 224 million in losses
+      #
+      # i.e.There are at most 224 million dollars in losses carried forward that are unaccounted for
+      # in this model.And so at most 224 * 0.485 = 109 million in taxable income AT MOST that is 
+      # possibly lost. My doona is comfy: I'm staying in bed for that.
+      new_Taxable_Income_post_carryfwd = new_Taxable_Income - annualized_loss,  # remembering ann.lss is nonnegative
+      current_tax = income_tax(old_Taxable_Income_no_offset, fy.year= fy.year),
+      tax_after_reduction_in_discount = income_tax(Taxable_Income_Red_CG_discount, fy.year = fy.year),
+      new_tax = income_tax(new_Taxable_Income, fy.year = fy.year),
+      diff = new_tax - current_tax,
+      diff_incl_carry_fwd = income_tax(new_Taxable_Income_post_carryfwd, fy.year = fy.year) - current_tax
+      #
+      # retrospective action
+    )
+  
+  taxable_income_by_CG <-
+    daley_taxstats %>%
+    group_by(HasCG = new_capital_gains > 0) %>%
+    dplyr::summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
+    mutate(mean.tx = income_tax(mean.tx.i, fy.year = fy.year),
+           marginal.tax.of.avg = income_tax(mean.tx.i, fy.year = fy.year) - income_tax(mean.tx.i - 1, fy.year = fy.year)) %>%
+    select(HasCG, marginal.tax.of.avg) %>%
+    data.table
+  
+  
+  capital_gains_by_losses4 <-
+    daley_taxstats %>% 
+    group_by(IsInvestor = Gross_rent_amt > 0, 
+             HasLoss = loss_ignore_CG > 0, 
+             HasCG = new_capital_gains > 0) %>% 
+    tally %>% 
+    arrange(IsInvestor, HasLoss, HasCG) %>% 
+    #
+    # cosmetics:
+    ungroup %>% 
+    group_by(IsInvestor) %>% 
+    mutate(prop = round(n/sum(n),3))
+  # 2012-13 data
+  # Source: local data table [8 x 5]
+  # 
+  #   IsInvestor HasLoss HasCG      n  prop
+  # 1      FALSE   FALSE FALSE 208423 0.968
+  # 2      FALSE   FALSE  TRUE   6656 0.031
+  # 3      FALSE    TRUE FALSE    256 0.001
+  # 4      FALSE    TRUE  TRUE     23 0.000
+  #--
+  # 5       TRUE   FALSE FALSE  20753 0.533
+  # 6       TRUE   FALSE  TRUE   2340 0.060
+  # 7       TRUE    TRUE FALSE  14724 0.378
+  # 8       TRUE    TRUE  TRUE   1143 0.029
+  
+  prob_of_noCG_if_investor <- capital_gains_by_losses4 %>%
+    filter(IsInvestor, !HasCG) %$%
+    sum(prop)
+  for (i in 1:eventual){   
+    if (i == 1){
+      new_daley <- 
+        daley_taxstats %>%
+        # random
+        mutate(loss_carry_fwd_orig = loss_ignore_CG) %>%
+        mutate(hasHadCG = FALSE,  #yet
+               whenCG.lastoccurred = 0,
+               prev_unexhausted_loss = loss_ignore_CG) 
+    }
+    
+    gc()
+    new_daley %<>%
+      mutate(rand = runif(nrow(.))) %>%
+      mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
+      mutate(HasCG = !noCGevent) %>%
+      setkey(HasCG) %>%
+      merge(taxable_income_by_CG)  %>%
+      mutate(
+        # We act on the new_tax directly.If someone has a CG event,
+        # we bring forward all their losses thitherto and reduce their tax
+        # by the average marginal tax rate for someone who earned capital gains
+        new_tax = ifelse(noCGevent, 
+                         income_tax(new_Taxable_Income, fy.year = fy.year),
+                         # Should negative taxes be included? Answer not yet obvious.
+                         pmax(0, income_tax(new_Taxable_Income, fy.year = fy.year) - marginal.tax.of.avg * loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
+        diff = new_tax - current_tax,
+        # record for console printout
+        whenCG.lastoccurred.prev = whenCG.lastoccurred,
+        # reset if applicable
+        whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred),
+        hasHadCG = as.logical(pmin(hasHadCG + !noCGevent, 1)) 
+      ) %>%
+      select(-marginal.tax.of.avg) %>%
+      data.table
+  }
+  new_daley
+}
+
+cost_of_daley_policy_fast <- function(year = 2013, eventual = 20, CGT.discount = new.discount){
+  fy.year <- yr2fy(year)
+  
+  if (year >= 2014){
+    # Inflate the wages for future years.
+    # Adjust the variables which depend on Sw_amt
+    # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
+    daley_taxstats <- 
+      sample_file_1213 %>%  
+      mutate(
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        # data.table may be tempestuous without explicit coercion.
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
+      )
+  } else {
+    daley_taxstats <- 
+      # fread(sample_file_of(2013)) %>%
+      get_sample_file(year = year)
+  }
+  
+  # Year specific housekeeping
+  # Before 2011-12, there is no variable Net_fincl_lss_amt
+  if (!("Net_fincl_invstmt_lss_amt" %in% names(daley_taxstats)))
+    daley_taxstats[,Net_fincl_invstmt_lss_amt := 0]
+  
+  if (!("ETP_txbl_amt" %in% names(daley_taxstats)))
+    daley_taxstats[,ETP_txbl_amt := 0]
+  
+  prop_full_discount <-
+    sample_file_1213 %>%
+    filter(Net_CG_amt > 0) %>%
+    mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
+           apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
+    group_by(apparent.discount) %>%
+    tally() %>%
+    arrange(n) %>%
+    ungroup %>%
+    filter(apparent.discount %in% c(0.5,1)) %>%
+    mutate(n.p = n/sum(n),
+           discount.key = cumsum(n.p))
+  
+  # More things to consider
+  # This is a problem.
+  #   sample_file_1213 %>%
+  #     filter(Net_CG_amt > 0) %>%
+  #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
+  #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
+  #     grplot(aes(x = discount, y = Net_CG_amt)) + 
+  #     geom_point() + 
+  #     coord_cartesian(ylim = c(1e4,1e6)) + 
+  #     scale_y_continuous(label = grattan_dollar) + 
+  #     facet_grid(tax.bracket~.)
+  
+  
+  
+  daley_taxstats %<>%
+    #
+    # One silly entry has a CG of $25M!
+    filter(Net_CG_amt < 5e6) %>%
+    # These next steps attempt to estimate the size of the typical discount.
+    # Previously, we assumed that all capital gains events enjoyed the full 50% 
+    # discount. This was erroneous, but thought not to be a major problem. It is
+    # somewhat of a problem.
+    #
+    #   sample_file_1213 %>%
+    #     filter(Net_CG_amt > 0) %>%
+    #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
+    #     grplot(aes(x = discount, y = Net_CG_amt)) + 
+    #     geom_point() + 
+    #     coord_cartesian(ylim = c(1e4,1e6)) +  scale_y_continuous(label = grattan_dollar)
+  #     
+  #
+  # so we estimate the number of capital gains events at each discount 0%, 10%, 20%, 30%, 
+  # based on Net capital gains / Total capital gains.
+  # It's important to note
+  # that this is polluted by losses carried forward.
+  #
+  # The dice roll.  
+  mutate(randCG = runif(nrow(.)))
+  #
+  # http://stackoverflow.com/questions/31490534/conditional-join-in-r#31492015
+  #
+  prop_full_discount %<>% arrange(discount.key)
+  ind <- findInterval(daley_taxstats$randCG, prop_full_discount$discount.key) + 1
+  daley_taxstats$apparent.discount <- prop_full_discount$apparent.discount[ind]
+  
+  daley_taxstats %<>%
+    # avoid NaNs when we 1/apparent.discount
+    mutate(apparent.discount = ifelse(apparent.discount < 0.1, 0.05, apparent.discount)) %>%
+    mutate(
+      # Adjust the capital gains.The Net_CG_amt = (Gross CG - Losses) discounted by 50%, 
+      # if the discount applies.But we use the apparent discount to adjust it, based on the
+      # dice roll.
+      new_capital_gains = ifelse(apparent.discount == 0.5, 
+                                 2 * Net_CG_amt * (1 - CGT.discount),
+                                 Net_CG_amt),
+      Taxable_Income_Red_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
+      new_tot_inc = Tot_inc_amt - Net_CG_amt + new_capital_gains,
+      # component of income from neither salary nor rent
+      income_no_salary = new_tot_inc - Net_rent_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt,  
+      #
+      # This is not quite true: it doesn't include medical offsets.
+      # You can only deduct Net_rent down to zero.  
+      # Include financial losses in deductions
+      # Full tax on Sw_amt. Then deductions
+      new_Taxable_Income =  pmax(0, income_no_salary + Net_rent_amt - Net_fincl_invstmt_lss_amt) + Sw_amt + Alow_ben_amt + ETP_txbl_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+      old_Taxable_Income_no_offset = Tot_inc_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+      loss_ignore_CG = -1 * pmin(0, pmax(0, income_no_salary - new_capital_gains) + Net_rent_amt),
+      #
+      loss_carry_fwd = -1 * pmin(0, income_no_salary + Net_rent_amt),  
+      loss_carry_fwd_not_CG = ifelse(new_capital_gains > abs(Net_rent_amt) & Net_rent_amt < 0, Net_rent_amt, 0),
+      #
+      # Ratio of (new?) capital gains to losses is the proportion of each taxpayer's 
+      # capital gains that may be deducted from the rental losses which, due
+      # to the abolition of negative gearing in this proposal, cannot be immediately
+      # deducted from one's income.The sums represent the overall ratio in the population
+      # which we assume to be constant year-on-year.
+      #
+      # pmin sinces can't claim more than your losses
+      annualized_loss = pmin(1, abs(sum(new_capital_gains) / sum(loss_carry_fwd))) * loss_carry_fwd,  # nonnegative
+      #
+      # The consequence of the following calc is that some new_Taxable_Income_post_carryfwd will be NEGATIVE 
+      # -- i.e.unexhausted (especially if the Taxable_Income (originally) was zero).This error will
+      # overestimate the amount of extra tax collected.However
+      #
+      #   daley_taxstats %>% 
+      #     filter(new_Taxable_Income_post_carryfwd < 0) %$% sum(new_Taxable_Income) * 50 / 1e9
+      #   # [1] 0.224  # 224 million in losses
+      #
+      # i.e.There are at most 224 million dollars in losses carried forward that are unaccounted for
+      # in this model.And so at most 224 * 0.485 = 109 million in taxable income AT MOST that is 
+      # possibly lost. My doona is comfy: I'm staying in bed for that.
+      new_Taxable_Income_post_carryfwd = new_Taxable_Income - annualized_loss,  # remembering ann.lss is nonnegative
+      current_tax = income_tax(old_Taxable_Income_no_offset, fy.year= fy.year),
+      tax_after_reduction_in_discount = income_tax(Taxable_Income_Red_CG_discount, fy.year = fy.year),
+      new_tax = income_tax(new_Taxable_Income, fy.year = fy.year),
+      diff = new_tax - current_tax,
+      diff_incl_carry_fwd = income_tax(new_Taxable_Income_post_carryfwd, fy.year = fy.year) - current_tax
+      #
+      # retrospective action
+    )
+  
+  taxable_income_by_CG <-
+    daley_taxstats %>%
+    group_by(HasCG = new_capital_gains > 0) %>%
+    dplyr::summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
+    mutate(mean.tx = income_tax(mean.tx.i, fy.year = fy.year),
+           marginal.tax.of.avg = income_tax(mean.tx.i, fy.year = fy.year) - income_tax(mean.tx.i - 1, fy.year = fy.year)) %>%
+    select(HasCG, marginal.tax.of.avg) %>%
+    data.table
+  
+  
+  capital_gains_by_losses4 <-
+    daley_taxstats %>% 
+    group_by(IsInvestor = Gross_rent_amt > 0, 
+             HasLoss = loss_ignore_CG > 0, 
+             HasCG = new_capital_gains > 0) %>% 
+    tally %>% 
+    arrange(IsInvestor, HasLoss, HasCG) %>% 
+    #
+    # cosmetics:
+    ungroup %>% 
+    group_by(IsInvestor) %>% 
+    mutate(prop = round(n/sum(n),3))
+  # 2012-13 data
+  # Source: local data table [8 x 5]
+  # 
+  #   IsInvestor HasLoss HasCG      n  prop
+  # 1      FALSE   FALSE FALSE 208423 0.968
+  # 2      FALSE   FALSE  TRUE   6656 0.031
+  # 3      FALSE    TRUE FALSE    256 0.001
+  # 4      FALSE    TRUE  TRUE     23 0.000
+  #--
+  # 5       TRUE   FALSE FALSE  20753 0.533
+  # 6       TRUE   FALSE  TRUE   2340 0.060
+  # 7       TRUE    TRUE FALSE  14724 0.378
+  # 8       TRUE    TRUE  TRUE   1143 0.029
+  
+  prob_of_noCG_if_investor <- capital_gains_by_losses4 %>%
+    filter(IsInvestor, !HasCG) %$%
+    sum(prop)
+  if(eventual == 0){
+    return(daley_taxstats)
+  } else {
+  for (i in 1:eventual){   
+    if (i == 1){
+      new_daley <- 
+        daley_taxstats %>%
+        # random
+        mutate(loss_carry_fwd_orig = loss_ignore_CG) %>%
+        mutate(hasHadCG = FALSE,  #yet
+               whenCG.lastoccurred = 0,
+               prev_unexhausted_loss = loss_ignore_CG) 
+    }
+    
+    gc()
+    new_daley %<>%
+      mutate(rand = runif(nrow(.))) %>%
+      mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
+      mutate(HasCG = !noCGevent) %>%
+      setkey(HasCG) %>%
+      merge(taxable_income_by_CG)  %>%
+      mutate(
+        # We act on the new_tax directly.If someone has a CG event,
+        # we bring forward all their losses thitherto and reduce their tax
+        # by the average marginal tax rate for someone who earned capital gains
+        new_tax = ifelse(noCGevent, 
+                         income_tax(new_Taxable_Income, fy.year = fy.year),
+                         # Should negative taxes be included? Answer not yet obvious.
+                         pmax(0, income_tax(new_Taxable_Income, fy.year = fy.year) - marginal.tax.of.avg * loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
+        diff = new_tax - current_tax,
+        # record for console printout
+        whenCG.lastoccurred.prev = whenCG.lastoccurred,
+        # reset if applicable
+        whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred),
+        hasHadCG = as.logical(pmin(hasHadCG + !noCGevent, 1)) 
+      ) %>%
+      select(-marginal.tax.of.avg) %>%
+      data.table
+  }
+  new_daley
+  }
+}
+
+cost_of_daley_policy_fast2 <- function(year = 2013, eventual = 20, CGT.discount = 0.30){
+  fy.year <- yr2fy(year)
+  
+  if (year >= 2014){
+    # Inflate the wages for future years.
+    # Adjust the variables which depend on Sw_amt
+    # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
+    daley_taxstats <- 
+      sample_file_1213 %>%  
+      mutate(
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
+      )
+  } else {
+    daley_taxstats <- 
+      # fread(sample_file_of(2013)) %>%
+      get_sample_file(year = year)
+  }
+  
+  # Year specific housekeeping
+  # Before 2011-12, there is no variable Net_fincl_lss_amt
+  if (!("Net_fincl_invstmt_lss_amt" %in% names(daley_taxstats)))
+    daley_taxstats[,Net_fincl_invstmt_lss_amt := 0]
+  
+  if (!("ETP_txbl_amt" %in% names(daley_taxstats)))
+    daley_taxstats[,ETP_txbl_amt := 0]
+  
+  prop_full_discount <-
+    sample_file_1213 %>%
+    filter(Net_CG_amt > 0) %>%
+    mutate(apparent.discount = round(2*Net_CG_amt/Tot_CY_CG_amt)/2,
+           apparent.discount = ifelse(abs(apparent.discount - 0.5) <= 0.02, 0.50, apparent.discount)) %>%
+    group_by(apparent.discount) %>%
+    tally() %>%
+    arrange(n) %>%
+    ungroup %>%
+    filter(apparent.discount %in% c(0.5,1)) %>%
+    mutate(n.p = n/sum(n),
+           discount.key = cumsum(n.p))
+  
+  # More things to consider
+  # This is a problem.
+  #   sample_file_1213 %>%
+  #     filter(Net_CG_amt > 0) %>%
+  #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt,
+  #            tax.bracket = cut(Taxable_Income, breaks = c(-1,182e2, 37e3, 80e3, 180e3, Inf))) %>%
+  #     grplot(aes(x = discount, y = Net_CG_amt)) + 
+  #     geom_point() + 
+  #     coord_cartesian(ylim = c(1e4,1e6)) + 
+  #     scale_y_continuous(label = grattan_dollar) + 
+  #     facet_grid(tax.bracket~.)
+  
+  
+  
+  daley_taxstats %<>%
+    #
+    # One silly entry has a CG of $25M!
+    filter(Net_CG_amt < 5e6) 
+    # These next steps attempt to estimate the size of the typical discount.
+    # Previously, we assumed that all capital gains events enjoyed the full 50% 
+    # discount. This was erroneous, but thought not to be a major problem. It is
+    # somewhat of a problem.
+    #
+    #   sample_file_1213 %>%
+    #     filter(Net_CG_amt > 0) %>%
+    #     mutate(discount = Net_CG_amt / Tot_CY_CG_amt) %>%
+    #     grplot(aes(x = discount, y = Net_CG_amt)) + 
+    #     geom_point() + 
+    #     coord_cartesian(ylim = c(1e4,1e6)) +  scale_y_continuous(label = grattan_dollar)
+  #     
+  #
+  # so we estimate the number of capital gains events at each discount 0%, 10%, 20%, 30%, 
+  # based on Net capital gains / Total capital gains.
+  # It's important to note
+  # that this is polluted by losses carried forward.
+  #
+  # The dice roll.  
+    #
+  # http://stackoverflow.com/questions/31490534/conditional-join-in-r#31492015
+  #
+  daley_taxstats[,randCG := runif(nrow(daley_taxstats))]
+  
+  setkey(daley_taxstats, randCG)
+  setkey(prop_full_discount, discount.key)
+  # Conditional join
+  daley_taxstats <- prop_full_discount[daley_taxstats, roll=-Inf]
+  
+  daley_taxstats %<>%
+    # avoid NaNs when we 1/apparent.discount
+    mutate(apparent.discount = ifelse(apparent.discount < 0.1, 0.05, apparent.discount)) %>%
+    mutate(
+      # Adjust the capital gains.The Net_CG_amt = (Gross CG - Losses) discounted by 50%, 
+      # if the discount applies.But we use the apparent discount to adjust it, based on the
+      # dice roll.
+      new_capital_gains = ifelse(apparent.discount == 0.5, 
+                                 2 * Net_CG_amt * (1 - CGT.discount),
+                                 Net_CG_amt),
+      Taxable_Income_Red_CG_discount = Taxable_Income - Net_CG_amt + new_capital_gains,
+      new_tot_inc = Tot_inc_amt - Net_CG_amt + new_capital_gains,
+      # component of income from neither salary nor rent
+      income_no_salary = new_tot_inc - Net_rent_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt,  
+      #
+      # This is not quite true: it doesn't include medical offsets.
+      # You can only deduct Net_rent down to zero.  
+      # Include financial losses in deductions
+      # Full tax on Sw_amt. Then deductions
+      new_Taxable_Income =  pmax(0, income_no_salary + Net_rent_amt - Net_fincl_invstmt_lss_amt) + Sw_amt + Alow_ben_amt + ETP_txbl_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+      old_Taxable_Income_no_offset = Tot_inc_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+      loss_ignore_CG = -1 * pmin(0, pmax(0, income_no_salary - new_capital_gains) + Net_rent_amt),
+      #
+      loss_carry_fwd = -1 * pmin(0, income_no_salary + Net_rent_amt),  
+      loss_carry_fwd_not_CG = ifelse(new_capital_gains > abs(Net_rent_amt) & Net_rent_amt < 0, Net_rent_amt, 0),
+      #
+      # Ratio of (new?) capital gains to losses is the proportion of each taxpayer's 
+      # capital gains that may be deducted from the rental losses which, due
+      # to the abolition of negative gearing in this proposal, cannot be immediately
+      # deducted from one's income.The sums represent the overall ratio in the population
+      # which we assume to be constant year-on-year.
+      #
+      # pmin sinces can't claim more than your losses
+      annualized_loss = pmin(1, abs(sum(new_capital_gains) / sum(loss_carry_fwd))) * loss_carry_fwd,  # nonnegative
+      #
+      # The consequence of the following calc is that some new_Taxable_Income_post_carryfwd will be NEGATIVE 
+      # -- i.e.unexhausted (especially if the Taxable_Income (originally) was zero).This error will
+      # overestimate the amount of extra tax collected.However
+      #
+      #   daley_taxstats %>% 
+      #     filter(new_Taxable_Income_post_carryfwd < 0) %$% sum(new_Taxable_Income) * 50 / 1e9
+      #   # [1] 0.224  # 224 million in losses
+      #
+      # i.e.There are at most 224 million dollars in losses carried forward that are unaccounted for
+      # in this model.And so at most 224 * 0.485 = 109 million in taxable income AT MOST that is 
+      # possibly lost. My doona is comfy: I'm staying in bed for that.
+      new_Taxable_Income_post_carryfwd = new_Taxable_Income - annualized_loss,  # remembering ann.lss is nonnegative
+      current_tax = income_tax(old_Taxable_Income_no_offset, fy.year= fy.year),
+      tax_after_reduction_in_discount = income_tax(Taxable_Income_Red_CG_discount, fy.year = fy.year),
+      new_tax = income_tax(new_Taxable_Income, fy.year = fy.year),
+      diff = new_tax - current_tax,
+      diff_incl_carry_fwd = income_tax(new_Taxable_Income_post_carryfwd, fy.year = fy.year) - current_tax
+      #
+      # retrospective action
+    )
+  
+  taxable_income_by_CG <-
+    daley_taxstats %>%
+    group_by(HasCG = new_capital_gains > 0) %>%
+    dplyr::summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
+    mutate(mean.tx = income_tax(mean.tx.i, fy.year = fy.year),
+           marginal.tax.of.avg = income_tax(mean.tx.i, fy.year = fy.year) - income_tax(mean.tx.i - 1, fy.year = fy.year)) %>%
+    select(HasCG, marginal.tax.of.avg) %>%
+    data.table
+  
+  
+  capital_gains_by_losses4 <-
+    daley_taxstats %>% 
+    group_by(IsInvestor = Gross_rent_amt > 0, 
+             HasLoss = loss_ignore_CG > 0, 
+             HasCG = new_capital_gains > 0) %>% 
+    tally %>% 
+    arrange(IsInvestor, HasLoss, HasCG) %>% 
+    #
+    # cosmetics:
+    ungroup %>% 
+    group_by(IsInvestor) %>% 
+    mutate(prop = round(n/sum(n),3))
+  # 2012-13 data
+  # Source: local data table [8 x 5]
+  # 
+  #   IsInvestor HasLoss HasCG      n  prop
+  # 1      FALSE   FALSE FALSE 208423 0.968
+  # 2      FALSE   FALSE  TRUE   6656 0.031
+  # 3      FALSE    TRUE FALSE    256 0.001
+  # 4      FALSE    TRUE  TRUE     23 0.000
+  #--
+  # 5       TRUE   FALSE FALSE  20753 0.533
+  # 6       TRUE   FALSE  TRUE   2340 0.060
+  # 7       TRUE    TRUE FALSE  14724 0.378
+  # 8       TRUE    TRUE  TRUE   1143 0.029
+  
+  prob_of_noCG_if_investor <- capital_gains_by_losses4 %>%
+    filter(IsInvestor, !HasCG) %$%
+    sum(prop)
+  if(eventual == 0){
+    return(daley_taxstats)
+  } else {
+  for (i in 1:eventual){   
+    if (i == 1){
+      new_daley <- 
+        daley_taxstats %>%
+        # random
+        mutate(loss_carry_fwd_orig = loss_ignore_CG) %>%
+        mutate(hasHadCG = FALSE,  #yet
+               whenCG.lastoccurred = 0,
+               prev_unexhausted_loss = loss_ignore_CG) 
+    }
+    
+    gc()
+    new_daley %<>%
+      mutate(rand = runif(nrow(.))) %>%
+      mutate(noCGevent = rand < prob_of_noCG_if_investor) %>%
+      mutate(HasCG = !noCGevent) %>%
+      setkey(HasCG) %>%
+      merge(taxable_income_by_CG)  %>%
+      mutate(
+        # We act on the new_tax directly.If someone has a CG event,
+        # we bring forward all their losses thitherto and reduce their tax
+        # by the average marginal tax rate for someone who earned capital gains
+        new_tax = ifelse(noCGevent, 
+                         income_tax(new_Taxable_Income, fy.year = fy.year),
+                         # Should negative taxes be included? Answer not yet obvious.
+                         pmax(0, income_tax(new_Taxable_Income, fy.year = fy.year) - marginal.tax.of.avg * loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
+        diff = new_tax - current_tax,
+        # record for console printout
+        whenCG.lastoccurred.prev = whenCG.lastoccurred,
+        # reset if applicable
+        whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred),
+        hasHadCG = as.logical(pmin(hasHadCG + !noCGevent, 1)) 
+      ) %>%
+      select(-marginal.tax.of.avg) %>%
+      data.table
+  }
+  new_daley
+  }
+}
+@
+\twocolumn
+
+<<Just_negative_gearing_cost>>=
+prob_of_noCG_if_investor201213 <- 
+  sample_file_1213 %>%
+  group_by(
+    IsInvestor = Gross_rent_amt > 0,
+    HasCG = Net_CG_amt > 0
+  ) %>%
+  tally %>%
+  ungroup %>%
+  group_by(IsInvestor) %>%
+  mutate(prop = n/sum(n)) %>% 
+  filter(IsInvestor, !HasCG) %$% 
+  prop
+
+just_negative_gearing_taxstats <-
+  sample_file_1213 %>%
+  mutate(
+    income_no_salary = Tot_inc_amt - Net_rent_amt - Sw_amt - Alow_ben_amt - ETP_txbl_amt,  
+    #
+    # This is not quite true: it doesn't include medical offsets.
+    # You can only deduct Net_rent down to zero.  
+    # Include financial losses in deductions
+    # Full tax on Sw_amt.Then deductions
+    new_Taxable_Income =  pmax(0, income_no_salary + Net_rent_amt - Net_fincl_invstmt_lss_amt) + Sw_amt + Alow_ben_amt + ETP_txbl_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+    loss_ignore_CG = -1 * pmin(0, pmax(0, income_no_salary - Net_CG_amt) + Net_rent_amt),
+    old_Taxable_Income_no_offset = Tot_inc_amt - Tot_ded_amt - PP_loss_claimed - NPP_loss_claimed,
+    #
+    new_tax = income_tax(new_Taxable_Income),
+    current_tax = income_tax(Taxable_Income),
+    whenCG.lastoccurred = 0L
+  ) 
+
+just_negative_gearing_taxstats_year0 <- just_negative_gearing_taxstats
+
+taxable_income_by_CG <- 
+  just_negative_gearing_taxstats_year0 %>%
+  group_by(HasCG = Net_CG_amt > 0) %>%
+  dplyr::summarise(mean.tx.i = mean(new_Taxable_Income)) %>%
+  mutate(mean.tx = income_tax(mean.tx.i, fy.year = "2012-13"),
+         marginal.tax.of.avg = income_tax(mean.tx.i, fy.year = "2012-13") - income_tax(mean.tx.i - 1, fy.year = "2012-13")) %>%
+  select(HasCG, marginal.tax.of.avg) %>%
+  data.table
+
+
+for (i in 1:20){
+  just_negative_gearing_taxstats %<>%
+    mutate(rand = runif(nrow(.))) %>%
+    mutate(loss_carry_fwd_orig = loss_ignore_CG) %>% 
+    mutate(noCGevent = rand < prob_of_noCG_if_investor201213) %>%
+    mutate(HasCG = !noCGevent) %>%
+    setkey(HasCG) %>%
+    merge(taxable_income_by_CG) %>%
+    mutate(
+      new_tax = ifelse(noCGevent, 
+                       income_tax(new_Taxable_Income, fy.year = "2012-13"),
+                       # Should negative taxes be included? Answer not yet obvious.
+                       pmax(0, income_tax(new_Taxable_Income, fy.year = "2012-13") - marginal.tax.of.avg * loss_carry_fwd_orig * (i - whenCG.lastoccurred))),
+      whenCG.lastoccurred.prev = whenCG.lastoccurred,
+      # reset if applicable
+      whenCG.lastoccurred = ifelse(!noCGevent, i, whenCG.lastoccurred)
+    ) %>%
+    select(-marginal.tax.of.avg)
+  
+  if (i == 20)
+    just_negative_gearing_taxstats %<>% mutate(diff = new_tax - current_tax)
+}
+
+# 3 billion in savings upfront.
+@
+
+<<Henry_proposal_mutate>>=
+henry_taxstats <- function(year = 2013, new.discount = 0.25){
+  if (year >= 2014){
+    # Inflate the wages for future years.
+    # Adjust the variables which depend on Sw_amt
+    # accordingly (otherwise the difference just becomes smaller).
+    #
+    # Inflate by CG amount too.
+    henry_taxstats <- 
+      sample_file_1213 %>%  
+      mutate(
+        Taxable_Income = Taxable_Income - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_inc_amt = Tot_inc_amt - Sw_amt + Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013) - 
+          Net_CG_amt + Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Sw_amt = as.numeric(Sw_amt * (wage_inflator(from_fy = "2012-13", to_fy = "2013-14"))^(year - 2013)),
+        Net_CG_amt = Net_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year)),
+        Tot_CY_CG_amt = Tot_CY_CG_amt * CG_inflator(from_fy = "2012-13", to_fy = yr2fy(year))
+      )
+  } else {
+    henry_taxstats <- 
+      # fread(sample_file_of(2013)) %>%
+      get_sample_file(year = year)
+  }
+henry_taxstats %>% 
+  mutate(
+    new_capital_gains = 2 * Net_CG_amt * (1 - new.discount),
+    new_net_rent = Net_rent_amt * (1 - new.discount * (Net_rent_amt < 0)),  # discount only to negative income
+    new_invstment_lss = Net_fincl_invstmt_lss_amt * (1 - new.discount),
+    new_Taxable_Income = Taxable_Income - Net_CG_amt - Net_rent_amt + new_capital_gains + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
+    current_tax = income_tax(Taxable_Income),
+    new_tax = income_tax(new_Taxable_Income),
+    diff = new_tax - current_tax
+  )
+}
+@
+
+<<Summary-chunk, results='hide'>>=
+# Our proposal
+policy <- cost_of_daley_policy_fast(2015, CGT.discount = new.discount) 
+# The Henry proposal
+policy_align_gains_and_losses <- henry_taxstats(2015, new.discount = new.discount)
+
+policy %>%
+  mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
+  round(sum(diff_due_CG)*lf_inflator_fy(from_fy = "2012-13", to_fy = "2015-16")/1e9, 1) ->
+  cost_of_red_CGT_discount
+
+cost_of_daley_policy_fast(year = 2015, CGT.discount = new.discount, eventual = 0) %>%
+  mutate(diff_due_CG = income_tax(Taxable_Income_Red_CG_discount, fy.year = "2014-15") - current_tax) %$%
+  round(sum(diff_due_CG)*weighting(2015)/1e9, 1) ->
+  
+  cost_of_red_CGT_discount_year0
+
+
+just_negative_gearing_taxstats_year0 %>%
+  mutate(diff = new_tax - current_tax) %$%
+  round(sum(diff) * weighting(2015) / 1e9, 1) ->
+  
+  diff_just_due_NG_year0
+
+
+just_negative_gearing_taxstats %$%
+  round(sum(diff) * weighting(2015) / 1e9, 1) ->
+  
+  diff_just_due_NG
+
+
+policy %$%
+  round(sum(diff)*weighting(2015)/1e9, 1) ->
+  cost_of_policy_2015
+
+costing_policy_2015_year0 <-
+  cost_of_daley_policy_fast(2015, eventual = 0) %$%
+  round(sum(diff) * weighting(2015) / 1e9, 1) 
+
+cost_align_gains_and_losses <- 
+  policy_align_gains_and_losses %$%
+  round(sum(diff)*weighting(2015)/1e9, 1)
+
+cost_align_gains_and_losses_NG <-
+  policy_align_gains_and_losses %>%
+  mutate(
+    new_Taxable_Income = Taxable_Income - Net_rent_amt + new_net_rent - Net_fincl_invstmt_lss_amt + new_invstment_lss,
+    new_tax_only_NG = income_tax(new_Taxable_Income),
+    diff_due_NG = new_tax_only_NG - current_tax
+    ) %$%
+  round(sum(diff_due_NG) * weighting(2015) / 1e9, 1)
+
+write(x = c(
+  paste("Cost of policy by policy option with CGT discount set at", percent(new.discount)),
+  "===================================="),
+  file = "Summary_table.txt")
+
+write(x = c(
+  costing_policy_2015_year0, "Quarantine NG losses and reduce CGT discount (Year 0)", 
+  cost_of_policy_2015, "Quarantine NG losses and reduce CGT discount", 
+  cost_of_red_CGT_discount, "Reduce CGT discount", 
+  diff_just_due_NG, "Just quarantine losses", 
+  diff_just_due_NG_year0, "Just quarantine losses (year 0)",
+  cost_align_gains_and_losses, "Henry proposal", 
+  cost_align_gains_and_losses_NG, "Henry proposal (just NG)"
+      ),
+  file = "Summary_table.txt",
+  append = TRUE,
+  ncolumns = 2
+  )
+@
+
+<<CostofNGtotal>>=
+fread(sample_file_of(2013)) %>%
+  mutate(new_tax = income_tax(Taxable_Income - pmin(0, Net_rent_amt)),
+         diff = new_tax - income_tax(Taxable_Income)) %$%
+  sum(diff) * 50 / 1e9  ->
+  NG.tx.exp
+
+NG.tx.exp <- round(NG.tx.exp, 1)
+@
+%%% Document starts here
+% \begin{summary}
+\chapter*{Summary}
+Grattan Institute's \emph{Fiscal Challenges for Australia report}, published last month, reveals how Commonwealth and state government budgets are under pressure.
+The Commonwealth Government has run deficits for six years, with another four forecast.
+Reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.
+ 
+More active policy measures to achieve budget repair are required.
+This paper is part of a series by the Grattan Institute setting out priority reforms for repairing government revenues.
+In this paper we focus on two of the most significant areas of concessional treatment of savings outside of superannuation -- \highlight{capital gains tax (CGT) discounts} and \highlight{negative gearing}.
+These tax concessions allow investors to use debt financed investment as a means to defer and reduce their personal income tax liabilities.
+ 
+These tax concessions create incentives for investors to favour debt financed and speculative investments, particularly in property.
+The growing demand from investors has increased housing prices, to the disadvantage of young would-be home buyers.
+Like most tax concessions on investment, these discounts largely benefit the wealthy.
+ 
+Although income from capital gains is typically treated more favourably in most countries, there is good reason not to favour it too much, and to think Australia's discount is too large.
+ 
+The preferential treatment of capital gains for individuals and trusts was a \highlight{\$6.2~billion tax expenditure last year}.
+Deductions for rental losses result in over \highlight{\$4~billion} in foregone revenue each year.
+These tax policies are more than a drain on the budget: they are unnecessary and their misalignment has created perverse incentives.
+Losses can be written off in full while only half the gains are taxed.
+Investors have dutifully poured money into assets which make losses for a long time, in anticipation of later capital gains.
+ 
+As a consequence property prices have soared and revenue has leaked, mostly for the benefit of the wealthier taxpayers.
+ 
+There is little reason to maintain such a wide gulf between the treatment of gains and losses.
+The Commonwealth Government's primary goal should be to narrow this gulf.
+ 
+Reducing the capital gains discount to \Sexpr{100 * new.discount}~per cent and quarantining losses so they can only be written off against relevant investment income could raise around \$\Sexpr{costing_policy_2015_year0}~billion a year in the short-term.
+The preferential treatment of capital gains should be moderated, even if the policy surrounding negative gearing is untouched.
+Negative gearing should also be limited.
+Allowing deductions for costs, including interest costs, is a standard feature of the tax system. It avoids bias against debt financed investments.
+But allowing deductions in full each year against wages while capital gains income is taxed concessionally on sale creates the opposite bias -- encouraging people to pursue debt financed investments that make sense only because they provide tax breaks on wages.
+ 
+But the asymmetric treatment of losses versus gains is the major flaw in the system.
+It is a necessary condition of proper reform that both these elements align.
+The explosion in both the number of investors running losses and the size of those losses since the two policies diverged is strong evidence of tax arbitrage.
+ 
+Quarantining losses so they can only be written off against other investment income (operating profits and capital gains) could raise around \$\Sexpr{diff_just_due_NG_year0}~billion a year in the short-term.
+This would decline to around \$\Sexpr{diff_just_due_NG}~billion over time as those losses are offset against investment income. 
+ 
+An alternative option would align the tax rates for capital gains and losses.
+For example, the capital gains discount could be reduced so that people paid tax on 70~per cent of their capital gains, but could claim only 70~per cent of any investment losses against wage and salary income.
+Treating capital gains and recurrent losses consistently would reduce the tax-driven incentive for borrowing to invest.
+It would contribute around \$\Sexpr{cost_align_gains_and_losses}~billion a year to the bottom line.
+ 
+ 
+
+<<Number_of_NG_taxpayers>>=
+n.NGrs <- sample_file_1213 %$% sum(Net_rent_amt < 0) * 50 / 10^6
+n.NGrs <- round(n.NGrs, 1)
+@
+ 
+% Negative gearing is embedded in the Australian taxation system; \Sexpr{n.NGrs}~million taxpayers benefit from this policy.
+% Homeowners benefit from the (artificially) higher prices.
+% And the real estate lobby is vocal.
+% A superficial assessment might conclude that it is too difficult to change this policy.
+% But the electorate also recognizes that housing is unaffordable and parents will reward efforts that improve affordability for their children.
+ 
+The best way to transition to the new arrangements would be to phase them in over a number of years. Such a phase-in will help smooth reductions in asset prices. Phasing the changes in for all investors would be preferable to grandfathering which introduces complexity and is unfair to new investors -- particularly younger investors.
+% \end{summary}
+ 
+%%%
+\setcounter{tocdepth}{4}
+\contentspage
+%%%
+\chapter*{Commonwealth budgets under pressure}
+In five of the last six years, the Commonwealth Government has posted headline deficits of more than 2~per cent of GDP.
+Assuming revenue and spending projections are correct, Australia is on track for more than a decade of deficits between 2008 and 2019, with Commonwealth net debt projected to peak at 18~per cent of GDP in 2017, higher than any year since the mid-1990s.\footnote{Net debt was 18.1\%\ of GDP in 1995-96. See \textcite[p.~273]{Treasury2014b}}
+ 
+As Grattan Institute's \emph{Fiscal Challenges for Australia} report highlights, reaching surplus in the next five years depends on higher income tax collections through bracket creep and optimistic assumptions about economic growth, the terms of trade and spending restraint.\footcite{DaleyWood2015}
+ 
+The biggest worry is that budget projections assume that growth will return to ``trend''. The International Monetary Fund recently joined a growing group of economists who believe that long-run economic growth in developed countries was trending lower even before the financial crisis, and future expectations should be lower again.
+ 
+ 
+The government's fiscal strategy relies heavily on these optimistic projections. The measures introduced in this year's budget will make no net improvement to the budget position in 2018-19. The government justifies its inaction by saying that the projections suggest it is on a ``clear and credible path back to surplus.''\footcite{Hockey2015} But projections over the past five years have consistently overestimated the position of the budget four years out.
+ 
+However, hoping for the best is not a budget management strategy: it simply justifies putting off hard decisions, and shifts the costs and risks of budget repair onto future generations.
+ 
+Grattan research shows that each \$40 billion dollar deficit increases the lifetime tax burden for households headed by a person aged 25 to 34 by \$10,000.
+ 
+To bring their budgets back to balance, governments will need to undertake reforms on both the revenue and the spending side. But recently the Commonwealth Government's energy has been focussed on cuts to spending.
+It has deferred any significant changes in its revenue mix until after its \emph{Tax White Paper}.
+ 
+But there are revenue measures that could make a meaningful contribution to budget repair with little collateral damage. In recent and forthcoming papers, we articulate four policy proposals -- reducing superannuation tax concessions, changes to capital gains tax and negative gearing, broadening the GST and the introduction of a broad-based property levy -- that we think governments should adopt to improve their fiscal position.
+
+\chapter{The capital gains discount}
+\section{Capital gains enjoy preferential tax treatment relative to income from working}
+Capital gains are taxed as part of the income of individuals, companies and superannuation funds.
+In 2013-14, capital gains tax raised around \$7.5 billion, around three per cent of total income tax revenue.\footcite{Treasury2014a} 
+
+Individuals accrue more capital gains than companies or superannuation funds.
+They also generate much more of their gains through real estate (\Vref{fig:Majority_of_taxable_gains_are_earned_by_individuals})
+
+<<Majority_of_taxable_gains_are_earned_by_individuals>>=
+# https://www.ato.gov.au/About-ATO/Research-and-statistics/In-detail/Tax-statistics/Taxation-statistics-2012-13/?page=11
+read.table(text = "Column3	Shares	Real_estate Other_assets
+Individuals	6129	8468	6882
+Companies	2640	1455	8077
+Funds	7340	507	4842
+", header=TRUE, stringsAsFactors = FALSE) %>%
+        tidyr::gather(Gains, value, Shares:Other_assets) %>%
+        mutate(value = value/1e3,
+               Gains = factor(Gains)) %>%
+        grplot(aes(x = Column3, y = value, fill = Gains)) + 
+        geom_bar(stat = "identity", position = "stack",
+                 width = 0.7) + 
+        scale_y_continuous(label = grattan_dollar, expand = c(0,0), limits = c(0,25)) + 
+        annotate("text", 
+                 x = 3.45,
+                 hjust = 0,
+                 vjust = 1,
+                 size = 8.21,
+                 y = c(6129, 14597, 21479)/1e3, #cumsum(c(6129,8468,6882)), 
+                 color = gpal(3),
+                 fontface = "bold",
+                 label = c("Shares", "Real estate", "Other")) + 
+        annotate("blank", x = 4.4, y = 0) + 
+        theme(axis.title = element_blank()) 
+@
+\begin{figure}[h]
+\Caption{The minority of taxable gains are earned by individuals}{Taxable net capital gains 2012-13 (billions)}{fig:Majority_of_taxable_gains_are_earned_by_individuals}
+\includegraphics[width=\columnwidth]{figure/Majority_of_taxable_gains_are_earned_by_individuals-1}
+\source{Molten combination of \textcite{ATOCapitalGainsByType}}
+\end{figure}
+
+
+\begin{smallbox}{A short history of capital gains tax changes}{box:short_history_CGT}
+Before 1985 capital gains were untaxed in Australia.
+Taxes on capital gains were introduced to improve the integrity of the tax system, which was undermined by taxpayers recharacterising regular income as capital to avoid tax.\footcites{Evans2005}{Kenny2005}
+
+Between 1985 and 1999, real capital gains (sale proceeds minus the original purchase price adjusted for inflation) were taxed at a taxpayer's marginal income tax rate. 
+
+As recommended by the Ralph Review of Business Taxation, the Howard Government removed indexation adjustments so that tax was applied on nominal gains.
+To offset the removal of the indexation concession, capital gains tax was discounted by 50~per cent for individuals and 33~per cent for superannuation funds for assets held for more than a year.
+Capital gains of small unincorporated businesses, but not large businesses, are also discounted by 50~per cent.
+Small businesses also receive a range of other CGT concessions.
+When this regime was introduced, it was argued that it would stimulate capital markets and make the Australian regime more internationally competitive.\footcite[p.~14, 598]{BusinessTaxation1999} 
+
+The tax concession is a crude way to adjust for the effects of inflation.
+It results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation.
+Given the strong real growth in asset prices, particularly residential property, since the discount was introduced governments have almost certainly lost revenue from the change.
+
+\end{smallbox}
+Before 1985, capital gains were not taxed in Australia.
+Since then, the tax treatment of capital gains has varied, but they have always been taxed at a lower rate than wage and salary income (\Vref{box:short_history_CGT}).  
+
+Under the current rules, net capital gains are included as part of assessable income.\footnote{Capital losses can only be offset against capital gains, not ordinary income.
+But if taxpayers are unable to utilise their capital losses is a particular year, they are carried forward to future years \textcite{ATO2014a}.}  For individuals and small businesses, 50~per cent of their capital gains are excluded from income if the assets are held for more than one year.
+This means the effective tax rate paid on these gains is half the rate than for other forms of income.
+For superannuation funds, a third of the gains are excluded.
+Large corporations pay tax on all of their capital gains at the corporate tax rate of 30~per cent.
+
+Capital gains on owner-occupied housing are not taxed at all.\footnote{This report does not consider making owner-occupied housing liable for capital gains tax because of the significant negative social and economic consequences discussed in \textcite[pp.~43-45]{Daley2013}.}
+
+Capital gains have other less explicit tax advantages compared to recurrent income.
+Investors control when they realise gains. 
+Consequently, they can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate.\footnote{A common strategy for investors close to retirement is to shift capital assets into Self Managed Super Funds, and then sell them when they are aged over 60 and not liable for tax.}  
+Further, unlike other forms of income, capital gains are taxed on sale rather than as they accrue. 
+This deferral of tax is akin to the government providing the investor with an interest free loan(See \Vref{sec:ShouldCapitalGainsBeTaxedConsistently})
+
+\section{The 50~per cent capital gains tax discount is too generous}\label{sec:ShouldCapitalGainsBeTaxedConsistently}\label{sec:The50pcCGTdiscounttoogenerous}
+There are good reasons for taxing capital gains consistently with other forms of income. 
+It would tax all increases in spending power the same way, reduce revenue leakage from artificially structured transactions, reduce distortions in investment choices, and make the tax system more progressive. 
+
+On the other hand, taxing capital gains at full marginal rates would tax the inflation component of gains and may deter people from saving, investing or selling long held assets. 
+
+The challenge for tax policy is to strike the balance between these costs and risks. The current 50~per cent discount is too generous. When the other tax benefits for capital gains are taken into account, the discount over-compensates investors for inflation and provides a sizeable tax break for the wealthy. 
+
+\subsection{Taxing capital gains as ordinary income has merit}
+Capital gains and other forms of savings income increase a person's spending power.
+All increases in spending power should be taxed consistently regardless of how they are earned (chapter 2); ``a buck is a buck is a buck'', as the Canadian Carter report put it. 
+
+Taxing capital gains consistently with ordinary income maintains the integrity of the tax base. 
+Concessions results in ``revenue leakage as taxpayers find ways to convert income into capital gains.\footcites{Evans2005}{Minas2013} Sealing the income tax base is a key reason capital gains are taxed in most OECD countries\footcite{OECD2006b} and motivated the introduction of capital gains in Australia (see \Vref{box:short_history_CGT})
+
+Traditionally, sheltering income by converting it into capital has been the preserve of the wealthy.
+Executives paid via shares or stock options\footcite[pp.~8-9]{Ingles2009} or corporate reorganisations of private corporations to convert dividend income into capital gain, for example.\footcite{Minas2013} 
+Yet borrowing to finance investments with negative income flow but positive capital gains is another way in which wage income is effectively converted into capital gain for tax purposes.
+This conversion comes about via the interaction of negative gearing with the capital gains tax provisions (\cref{sec:negative_gearing_provides}).
+A storm of easy credit and lower taxes on capital has led to torrential borrowing in pursuit of tax advantages, and thus even greater revenue leakage.
+
+Finally, discounted taxation of capital gains favours wealthy taxpayers who receive most of the capital gains. 
+Almost 80~per cent of capital gains are earned by those in the top 20~per cent of income earners  (\Vref{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}).
+Compared to low income earners, higher income earners are more likely to have additional income that can be invested.\footnote{The top 20~per cent of households by disposable income save on average 35~per cent of their disposable income.
+This compares to dissavings of 25~per cent for the lowest income quintile and savings rates of less than 10~per cent for the second and third quintiles.}
+
+\begin{smallbox}{Tax gains on an accruals basis?}{box:accrual}
+Taxing capital gains on realization creates several distortionary effects, which we have mentioned above. 
+Investors are incentived to hold onto assets that they would otherwise sell because of the looming tax bill. 
+Investors also enjoy a lengthy deferral of tax, effectively a tax-free loan from the government to  (generally wealthy) asset-holders. 
+Finally, realization-based CGT regimes allow asset holders to wait until their marginal tax rate is low (as during retirement) before selling.
+
+These problems can be eliminated by taxing gains on an accruals basis -- that is, by requiring asset holders to pay tax every year the asset is held on the accrued gain, regardless of whether it is sold or not. 
+Although taxing on an accrual basis has been recognized as the ideal capital gains tax regime in theory\footnote{Assuming a comprehensive income taxation philosophy; vide: \textcite{burman2009taxing}} it has been neglected by policy-makers due to perceived difficulties in implementation.
+
+Although implementation is always difficult, the claim that taxing on an accruals basis is too impractical is now being questioned in the tax literature.\footnote{See for example \textcite{Ingles2015CGT}.} 
+The two main problems with accruals taxation -- determining the change in an asset's price when it hasn't been exposed to the market, and potential low liquidity in asset holders -- are serious enough to warrant focus, but in my opinion are less serious than the current regime's distortions.
+
+Determining the price of shares is trivial and has been advocated\footnote{Somewhere.}.
+Accrued prices of property are more difficult to determine; however, price indices are reliable indicators of growth over areas. 
+The details how these price indices translate into a formula to calculate accruals are, in my view, unimportant.
+Growth residual to these indices may impose a greater tax burden on some owners than is deserved; however, it is equally likely that owners would receive an unfairly low tax bill at the end of accrual period. 
+In any case, an investor who chooses to dispose of his asset would only pay tax on the last gain actually realized, which would wash out any discrepancy between the indices and the investor's true gain.
+
+Of greater difficulty are unlisted shares or business assets, which are difficult to value. 
+
+
+The current regime of capital gains taxation has several well-documnted flaws.
+Taxes are imposed on realization, which creates economic distortions through asset lock-in, provides investors with an implicit interest-free loan towards their tax liabilities, and allows investors to minimize their tax by waiting till retirement (when their marginal tax rate is very low) or by avoiding tax altogether.
+\end{smallbox}
+
+\subsection{Some discount may be justified but 50~per cent is too high}
+A concession from marginal rates of income tax should only be made if it serves a policy aim. 
+
+Some discount on tax treatment of gains is justified to avoid taxing the inflation component of gains.
+But with inflation rates low relative to investment returns, the 50~per cent discount overcompensates most investors. 
+This is particularly true when the other tax advantages of gains -- tax deferral and the ability to control the timing of realisation -- are taken into account. 
+Other justifications for concessional tax treatment of gains -- maintaining the incentives to save and start new business and moderating the effect of ``asset lock-in'' -- have weak empirical foundations. In any case, lower taxes on capital gains are not the most targeted way to achieve these objectives.
+
+Most OECD countries offer some type of discount or concession for capital gains but it varies by investment type.\footnote{In some countries -- including Israel, Ireland, Norway, and Luxembourg -- property investments other than the family home are taxed as ordinary income.
+See \textcite{Harding2013} for a summary.}  But the hurdles to qualify for the most generous concessions can be stringent.
+Holding periods to receive maximum concession on investment property are ten years in Germany and Korea, 20 years in Slovenia, 30 years in France and 35 in Austria.\footcite{Harding2013} In New Zealand, where capital gains are notionally tax free, capital gains on property purchased with the intent to sell is taxed as ordinary income.\footcite[p.~25]{prebble2010tax} 
+
+\subsubsection{The CGT discount overcompensates for inflation and is not consistent with the treatment of other investment income}
+A lower tax rate for capital gains is sometimes justified on the basis that the inflation part of gains should not be taxed. 
+The effective tax rates on real returns can be high if nominal gains are taxed at marginal income tax rates.\footcite{Treasury2010} 
+This is particularly true of investments with low real returns that are held for an extended period (\Vref{box:short_history_CGT}).
+
+But the tax concession is a crude way to adjust for the effects of inflation. 
+Investors pay less tax compared to a tax on real gains long as asset values grow at least twice the rate of inflation. 
+So the discount overcompensates investors with high returns and undercompensates those with low ones. 
+
+Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7.3~per cent while share prices have grown by an average of only 3.6~per cent. 
+Inflation over this period was 2.8~per cent.\footcite{ABS2015a}  
+So the 50~per cent discount has overcompensated housing investors. 
+In contrast, share investors, who have suffered low average capital returns due to the global financial crisis, would have been better off under a regime that taxed real capital gains. 
+
+But full compensation for inflation is not needed to constrain effective tax rates on gains at or below an investor's marginal rate.  
+Capital gains enjoy other tax advantage that act to lower the effective tax rates. 
+
+First, capital gains are taxed upon realisation (\ie when the asset is sold) not as they accrue, providing investors with an implicit interest-free loan on tax liabilities.\footnote{See also:~\textcites[p.~2]{Fane2004}[p.~12]{Ingles2009}}
+This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing the longer the asset is held (\Vref{box:Tax_deferral_and_effective_tax_rates}).\footcite[p.~65]{Treasury2010}  
+
+Investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. We see evidence of people waiting to retirement to realise capital gains (see below).\label{sec:InvestorsChooseTimeOfRealization} 
+This reduces the average tax rate an investor pays on capital gains income. 
+For example, the average marginal tax rate on capital gains for people in the workforce is 31~per cent compared to 17~per cent for people over 50 with no wage income.\footcite{ATO2013i} 
+
+Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income. 
+Australia's current system provides no explicit inflation adjustment for interest on bank deposits -- assets disproportionately held by the least well off\footnote{Bank deposits comprise 20\%\ of the assets of the households in the lowest income decile compared with around 5\%\ for top two income deciles. \textcite[Wave~10]{HILDA2015}}  -- that do not receive these other tax advantages. \nocite{*}
+
+The current 50 per cent discount compensates, and in many cases overcompensates, for the effects of inflation on post-tax returns. 
+When the other tax advantages for capital gains income are factored in, capital growth assets receive sizeable tax breaks.  
+
+
+\subsubsection{Tax concessions for capital gains generate revenue leakage}
+A lower tax rate for capital gains results in `revenue leakage' as taxpayers find ways to convert income into capital gains.\footcites{Evans2005}{Minas2013}  
+
+
+Yet the protection offered by a capital gains tax has been eroded by negative gearing.
+
+
+
+\subsubsection{Tax concessions distort investment choices}
+Arguments for lower rates, concessions, or fully abolishing the capital gains tax often rest on improving investment decisions. 
+But lower taxes on capital gains may in fact distort some investment choices.
+Setting taxes for capital gains lower than operating income creates an incentive for investors to choose assets more likely to generate income through capital gains rather than operating income.
+
+\subsubsection{Tax concessions on gains favour the wealthy}
+
+
+<<Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_>>=
+taxstats201213 <- fread(sample_file_of(2013))
+
+no_cg <- 
+  taxstats201213 %>%
+  group_by(Income_decile = ntile(Taxable_Income - Net_CG_amt, 10)) %>%
+  dplyr::summarise(tot.CG = sum(Net_CG_amt)) %>%
+  ungroup %>%
+  mutate(tot.CG = tot.CG/sum(tot.CG),
+         decile_of = "Taxable Income deciles\nwithout capital gains")
+
+no_cg_with_age <- 
+  taxstats201213 %>%
+  mutate(Income_decile = ntile(Taxable_Income - Net_CG_amt, 10),
+         age = 20 + (11 - age_range) * 5, 
+         age = ifelse(age <= 45, "45 or under",
+                      ifelse(age < 60, "46-59", "60+"))) %>%
+  group_by(Income_decile, age) %>%
+  dplyr::summarise(tot.CG = sum(Net_CG_amt)) %>% 
+  ungroup %>% 
+  arrange(Income_decile, age) %>%
+  mutate(tot.CG = tot.CG/sum(tot.CG),
+         Income_decile = factor(Income_decile),
+         age = factor(age),
+         age = Rcell::revFactor(age))
+
+incl_cg <- 
+  taxstats201213 %>%
+  group_by(Income_decile = ntile(Taxable_Income, 10)) %>%
+  dplyr::summarise(tot.CG = sum(Net_CG_amt)) %>%
+  ungroup %>%
+  mutate(tot.CG = tot.CG/sum(tot.CG),
+         decile_of = "Taxable Income deciles\nwith capital gains")
+
+both <- bind_rows(no_cg, incl_cg)
+
+both %T>%
+  chart_data %>%
+  grplot(aes(x = factor(Income_decile), y = tot.CG, fill = decile_of)) + 
+  geom_bar(stat = "identity", width = 0.9) + 
+  facet_grid(~decile_of) + 
+  scale_y_continuous(expand = c(0,0.00), label = percent) + 
+  scale_fill_manual(values = gpal(2, T)) + 
+  annotate("blank", x = 1, y = 0.7) + 
+  theme(strip.background = element_rect(color = theGrey, size = 12, fill = theGrey),
+        strip.text = element_text(size = 23, color = "white", face = "bold", vjust = 0.8),
+        panel.margin.x = grid::unit(1, "lines")) + 
+  xlab("Taxable income decile") 
+@
+\begin{figure}[t]
+\Caption{Most capital gains are earned by those in the highest income decile although less when capital gains income is excluded}{Amount of net capital gains by income decile}{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}
+\includegraphics[width=\columnwidth]{figure/Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_-1}
+\source{\gao\ \textcite{ATO2013i}}
+\end{figure}
+Some of this is accounted for by the `lumpy' nature of gains.
+This means that realising gains can push investors up the taxable income scale.
+When we control for this by removing gains from income, we see that more than 30~per cent of gains are still earned by those in the top ten per cent of (non-capital gains) income. 
+
+<<Capital_gains_deciles_by_age>>=
+sample_file_1213 %>% 
+  filter(Net_CG_amt < 5e6,
+         Net_CG_amt > 0) %>%
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under",
+                                                       ifelse(age < 60, "45-59", "60+"))) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-59", "60+"))) %>%
+  group_by(age, Income_decile = factor(ntile(Taxable_Income - Net_CG_amt, 10))) %>%
+  dplyr::summarise(mean.cg = mean(Net_CG_amt),
+            mean.spous = mean(Spouse_adjusted_taxable_inc)) %>%
+  gather(amounts, means, mean.cg:mean.spous) %>% 
+  grplot(aes(x = Income_decile, fill = amounts, y = means)) + 
+  geom_bar(stat = "identity", width = 1) + 
+  facet_grid(~age) + 
+  theme(legend.position = "top")
+@
+
+A large fraction of gains are also earned by those would be in the bottom ten per cent of income earners but for their capital gains income (\Vref{fig:Nearly_eighty_per_cent_of_capital_gains_are_earned_by_those_}).
+As we show later, much of this is explained by the ``retirement realisation effect'' whereby people hold on to their assets until retirement so they can realise their gains when their taxable income is low. 
+
+
+
+
+The tax concession is a crude way to adjust for the effects of inflation.
+In a world with constant tax scales, the 50~per cent discount results in a lower tax bill compared to taxing real gains so long as asset values grow at least twice the rate of inflation.
+As \Vref{fig:ASX_Before_and_after_tax_returns_for_10_years} shows, in the current low inflation environment, the 50~per cent discount overcompensates most investors.%% asx
+
+<<ASX_Before_and_after_tax_returns_for_10_years, fig.height=13, out.height="13in">>=
+read_excel("ASX_Returns_by_asset_class.xlsx") %>%
+  gather(tax_class, returnz, -`Asset class`) %>%
+  # cosmetics
+  mutate(returnz = returnz/100,
+         `Asset class` = gsub("\\s+", "\n", `Asset class`),
+         `Asset class` = gsub("Global\\n", "Global ", `Asset class`)) %>%
+  mutate(tax_class = factor(tax_class,
+                            levels = c("Gross return", 
+                                       "Superannuation", 
+                                       "After tax lowest marginal tax rate", 
+                                       "After tax highest marginal tax rate"),
+                            labels = c("Gross return\t", 
+                                       "Superannuation\t", 
+                                       "After tax lowest marginal tax rate\t", 
+                                       "After tax highest marginal tax rate\t"))) %>%
+
+  #
+  grplot(aes(y = returnz, x = `Asset class`, fill = tax_class)) + 
+  geom_bar(stat = "identity",
+           position = "dodge",
+           width = 1) + 
+  geom_hline(yintercept = 0.028, 
+             color = theGrey, size = 2) + 
+  annotate("text", x = 2, y = 0.0299, 
+           hjust = 0,
+           label = "CPI (2.8% p.a.)", color = theGrey, fontface = "bold",
+           size = 8.14) + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,0.1), label = percent) + 
+  theme(panel.grid.major = element_blank(),
+        plot.margin = grid::unit(c(0.7, 2.2, 0.5, 0), "lines"),
+        axis.title = element_blank(),
+        legend.position = "bottom") + 
+  guides(fill = guide_legend(ncol = 2, 
+                             title.theme = element_blank(), 
+                             keyheight = unit(2, "lines"),
+                             keywidth = unit(2, "lines"),
+                             label.theme = element_text(angle = 0, size = 23))) +
+  coord_flip()
+@
+\begin{figure}
+\Caption{After tax returns well exceed CPI for most asset classes, even for those in the top marginal tax bracket}
+{Returns (\%\ p.a.) in the 10 years to December 2013}{fig:ASX_Before_and_after_tax_returns_for_10_years}
+\includegraphics[width=\columnwidth]{figure/ASX_Before_and_after_tax_returns_for_10_years-1}
+\end{figure}
+
+% We don't include this chunk
+<<Survey-Income-Housing-assets,eval=FALSE,include=FALSE>>=
+SIH11BH <- read.dta("./SIH/sih11bh.dta")
+
+SIH11BH.df <- data.frame(debt.cc = SIH11BH$LIACCCH, # Amount of credit card debt - household level
+                         debt.hecs =SIH11BH$LIAHECCH, # Amount of HECS/HELP liability
+                         debt.sfs = SIH11BH$LIASFSCH, # Amount of Student Financial Supplement liability
+                         debt.house = SIH11BH$LIASDCH, # Principal outstanding on loans for selected dwelling
+                         debt.inv.loans = SIH11BH$LIAINVCH, # Principal outstanding on investment loans (excl business and rental property loans)
+                         debt.other.prop = SIH11BH$LIAOPCH, # Principal outstanding on loans for other property (excl business and investment loans)
+                         debt.other.purp = SIH11BH$LIAOTCH, # Principal outstanding on loans for other purposes (excl business and investment loans)
+                         debt.vhcles = SIH11BH$LIAVECH, # Principal outstanding on loans for vehicle purchases (excl business and investment loans)
+                         debt.rntl.prop = SIH11BH$LIARPCH, # Principal outstanding on rental property loans
+                         asset.gov.super = SIH11BH$VSUPGCH, # Balance of accounts with government superannuation funds - household level
+                         asset.ngov.super = SIH11BH$VSUPNCH, # Balance of accounts with non-government superannuation funds - household level
+                         asset.oo.res.prop = SIH11BH$HVALUECH, # Estimated sale price of dwelling - HH
+                         asset.otr.res.prop = SIH11BH$VRPRCH, # Value of residential property excl selected dwelling 
+                         asset.non.res.prop = SIH11BH$VNRPRCH, # Value of non-residential property
+                         asset.house.contents = SIH11BH$VCONTCH, # Value of contents of selected dwelling
+                         asset.fin.accnts = SIH11BH$VFINCH, # Value of accounts held with financial institutions (excl offset accounts) - household level
+                         asset.off.accnts = SIH11BH$VOFTCH, # Value of offset accounts - household level
+                         asset.bonds = SIH11BH$VDEBCH, # Value of debentures and bonds - household level
+                         asset.childrens = SIH11BH$VCHASSCH, # Value of children's assets
+                         asset.loans = SIH11BH$VPLNCH, # Value of loans to persons not in the same household - household level 
+                         asset.otr.fin.invest = SIH11BH$VINVOTCH, # Value of other financial investments - household level
+                         asset.inc.bus = SIH11BH$VIBUSCH, # Value of own incorporated business (net of liabilities) - household level
+                         asset.noninc.bus = SIH11BH$VUBUSCH, # Value of own unincorporated business (net of liabilities) - household level
+                         asset.pr.trusts = SIH11BH$VPRTCH, # Value of private trusts - household level
+                         asset.pub.trusts = SIH11BH$VPUTCH, # Value of public unit trusts - household level
+                         asset.shares = SIH11BH$VSHARCH, # Value of shares - household level
+                         asset.ptnshp = SIH11BH$VSIPCH, # Value of silent partnerships - household level
+                         asset.vhcles = SIH11BH$VVEHICH, # Value of vehicles
+                         wealth.hhold = SIH11BH$WEALTHH, # Net wealth of household
+                         hh.weight = SIH11BH$SIHHHWT, # # Weight - HH (SIH)
+                         age = SIH11BH$AGERHBC, # Age of HH reference person
+                         ABSHID = SIH11BH$ABSHID, # Household ID
+                         income.disp.an = SIH11BH$DISPSCH8 *52, # Current weekly HH disposable income
+                         income.total.an = SIH11BH$INCTSCH8 *52, # Total current weekly HH income from all sources
+                         equiv.factor = SIH11BH$EQUIVH) # HH equivalising factor
+
+# Setting up variables of interest ------------------------------------------------------------
+
+# New we build a few identities so that we can group assets and liabilities by broad types
+
+SIH11BH.df <- SIH11BH.df %>% mutate(Home = asset.oo.res.prop, 
+                                    Other.property = asset.otr.res.prop + asset.non.res.prop, 
+                                    Super = asset.gov.super + asset.ngov.super, 
+                                    Other.financial.assets = asset.fin.accnts + asset.off.accnts + asset.bonds + asset.otr.fin.invest + asset.shares, 
+                                    House.mortgage = debt.house,
+                                    Investment.property.loans = debt.rntl.prop + debt.other.prop, 
+                                    Other.liabilities = debt.cc + debt.hecs + debt.sfs + debt.inv.loans + debt.other.purp + debt.vhcles, 
+                                    All.liabilities = House.mortgage + Investment.property.loans + Other.liabilities, 
+                                    All.liabilities.ex.house = All.liabilities - House.mortgage, 
+                                    All.other.assets = wealth.hhold - Home- Other.property - Super - Other.financial.assets + All.liabilities)
+
+SIHHHI <- svydesign(id=~ABSHID, weights= ~hh.weight, fpc=NULL, data = SIH11BH.df)
+
+# Deciles for net wealth, total income and disposable income
+SIHHHI.wealth10 <- svyquantile(~wealth.hhold, SIHHHI,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+SIHHHI.total.income10 <- svyquantile(~income.total.an, SIHHHI,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+SIHHHI.disp.income10 <- svyquantile(~income.disp.an, SIHHHI,c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1), ci = FALSE)
+
+# So now we use cut to break up the dataset along the weighted quintiles specified in the survey object
+# These are assigned as a column in HSL.results.dist
+
+#For quintiles
+SIH11BH.df$HHW.quintiles <- cut(SIH11BH.df$wealth.hhold, breaks = SIHHHI.wealth5) %>% as.numeric()
+SIH11BH.df$HHTI.quintiles <- cut(SIH11BH.df$income.total.an, breaks = SIHHHI.total.income5) %>% as.numeric()
+SIH11BH.df$HHDI.quintiles <- cut(SIH11BH.df$income.disp.an, breaks = SIHHHI.disp.income5) %>% as.numeric()
+  
+# For deciles
+SIH11BH.df$HHW.deciles <- cut(SIH11BH.df$wealth.hhold, breaks = SIHHHI.wealth10) %>% as.numeric()
+SIH11BH.df$HHDI.deciles <- cut(SIH11BH.df$income.total.an, breaks = SIHHHI.total.income10) %>% as.numeric()
+SIH11BH.df$HHDI.deciles <- cut(SIH11BH.df$income.disp.an, breaks = SIHHHI.disp.income10) %>% as.numeric()
+
+# Splitting hhold wealth by major assets and liabilities, by wealth decile ------------------------------------------------------------
+
+# We create a summary chart breaking down net wealth into its main components, by net wealth decile
+# Later on we will restrict all of this only to those with total incomes of more than $150k
+
+Wealth.by.decile <- 
+  SIH11BH.df %>% 
+  group_by(HHW.deciles) %>% 
+  filter(!is.na(HHW.deciles)) %>%
+  dplyr::summarise ("Home" = sum(Home * hh.weight) / sum(hh.weight) / 10^6,
+             "Other property" = sum(Other.property * hh.weight) / sum(hh.weight) / 10^6, 
+             "Super" = sum(Super * hh.weight) / sum(hh.weight) / 10^6,
+             "Other Financial Assets" = sum(Other.financial.assets * hh.weight) / sum(hh.weight) / 10^6,
+             "Other Assets" = sum(All.other.assets * hh.weight) / sum(hh.weight) / 10^6,
+             "Liabilities" = -sum(All.liabilities * hh.weight) / sum(hh.weight) / 10^6, 
+             "Net wealth" = sum(wealth.hhold * hh.weight) / sum(hh.weight) / 10^6) %>%
+  ungroup %>%
+  gather(Asset_class, wealth, -HHW.deciles) 
+
+Wealth.by.decile %>%
+  filter(!(Asset_class %in% c("Net wealth", "Liabilities"))) %>%
+  group_by(HHW.deciles) %>%
+  mutate(prop.wealth = wealth/sum(wealth)) %>%
+  grplot(aes(x = factor(HHW.deciles), y = prop.wealth, fill=Asset_class)) + 
+#   geom_line(aes(color = Asset_class, group = Asset_class, label=Asset_class)) + 
+#   annotate("blank", x = 12, y = 0) + 
+#   geom_dl(method = "last.points") + 
+  geom_bar(stat = "identity",
+           width = 1,
+           position = "stack") + 
+  theme(legend.position = "right")
+@
+
+<<HILDA-Wave10>>=
+hilda_names <- read.dta("./HILDA/Household_j130c.dta") %>% names
+
+HILDA_wave10 <- read.dta("./HILDA/Household_j130c.dta") %>%
+  data.table %>%
+  mutate(
+    # NA casting
+    jhifeftp = ifelse(jhifeftp < 0, NA, jhifeftp),
+    jhifeftn = ifelse(jhifeftn < 0, NA, jhifeftn),
+    fy_gross_tot_inc = jhifeftp - jhifeftn
+  )
+
+## Alternative see HILDA Figure 4.9 Wealth model (household-level)
+HILDA_wave10.svy <- svydesign(ids = ~0, data = HILDA_wave10, weights = ~jhhwth)
+HILDA10_income_deciles <- svyquantile(~fy_gross_tot_inc, HILDA_wave10.svy, quantiles = (0:10)/10 )
+# HILDA10_asset_deciles <- svyquantile(~jhwassei, HILDA_wave10.svy, quantiles = (0:10)/10)
+
+HILDA_wave10 %>%
+  data.table %>%
+  select(
+      jhwtbani # Bank accounts
+    , jhwassei # Total assets
+    , jhifeftp #  FY gross total income
+    , jhhwth  # household weight (Cross-section)
+  ) %>%
+  # All these negative numbers are various flavours of NA
+  mutate(jhifeftp = ifelse(jhifeftp %in% c(-10:-1), NA, jhifeftp),
+         jhwtbani = ifelse(jhwtbani %in% c(-10:-1), NA, jhwtbani),
+         jhwassei = ifelse(jhwassei %in% c(-10:-1), NA, jhwassei)) %>%
+  mutate(prop_bank = jhwtbani/(jhwassei + 1)) %>%
+  group_by(Income_decile = factor(as.numeric(cut(jhifeftp, breaks = HILDA10_income_deciles)))) %>%
+  filter(!is.na(Income_decile)) %>% 
+  dplyr::summarise(mean_prop_bank = weighted.mean(prop_bank, jhhwth),
+            mean_asset = mean(jhwassei),
+            mean_inco = mean(jhifeftp)) %>%
+  grplot(aes(x = Income_decile, y = mean_prop_bank)) + 
+  geom_bar(stat = "identity", width = 1)
+@
+
+<<Investor_tax_rates>>=
+cgt.marginal.rates <- 
+  sample_file_1213 %>% 
+  age_mutate_ %>% 
+  group_by(HasCGT = Net_CG_amt > 0, 
+           HasSalary = Sw_amt > 0, 
+           Over50 =  Age > "50\nto\n54") %>% 
+  summarise(mar.cg.tx.rate = mean(income_tax(Taxable_Income - Net_CG_amt + 1) - income_tax(Taxable_Income - Net_CG_amt)))
+
+workforce.avg.marginal.rate <- 
+  cgt.marginal.rates %>%
+  filter(HasCGT, HasSalary) %>%
+  ungroup %>% 
+  summarise(marginal.rate = mean(mar.cg.tx.rate)) %$%
+  round(marginal.rate, 3) * 100
+
+over50.no.wage.income.avg.marginal.rate <- 
+    cgt.marginal.rates %>%
+  filter(HasCGT, !HasSalary, Over50) %$%
+  round(mar.cg.tx.rate, 3) * 100
+
+@
+
+Investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. 
+We see evidence of people waiting to retirement to realise capital gains (see below). 
+This reduces the average tax rate an investor pays on capital gains income. 
+For example, the average marginal tax rate on capital gains for people in the workforce is \Sexpr{workforce.avg.marginal.rate}\%\ compared to \Sexpr{over50.no.wage.income.avg.marginal.rate}\%\ for people over 50 with no wage income. 
+
+Making additional inflation adjustments for capital gains magnifies the tax advantages capital gains receive over other investment income.
+Ironically Australia's current system provides no adjustments for the least protection to bank deposits -- disproportionately held by the least well off -- and much more protection for other investments.\footnote{Over 90\%\ of those in the bottom decile have deposits, but less than 30\%\ have superannuation assets; and less than 20\%\ have equities or life insurance.}
+
+Unlike other investment income, gains are taxed when an asset is sold, not when they accrue, which provides investors with an implicit interest-free loan on tax liabilities (See \Vref{box:Tax_deferral_and_effective_tax_rates}).\footcites[See also:][p.~2]{Fane2004}[p.~12]{Ingles2009} Investors are also able to choose the time of the asset's disposal to minimise tax. 
+
+\afterpage{%
+\begin{bigbox*}{Capital gains enjoy tax-advantaged status over other forms of income}{box:Tax_deferral_and_effective_tax_rates}
+Even without a discount, capital gains are taxed at a lower effective rate than other forms of investment income such as interest or dividends because the tax can be deferred until the asset is sold.
+This tax deferral is akin to an implicit interest free loan from the government.
+The tax benefits from this implicit loan increase the longer the asset is held. 
+
+For example, consider a property that does not generate any recurrent income (rental payments just cover the annual expenses) but is expected to appreciate in value at 7~per cent a year.
+With no CGT discount, an investor in the top (47~per cent) marginal tax bracket is taxed at 23.5~per cent on the gains if they hold the property for a year.
+If the asset is held for 5 years the effective tax rate falls to 21.2~per cent.
+After 20 years it reduces to 14.6~per cent. 
+
+In contrast, if the investor chooses a term deposit paying 7~per cent a year and they reinvest the after-tax income each year, their effective tax rate is 47 cents a year, regardless of the holding period for the asset. (See \Vref{fig:Effective_marginal_tax_rates_are_lower})
+
+The capital gains tax discount magnifies the tax advantaged status of capital gains. With the discount, effective tax rates fall to 21~per cent after 5 years and 15 per cent after two decades, generating a substantial wedge between the tax treatment of capital gains and recurrent income such as interest on bank deposits. 
+\eject
+<<Effective_marginal_tax_rates_are_lower>>=
+effective_marginal <- function(asset.type = "term_deposit", years.maturity, nominal.return, inflation = NULL, marginal.rate = 0.465, cgt.discount = 0.50){
+  if(asset.type == "term_deposit"){
+    for (year in 1:years.maturity){
+      if (year == years.maturity)
+        return(marginal.rate)
+      else
+      if (year == 1){
+        nominal.value <- (1 + nominal.return)
+        carry.forward.balance <- nominal.value
+        tax.on.interest <- marginal.rate * (carry.forward.balance - 1)
+        return.residual <- carry.forward.balance - tax.on.interest - 1
+        nominal.value.post.tax <- nominal.value - tax.on.interest
+      } else {
+        nominal.value <- (1 + nominal.return)^year
+        previous.nominal.value.post.tax <- nominal.value.post.tax
+        carry.forward.balance <- nominal.value.post.tax * (1 + nominal.return)
+        tax.on.interest <- marginal.rate * (carry.forward.balance - nominal.value.post.tax)
+        return.residual <- carry.forward.balance - tax.on.interest - nominal.value.post.tax
+        nominal.value.post.tax <- carry.forward.balance - tax.on.interest
+        annual.pretax.return <- nominal.value ^ (1 / year) - 1
+        annual.post.return   <- nominal.value.post.tax ^ (1 / year) - 1
+        if (year == years.maturity){
+          return(effective.marginal = (annual.pretax.return - annual.post.return)/annual.pretax.return)
+        }
+      }
+    }
+  }
+  #
+  if(asset.type == "property_noCGTdiscount"){
+    year = years.maturity
+    nominal.value.pretax <- (1+nominal.return)^year
+    tax.on.CG <- marginal.rate * (nominal.value.pretax - 1)
+    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
+    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
+    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
+    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
+  }
+  if(asset.type == "property_50CGTdiscount"){
+    year = years.maturity
+    nominal.value.pretax <- (1+nominal.return)^year
+    tax.on.CG <- marginal.rate * 0.5 * (nominal.value.pretax - 1)
+    nominal.value.posttax <- nominal.value.pretax - tax.on.CG
+    annualized.return.pretax <- nominal.value.pretax^(1/year) - 1
+    annualized.return.posttax <- nominal.value.posttax^(1/year) - 1 
+    return(effective.rate = (annualized.return.pretax - annualized.return.posttax)/annualized.return.pretax)
+  }
+}
+
+data.frame(
+  year = 1:30
+) %>% 
+  tbl_df %>%
+  mutate(Term_deposit = effective_marginal(years.maturity = year, nominal.return = 0.07), 
+         Property_xxno_CGT_discountzz = effective_marginal(years.maturity = year, 
+                                                       nominal.return = 0.07, 
+                                                       asset.type = "property_noCGTdiscount"),
+         Property_xx50_CGT_discountzz = effective_marginal(years.maturity = year, 
+                                                       nominal.return = 0.07,
+                                                       asset.type = "property_50CGTdiscount")
+  ) %>%
+  gather(asset_type, returnz, -year) %>%
+  mutate(asset_type = gsub("xx", "(", asset_type),
+         asset_type = gsub("zz", ")", asset_type),
+         asset_type = gsub("_", " ", asset_type, fixed = TRUE)) ->
+  rates_data
+
+rates_data %T>%
+  chart_data %>%
+  mutate(asset_label = ifelse(year == 20, asset_type, NA)) %>%
+  #
+  grplot(aes(x = year, y = returnz, color = asset_type, group = asset_type, label = asset_label)) + 
+  geom_line() + 
+  geom_text(vjust = 1.3, hjust = 1, fontface = "bold", size = 7.14) + 
+  scale_y_continuous(label=percent, breaks = c(c(0:4)/10, 0.465)) +
+  xlab("Year of maturity")
+@
+\captionoffigurewithunits{Real effective marginal tax rates are lower for capital gains than income, especially after the capital gains tax discount}{Effective marginal tax rate}\label{fig:Effective_marginal_tax_rates_are_lower}
+\includegraphics[width=\columnwidth]{figure/Effective_marginal_tax_rates_are_lower-1}
+\source{Grattan analysis}
+\end{bigbox*}
+}
+
+\subsubsection{Taxing capital gains without a discount will not substantially deter savings and investment}
+Taxing capital gains at the full marginal rate could deter entrepreneurship and risk taking by reducing the returns to selling a successful business.\footnote{If capital gains were taxed on an accrual basis and capital losses were fully deductible against all assets, then taxing gains in full would be neutral with respect to risk.
+However, since losses are only deductible against gains this increases the risk that investors will make a loss they are not able to deduct.
+It is not clear whether deferral of taxes on gains until realisation, itself a significant tax advantage (\vref{sec:InvestorsChooseTimeOfRealization}), is itself enough to compensate investors for this risk. \textcite[p.~8]{Burman2009};  \textcite[p.~130]{Commission2004}}  But this effect is small.
+Other factors which drive entrepreneurship and risk-taking behaviour are far more significant than the tax on any gains ultimately made.\footcite[p.~75]{Burman1999}   Further, several separate exceptions already in place limit the effects of capital gains tax when assets or businesses are sold.\footnote{Capital gains tax exemptions are available for the sale of active assets by small business up to a lifetime limit of \$500,000 provided the gains are paid into a complying super fund.
+There are also exemptions for people over 55 that are retiring and selling business asset held for more than 15 years.
+Small business also receive rollover relief allowing them to defer all or part of a capital gain for two years or longer on the sale of active assets, provided they acquire a replacement asset or you incur expenditure on making capital improvements to an existing asset. \textcite{ATO2014e}} In any case, gains received from the sale of business are a small proportion of total gains from individuals: most are from property and share-market investments (\Vref{fig:Majority_of_taxable_gains_are_earned_by_individuals})
+
+While mixed, empirical evidence suggests that aggregate savings may not be particularly responsive to tax rates, particularly for high income earners.
+For example, \textcite{Engen1996} finds that tax breaks for saving influence the choice of savings vehicle but do not increase overall household savings much.
+And the OECD finds that tax breaks for saving are generally ineffective for high income earners because this group are likely to save anyway.\footcite{OECD2007}  \textcite{chetty2013subsidies} show that reduced subsidies for retirement savings for high income earners lead to almost no reduction in overall savings efforts.\footnote{\textcite{chetty2013subsidies} ) is a particularly compelling study because of the strength of the data (41 million observations on savings for people from Denmark).
+But it is also consistent with the thrust of the literature on the effect of tax incentives for retirement savings.
+While findings vary across studies, a summary by \textcite{Antolin} suggests tax incentives increase savings mostly by reallocation from other savings vehicles. }
+
+This suggests that larger distortions arise from the different tax treatment of different forms of savings than from the weight of taxes on capital in general.\footcite[p.~16]{Ingles2009} 
+
+\subsubsection{People may hold assets longer, but many already wait until retirement}
+The other economic cost of higher taxes on capital gains is greater asset lock-in. 
+
+Because taxes are only paid when gains are realised, investors are encouraged to hold on to assets with large accumulated gains.\footcite[p.~69]{Burman2009} In effect, the investor seeks to maintain the implicit interest free loan on accrued gains.
+Crystallising a capital gain is only worthwhile if an investor can achieve a materially higher return (\Vref{box:CGT_asset_lockin}).\footcite[p.~12]{Ingles2009}
+
+Lock-in can discourage investors from moving their money to the investments with the highest pre-tax returns, so assets do not always go to their highest value use.\footcite{Lindsey1987} Lock-in effects are most significant from a whole of economy perspective, if they constrain financing of profitable investments.\footcites{OECD2006b}{Johnson2008}  Australia's open capital markets and generous capital gains tax regime for non-residents, reduce the danger that worthwhile projects will not get access to capital because of lock-in.\footnote{Non-resident investors in Australian shares are generally not subject to Australia capital gains tax (see: \emph{Income Tax Assessment Act 1936, s. 136-25}} 
+
+The more fundamental cause of lock-in is the ``retirement realisation effect'' -- the tendency for investors to wait until retirement when their taxable incomes are low before realising gains.
+ \textcite{Wood2010a} found that after adjusting for other factors, the probability of a landlord selling a property increases by over 20 percentage points once they retire.
+ 
+\begin{smallbox}{Capital gains tax and asset lock in}{box:CGT_asset_lockin}
+Suppose Hayley, an investor in the top tax bracket purchases a house for \$700,000 and holds it for 10 years.
+During that time the market price of the house increases to \$1 million.
+She makes a net rental return of 5~per cent a year, giving her a \$50,000 income stream. 
+
+If she were to sell the house she would crystallise the \$300,000 in gains, paying tax on 50~per cent of the gains at her marginal tax rate of 49~per cent (\$73,500).
+This would leave her with around \$926,500 from the sale: \$226,500 in net gains and her initial investment of \$700,000.
+The sale will only be worthwhile if Hayley can find an alternative property that yields more than her current rental income of \$50,000 with the same opportunity for capital gains. With her \$926,000 sale proceeds she would need to find a property with net rental return of more than 5.4 per cent a year. 
+
+Properties with rental yields below this but higher than her current 5 per cent would not be attractive because realising the tax liability on her current property erodes her capital base for investment.
+
+The higher the tax rate on capital gains the less willing she will be to realise gains to pursue new investment opportunities. If capital gains were taxed in full, rather than with a 50 per cent discount, her hurdle rate for the new investment would be 5.9 per cent. 
+\end{smallbox}
+
+We can see the retirement realisation effect in the patterns of capital gains realisation by age.
+Those over 50 have much higher average realisation of gains, regardless of income level.
+The preponderance of retirees occurs regardless of income level as clearly shown in the incidence of capital gains realizations in \Vref{fig:Prob_of_CGevent_by_age_income}.
+
+<<Prob_of_CGevent_by_age_income, fig.height=8.5, out.height="8.5in">>=
+sample_file_1213 %>% 
+  mutate(age = 20 + (11 - age_range) * 5, age = ifelse(age <= 45, "45 or under", ifelse(age > 65, "65+", age))) %>% 
+  mutate(age = factor(age, labels = c("under 45", "45-49", "50-54", "55-59", "60-64", "65+"))) %>% 
+  group_by(age, Income_decile = ntile(Taxable_Income, 10)) %>% 
+  dplyr::summarise(prop_cg = mean(Net_CG_amt > 0))  %T>% 
+  chart_data %>%
+  grplot(aes(x = Income_decile, y = prop_cg, group=factor(age), color = factor(age), label = age)) +
+  theme_hugh(base_size = 24) + 
+  annotate("segment",
+           x = -Inf, y = 0.10,
+           xend = 10, yend = 0.10,
+           color = '#DADADA') +
+  annotate("segment", 
+           x = -Inf, y = 0.20,
+           xend = 10, yend = 0.20,
+           color = '#DADADA') + 
+  annotate("segment", 
+           x = -Inf, y = 0.30,
+           xend = 10, yend = 0.30,
+           color = '#DADADA') + 
+  geom_dl(method = list("last.points", fontface = "bold", dl.trans(x=x+0.1), cex = 2.0)) + 
+  scale_x_continuous(expand = c(0,0.2), breaks = 1:10, labels = c(1:4, "5\nIncome decile", 6:10)) + 
+  annotate("blank", x = 11.5, y = 0.1) + 
+  theme(axis.line.x = element_blank()) + 
+  annotate("segment", x = 1, xend = 10, y = 0, yend = 0) + 
+  scale_y_continuous(expand = c(0,0), label=percent, limits = c(0,0.26), breaks = c(0:3)/10 ) + 
+  stat_smooth(size = 2.5, se = FALSE) + 
+  # scale_color_manual(values = c(theGrey, rev(gpal(7)[1:6]))) + 
+  scale_color_manual(values = c(rev(gpal(6)[1:5]), "black")) +
+  theme(axis.title.x = element_blank(), # requires segment
+        panel.grid.major = element_blank()) + xlab("Income decile")
+@
+\begin{figure}[t]
+\Caption{Taxpayers wait till retirement to realize capital gains.}{Incidence of capital gain events, 2012-13, by age and taxable income}{fig:Prob_of_CGevent_by_age_income}
+\includegraphics[width=\columnwidth]{figure/Prob_of_CGevent_by_age_income-1}
+\source{\gao\ \textcite{ATO2013i}}
+\end{figure}
+And many of those 50 to 64 -- the peak retirement years\footnote{The average age at retirement from the labour force for people aged 45 years and over in 2012-13 was 53.8 years (58.5 years for men and 50.0 years for women). \textcite{ABS2013}} -- realise sizeable gains when their other taxable income is low, suggesting they are waiting until retirement.
+Indeed, almost 60~per cent of the capital gains in this age group are earned by the 24~per cent of people without wage and salary income. 
+
+The other group that realise a lot of capital gains are high income older people.
+Many of these will be people moving assets inside their Self Managed Super Fund in anticipation of retirement.\footnote{\TBD{Data from BC on asset division.}}
+
+The other important cause of lock-in is the fact that capital gains are disregarded on death.
+Passing assets to a beneficiary is not regarded as an ``event'' that triggers a capital gains tax liability.
+So by passing on assets to heirs, capital gains taxes can de deferred indefinitely. 
+
+Ultimately, the best way to reduce asset lock-in is to tax gains on an accruals basis, with interest charges on the deferred tax.\footcite[pp.~11-14]{Burman2009} This would remove the incentive to hold on to gains to reduce the tax burden.
+To date, annual asset revaluations have been considered impractical and beset with administrative difficulties.\footcites{OECD2006a}{Commission2004} But such valuations can be done easily for shares and to a lesser extent property (which is already revalued in most states every one or two years for the purposes of levying council rates (chapter 5)).\footcites{Burman2009}[p.~12]{Ingles2009} The Henry review flagged that such an accruals approach to capital gains becomes more feasible as technology improves.\footcite[p.~64]{Treasury2010} 
+
+
+\section{Negative gearing reduces tax on investment returns and distorts investment choices }\label{sec:negative_gearing_provides}
+Negative gearing is the use of losses made on investments (including mortgage interest payments) to reduce one's taxable income including wages. 
+
+The ability to offset losses against other income is part of the normal operation of the Australian tax system, and applies to a wide range of investments and business activities.
+If losses were not deductible, they would be treated asymmetrically to gains (which are taxed) and investments in risky assets would be less attractive.
+Deductibility of interest payments in theory maintains tax neutrality for investors choosing between lending and equity financing.\footcite{Fane2004}  
+
+But there is no theoretical basis for allowing losses on investment to be deducted against entirely unrelated income such as wages. 
+Indeed, allowing full deductibility of investment losses against wages when capital gains are taxed concessionally and only on realisation leads investors to favour debt financed investments that generate more of their returns via capital gains in order to maximise tax breaks on wages. 
+This reduces tax collections and has negative impacts in investment markets, particularly housing markets, where the tax treatment has encouraged speculative activity. 
+
+Most other advanced economies provide a less generous treatment for rental losses.
+The Unites States only allows losses to be written off against other forms of ``passive'' income.\footnote{Passive income is defined as income from rental properties or businesses in which the taxpayer does not materially participate.
+It is distinct from active income (wage, salary and income from business in which the person is actively involved) and portfolio income (income from interest, dividends etc). \textcite{IRS2015}.}  The UK and many European countries only allow deductions against the same class of income, so for example, losses on investment property can only be used to reduce tax on income or capital gains from other investment properties.
+Others such as the Netherlands do not allow deductibility of losses from investment housing.\footnote{See \textcite[p.~43]{RBA2014}, \textcite[p.~86]{Commission2004}, \textcite[pp.~92-95]{ODonnell2005}.}
+
+\subsection{Interaction with capital gains tax allows investors to defer and reduce their tax}
+Taxes on capital gains are discounted by 50~per cent and only paid when the asset is sold.
+But negative gearing arrangements allow investors to deduct losses -- investment expenses (including interest costs) in excess of rental income from wage income that would otherwise be taxed at the full marginal rate.
+
+With the right investment strategy, an investor can use this asymmetry in the tax treatment of gains and losses to defer and reduce taxes on their wage income (\Vref{box:Use_NG_to_red_tax}).
+
+\begin{smallbox}{Using negative gearing to reduce taxes on wage income}{box:Use_NG_to_red_tax}
+High income investors can maximise the tax shelter on their wage income by borrowing to invest in assets that generate less in recurrent income and more through capital gains. 
+
+Suppose Dan, a lawyer earning \$250,000 a year, borrows \$750,000 to purchase an investment property.
+Interest on the loan is 6~per cent a year and the property generates a rental return of 2.5~per cent each year.
+Most of the return is via capital appreciation of 7~per cent each year.
+
+In the first year, Dan makes a loss of \$26,000 on the property and reduces the tax he pays on his \$250,000 salary by \$12,000.
+His rental losses decline over time as the property appreciates.
+After five years, Dan has reduced taxes on his wage income by a total of \$55,000.
+If he sells the property after five years he will realise a capital gain of \$233,000 and pay tax on the gain of just under \$55,000. 
+
+Because of the asymmetry of tax treatment of gains and losses, Dan pays \$294 \emph{less} tax in total over five years than he if he had not purchased the house.
+So despite his profit of more than \$115,000 on the investment, in effect he pays no tax on this profit, in fact he receives a small tax reduction.
+\end{smallbox}
+
+The attractiveness of using investment losses to reduce taxes on wage income is evident in the age profile of those negatively gearing property.
+Investing in loss making properties is popular amongst those of working age, but far less prevalent amongst over 60s who are unlikely to benefit from the tax write-offs.
+Over 70~per cent of those under 60 with investment properties make rental losses compared to less than 35~per cent over 60. (See \Vref{fig:Age_negative_gearing_investments}.)
+
+<<Age_negative_gearing_investments, fig.width=11.000, fig.height=10.00, out.width="11.000in", out.height="10.00in",>>=
+sample_file_1213 %>%
+    mutate(Age = car::recode(age_range, "0 = '70 and over';
+                            1 = '65 to 69';
+                            2 = '60 to 64';
+                            3 = '55 to 59';
+                            4 = '50 to 54';
+                            5 = '45 to 49';
+                            6 = '40 to 44';
+                            7 = '35 to 39';
+                            8 = '30 to 34';
+                            9 = '25 to 29';
+                            10 = '20 to 24';
+                            11 = 'under 20'")) %>%
+    mutate(Age =  factor(Age,
+                       levels = c("under 20",
+                                  '20 to 24',
+                                  '25 to 29',
+                                  '30 to 34',
+                                  '35 to 39',
+                                  '40 to 44',
+                                  '45 to 49',
+                                  '50 to 54',
+                                  '55 to 59',
+                                  '60 to 64',
+                                  '65 to 69',
+                                  '70 and over'),
+                       labels = gsub("\\s", "\n",
+                                     c("under 22",
+                                       '22',
+                                       '27',
+                                       '32',
+                                       '37',
+                                       '42',
+                                       '47',
+                                       '52',
+                                       '57',
+                                       '62',
+                                       '67',
+                                       '72+')),
+                       ordered = T)) %>% 
+  group_by(Age) %>%
+  dplyr::summarise(number_negatively_gearing = sum(Net_rent_amt < 0) * 50,
+            prop_NG_investors = sum(Gross_rent_amt > 0 & Net_rent_amt < 0) / sum(Gross_rent_amt > 0),
+            number_negatively_gearing_with_investment_property = sum(Net_rent_amt < 0 & Gross_rent_amt > 0)*50,
+            number_not_negatively_gearing_but_have_investment_property = sum(Net_rent_amt >= 0 & Gross_rent_amt > 0)*50,
+            neither = sum(Gross_rent_amt == 0)*50) %>% 
+  gather(gearing, number, 
+         number_negatively_gearing_with_investment_property, 
+         number_not_negatively_gearing_but_have_investment_property,
+         neither) %>%
+  mutate(gearing = ifelse(gearing == "neither", "neither",
+                          ifelse(grepl("not", gearing), "Not negative gearing", "Negative gearing"))) %>%
+  mutate(gearing = factor(gearing, 
+                          levels = c("Negative gearing", "Not negative gearing", "neither"),
+                          labels = c("Negatively geared", "Positively geared", "(Not in property market)"))) %T>%
+  chart_data %>%
+  grplot(aes(as.numeric(Age), 
+             number, 
+             fill = gearing,
+             order = gearing,
+             group = gearing,
+             color = gearing
+             )) + 
+#   geom_bar(stat = "identity", 
+#            position = "fill",
+#            color = NA,
+#            width = 1.01) + 
+  geom_area(position = "fill") +
+  annotate("text", 
+           x = c(9,9,9)-2,
+           y = c(0.07, 0.17, 0.3),
+           label = c("Negatively geared", 
+                     "Positively geared",
+                     "(Not in property market)"),
+           fontface = "bold",
+           hjust = 0,
+           size = 8.21) + 
+  scale_fill_manual("", values = c(gpal(2), gray(0.75))) + 
+  scale_color_manual("", values = c(gpal(2), gray(0.75))) + 
+  scale_x_continuous("Age", expand = c(0,0), breaks = 2*(1:6)-0.5, labels = 10*(2:7)) + 
+  coord_cartesian(ylim = c(0,0.55)) + 
+  theme(legend.position = 'none', axis.title.x = element_text(hjust = 0.5)) + 
+  scale_y_continuous(label=percent, expand = c(0,0))
+@
+\begin{figure}
+\Caption{More people negatively gear investments in their peak earning years}{Negative gearing status, by age.}{fig:Age_negative_gearing_investments}
+\includegraphics[width=\columnwidth]{figure/Age_negative_gearing_investments-1}
+\notes{The top half of the chart is not shown -- it would be grey all the way to 100\%. ``No investment properties'' means nil gross rental income.}
+
+\source{\gao\ \textcite{ATO2013i}}
+\end{figure}
+
+The tax advantages are also evident in the greater propensity of those with negatively geared properties to ``churn'' their investments.
+Properties do not stay negatively geared forever.
+Rents rise over time with increases in the value of the housing stock while interest payments only vary with the interest rate, as the loan value is unchanged.\footnote{This assumes an investor uses an interest only loan.
+If the investor also repays some principal the investment will flip to being positively geared even faster.}  So if investors want to stay negatively geared they need to turnover their investments.
+
+We see evidence of higher property turnover amongst negatively geared investors.
+Studying a sample of investors with rental properties, \textcite{Wood2010a} showed that 40~per cent of investors with rental properties retained their properties at the end of a 5 year period.
+Amongst the investors that were negatively geared, however, only 20~per cent retained ownership.
+And the proportion of landlords that purchased another property after selling was moderately higher for negatively geared investors than other investors.
+
+\subsubsection{These tax advantages are distorting investment choices}
+The tax advantages conferred by the interaction of negative gearing and capital gains tax biases the choice of investments.
+For a given overall return, an investor will prefer an asset that pays less in the way of recurrent income and more in the way of capital gain.
+As \textcite[p.~42]{RBA2014} notes:
+
+\begin{quote}
+\!\dots in most countries the earning of rental income is seen as the most important reason for investing in rental properties. \dots\ This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
+\end{quote}
+
+\textcite{seelig2009understanding} echoes the RBA view, finding that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.\footnote{A clear majority considered capital gains as more important than rental income over a five and ten year time horizon.}
+
+The asymmetry between the tax treatment of gains and losses also makes debt financing of investment more attractive.
+For a high income taxpayer investing in a rental property, real effective marginal tax rates are substantially lower for a property financed through borrowing.
+The higher the gearing, the lower the effective marginal tax rate (\Vref{fig:Effective_tax_rates_depend_on_borrowing}). 
+
+<<Effective_tax_rates_depend_on_borrowing>>=
+data.frame(
+  Type = factor(c("No borrowing", "Borrowing 50%\ninvestment value", "Borrowing 80%\ninvestment value"),
+                levels = c("No borrowing", "Borrowing 50%\ninvestment value", "Borrowing 80%\ninvestment value")),
+  real_emtr = c(0.32, 0.155, -0.008)
+) %>% 
+  grplot(aes(x = Type, y = real_emtr)) + 
+  geom_bar(stat = "identity",
+           width = 0.7) + 
+  theme(axis.title = element_blank(),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank()) + 
+  geom_hline(yintercept = 0) + 
+  scale_y_continuous(expand = c(0,0), limits = c(-0.05, 0.35), label=percent)
+@
+\begin{figure}
+\Caption{Effective tax rates depend on amount of borrowing}{Real effective marginal tax rate}{fig:Effective_tax_rates_depend_on_borrowing}
+\includegraphics[width=\columnwidth]{figure/Effective_tax_rates_depend_on_borrowing-1}
+\notes{Assumes a 6~per cent nominal return, 2.5~per cent inflation, 50~per cent of the return is attributed to capital gain and 50~per cent to rental income.
+All investment income is taxed at the 45\%\ marginal rate.
+The property is held for seven years and then sold.}
+
+\source{Grattan analysis}
+\end{figure}
+The Henry Tax Review described the asymmetry between gains and losses as ``among the greatest tax-induced biases to the savings choices of households.''\footcite[p.~69]{Treasury2010} This runs counter to the rationale for allowing the deductibility of losses -- to maintain tax neutrality of debt and equity financing.
+
+Indeed, the distortions created are so large that it is possible that even investments with negative pre-tax returns can provide a positive profit to investors once the tax benefits are taken into account.\footcite[p.~78]{Burman1999}  \textcite{seelig2009understanding} estimate that around half of investors indicated that they would not have invested in property if negative gearing had not been available.
+
+While these distortions exist for all investments, the tax advantages are greatest for property because bank lending rules allow greater leverage than for others assets such as shares that also produce capital gains.\footcite[p.~23]{RBA2015}
+
+<<Negative_Gearing_tax_expenditures>>=
+NG_tax_exps <-
+  sample_files_all
+  group_by(year) %>%
+  mutate(current_tax = income_tax(Taxable_Income, fy.year = yr2fy(year)),
+         subseqt_tax = income_tax(ifelse(Net_rent_amt < 0, 
+                                         Taxable_Income - Net_rent_amt,
+                                         Taxable_Income), fy.year = yr2fy(year)),
+         diff = subseqt_tax - current_tax) %>%
+  group_by(year) %>%
+  summarise(avg.diff = sum(diff * WEIGHT) / 1e9)
+
+NG_tax_exps.real <-
+  NG_tax_exps %>%
+  ungroup %>%
+  mutate(avg.diff.real = cpi_inflator(avg.diff, from_fy = yr2fy(year)))
+
+@
+
+\subsubsection{And investors have responded to these incentives}
+There has been a boom in negatively geared residential property investments over the last two decades.
+Other than a temporary dip following the global financial crisis, the number of taxpayers making losses on residential property has increased steadily.
+Average losses for those negative gearing have grown to more than \$9,000 per year.
+And the total losses since the introduction of the CGT discount leave us in no doubt: investors are happy to disregard rental losses in anticipation of future gains. (\Vref{fig:Net_rent_over_time}.)
+
+<<Obtain_time_series_taxstats, results = 'hide'>>=
+if(!file.exists("taxstats_time_series1979-2013.xlsx")){
+  taxstats_ts_url <- "https://data.gov.au/dataset/e29ef9ca-0d1a-47ec-9e9b-14a79a941511/resource/233cbf28-6fda-4e53-bbe9-3a37a65fb742/download/taxstats2013individual01selecteditemsbyyear.xlsx"
+  GET(taxstats_ts_url, write_disk("taxstats_time_series1979-2013.xlsx", overwrite = TRUE))
+}
+taxstats_ts <- read_excel("taxstats_time_series1979-2013.xlsx", sheet = "Individuals Table 1", skip = 2, na = "na") %>%
+  setnames(2, "unit") %>%
+  filter(!is.na(unit)) 
+
+taxstats_ts <- taxstats_ts %>%
+  gather_("fy.year", "value", grep("[0-9]{4}", names(taxstats_ts), value = TRUE)) %>%
+  # getting real tired of en-dashes posing as hyphens.Anything that's not a number is a hyphen
+  mutate(fy.year = gsub("[^0-9]", "-", fy.year)) %>% 
+  mutate(fy.year = ifelse(fy.year == "1999-2000", "1999-00", fy.year))
+@
+
+Both have contributed to Australian landlords moving from being collectively profitable, to accruing billions in net rental losses each year.
+This coincided with the introduction of the capital gains tax discount in 1999.
+In the year prior to the introduction of the discount, Australia's 1.3 million landlords made an aggregate taxable profit of \$700m.
+By 2012-13, the two~million landlords reported collective losses of \$5.5 billion (\Vref{fig:Net_rent_over_time}).\footcites{Eslake2013}{Treasury2015a}
+
+
+ <<prop_rental_deductions_gross_rent>>=
+ taxstats_ts %>%
+   filter(grepl("(Rent.*interest)|(Gross rent)", `Selected items`)) %>%
+   spread(`Selected items`, value) %>%
+   filter(complete.cases(.)) %>%
+   filter(grepl("\\$", unit)) %>%
+   mutate(prop = `Rent - interest deductions` / `Gross rent`) ->
+   prop_rental_deductions_gross_rent
+ 
+# proportion of rental deductions against gross rent (as a percentage
+# to three decimal places).
+prdgr <- function(fyyear){ 
+  temp <- dplyr::filter(prop_rental_deductions_gross_rent, fy.year == fyyear)
+  round(temp$prop, 3)*100
+}
+@
+ 
+ And the average level of gearing for property investors is increasing.
+ Even though interest rates are falling, interest deductions as a proportion of rents increased from \Sexpr{prdgr("1997-98")}~per cent of gross rental payments in 1997-98 to \Sexpr{prdgr("2012-13")}~per cent in 2012-13.\footcite[p.~65]{Treasury2015a}
+
+
+<<Negative_gearing_real_over_time>>=
+taxstats_ts %>%
+  filter(grepl("(Net rent.*loss)|(Gross rent)", `Selected items`)) %>%
+  filter(!grepl("property", `Selected items`)) %>%
+  filter(!(grepl("Gross rent", `Selected items`) & grepl("\\$", unit))) %>%
+  filter(!is.na(value)) %>%
+  mutate(value = ifelse(grepl("\\$", unit), cpi_inflator(value, from_fy = fy.year), value)) %>%
+  mutate(group = paste0(`Selected items`, unit)) %>%
+  group_by(group) %>%
+  arrange(fy.year) %>%
+  mutate(value.rel = value/value[which(fy.year == "1999-00")],
+         text = ifelse(fy.year == last(fy.year), 
+                       ifelse(grepl("\\$", unit),
+                              paste0(grattan_dollar(round(value/1e9, 1))," bn"),
+                              paste0(round(value/10^6, 1), " million")
+                              ),
+                       NA)) %>%
+  mutate(
+         circ.x = ifelse(fy.year == last(fy.year), fy2date(fy.year), NA),
+         circ.y = ifelse(fy.year == last(fy.year), value.rel, NA)
+         ) %>%
+  #mutate(value.real = cpi_inflator(value, from_fy = fy.year)) # requires en dash matching
+  ungroup %>% 
+  mutate(fy.year = factor(fy.year, ordered = TRUE),
+         date = fy2date(as.character(fy.year)),
+         unit = ifelse(grepl("\\$", unit), "amount", "number")) %>%
+         {
+   # chart_data %>%
+   grplot(., aes(x = date, y = value.rel, color = group, group = group)) + 
+  annotate("segment", 
+           x = as.Date(-Inf), xend = max(.$date),
+           y = 1:3, yend = 1:3, 
+           size = 0.125, color = theGrey) + 
+  annotate("segment", 
+           x = as.Date(-Inf), xend = max(.$date),
+           y = 0, yend = 0, 
+           size = 1, color = "black") + 
+   stat_smooth(se = FALSE, size = 1.5, span = 0.4) +
+   geom_point(size = 1) + 
+   annotate("text",
+            label = c("number\nproperty\ninvestors",
+                      "Net rental losses\n(total)",
+                      "number negatively\ngeared investors"),
+            x = as.Date(paste0(c(2008, 2008, 2008), "-01-30")),
+            y = c(1.35, 3.7, 1.9),
+            lineheight = 0.82,
+            hjust = 0,
+            vjust = c(1.25,1,0),
+            size = 8.12, 
+            color = gpal(3),
+            fontface = "bold") + 
+   scale_y_continuous(expand = c(0.0,0.0)) + 
+   scale_x_date(breaks = as.Date(paste0(seq(1980, 2010, by = 10), "-01-01")),
+                labels = seq(1980, 2010, by = 10)) +
+   annotate("blank",
+            x = as.Date("2018-01-01"),
+            y = 0)  + 
+   theme(
+     axis.title = element_blank(),
+     axis.line.x = element_blank(),
+     # panel.grid.major.y = element_line(),
+     plot.margin = grid::unit(c(0.7,1.2,0.5,0.5), "lines"))
+         }
+@
+
+<<Net_rent_over_time>>=
+in.what.dollars <- "2013-14"
+
+taxstats_ts %>%
+  filter(grepl("Net rent.*2", `Selected items`)) %>% ## Net rent2 is an entry on the tax form
+  filter(!is.na(value), grepl("\\$", unit)) %>%
+  mutate(fy.year = gsub("[^0-9]", "-", fy.year)) %>%
+  mutate(value.real = cpi_general_date(nominal.price = value, nominal.date = fy.year, target.date = in.what.dollars),
+         value.real = value.real / 1e9) %>%
+  mutate(year = as.numeric(gsub("^.*([0-9]{4}).*$", "\\1", fy.year)) + 1) %T>%
+  chart_data %>%
+  grplot + 
+  # geom_line(aes(x = year, y = value.real, group = 1)) +
+  geom_bar(aes(x = year, y = value.real), stat = "identity", width = 1)+
+  annotate("segment", x = 1987.75, xend = 1987.75, y = -Inf, yend = Inf,
+           linetype = "dashed") + 
+  annotate("text", hjust = 0,
+           label = "Negative gearing\n(re)introduced",
+           x = 1987.75+0.25, 
+           size = 7.14,
+           y = 2) + 
+  annotate("segment", 
+           x = 1999 + 263/365,
+           xend = 1999 + 263/365,
+           y = -Inf,
+           yend = Inf,
+           linetype = "dashed") + 
+  annotate("text",
+           x = 2000,
+           y = 2,
+           size = 7.14,
+           hjust = 0,
+           label = "Capital gains\ndiscount introduced") + 
+  theme(axis.title = element_blank()) + 
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(-12, 5))
+@
+\begin{figure}[p]
+\Caption{The introduction of the capital gains discount, but not the introduction of negative gearing, led a large fall in rental profits.}{Total net rent, billions (\Sexpr{in.what.dollars}~dollars)}{fig:Net_rent_over_time}
+\includegraphics[width=\columnwidth]{figure/Net_rent_over_time-1}
+\notes{Net rent as marked by taxpayer upon lodgement of tax return}
+
+\source{ATO taxstats 1979-2013 (data not available pre-1989)}
+\end{figure}
+\begin{figure}[p]
+\Caption{Growth in the number of negatively geared investors has outpaced the growth in the number of investors. And the growth in the amount of their losses is even greater.}{1999-00 = 1.}{fig:Negative_gearing_real_over_time}
+\includegraphics[width=\columnwidth]{figure/Negative_gearing_real_over_time-1}
+\notes{Amount deflated by CPI. Other indices may be more useful.}
+\end{figure}
+\subsubsection{Impact on housing markets}
+Unlimited negative gearing contributes to higher house prices but does not ease rents. 
+
+The favourable tax treatment drives up house prices because it increases the after-tax returns to housing investors.\footnote{For example, \textcite{Commission2004} found that these tax settings had added to the housing price boom by encouraging investors to reduce current income in favour of longer term gains.}  This helps existing home-owners but reduces rates of home ownership among younger age groups.\footcite[pp.~14-15]{Daley2014}
+
+These tax incentives also contribute to volatility in housing markets.
+Negative gearing is most attractive as a tax minimisation strategy when asset prices are rising strongly.
+So in boom times it further increases investor demand for housing.
+The opposite is true when prices are stable or falling.
+The Reserve Bank, Productivity Commission, Henry Tax Review and Murray Inquiry have all suggested that the tax based distortions contribute to volatility in the housing market.\footcites[p.~45]{RBA2014}[p.~75
+,131]{Commission2004}[p.~70,418]{Treasury2010}[p.~278]{Inquiry2014}
+
+\begin{bigbox*}{Impact of negative gearing on house prices}{box:Impact_of_NG_on_house_prices}
+Limiting or abolishing negative gearing will reduce the post-tax investment returns for negatively geared property investors. 
+There will be a one-off decrease in house prices as investors reduce their willingness to pay. 
+Of course, house prices may not actually fall if market dynamics continue to push prices upwards. 
+But prices will be lower than they would have been in the absence of the tax changes.
+
+<<Impact_of_NG_on_house_prices, cache = FALSE>>=
+get_sample_file_and_year <- function(yr){
+  get_sample_file(yr) %>%
+    mutate(year = yr)
+}
+
+all_sample_files <-
+  lapply(2004:2013, get_sample_file_and_year) %>%
+  rbindlist(fill = TRUE, use.names = TRUE)
+
+rental_losses <- 
+  all_sample_files %>% 
+  filter(Net_rent_amt < 0) %>%
+  group_by(year) %>%
+  summarise(tot_avg_loss = -1 * sum(Net_rent_amt) * weighting(year)) %>%
+  ungroup %>%
+  mutate(real_tot_avg_loss = cpi_inflator(tot_avg_loss, from_fy = yr2fy(year)))
+
+NG_tax_exps <-
+  all_sample_files %>%
+  tbl_df %>%
+  group_by(year) %>%
+  mutate(current_tax = income_tax(Taxable_Income, fy.year = yr2fy(year)),
+         subseqt_tax = income_tax(ifelse(Net_rent_amt < 0, 
+                                         Taxable_Income - Net_rent_amt,
+                                         Taxable_Income), fy.year = yr2fy(year)),
+         diff = subseqt_tax - current_tax) %>%
+  group_by(year) %>%
+  summarise(avg.diff = sum(diff * WEIGHT))
+
+NG_tax_exps.real <- 
+  NG_tax_exps %>%
+  ungroup %>% ungroup %>%
+  mutate(avg.diff.real = cpi_inflator(avg.diff, from_fy = yr2fy(year))) %$%
+  mean(avg.diff.real)
+
+present.value_benefit_from_NG <-
+  grattan::npv(rate = 0.042, values = rep(NG_tax_exps.real, 10))
+
+present.value_benefit_from_Quaran_NG <-
+  -round(grattan::pv(0.042, 10, sum(just_negative_gearing_taxstats$diff)*weighting(2015)))
+
+housing_finance_commitments.metadata <-
+  # This file is Table 8 of Cat. 5671.8 
+  ##          WITH CLEANSING          ##
+  # the cleansing consisted of
+  #   1.  Retrieving the "metadata" rows that link the series ID with things like the 
+  #       long name of the series, its frequency and units, etc, and placing them in
+  #       sheet "metadata"
+  #   2.  Deleting the metadata rows from the main data and placing in a new sheet called
+  #       "Data_without_metadata"
+  #
+  # 
+  read_excel("ABSP_567108_Housing_Finance_Table8.xlsx", sheet = "Metadata") %>%
+  select_("`Series ID`", "Long_name", "`Series Type`") %>%
+  data.table %>%
+  setnames(c("series_id", "Long_name", "Series_Type")) %>%
+  setkeyv("series_id")
+
+housing_finance_commitments <-
+  read_excel("ABS_Cat5671-0_Lending_Finance_Table8_Finance_Commitments_For_housing.xlsx", sheet = "Data_no_metadata") %>%
+  gather(series, value, -Date) %>%
+  data.table %>%
+  setnames("series", "series_id") %>%
+  setkey(series_id) %>%
+  merge(housing_finance_commitments.metadata)
+@
+
+<<What_price_change_req_to_obtain_same_return>>=
+stopifnot(TRUE)
+res_dwelling_values_metadata <- 
+  readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/RES_DWEL_ST/ABS")
+
+recode_res_dwelling_values <- function(DT, colname){
+  cls <- slot(res_dwelling_values_metadata, "codelists")
+  codelists <- sapply(slot(cls, "codelists"), function(x) slot(x, "id")) 
+  
+  colname.code <- 
+    as.data.frame(slot(res_dwelling_values_metadata, "codelists"), 
+                  codelistId = codelists[grep(colname, codelists)]) %>%
+    as.data.table %>%
+    select(id, label.en) %>%
+    setnames(old = "label.en", paste0("label_", colname))
+  
+  merge(DT, colname.code, by.x = colname, by.y = "id")
+}
+
+res_dwelling_values <- 
+  readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/RES_DWEL_ST/1+2+3+4+5.0+1+2+3+4+5+6+7+8.Q/ABS?startTime=2011&endTime=2015") %>% 
+  as.data.frame %>%
+  recode_res_dwelling_values("ASGS_2011") %>%
+  recode_res_dwelling_values("MEASURE") %>%
+  recode_res_dwelling_values("FREQUENCY") %>%
+  data.table
+
+res_dwelling_values %>% 
+  filter(label_ASGS_2011 == "Australia",
+         label_MEASURE == "Value of dwelling stock: Owned by non households ($m)")  %>%
+  arrange(obsTime) %>%
+  mutate(r = (lead(obsValue)/obsValue)^ifelse(label_FREQUENCY == "Quarterly", 4, NA_real_) - 1) %>%
+  arrange(obsTime) %>% invisible
+
+read_excel("ASX_Returns_by_asset_class.xlsx") %>% 
+  filter(`Asset class` == "Residential investment property") %$%
+  `After tax highest marginal tax rate` / 100 ->
+  RoR_proprty
+
+value.of.ng.by.yr <- 
+  all_sample_files %>%
+  mutate(benefit_due_NG = income_tax(pmax(Taxable_Income, Taxable_Income - Net_rent_amt), 
+                                     fy.year = yr2fy(year)) -  income_tax(Taxable_Income, 
+                                                                          fy.year = yr2fy(year))) %>%
+  group_by(year) %>%
+  summarise(total_benefit = sum(benefit_due_NG * WEIGHT)) %>%
+  ungroup %>%
+  mutate(total_benefit_real = cpi_inflator(total_benefit, from_fy = yr2fy(year), to_fy = "2014-15"))
+
+value_of_NG_one_year <- 
+  value.of.ng.by.yr %>%
+  filter(year == 2013) %$%
+  total_benefit
+
+value_of_NG_perpertuity <- value_of_NG_one_year / RoR_proprty
+value_of_NG_10yrs <-
+  -1 * grattan::pv(RoR_proprty, 10, value_of_NG_one_year)
+
+value_dwelling_stock_2014 <- 
+  res_dwelling_values %>% 
+   filter(label_ASGS_2011 == "Australia",
+          label_MEASURE == "Value of dwelling stock: Owned by non households ($m)") %>%
+  arrange(obsTime) %$%
+  last(obsValue) * 10^6
+
+value_of_dwelling_stock_expected_2025 <- 
+  res_dwelling_values %>% 
+   filter(label_ASGS_2011 == "Australia",
+          label_MEASURE == "Value of dwelling stock: Owned by non households ($m)") %>%
+  arrange(obsTime) %$%
+  last(obsValue) * 10^6 *  # millions
+  (1 + RoR_proprty)^(10)
+
+NG_inflator <- function(n){
+  1.028^n
+}
+
+value_without_NG <- value_of_dwelling_stock_expected_2025 - value_of_NG_10yrs
+change_in_price_due_to_NG_upper <-
+  (value_of_dwelling_stock_expected_2025 -  value_without_NG / (1 + RoR_proprty)^10 ) / (value_of_dwelling_stock_expected_2025)
+
+
+
+
+
+@
+
+<<Owner_occupiers_loans_are_being_outnumbered_by_investors>>=
+housing_finance_commitments %>% 
+  filter(Long_name %in% c("Owner Occupation (Secured Finance) - Construction of dwellings ;",
+                          "Owner Occupation (Secured Finance) - Purchase of new dwellings ;",
+                          "Owner Occupation (Secured Finance) - Purchase of established dwellings ;",
+                          "Investment housing - Construction of dwellings for rent and resale ;",
+                          "Investment housing - Purchase for rent/resale by individuals ;",
+                          "Investment housing - Purchase for rent/resale by others ;"),
+         grepl("Seasonally", Series_Type)) %>%
+  mutate(OwnerType = gsub("^.*((Owner)|(Investment)).*$", "\\1", Long_name)) %>%
+  group_by(Date, OwnerType) %>%
+  summarise(new_finance = sum(value)) %>%
+  ungroup %>%
+  arrange(desc(Date)) %>%
+  spread(OwnerType, new_finance) %>%
+  group_by(Date) %>%
+  mutate(prop.owner = Owner/(Investment + Owner)) %>%
+  filter(prop.owner != 1) %>%
+  grplot(aes(x = Date, y = prop.owner)) + 
+  geom_line(aes(group = 1), size = 0.8)
+@
+
+<<percent_of_prop_value_due_NG>>=
+# Excel chart poorly formatted.
+#  read_excel("DAT - Average property tax burden.xlsx", sheet = "Property tax burden", skip = 1, col_types = c())
+#  8,223,900.0 
+
+total.value.of.property.2014 <- 
+  #8223900 * 10^6  # total value of all property 
+  283323.1 * 10^6 # total value of dwellings owned by non-households
+
+pc.prop_val_due_NG <- 
+  paste0(round(100*present.value_benefit_from_NG / total.value.of.property.2014), "\\%")
+pc.prop_val_due_NG_Quaran <-
+  paste0(round(100*present.value_benefit_from_Quaran_NG / total.value.of.property.2014), "\\%")
+@
+
+The impact on prices depends on investor perceptions of the size of the lost tax benefit. 
+Average annual rental losses over the last decade were \$\Sexpr{texNum(mean(rental_losses$real_tot_avg_loss))}, generating annual tax write-offs worth an average of \$\Sexpr{texNum(mean(value.of.ng.by.yr$total_benefit_real))} in today's dollars. 
+If investor expectations are guided by history, the present value of tax benefits over the next decade from negative gearing is around \$\Sexpr{texNum(present.value_benefit_from_NG)}. The present value of tax benefits in perpertuity is \$\Sexpr{texNum(mean(value.of.ng.by.yr$total_benefit_real)/RoR_proprty)}.
+
+If negative gearing were entirely abolished, then these expected tax benefits would be lost entirely. 
+Given that the value of dwellings held by investors is \$\Sexpr{texNum(total.value.of.property.2014)} (2014), a loss of \$\Sexpr{texNum(present.value_benefit_from_NG)} from the value would correspond to a fall in prices of \Sexpr{pc.prop_val_due_NG}. 
+For policies that limit negative gearing the price impacts would be smaller since some of the tax benefits are retained. 
+For example, if investment losses are quarantined so they can't be written off against wage and salary income, the present value of tax benefits lost over a decade might be \$\Sexpr{round(present.value_benefit_from_Quaran_NG/1e9)}~billion, with a maximum impact on property prices of \Sexpr{pc.prop_val_due_NG_Quaran}.
+
+Alternatively, assuming that investors demand the same return on investment without negative gearing, the change could be as high as \Sexpr{latex_percent(change_in_price_due_to_NG_upper)}. This is equal to the proportion of the current value of investor residential property in the value of negative gearing as a perpetuity. (The post-tax return on residential property investment was \Sexpr{latex_percent(RoR_proprty)} in the decade to December 2013.)
+
+Let $V_0$ be the current value of (investor, residential) housing stock. Let $V_{10}$ be the value of $V_0$ in ten years' time. Let $V_{0\not{G}}'$ be the new value of housing stock in the absence of negative gearing. Let $G$ be the value of negative gearing in perpertuity. Let $r$ be the rate of return demanded in residential property. So 
+\[V_{10} = V_0(1 + r)^{10}\]
+and by assumption
+\begin{align*}
+V_{10} - G &= V_{0\not{G}}' (1 + r)^{10} \\
+V_{0\not{G}}' &= \frac{V_{10} - G}{(1 + r)^{10}} \\
+              &= \frac{V_0(1 +r)^{10} - G}{(1 + r)^{10}} \\
+\implies \frac{V_{0\not G}'}{V_0} &= 1 - \frac{G}{V_0(1 + r)^{10}}
+\end{align*}
+
+Thus \[\frac{V_{0\not G}'}{V_0} = \text{\Sexpr{latex_percent(1 - value_of_NG_perpertuity * NG_inflator(1)/(total.value.of.property.2014 * (1 + RoR_proprty)^(1)))}}.\]
+\end{bigbox*}
+
+One concern with limiting negative gearing is that downward pressure on house prices could leave some highly geared investors with negative equity.  
+But given expected one-off price impacts of less than 
+\Sexpr{pc.prop_val_due_NG} 
+(\Vref{box:Impact_of_NG_on_house_prices}), the risk of negative equity from the tax changes is limited. 
+Only around ten per cent of new property loans go to investors with loan value ratios in excess of 90 per cent.\footcite{APRA2015}  
+And ratios for existing loans are falling as property prices continue to grow. 
+For the small proportion of investors that remain highly leveraged, higher interest rates pose a far greater risk than changes to the tax treatment of rental losses.
+
+\subsubsection{Limiting negative gearing will not change rents much}
+But out of all the effects that negative gearing has on housing markets, its effect on rental prices is by far the most contentious.
+
+Concerns persist that limiting negative gearing will reduce the supply of rental properties and push up rents.
+These arguments typically rest on two pillars: one, that rental prices rose in the 1980s when negative gearing for property was restricted and two, that investors will abandon the market without present tax advantages. 
+
+The first argument is quite easily refuted.
+In 1985, the Hawke Government restricted negative gearing so that rental losses could not be used to reduce tax payable on other income streams. 
+Two years later, the policy was abolished out of concern for increasing rental prices.
+
+But these concerns were ill-founded. Rents did rise rapidly in Perth and rose somewhat in Sydney. 
+Yet inflation-adjusted rents were stable in Melbourne and actually fell in Adelaide and Brisbane (\Vref{fig:Capital_city_rents}).
+In Sydney and Perth it was population growth and insufficient residential construction -- due to high borrowing rates and competition from the stock market for funds -- not the policy change, that effected the rent rises.\footcites[p.~186]{badcock1991responsiveness}[pp.~47-48]{Daley2013} 
+The policy change was merely a coincidence.
+As Badcock and Browett remark in their 1991 post-mortem of the policy, 
+
+\begin{quote}
+While it was clearly in the interests of the real estate industry to exaggerate the effects of the tax reforms, the federal government was misguided in its acceptance of the pervasiveness of the `rent crisis' in mid-1987.
+\end{quote}
+
+Recent rhapsodies by the property lobby show that little has changed.\footnote{See for example \emph{Analysis of Negative Gearing and CGT discount for residential property} (2015)}  The real estate industry is happy to exaggerate the effect of abolishing negative gearing on rental prices and governments are unenthusiastic to contradict them.\footcite{CormannLateline2015}
+
+<<Capital_city_rents_direct_abs_get, fig.height = 11, out.height = "11in", cache=TRUE>>=
+rsdmx::readSDMX("http://stat.abs.gov.au/restsdmx/sdmx.ashx/GetData/CPI/1.1+2+3+4+5+6+7+8+50.30014.10.Q/ABS?startTime=1982&endTime=1992") %>% 
+  as.data.frame ->
+  rent.indices
+
+region.decode <- 
+  data.table(
+    REGION = c(1:8,50),
+    city = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "Hobart", "Darwin", "Canberra", "AUST CAP")
+  )
+
+rent.indices %>%
+  merge(region.decode, by = "REGION") %>%
+  filter(city %in% c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "AUST CAP")) %>%
+  group_by(city) %>%
+  # Why does wrapping up the obs/first(obs) work but not separately? Inflation of an index??
+  mutate(obsValuerel = cpi_inflator_quarters(obsValue/first(obsValue), nominal.date = obsTime, target.date = "1983-Q4"),
+         obsValuerel = obsValuerel/first(obsValuerel)) %>%
+  ungroup %>%
+  #mutate(obsValuerel = cpi_inflator_quarters(obsValuerel/first(obsValue), nominal.date = obsTime, target.date = "1983-Q4"))
+  mutate(up = city %in% c("Sydney", "Perth")) %>%
+  mutate(city = factor(city, 
+                       levels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "AUST CAP"),
+                       labels = c("Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "All\nAustralian\ncapitals"))) %>%
+  mutate(obsTime = as.POSIXct(as.yearqtr(obsTime, format = "%Y-Q%q"))) ->
+  rent.indices.real
+@
+
+<<Capital_city_rents_direct_abs, fig.height = 11, out.height = "11in">>=
+rent.indices.real  %>%
+  filter(obsTime < as.POSIXct("1989-06-01")) %T>%
+  chart_data %>%
+  grplot(aes(x = obsTime,
+             y = obsValuerel, 
+             color = city,
+             label = city,
+             group = city)) + 
+  annotate("rect", 
+           xmin = as.POSIXct("1985-07-01"),
+           xmax = as.POSIXct("1987-09-30"),
+           ymin = -Inf,
+           ymax = Inf,
+           fill = grey(0.8),
+           alpha = 1) + 
+  geom_line() + 
+  geom_text(aes(vjust = vjust),
+            data = mutate(filter(rent.indices.real, obsTime == unique(obsTime)[14]),
+                          # manual adjustment of vertical justification
+                          vjust = ifelse(grepl("Aust", city), -0.6, 
+                                         ifelse(grepl("Brisbane", city), -2.3,
+                                                ifelse(grepl("Perth", city),-1.8, -1.1)))),
+            hjust = 1, size = 7.14, fontface = "bold",
+            lineheight = 0.8) +
+  scale_color_manual(values = c(gpal(6)[1:5], "black")) + 
+  facet_wrap(~city, ncol = 3)  + 
+  theme(strip.text = element_blank(),
+        strip.background = element_blank(),
+        panel.margin.x = grid::unit(2, "lines"),
+        axis.title.x = element_blank())
+@
+
+\begin{figure}
+\Caption{Rents did not rise when negative gearing was removed in Melbourne, Adelaide or Brisbane}{Average rent prices (real compared with overall CPI), 1982 = 1.
+Grey band indicates the dates when negative gearing was not permitted}{fig:Capital_city_rents}
+\includegraphics[width=\columnwidth]{figure/Capital_city_rents_direct_abs-1}
+\source{\textcite{ABSVariousyearsa}}
+\end{figure}
+Beyond these historical lessons, economic theory predicts that removing negative gearing should not change rents much.
+Investors may want to increase rents to maintain their post-tax returns but the competitive dynamic in rental markets will limit any material rent increases. 
+
+Rents are ultimately a consequence of the marginal renter deciding whether they are prepared to pay rent and move out of housing they share with others -- often their parents.
+If rents go up, fewer people move out of home, and demand falls. 
+
+At the same time, negatively geared investors will face competition from the third of landlords making positive rental profits.
+Because these landlords are not negatively gearing, they will be unaffected by the tax changes.
+Tenants can try to beat rent rises by threatening to move to these other properties.
+
+Rents are set by these dynamics of demand and supply, not by the returns that owners are seeking.
+In property markets -- just like other markets -- returns determine asset prices, not the other way around.
+Rents do not increase just to ensure that buyers of assets get their money back.
+Put another way, tenants will not pay more for the same just because their landlord is unable to make the same return.
+It is much more likely such tenants would seek accommodation from a positively geared landlord, or even purchase a house. 
+While some investors may sell their properties if tax concessions are less generous, 
+this will only reduce house prices, not rental prices.
+
+Some investors may sell their properties if tax concessions are less generous.
+This might reduce house prices, but it will not increase rents. 
+Every time an investor sells a property to a renter, there is one less rental property, and one less renter.
+There is no change to the balance between supply and demand of rental properties in the short term.
+Others may sell to another investor, but one that doesn't rely on negative gearing to make the investment profitable.
+Again there is no shortage of rental properties.
+
+It is also unlikely that removing negative gearing would affect the supply of new dwellings much over the medium term.
+Currently 93~per~cent of all investment property lending is for existing dwellings.\footcite{ABS2015}  Less investor demand would put downward pressure on house prices including the price of new houses.\footnote{The price transmission will be somewhat muted by the fact that the market for new housing, typically at the edge of cities, is somewhat detached from the market for established housing typically closer to the centre (See: \textcite{Kelly2011}.)}  But the main constraint on new housing is land release and zoning restrictions -- especially in established suburbs with good access to jobs and transport -- rather than the profitability of developments.  \footcites{Kelly2013}[pp.84-90]{Kelly2015}
+
+General tax breaks like negative gearing are a poorly targeted and inefficient way of supporting the rental market.\footcite[p.~74]{HenryReviewPart2Vol1}
+
+\subsubsection{Negative gearing benefits middle and high income earners}
+Like most tax concessions on investment, tax benefits from negative gearing are biased to the wealthy.
+The increase in after-tax return as a result of the current negative gearing/capital gains interaction is larger for individuals on higher marginal tax rates, all else being equal.\footcite{Inquiry2014}   
+
+The top 10~per cent of taxable income earners receive more than one third of rental deductions.
+But taxable incomes are assessed after rental losses.
+In other words, people who are negatively gearing have lower taxable incomes \emph{because} they are negatively gearing.
+Correcting for this by assessing income before rental loss deductions shows that the top ten per cent of income earners receive almost fifty per cent of the tax benefits of negative gearing.\footnote{\textcite{RBA2015} analysis of \textcite{HILDA2015} also suggests that higher income earners are more likely to negatively gear property.
+It shows that the top 20~per cent of income earners are almost ten times more likely to have a debt-financed investment property than those in the bottom 20~per cent of earners.} 
+
+<<Decile_constructor>>=
+benefits_by_taxable_income <- 
+  sample_file_1213 %>%
+  mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
+         Taxable_Income_NoNegGearg = Taxable_Income - pmin(Net_rent_amt, 0),
+         Taxable_Income_NoNegGearg_Decile = ntile(Taxable_Income_NoNegGearg, 10),
+         benefit_due_to_noneggearg = income_tax(Taxable_Income_NoNegGearg) - income_tax(Taxable_Income)) %>%
+  group_by(Decile = Taxable_Income_Decile) %>%
+  dplyr::summarise(mean_benefit = mean(benefit_due_to_noneggearg)) %>%
+  ungroup %>%
+  mutate(prop_benefit = mean_benefit/sum(mean_benefit)) %>%
+  mutate(Decile_of = "Taxable Income")
+
+benefits_by_taxable_income_before_deductions <- 
+  sample_file_1213%>%
+  mutate(Taxable_Income_Decile = ntile(Taxable_Income, 10),
+         #Taxable_Income_NoNegGearg = Taxable_Income + Rent_int_ded_amt,
+         Taxable_Income_NoNegGearg = Taxable_Income - pmin(Net_rent_amt, 0),
+         Taxable_Income_NoNegGearg_Decile = ntile(Taxable_Income_NoNegGearg, 10),
+         benefit_due_to_noneggearg = income_tax(Taxable_Income_NoNegGearg) - income_tax(Taxable_Income)) %>%
+  group_by(Decile = Taxable_Income_NoNegGearg_Decile) %>%
+  dplyr::summarise(mean_benefit = mean(benefit_due_to_noneggearg)) %>%
+  ungroup %>%
+  mutate(prop_benefit = mean_benefit/sum(mean_benefit)) %>%
+  mutate(Decile_of = "No negative gearing")
+@
+
+
+<<Effect_of_Deductions>>=
+rbind(benefits_by_taxable_income_before_deductions, benefits_by_taxable_income) %>%
+  mutate(Decile_of = factor(Decile_of, 
+                            levels = c("Taxable Income", "Salary", "No negative gearing", 
+                                       "Tot_inc_amt"), 
+                            labels = c("Deciles by taxable income\nafter rental deductions",
+                                       "Deciles by salary",
+                                       "Deciles by taxable income\nbefore rental deductions",
+                                       "Total income amount")
+                            )) %T>%
+  chart_data %>%
+  grplot(aes(x = factor(Decile), y = prop_benefit, fill = Decile_of)) + 
+  scale_fill_manual(values = gpal(2,T)) +
+  scale_color_manual(values = rev(gpal(2,T))) + 
+  geom_bar(stat = "identity", position = "dodge", width = 1) + 
+  scale_y_continuous(expand = c(0,0.00), limits = c(0,0.525), label=percent) + 
+  #scale_y_continuous(expand = c(0,0), limits = c(0,3300), label = grattan_dollar) + 
+  facet_grid(~Decile_of) + 
+  theme(strip.text = element_text(angle = 0, vjust = 0.7,
+                                  size = 23,
+                                  face = "bold", colour = "white"),
+        strip.background = element_rect(fill = theGrey),
+        panel.margin.x = unit(1, "lines"),
+        #
+        # Not required with facet lables
+        axis.title = element_blank()) + 
+  xlab("Decile") 
+@
+\begin{figure}[t]
+\Caption{Negative gearing mostly benefits those on high incomes, and the difference is especially stark when incomes are measured before subtracting rental interest deductions}{Percentage of each decile's share of the benefit in reduced income tax due to negative gearing (2012-13)}  {fig:Effect_of_Deductions}
+\includegraphics[width=\columnwidth]{figure/Effect_of_Deductions-1}
+\notes{Taxable income before rental deductions means $\text{Taxable Income} - \min(\text{Net rental profit}, 0)$.
+Income tax includes medicare levy, medicare thresholds, but not other tax benefits (\emph{e.g.}~the seniors and pensioners tax offset (SAPTO))}
+
+\source{\gao\ \textcite{ATO2013i}}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% CHAPTER 3: IMPACT OF NEGATIVE GEARING AND THE CGT %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<<Impact, child='./CGT-NG-sections/chapter-Impact-of-changing-negative-gearing/Impact-of-changing-negative-gearing.Rnw'>>=
+@
+
+
+
+\chapter{Options for reform}
+The favourable tax treatment of investments -- particularly the interaction of the negative gearing arrangements with the capital gains tax discount -- have promoted speculative investment in housing while also costing the budget bottom line. 
+
+\highlight{Reducing the capital gains tax discount} is the most direct way to reduce the incentive for inefficient investment activity.
+At the same time, \highlight{negative gearing should be restricted} so that losses from investments cannot be deducted against wage and salary income.
+The tax treatment of depreciation should also be changed to remove the preferential tax advantages generated by the asymmetric treatment of gains and losses. 
+
+An alternative would be to pursue the Henry Review proposal to \highlight{align the tax rates for capital gains and losses.} This was part of a broader proposal in that review to ensure greater consistency in the tax treatment of various forms of savings.
+
+Reforms to capital gains tax or eligibility for negative gearing should apply to all types of assets, not just rental properties, so that the tax system does not encourage investors to favour one type of investment over another.  \footcite[p.~133]{Commission2004}
+
+\subsection{Reducing the capital gains tax discount}
+Reducing the capital gains tax discount would make the investment tax regime more efficient and fair. 
+
+There are good arguments to abolish the capital gains tax discount altogether.
+It is not obvious why returns from investment should be taxed less that returns from working.
+And the differential tax rates create incentives for people to convert labour into capital income. 
+
+But the arguments advanced for maintaining concessional treatment of gains sound a word of caution.
+While there is no compelling evidence that changes in tax rates materially change savings and investment behaviour, most studies examining these issues look at changes in behaviour in response to relatively modest changes in tax rates.
+Eliminating the capital gains tax discount would at least double the effective tax rate paid on capital returns.
+No OECD country taxes capital gains at full marginal tax rates in all circumstances.\footnote{OECD note} 
+
+
+Reducing the capital gains tax to 30 per cent for individuals and trusts \colorbox{cyan}{[Do we bother reducing for super -- currently 33\%?]} would maintain some adjustment for the effects of inflation, while recognising the other tax advantages that capital gains enjoy.
+The Henry tax review nominated a 40 per cent discount for capital gains as an appropriate adjustment for the effects of inflation, given prevailing levels of inflation and asset returns.
+
+But the additional tax advantages for capital gains -- being taxed only on realisation and at the timing of the investor's choosing -- means that investors would still be substantially overcompensated at this rate.
+A somewhat lower discount in recognition of these tax benefits would be fairer and distort investment choices less. 
+
+Reducing the discount to 30~per cent, could raise around \$\Sexpr{cost_of_red_CGT_discount}~billion.
+This estimate relies on a pair of assumptions with opposing effects. The first is that asset prices and investor behaviour would not change and the second is that the 2012-13 taxation statistics, being the most recent, are representative of future years.  The first is likely to result in a higher estimate than could actually be anticipated as a less favourable tax treatment would discourage investors and lower prices. On the other hand, the second assumption would underestimate the revenue gain these revenues should rise over time  as capital losses built up from the GFC pass were yet to pass through the system.\footnote{CGT revenues are yet to recover following the GFC.
+Receipts were 0.46~per cent of GDP in 2012-13, down from a peak of 1.56~per cent of GDP in 2007-08.
+Even as asset prices have improved, capital losses carried forward have limited taxable gains. \textcite{Stewart2015}; \textcite{PBO2014}. } In our judgement, the opposing effects are likely to be of similar magnitude.\footnote{An independent costing by the Parliamentary Budget Office on behalf of Sen. Di Natale this year yielded similar forecasts: a 25 percentage point reduction in the CGT discount resulted in a forecast increase in revenue of \$5.7~bn over three years, looking at a different sample year and accounting for reductions in asset investment due to discouraged investor behaviour (but not changes in asset prices). Our analysis suggests a \$1.9~bn (or \$5.7~bn over three years) under the same CGT discount change.}
+
+\subsection{Limiting negative gearing}
+There is also a strong case for \highlight{limiting the tax deductibility of losses}.
+Quarantining losses so they cannot be written off against wage and salary income would limit the current distortions. 
+
+While the deductibility of investment expenses including income expenses, has a strong grounding, there is no reason that these expenses should be deducted against wage and salary income.
+Indeed, allowing these deductions provides significant tax advantages to investors driving up house prices at the expense of would be home buyers. 
+
+Governments already limit the scope for people to reduce their taxable income through investment losses to qualify for income support payments.
+Income tests for Family Tax Benefit Part A and Part B, Child Care Benefit are based on ``adjusted taxable income'' which adds back investment losses.\footnote{Department of Human Services% \url{http://www.humanservices.gov.au/customer/enablers/adjusted-taxable-income#a6} 
+}
+
+There are different degrees of quarantining.
+The most generous approach is to allow losses to be written off against all non-wage and salary income.
+This would include all forms of investment income, including interest and rental income.
+An alternative would be to restrict deductions to investment income from the same asset class -- for example, property or shares.
+The most restrictive is to only allow write-off against the capital gain from the same asset. 
+
+The latter is preferred from an economic perspective because it aligns the timing of tax for gains and losses, minimising the tax driven preference to favour capital gains over recurrent investment income.
+But adopting more stringent rules may encourage switching to investment vehicles that allow more generous treatment of losses.
+For example, investors might hold assets in a company so they can write off losses against other forms of investment income.  
+
+A more generous treatment that simply quarantines losses to all non-wage and salary income would be less likely to promote switching to companies or trusts because losses from these vehicles cannot be written off against wage income.
+
+Quarantining loss deductions in this way would raise additional tax revenue in the short term, although the estimates are sensitive to changes in the housing market and the holding periods for assets.
+Applying the average marginal tax rate to the average annual rental losses of \$10.4 billion would yield \$4.2 billion in additional tax revenue in the short-term. 
+
+Over the medium term, rental losses will start to be written off against income from capital gains.
+Assuming no change in investor behaviour, the additional tax revenue net of lower capital gains tax revenue would revert to around its average level of \$1.5~billion a year. 
+
+Applying one of the more restrictive standards for loss write offs -- limiting to the asset or asset class -- would raise more over the longer term because investors will wait longer on average until they can realise their losses. 
+
+These estimates do not take into account behavioural shifts from the policy change but some behavioural change is likely.
+Investments that make income losses are less attractive when the tax benefits are more restricted.
+Much of the appeal of negative gearing lies in the scope to reduce annual taxes on wage income (\Cref{sec:negative_gearing_provides}).
+Removing the tax incentive for leveraged investment should result in investors shifting toward income producing assets and therefore an overall increase in income tax collections.  
+\subsubsection{Limiting negative gearing only to new properties}
+An alternative to quarantining negative gearing is to only allow losses to be deducted for new properties. 
+Proponents argue that this will maintain the incentives for the provision of new housing.
+Certainly the policy will increase investor demand for new developments relative to existing property.
+But as noted in (\Cref{sec:negative_gearing_provides}), supply restrictions rather than insufficient demand is the main constraint on new construction activity. 
+
+Restricting tax benefits to a subset of investments, such as new housing, creates additional complexity and distorts investment choices.\footcite[p.~28]{McKellSwitchingGears}  But while an across the board change to the negative gearing would be preferable, maintaining existing arrangements for new properties may not be too distorting.
+The supply of new properties will always be small relative to the stock of existing properties at any point in time  so the cost to the budget and the economy of special treatment for new properties should not be large. 
+
+Restricting tax benefits to a subset of investments, such as new housing, creates additional complexity and distorts investment choices.\footnote{Complexity may be less of a problem if other government support schemes targeting new property investments -- first home buyer's grants and stamp duty concessions -- mean that some of the more tricky definitional issues around ``new properties'' have been addressed. }  But while an across the board change to the negative gearing would be preferable, maintaining existing arrangements for new properties may not be too distorting.
+The supply of new properties will always be small relative to the stock of existing properties at any point in time\footnote{New dwellings add less than 2~per cent to the stock of residential dwellings in year. \textcite[p.~47]{ACIL2015}}  so the cost to the budget and the economy of special treatment for new properties should not be large. 
+
+\subsubsection{Symmetrical tax treatment of losses and capital gains}
+An alternative proposal put forward in the Henry review was to discount rental losses by the same amount as the capital gains tax discount.\footcite[pp.~70,72]{Treasury2010}  So, if the capital gains discount was reduced to 30~per cent so that 70~per cent of gains were taxable, investors would also be able to write off 70~per cent of their losses against their taxable income (including wage and salary income). 
+
+This proposal could also raise an additional \$2~billion each year for the budget.
+By restoring the symmetry in the treatment of gains and losses, investors would have less incentive to `chase' capital gains rather than recurrent income.\footcite[p.~418]{Treasury2010} 
+
+This was part of a broader proposal in the Henry tax review to align the tax treatment of different savings vehicles.
+The review recommended that bank account interest and positive rental income receive the same discount as capital gains.
+Although a detailed consideration is beyond the scope of this report, the broader Henry proposal would remove some of the largest tax based distortions in investment choices, most notably the tax penalty on bank interest (see below). 
+
+
+\section{Transitional arrangements}\label{sec:transitional_arrangements}
+Changes to capital gains tax and negative gearing should be phased-in to minimise sudden shifts in asset markets that are prone to over-shooting.
+Phase-in also provides investors with time to reorganise their affairs to adjust to the new regime.
+
+Immediate reform to the current capital gains discount or negative gearing regimes would encourage investors to sell before the new legislation came into force.
+This could be moderated by phasing in the changes over a number of years.
+For example, under a ten year phase-in, the capital gains discount could be reduced to 48~per cent in the first year, and then reduced by two percentage points each year until 70~per cent of capital gains are taxed. 
+
+Similarly, changes to negative gearing could be phased in.
+For example, taxpayers might be allowed to claim only 90~per cent of their losses against wage and salary income in the first year (the remainder capitalised against any future capital gain), and the ten percentage points less each year until no losses are claimed against wage and salary income.
+
+A less preferable alternative would be to grandfather existing arrangements.
+Those who purchased assets before capital gains tax reform was implemented could still claim the capital gains tax discount, even if they sell the assets several years afterwards.
+Similarly, those who purchased assets before negative gearing reform, could continue to claim all of their losses against their wage and salary income until the asset was sold.
+
+Grandfathering causes a number of problems: it adds to complexity, reduces liquidity, and treats investors -- particularly younger investors -- unfairly.
+
+Applying different tax treatments to investments depending on when they were acquired adds to the complexity of the tax system.
+Because investors can hold assets for decades, these dual tax arrangements are long-lived.
+For example, the decision to grandfather the capital gains tax free status for assets purchased before 1986 still contributes to the complexity of our capital gains tax regime, 29 years later.\footcite[p.~75]{Treasury2010} 
+
+Grandfathering arrangements reduce liquidity because investors have substantial incentives to retain whichever assets they purchased before the reform was implemented.
+They will be reluctant to buy and sell because the after tax returns on the assets bought earlier will be higher.
+Such a drag on liquidity is economically inefficient because it encourages investors to hold assets even when others could extract a higher return from them.
+This is a particular concern with negative gearing where a landlord may continue to hold a property because it generates ongoing deductible losses, even though an alternative owner might profitably develop the property.
+Grandfathering also exacerbates intergenerational inequality. Those who own assets before the reforms -- more likely those who are older -- earn higher after tax returns than those who start to build wealth later on.\footcite[p.~14]{Daley2014} 
+
+Grandfathering arrangements are often driven by the principle of retrospectivity.
+Concerns arise if a person acts as they would not otherwise because of a government policy, and then that policy changes to their detriment.
+Legitimate expectations, for which government is responsible, are violated. 
+
+But the principle of retrospectivity is not absolute.
+Governments are entitled to change tax rates.
+If a person buys BHP Billiton shares, they cannot expect that the marginal tax rate then in force will still apply when they sell.
+No investor is entitled to a particular after-tax return in perpetuity.
+
+Grandfathering (rather than a phase-in) may help existing owners less than they think.
+Abolishing the capital gains discount or restricting claims for losses on investments would reduce the after-tax returns for new purchasers.
+This would reduce the price they are prepared to pay existing owners.
+A phase-in -- which treated old and new owners alike -- would have less immediate price impacts.
+
+If grandfathering is nevertheless adopted, complexity in the long-term might be reduced by a sunset clause.
+This would provide that the new tax arrangements would apply to assets bought before the reforms if they were sold more than (say) fifteen years after the reform.
+This would provide existing owners ample time to reorganise, few investment assets are held for this long, and it would reduce complexity in the long-term.
+This may not be required for negative gearing because properties inevitably become positively geared over time (\Cref{sec:negative_gearing_provides}), providing a natural sunset to any grandfathering arrangements.
+
+The most powerful argument for grandfathering is political economy: those who benefit from the current arrangements are likely to be the most vociferous opponents of reform.
+It may be better to grandfather existing arrangements -- thereby muting opposition -- than to abandon worthwhile reform altogether.  
+
+Nevertheless, given the competing considerations, phase-in would be a better transition.
+There would be less complexity, less immediate impact on prices, and younger investors would be treated more fairly.
+Concerns about investor expectations are not particularly strong as the phase-in proposed would provide them with ample time to reorder their affairs.
+
+
+\onecolumn
+
+<<wealth>>=
+# VSUPGCP,VSUPNCP,VFINCP,VOFTCP,VDEBCP,VPLNCP,VINVOTCP,VIBUSCP,VUBUSCP,VPUTTCP,VPRTCP,VSIPCP,VSHARCP
+
+
+
+@
+
+<<income_age_heatmap_raw>>=
+sample_file_1213 %>%
+  age_mutate_ %>%
+  group_by(Income_decile = ntile(Tot_inc_amt, 10),
+           Age) %>%
+  tally %>%
+  ungroup %>% 
+  mutate(alpha = (n - min(n))/(max(n) - min(n))) %>%
+  grplot(aes(x = Age, y = factor(Income_decile),
+             alpha = n)) +
+  scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
+  geom_tile(fill = Orange) +
+  coord_equal() 
+@
+
+<<income_age_heatmap_costing>>=
+policy %>%
+  age_mutate_ %>%
+  group_by(Income_decile = ntile(Tot_inc_amt, 10),
+           Age) %>%
+  summarise(mean.diff = mean(diff)) %>%
+  ungroup %>% 
+  mutate(alpha = (mean.diff - min(mean.diff))/(max(mean.diff) - min(mean.diff))) %>%
+  grplot(aes(x = Age, y = factor(Income_decile),
+             alpha = mean.diff)) +
+  scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
+  geom_tile(fill = Orange) +
+  coord_equal() + 
+  guides(alpha = guide_legend("Increased tax burden")) + 
+  theme(legend.position = "right",
+        panel.grid = element_blank(),
+        axis.title.x = element_text(hjust = 0.5, angle = 0))
+@
+\begin{figure}
+\Caption{The costs of this policy fall on the high income and the elderly}{Total income decile}{fig:income_age_heatmap}
+\includegraphics[height=0.9\textheight]{figure/income_age_heatmap_costing-1}
+\end{figure}
+
+<<income_age_heatmap_just_NG>>=
+just_negative_gearing_taxstats_year0 %>%
+  mutate(diff = new_tax - current_tax) %>%
+  age_mutate_ %>%
+  # mutate(Income_decile = ntile(Tot_inc_amt, 10))
+  group_by(Income_decile = ntile(Tot_inc_amt, 10),
+           Age) %>% 
+  summarise(mean.diff = mean(diff)) %>%
+  ungroup %>% 
+  mutate(alpha = (mean.diff - min(mean.diff))/(max(mean.diff) - min(mean.diff))) %>%
+  grplot(aes(x = Age, y = factor(Income_decile),
+             alpha = mean.diff)) +
+  scale_alpha_continuous(label = grattan_dollar, guide = guide_legend()) + 
+  geom_tile(fill = Orange) +
+  coord_equal() + 
+  guides(alpha = guide_legend("Increased tax burden")) + 
+  theme(legend.position = "right",
+        panel.grid = element_blank(),
+        axis.title.x = element_text(hjust = 0.5, angle = 0))
+@
+
+
+%\nocite{*}
+
+<<sessionInfo>>=
+devtools::session_info()
+@
+\twocolumn
+
+\printbibliography[title=References]
+\end{document}
