@@ -3929,7 +3929,8 @@ sample_file_1314 %>%
       coord_flip() 
   }
 @
-<<PP-losers-salary-comparison-horiz-bar, cache=FALSE>>=
+
+<<PP-losers-salary-comparison-horiz-bar, cache=FALSE, fig.width=14, out.width="14in">>=
 sample_file_1314 %>%
   merge(occupation_decoder, by = "Occ_code") %>%
   mutate(Sw_amt = as.double(Sw_amt)) %>%  # integer overflow on mean
@@ -3948,6 +3949,7 @@ sample_file_1314 %>%
          prop_claim_losses = first(n_individuals, order_by = Claiming_PP) / sum(n_individuals)) %>%
   ungroup %>%
   filter(!grepl("Occupation not listed", Occupation_description)) %>%
+  filter(!grepl("driver", Occupation_description)) %>%
   
   
   # cosmetic
@@ -4004,12 +4006,75 @@ sample_file_1314 %>%
       geom_bar(stat = "identity", position = "dodge") + 
       scale_y_continuous(label = grattan_dollar,
                          expand = c(0,0), 
+                         breaks = c(0, 50e3, 100e3),
                          limits = c(0, max(.$average_salary) * 1.05))  + 
       theme(panel.grid.major.x = element_line(), 
+            plot.margin = unit(c(0.5, 1, 0.5, 1), "lines"),
             axis.title.x = element_text(margin = margin(11, 0, 5, 0))) + 
+      annotate("text", 
+               x = c(0.75,1.25), 
+               y = c(55e3), 
+               hjust = 0,
+               size = 22/(14/5),
+               label = c("Not claiming", "Claiming PP losses"), 
+               colour = gpal(2), 
+               fontface = "bold") + 
       coord_flip() 
   }
 @
+
+<<Proportions-PP-losses,cache=FALSE,fig.width=8.8,out.width="8.8in">>=
+sample_file_1314 %>%
+  merge(occupation_decoder, by = "Occ_code") %>%
+  mutate(Sw_amt = as.double(Sw_amt)) %>%  # integer overflow on mean
+  group_by(Occupation_description, Claiming_PP =  factor(ifelse(Net_PP_BI_amt < 0, 
+                                                                "Claiming PP losses", 
+                                                                "Not claiming"), 
+                                                         levels = c("Claiming PP losses", "Not claiming"))) %>%
+  summarise(average_salary = mean(Sw_amt), 
+            n_individuals = 50 * n()) %>%
+  group_by(Occupation_description) %>%
+  mutate(salary_difference = ifelse(Claiming_PP == "Not claiming", 
+                                    average_salary, 
+                                    first(average_salary, 
+                                          order_by = Claiming_PP) - last(average_salary, 
+                                                                         order_by = Claiming_PP)), 
+         prop_claim_losses = first(n_individuals, order_by = Claiming_PP) / sum(n_individuals)) %>%
+  ungroup %>%
+  filter(!grepl("Occupation not listed", Occupation_description)) %>%
+  filter(!grepl("driver", Occupation_description)) %>%
+  
+  
+  # cosmetic
+  mutate(Occupation_description = gsub("and type not specified or not listed", "", Occupation_description), 
+         Occupation_description = gsub("and", "&", Occupation_description), 
+         Occupation_description = ifelse(grepl("Community.*Personal", Occupation_description), 
+                                         "Community workers", 
+                                         Occupation_description), 
+         Occupation_description = ifelse(grepl("^Clerica", Occupation_description), 
+                                         "Clerical/Admin.", 
+                                         Occupation_description)) %>%
+  mutate(`Average salary` = average_salary) %>% 
+  arrange(Claiming_PP, average_salary) %>%
+  mutate(`Proportion claiming losses` = ifelse(Claiming_PP == "Not claiming", 0, prop_claim_losses)) %>%
+  mutate(Occupation_description = factor(Occupation_description, 
+                                         levels = unique(.$Occupation_description), 
+                                         ordered = TRUE)) %>%
+                                         {
+                                           grplot(., aes(x = Occupation_description, 
+                                                         y = `Proportion claiming losses`, 
+                                                         fill = rev(Claiming_PP))) + 
+                                             geom_bar(stat = "identity", position = "dodge") + 
+                                             scale_y_continuous(label = percent, 
+                                                                expand = c(0,0), 
+                                                                limits = c(0,max(.$prop_claim_losses) * 1.1)) + 
+                                             coord_flip() + 
+                                             theme(axis.text.y = element_blank(), 
+                                                   axis.title.x = element_text(margin = margin(11, 0, 5, 0)),
+                                                   plot.margin = unit(c(0.5,1,0.5,2), "lines"))
+                                         }
+@
+
 
 <<PP-losers-salary-comparison-ggrepel>>=
 sample_file_1314 %>%
