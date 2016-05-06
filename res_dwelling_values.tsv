@@ -1,0 +1,631 @@
+FREQUENCY	MEASURE	ASGS_2011	TIME_FORMAT	obsTime	obsValue	label_ASGS_2011	label_MEASURE	label_FREQUENCY
+Q	1	0	P3M	2011-Q3	4418854	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2011-Q4	4.4005281E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2012-Q1	4.4281476E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2012-Q2	4.4569888E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2012-Q3	4.4413262E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2012-Q4	4.5535469E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2013-Q1	4.6119432E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2013-Q2	4694434	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2013-Q3	4.7819458E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2013-Q4	4.9631389E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2014-Q1	5.0429349E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2014-Q2	5.1414989E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2014-Q3	5.2278291E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	0	P3M	2014-Q4	5.4038369E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2014-Q2	840721	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2014-Q3	8.519604E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2011-Q3	1.5352192E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2014-Q1	7.24762E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2014-Q2	7.28353E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2011-Q4	4.933364E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2012-Q1	5.058916E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2012-Q2	1.1500309E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2012-Q3	1136055	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2012-Q3	3.52292E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2012-Q3	6.77392E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2014-Q1	1.2946559E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2014-Q1	4.04789E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2014-Q2	4.16431E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2014-Q4	1.3776951E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2014-Q4	3.101245E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2014-Q2	1.3071068E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2014-Q3	1.3272794E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2011-Q3	3.86874E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2011-Q4	3.51393E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2012-Q2	5.064972E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2012-Q4	1.1653165E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2013-Q1	1.1825331E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2013-Q1	68737	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2013-Q2	6.97705E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2013-Q3	6.99213E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2013-Q4	40723	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2014-Q3	4.01813E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2014-Q4	4.18048E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2014-Q4	9.29654E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2014-Q2	8.90155E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2014-Q4	7.32938E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2011-Q4	1.1542894E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2012-Q1	7.05803E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2012-Q4	1.6143438E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2012-Q4	7.756833E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2013-Q2	1.1989928E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2013-Q3	1.2329325E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2013-Q4	1.2742308E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2014-Q1	8.287048E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2013-Q4	8.85844E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2014-Q3	3.012832E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2014-Q4	2044049	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2014-Q4	8.681331E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2011-Q3	1.1613693E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2011-Q3	274405	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	2	P3M	2012-Q1	1.1438776E6	Victoria	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2012-Q1	2.741348E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2012-Q2	2.754118E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2012-Q3	2.744267E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2013-Q1	1.6392378E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2013-Q2	7.903843E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2014-Q1	2.997326E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2014-Q2	3.008706E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2014-Q3	8.97514E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2014-Q3	7.35009E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2012-Q1	3.46821E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2014-Q1	5.805179E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2014-Q2	5.900102E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2011-Q4	2.784243E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2012-Q1	7.586865E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2012-Q2	1.5772807E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2012-Q4	6.95153E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2013-Q1	7.795248E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2013-Q2	2.797978E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2013-Q3	7.924023E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2013-Q4	2.944726E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2014-Q2	1.8992965E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2014-Q3	1.9558315E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2014-Q4	5.957712E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2013-Q1	82228	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2012-Q4	5.306652E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2014-Q3	588041	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2011-Q4	8.18946E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2011-Q4	7.16195E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2013-Q4	5.768717E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2012-Q4	3.81407E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2012-Q3	8.05693E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2013-Q3	2.837168E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2011-Q3	7.93142E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2013-Q4	1.8030582E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2013-Q4	7.21968E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2013-Q4	8.130014E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2014-Q1	8.76453E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2012-Q3	1.5590247E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2011-Q4	1.5230852E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2012-Q1	1.5593613E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2013-Q3	5.598283E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2014-Q1	1.8387232E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2012-Q3	772111	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2013-Q1	5.431253E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2011-Q3	4.943524E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2011-Q3	7.03152E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2013-Q3	3.85273E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2013-Q3	8.45359E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2012-Q3	5.161712E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2013-Q2	1.6745479E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2011-Q4	7.627395E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2012-Q2	3.43618E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2013-Q2	8.59508E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	5	P3M	2013-Q2	5.571354E5	Western Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	1	P3M	2013-Q3	1.7200813E6	New South Wales	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2013-Q2	3.78545E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2013-Q1	2.791429E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2012-Q1	8.09334E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2012-Q2	8.14225E4	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2011-Q3	7.651913E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	3	P3M	2012-Q2	7.634578E5	Queensland	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	8	P3M	2012-Q4	84485	Australian Capital Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	7	P3M	2013-Q1	3.74144E4	Northern Territory	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	6	P3M	2012-Q2	6.85262E4	Tasmania	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	1	4	P3M	2012-Q4	2.753969E5	South Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
+Q	2	0	P3M	2014-Q4	5123926	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2014-Q3	8.064005E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2014-Q3	4.9557657E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2014-Q1	1.2509343E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2014-Q3	1.2826898E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2014-Q4	3.27294E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2014-Q4	6.82861E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2014-Q3	6.84416E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2014-Q2	1.2632747E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2014-Q1	2.775428E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2013-Q4	7.694827E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2014-Q3	3.11475E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2014-Q2	7.958225E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2014-Q4	8.217565E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2013-Q4	2.727733E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2011-Q4	7.214801E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2014-Q1	80024	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2011-Q4	27445	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2011-Q4	2.574683E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2013-Q4	1.7075316E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2014-Q1	4.7796626E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2014-Q2	4.8738801E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2013-Q3	1.1910812E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2014-Q4	8.48924E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2013-Q2	7.478647E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2013-Q3	749899	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2014-Q3	2.790291E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2013-Q2	5.240001E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2011-Q3	2.539394E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2014-Q4	287475	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2011-Q3	3.01961E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2013-Q4	6.71911E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2013-Q1	4.3682074E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2013-Q4	4.7037359E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2013-Q2	1158047	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2013-Q4	1.2311965E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2012-Q3	2.72957E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2013-Q1	2.92578E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2013-Q3	5.261324E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2014-Q2	1.7992238E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2013-Q4	8.08547E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2014-Q4	560892	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2013-Q3	7.71619E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2014-Q4	1.9366293E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2011-Q4	6.66474E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2012-Q4	4.3129469E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2012-Q1	7.178105E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2013-Q1	1.1420762E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2012-Q3	1.4760063E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2013-Q3	4.5308513E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2012-Q3	6.30241E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2011-Q4	1.4421343E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2014-Q2	3.26136E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2014-Q2	6.76793E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2013-Q2	7.84768E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2011-Q3	4.1850698E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2014-Q3	1.8526078E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2011-Q3	6.54797E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2012-Q3	4.2063156E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2012-Q1	4.745797E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2012-Q2	7.223204E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2012-Q3	7.306111E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2012-Q4	2.97326E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2012-Q4	2.549075E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2013-Q1	1.5520381E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2014-Q1	6.74668E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2014-Q2	5.553421E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2014-Q4	1.3312653E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2014-Q1	1.7412963E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2013-Q3	6.51253E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2011-Q4	4.1676161E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2012-Q2	2.68258E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2011-Q4	4.631525E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2012-Q2	4.754762E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2012-Q4	4.986797E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2014-Q2	2.786654E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2012-Q2	2.547902E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2012-Q3	2.541052E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2014-Q1	5.463091E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2014-Q2	8.12587E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2013-Q3	2.625552E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2014-Q1	3.16569E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2013-Q2	2.590176E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2013-Q3	3.03765E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2012-Q4	1.5281547E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2012-Q2	4221012	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2012-Q1	1.1046138E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2013-Q2	2.96288E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2013-Q2	1.5854379E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2012-Q2	6.37558E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2012-Q4	7.341112E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2011-Q3	7.238585E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2014-Q3	5.534817E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2013-Q3	1.6285199E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2013-Q4	5.428415E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2012-Q1	253614	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2012-Q2	1.1106542E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2012-Q1	26899	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2013-Q2	4.4474421E6	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2012-Q1	1.4760777E6	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2012-Q4	6.46694E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	4	P3M	2013-Q1	2.583087E5	South Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	7	P3M	2013-Q4	3.18644E4	Northern Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2014-Q1	7.844325E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2011-Q3	1.1213748E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2013-Q1	6.38434E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2012-Q1	6.57103E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	6	P3M	2013-Q2	6.49691E4	Tasmania	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2012-Q1	73903	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2013-Q1	5.102141E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2013-Q1	7.50457E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2012-Q3	7.35496E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2011-Q4	7.47014E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2011-Q3	7.23842E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2011-Q3	4.643421E5	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2012-Q2	1492911	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	3	P3M	2013-Q1	7.374235E5	Queensland	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2012-Q2	7.42785E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	5	P3M	2012-Q3	484668	Western Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2012-Q4	1125573	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2011-Q4	1.1145871E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	1	P3M	2011-Q3	1453495	New South Wales	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2012-Q4	7.71187E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	2	P3M	2012-Q3	1.0970555E6	Victoria	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	8	P3M	2014-Q3	8.19678E4	Australian Capital Territory	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	2	0	P3M	2012-Q1	4193208	Australia	Value of dwelling stock: Owned by households ($m)	Quarterly
+Q	3	2	P3M	2014-Q2	4.38322E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2014-Q4	2.799108E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2014-Q2	2.676188E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2013-Q4	5.0056E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2014-Q4	5.0077E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2014-Q3	5.0593E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2014-Q1	4.37216E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2014-Q3	4.45896E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2013-Q3	7.3741E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2013-Q4	9.55267E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2013-Q3	4.25033E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2013-Q3	2.11616E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2013-Q3	8.1509E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2013-Q3	9.15614E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2013-Q4	4.30343E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2012-Q2	2.359768E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2014-Q1	2.632722E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2014-Q2	3.46681E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2013-Q3	33696	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2011-Q3	8.4913E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2014-Q4	4.63766E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2014-Q1	9.74269E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2013-Q2	4.8014E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2014-Q4	4.64297E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2011-Q3	4.13329E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2014-Q4	9.0753E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2013-Q2	4.25196E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2014-Q3	9.0339E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2013-Q2	246992	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2011-Q4	2.329119E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2012-Q1	2.349396E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2013-Q2	8.2257E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2014-Q2	1.000726E5	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2014-Q3	1.032237E5	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2013-Q3	2.510945E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2013-Q1	8.1565E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2013-Q3	4796	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2014-Q2	9.0296E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2012-Q3	7.0197E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2011-Q3	2.04656E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2013-Q4	2.16993E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2011-Q4	4.12594E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2014-Q2	4.48984E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2012-Q3	8.30184E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2014-Q3	2.720634E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2012-Q2	8.43697E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2013-Q1	2.437358E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2012-Q3	3.15032E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2013-Q1	4.8937E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2013-Q1	4.21013E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2012-Q4	4.8459E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2014-Q1	5.0094E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2014-Q3	45560	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2012-Q2	2.06216E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2014-Q1	4.42723E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2014-Q2	2.22052E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2011-Q4	20956	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2014-Q1	3.42088E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2012-Q3	2.350107E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2012-Q1	3.92639E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2014-Q4	8073	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2012-Q3	4.14999E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2013-Q1	2.08342E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2013-Q2	2.07802E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2013-Q4	3.40301E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2011-Q3	2.337842E5	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2014-Q2	5156	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2013-Q4	7.7297E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2012-Q2	4.11374E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2014-Q3	2.22541E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2012-Q1	2.05208E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2012-Q2	31021	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2014-Q1	2.21898E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2011-Q4	3.01839E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2012-Q2	3.93766E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2013-Q3	4.18513E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2013-Q2	3.31353E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2013-Q2	4.09459E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2013-Q4	4.35187E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2013-Q2	7.4739E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2014-Q1	8822	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2011-Q4	7.1932E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2013-Q4	8.8586E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2012-Q1	3.13118E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2014-Q3	3.45594E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2012-Q3	2.03215E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2014-Q4	2.26494E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2013-Q4	259403	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2012-Q1	8.32836E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2012-Q4	3.97435E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2013-Q2	89110	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2012-Q4	7.3663E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2011-Q4	7.6942E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2012-Q1	7.7831E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2013-Q1	8.71997E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2014-Q2	7.7568E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2014-Q3	7.7836E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2013-Q1	7.1823E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2011-Q4	80951	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2013-Q1	3.29112E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2011-Q3	8.17242E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2014-Q4	3.48792E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2011-Q3	4.8355E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2013-Q1	4.04569E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2012-Q2	7536	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2011-Q3	3.00102E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2014-Q4	1.074198E5	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2012-Q4	4.15721E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	3	P3M	2012-Q1	4.08761E4	Queensland	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2012-Q2	7.1439E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2014-Q1	7.6214E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2012-Q3	4.7151E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2012-Q4	8.4081E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	1	P3M	2012-Q4	8.61891E4	New South Wales	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	4	P3M	2012-Q4	2.04894E4	South Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	5	P3M	2012-Q4	3.19856E4	Western Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	7	P3M	2012-Q3	7.9335E3	Northern Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	0	P3M	2012-Q4	240600	Australia	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2011-Q4	4.9721E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2012-Q2	4.7704E3	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2011-Q4	3.97022E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2011-Q3	3.99945E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	2	P3M	2012-Q3	3.89995E4	Victoria	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2012-Q1	7.0304E3	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	8	P3M	2011-Q3	6930	Australian Capital Territory	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	3	6	P3M	2012-Q1	4870	Tasmania	Value of dwelling stock: Owned by non households ($m)	Quarterly
+Q	4	8	P3M	2014-Q2	1.557E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2011-Q4	9.0372E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2013-Q4	2.349E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2013-Q3	9.2614E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2014-Q4	8.02E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2014-Q3	2.362E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2013-Q3	2.345E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2013-Q4	1.8463E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2014-Q1	9.3291E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2013-Q2	9.709E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2014-Q1	7.79E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2014-Q4	1.8772E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2014-Q4	9.4529E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2014-Q3	9.4092E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2013-Q4	9.2994E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2013-Q2	9.2269E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2013-Q2	1.8315E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2014-Q2	9.3668E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2013-Q1	2.3315E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2014-Q2	2.3852E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2013-Q2	2342	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2014-Q4	2.368E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2012-Q2	9.549E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2012-Q3	2.8628E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2013-Q2	7.354E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2013-Q3	2353	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2014-Q2	7.87E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2013-Q1	1.509E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2014-Q2	2.9171E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2014-Q1	2.353E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2014-Q2	7.427E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2012-Q3	1.8112E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2012-Q4	7.59E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2011-Q4	1.7917E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2014-Q4	1.0043E3	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2013-Q3	9.756E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2014-Q1	2.3737E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2013-Q1	7.63E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2013-Q1	2.8773E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2014-Q2	2.358E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2014-Q1	1.549E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2013-Q3	7.69E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2012-Q4	2.8712E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2013-Q1	7.336E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2012-Q2	2.8563E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2012-Q4	7.322E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2012-Q1	9.0634E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2012-Q2	1.8039E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2013-Q4	7.392E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2014-Q1	7.408E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2012-Q1	7.263E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2013-Q3	1.8385E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2014-Q1	1.8521E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2014-Q3	1.8691E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2014-Q1	2.9086E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2014-Q3	1.562E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2012-Q4	2.3216E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2012-Q2	7.51E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2011-Q3	2.305E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2012-Q1	1.7962E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2012-Q2	2.2992E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2013-Q2	7.66E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2013-Q3	7.373E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2013-Q3	2.8926E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2013-Q4	9.815E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2014-Q1	9.858E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2014-Q2	1.8593E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2013-Q4	1.539E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2014-Q4	2.4105E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2011-Q4	7.44E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2014-Q4	1.579E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2013-Q1	9.1939E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2012-Q1	2.2877E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2012-Q1	2.8503E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2014-Q3	7.94E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2013-Q4	2.3645E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2012-Q4	1.495E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2013-Q4	7.75E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2013-Q2	2.341E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2014-Q2	9.923E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2013-Q3	1.531E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2014-Q3	2.3972E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2011-Q3	74	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2012-Q4	9.1661E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2011-Q3	1.7845E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2012-Q3	9.1302E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2012-Q1	7.47E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2012-Q4	1819	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2013-Q2	2.8847E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2013-Q4	2.9016E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2012-Q3	2.326E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2013-Q1	2.337E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2012-Q3	1.483E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2013-Q2	1.518E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2012-Q3	2.3098E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2014-Q4	2.9387E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2011-Q3	7.223E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2014-Q4	7.474E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	3	P3M	2013-Q1	1.8237E3	Queensland	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2011-Q4	7.246E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2012-Q4	9.634E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2013-Q1	9.668E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2011-Q3	9.0027E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2012-Q4	2.333E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2012-Q1	1.464E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2012-Q2	1.475E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	7	P3M	2012-Q3	7.55E1	Northern Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2014-Q3	7.452E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2014-Q3	2.9277E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	0	P3M	2012-Q2	9.0976E3	Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2014-Q3	9.983E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2012-Q3	7.304E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2011-Q3	942	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2012-Q1	9.502E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2011-Q4	2.8451E3	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2012-Q3	9.595E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	4	P3M	2012-Q2	7.285E2	South Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2012-Q1	2.316E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2011-Q4	2.2783E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	2	P3M	2011-Q3	2.2656E3	Victoria	Number of residential dwellings ('000)	Quarterly
+Q	4	1	P3M	2011-Q3	2839	New South Wales	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2011-Q4	2.311E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	6	P3M	2012-Q2	2.321E2	Tasmania	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2011-Q4	1.458E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	4	5	P3M	2011-Q4	9.463E2	Western Australia	Number of residential dwellings ('000)	Quarterly
+Q	4	8	P3M	2011-Q3	1.449E2	Australian Capital Territory	Number of residential dwellings ('000)	Quarterly
+Q	5	4	P3M	2013-Q3	3.848E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2014-Q1	5.454E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2013-Q2	5.805E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2013-Q3	5.163E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2014-Q1	5.889E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2014-Q4	5.932E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2014-Q1	5.406E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2014-Q2	5.489E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2013-Q2	3.805E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2013-Q1	5.697E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2012-Q4	5.023E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2013-Q1	4.274E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2013-Q1	5.016E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2014-Q1	6.322E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2014-Q3	5.891E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2013-Q1	4.903E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2013-Q4	4.404E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2012-Q4	4.968E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2012-Q4	5.622E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2014-Q4	5.715E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2014-Q4	4.625E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2013-Q2	4.316E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2013-Q4	5.877E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2012-Q2	4.573E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2012-Q4	4.264E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2014-Q2	5.292E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2014-Q3	506	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2013-Q4	5.255E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2012-Q2	4.899E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2012-Q3	5.379E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2012-Q3	4.918E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2012-Q3	4.668E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2014-Q4	5.717E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2012-Q4	3.761E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2013-Q4	5.337E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2013-Q3	5.947E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2012-Q3	4.263E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2014-Q3	5.537E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2014-Q3	5.556E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2011-Q4	4.257E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2013-Q3	431	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2013-Q2	5.088E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2011-Q3	4.288E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2011-Q4	4.725E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2012-Q1	4.646E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2012-Q3	3.757E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2012-Q4	5.508E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2013-Q1	3.805E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2013-Q2	5.738E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2013-Q3	524	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2014-Q1	5.194E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2014-Q2	5.946E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2014-Q3	4.043E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2012-Q1	4.224E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2012-Q2	4.232E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2014-Q2	6.511E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2011-Q4	5.066E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2011-Q4	4.869E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2012-Q1	3.774E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2012-Q2	3.781E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2013-Q1	5.618E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2013-Q2	4.945E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2013-Q4	3.984E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2014-Q1	4.046E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2014-Q2	4.051E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2014-Q2	3.089E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2014-Q4	4.149E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2014-Q4	3.096E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2011-Q3	5.248E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2011-Q3	5.227E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2011-Q4	3.843E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2012-Q3	4.864E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2012-Q2	5.304E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2012-Q3	2.912E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2012-Q4	298	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2013-Q1	2.941E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2013-Q3	5.738E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2013-Q3	5.011E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2014-Q2	548	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2014-Q3	3.112E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2011-Q3	5.126E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2012-Q1	4.886E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	0	P3M	2011-Q3	4.908E2	Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2011-Q3	5.408E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2011-Q4	5.353E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2012-Q3	5.446E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2012-Q4	502	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2013-Q1	5.072E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2013-Q2	512	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2013-Q2	2.981E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2013-Q3	2.981E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2014-Q1	4.474E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2014-Q3	668	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2014-Q4	6.956E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2011-Q4	310	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2012-Q1	3.047E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	4	P3M	2011-Q3	3.799E2	South Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2011-Q3	3.051E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2012-Q1	5.471E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2012-Q2	5.522E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2012-Q2	2.952E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2013-Q4	5.389E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	1	P3M	2013-Q4	6.214E2	New South Wales	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2013-Q4	3.073E2	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	6	P3M	2014-Q1	308	Tasmania	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2014-Q2	4.522E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	3	P3M	2014-Q3	4.558E2	Queensland	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2012-Q1	500	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	2	P3M	2012-Q2	5.002E2	Victoria	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	7	P3M	2014-Q4	5.211E2	Northern Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2011-Q4	5.214E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	5	P3M	2012-Q1	5.324E2	Western Australia	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2011-Q3	5.475E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2011-Q4	5.615E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2012-Q1	553	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2012-Q2	5.522E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2012-Q3	5.431E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2012-Q4	565	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2013-Q1	5.451E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2013-Q2	5.662E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2013-Q3	5.523E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2013-Q4	5.756E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2014-Q1	566	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2014-Q2	5.718E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2014-Q3	5.746E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
+Q	5	8	P3M	2014-Q4	5.889E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
