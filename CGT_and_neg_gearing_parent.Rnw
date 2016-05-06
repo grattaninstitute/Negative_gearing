@@ -19,7 +19,7 @@ options(warn = 2)
 
 # HILDA takes 7 minutes to load and tidy
 reload_all_data <- FALSE
-cache_most <- TRUE && !reload_all_data
+cache_most <- TRUE #&& !reload_all_data
 @
 
 
@@ -305,6 +305,7 @@ if (Sys.info()[names(Sys.info()) == "sysname"] == "Windows"){
   cluster <- makePSOCKcluster(cores)
   hilda_list <-
     parLapply(cl = cluster, X = enumerate.person.files, fun = read_hilda_file) 
+  stopCluster(cluster)
 } else {
   hilda_list <-
     mclapply(X = enumerate.person.files, FUN = read_hilda_file, mc.cores = cores)
@@ -317,13 +318,12 @@ names(hilda_list) <- enumerate.person.files.names
 hilda_all_waves_rp <- 
   rbindlist(hilda_list, use.names = TRUE, fill = TRUE)
 
-data.table::fwrite(hilda_all_waves_rp, file.path = "../Data/HILDA/Wave14/hilda-all-waves-rp.csv")
+saveRDS(hilda_all_waves_rp, "hilda_all_waves_rp.rds")
 @
 
-<<Use-prepared-hilda-all-waves, eval=!reload_all_data>>=
+<<Use-prepared-hilda-all-waves, cache=FALSE, eval=!reload_all_data>>=
 hilda_all_waves_rp <- 
-  fread("../Data/HILDA/Wave14/hilda-all-waves-rp.csv", 
-        select = c("xwaveid", "wave", "Year", "oifrntp", "lnwtrp"))
+  readRDS("hilda_all_waves_rp.rds")
 @
 
 <<Import-SIH, cache=TRUE>>=
@@ -2601,7 +2601,7 @@ prop_investors_over60_NG <-
 
 \begin{figure}[!htb]
 \Caption{More people negatively gear property investments in their peak earning years}{Percentage of \Sexpr{latest.sample.fy} taxpayers with }{fig:NG-PG-by-age}
-<<NG-PG-by-age>>=
+<<NG-PG-by-age, fig.width=13.3, out.width="13.3in", fig.height=8.0, out.height="8.0in">>=
 sample_file %>%
   # filter(Gross_rent_amt > 0) %>%
   group_by(age_range_description) %>%
@@ -2618,9 +2618,9 @@ sample_file %>%
                                           grplot(., aes(x = age, y = prop, fill = factor(gearing))) + 
                                             geom_bar(stat = "identity") +
                                             scale_y_continuous(label = percent, expand = c(0,0)) + 
-                                            scale_x_continuous(breaks = c(30, 50, 70)) + 
+                                            scale_x_continuous("Age", breaks = c(30, 50, 70)) + 
                                             annotate("text", 
-                                                     x = 77, 
+                                                     x = 76, 
                                                      y = sort(use_series(filter(., age == max(age)), prop)), 
                                                      label = c("Negative\ngearing", "Earning\nrental income\nbut not\nnegatively\ngeared"), 
                                                      fontface = "bold", 
@@ -2629,10 +2629,10 @@ sample_file %>%
                                                      hjust = 0,
                                                      colour = gpal(2)) + 
                                             annotate("blank", 
-                                                     x = 84, y = 0)
+                                                     x = 86, y = 0)
                                         }
 @
-\includegraphics[width=\columnwidth]{\Sexpr{atlas}/NG-PG-by-age-1}
+\includegraphics[width=1.225\columnwidth]{\Sexpr{atlas}/NG-PG-by-age-1}
 \source{\Sexpr{sample_file$fy.year[1]} sample file.}
 
 \notes{Taxpayers over the age of 70 are not disaggregated in taxstats and have been presented as having ages 70-75.}

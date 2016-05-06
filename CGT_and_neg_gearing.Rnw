@@ -2089,6 +2089,12 @@ taxstats_ts %>%
   filter(!grepl("property", `Selected items`)) %>%
   filter(!(grepl("Gross rent", `Selected items`) & grepl("\\$", unit))) %>%
   filter(!is.na(value)) %>%
+  mutate(`Selected items` = gsub("[^A-Za-z0-9\\s]", "", `Selected items`)) %>% 
+  bind_rows(
+    data_frame(`Selected items` = c("Grossrent", "Netrentloss", "Netrentloss"),
+               unit = c("no.", "no.", "$"), fy.year = "2013-14", 
+               value = c(2008764, 1257301, -10966511713))
+  ) %>%
   mutate(value = ifelse(grepl("\\$", unit), cpi_inflator(value, from_fy = fy.year), value)) %>%
   mutate(group = paste0(`Selected items`, unit)) %>%
   group_by(group) %>%
@@ -2120,11 +2126,11 @@ taxstats_ts %>%
            x = as.Date(-Inf), xend = max(.$date),
            y = 0, yend = 0, 
            size = 1, color = "black") + 
-   stat_smooth(se = FALSE, size = 1.5, span = 0.4) +
+   stat_smooth(se = FALSE, size = 1.5, span = 0.45) +
    geom_point(size = 1) + 
    annotate("text",
             label = c("number\nproperty\ninvestors",
-                      "Net rental losses\n(total)",
+                      "Net rental losses\n(total, real)",
                       "number negatively\ngeared investors"),
             x = as.Date(paste0(c(2008, 2008, 2008), "-01-30")),
             y = c(1.35, 3.7, 1.9),
