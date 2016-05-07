@@ -49,6 +49,8 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
+\usepackage{ragged2e}
+
 
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
@@ -59,6 +61,7 @@
 \input{CGT-NG-sections/preamble}
 
 
+\usepackage{ocgx,marginnote}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 %\clearpage
@@ -85,6 +88,8 @@
 
 
 % We insert this now rather than pulling up the whole chunk from the box below.
+
+
 
 
 
@@ -137,7 +142,7 @@
 \newlength{\overviewextra}
 \setlength{\overviewextra}{-2pt}
 \addtolength{\columnsep}{\overviewextra}
-\begin{overview}[-35pt] %\addcontentsline{toc}{chapter}{Overview}
+\begin{overview}[-25pt] %\addcontentsline{toc}{chapter}{Overview}
 A substantial change to Australia's tax arrangements is long overdue. The interaction of a fifty per cent capital gains tax (CGT) discount with negative gearing distorts investment decisions, makes housing markets more volatile and reduces home ownership. Like most tax concessions, these tax breaks largely benefit the wealthy.
 
 These two measures in combination allow investors to reduce and defer personal income tax, at an annual cost of \$11~billion to the public purse. Our proposals to wind back the discount and negative gearing would save the Commonwealth Government about \highlight{\$5.4~billion a year}. 
@@ -160,6 +165,8 @@ Phasing in change would reduce price shocks and make the reforms easier to sell.
 \renewcommand{\labelitemi}{\color{DarkOrange}\parbox[c]{.5em}{\ensuremath{\bullet}}}
 \renewcommand{\labelenumi}{\color{DarkOrange}{\bfseries \arabic{enumi}.~}}
 \begin{recommendations}[-35pt]
+
+\RaggedRight
 \begin{enumerate}
 \item \textcolor{DarkOrange}{Reduce the capital gains tax discount for individuals and trusts to 75~percent} 
 \begin{itemize}
@@ -388,17 +395,19 @@ On the other hand, the theoretical ideal implicitly assumes losses and gains are
 \caption{Assumptions for figure \Vref{fig:EMTR-savings}}
 \small
 % latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Sun Apr 24 12:04:28 2016
+% Sat Apr 30 13:33:03 2016
 \begin{tabular}{llrrrrrrr}
   \toprule
-{\textbf{return type}} & {\textbf{scenario}} & {\textbf{marginal tax rate}} & {\textbf{capital gains}} & {\textbf{risk free rate}} & {\textbf{inflation}} & {\textbf{CGT discount}} & {\textbf{n}} & {\textbf{nominal rent}} \\ 
-  \midrule
-excess & historic & 47.0\% & 7.3\% & 5.6\% & 2.8\% & 50.0\% & 15.00 & 3.0\% \\ 
-  excess & lower & 47.0\% & 5.0\% & 4.5\% & 2.5\% & 50.0\% & 15.00 & 3.0\% \\ 
-   [4pt]nominal & historic & 47.0\% & 7.3\% & 5.6\% & 2.8\% & 50.0\% & 15.00 & 3.0\% \\ 
-  nominal & lower & 47.0\% & 5.0\% & 4.5\% & 2.5\% & 50.0\% & 15.00 & 3.0\% \\ 
-   [4pt]real & historic & 47.0\% & 7.3\% & 5.6\% & 2.8\% & 50.0\% & 15.00 & 3.0\% \\ 
-  real & lower & 47.0\% & 5.0\% & 4.5\% & 2.5\% & 50.0\% & 15.00 & 3.0\% \\ 
+   &  &  &  &  & \multicolumn{4}{c}{\textbf{Constant}}\\
+ \cmidrule(lr){6-9}
+ \textbf{return type} & \textbf{scenario} & \textbf{capital gains} & \textbf{risk free rate} & \textbf{inflation} & \textbf{marginal tax rate} & \textbf{CGT discount} & \textbf{n} & \textbf{nominal rent}\\
+ \midrule
+excess & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
+  excess & lower & 5.0\% & 4.5\% & 2.5\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
+  nominal & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
+  nominal & lower & 5.0\% & 4.5\% & 2.5\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
+  real & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
+  real & lower & 5.0\% & 4.5\% & 2.5\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
    \bottomrule
 \end{tabular}
 
@@ -1246,49 +1255,101 @@ Effective tax rates measure the tax paid on investment returns as a share of the
 \Vref{fig:EMTR-savings} presents effective rates for two different return scenarios for an investor in the 47\,c tax bracket. \Vref{tbl:Real-EMTR-appendix} below presents calculations for a broader range of return scenarios and investor tax brackets. 
 
 
+
+
+
+
+
 \begin{table*}
 \centering
 \captionsetup{justification=centering}
-\caption{Effective marginal tax rates for a rental property}\label{tbl:Real-EMTR-appendix}
+\caption[Effective marginal tax rates for a rental property]{Effective marginal tax rates for a rental property}\label{tbl:Real-EMTR-appendix}
 \newcolumntype{Q}{@{}l@{}}
+\begin{tikzpicture}
+\begin{ocg}{ocgBlack}{ocgBlack}{1}
+ \node (BlackNode) {%
+
+
 % latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Mon Apr 25 18:53:31 2016
+% Mon Apr 25 19:50:50 2016
 \begin{tabular}{Qlllrrrrr}
   \toprule
    &  &  &  & \multicolumn{5}{c}{\textbf{Nominal annual capital gain}}\\
  \cmidrule(lr){5-9}
  \textbf{\phantom{.}} & \textbf{Marginal tax rate} & \textbf{Return type} & \textbf{CGT treatment} & \textbf{4.0\%} & \textbf{5.0\%} & \textbf{6.0\%} & \textbf{8.0\%} & \textbf{10.0\%}\\
  \midrule
- & 34.5 & excess & 50\% discount & \cellcolor{Color4}{61.0} & \cellcolor{Color3}{46.2} & \cellcolor{Color3}{37.8} & \cellcolor{Color2}{28.4} & \cellcolor{Color2}{23.1} \\ 
-   &  &  & Indexed & \cellcolor{Color4}{61.7} & \cellcolor{Color4}{51.2} & \cellcolor{Color3}{44.9} & \cellcolor{Color3}{37.2} & \cellcolor{Color2}{32.4} \\ 
-   &  &  & 25\% discount & \cellcolor{Color5}{71.3} & \cellcolor{Color4}{55.1} & \cellcolor{Color3}{45.8} & \cellcolor{Color3}{35.2} & \cellcolor{Color2}{29.1} \\ 
-   &  &  & 0\% discount & \cellcolor{Color5}{82.0} & \cellcolor{Color4}{64.3} & \cellcolor{Color4}{54.1} & \cellcolor{Color3}{42.4} & \cellcolor{Color3}{35.5} \\ 
-  &\phantom{.}\\[-9pt] &  & real & 50\% discount & \cellcolor{Color3}{33.9} & \cellcolor{Color2}{29.4} & \cellcolor{Color2}{26.2} & \cellcolor{Color2}{21.7} & \cellcolor{Color2}{18.7} \\ 
-   &  &  & Indexed & \cellcolor{Color3}{34.3} & \cellcolor{Color2}{32.6} & \cellcolor{Color2}{31.1} & \cellcolor{Color2}{28.5} & \cellcolor{Color2}{26.2} \\ 
-   &  &  & 25\% discount & \cellcolor{Color3}{39.6} & \cellcolor{Color3}{35.0} & \cellcolor{Color2}{31.7} & \cellcolor{Color2}{26.9} & \cellcolor{Color2}{23.6} \\ 
-   &  &  & 0\% discount & \cellcolor{Color3}{45.5} & \cellcolor{Color3}{40.9} & \cellcolor{Color3}{37.4} & \cellcolor{Color2}{32.4} & \cellcolor{Color2}{28.8} \\ 
-  &\phantom{.}\\[-6pt] & 39.0 & excess & 50\% discount & \cellcolor{Color5}{69.2} & \cellcolor{Color4}{52.5} & \cellcolor{Color3}{43.0} & \cellcolor{Color2}{32.3} & \cellcolor{Color2}{26.3} \\ 
-   &  &  & Indexed & \cellcolor{Color5}{69.8} & \cellcolor{Color4}{58.1} & \cellcolor{Color4}{51.1} & \cellcolor{Color3}{42.5} & \cellcolor{Color3}{37.1} \\ 
-   &  &  & 25\% discount & \cellcolor{Color5}{81.1} & \cellcolor{Color4}{62.7} & \cellcolor{Color4}{52.2} & \cellcolor{Color3}{40.2} & \cellcolor{Color2}{33.3} \\ 
-   &  &  & 0\% discount & \cellcolor{Color6}{93.5} & \cellcolor{Color5}{73.4} & \cellcolor{Color4}{61.9} & \cellcolor{Color3}{48.6} & \cellcolor{Color3}{40.9} \\ 
-  &\phantom{.}\\[-9pt] &  & real & 50\% discount & \cellcolor{Color3}{38.5} & \cellcolor{Color3}{33.4} & \cellcolor{Color2}{29.8} & \cellcolor{Color2}{24.7} & \cellcolor{Color2}{21.3} \\ 
-   &  &  & Indexed & \cellcolor{Color3}{38.8} & \cellcolor{Color3}{37.0} & \cellcolor{Color3}{35.4} & \cellcolor{Color2}{32.5} & \cellcolor{Color2}{30.0} \\ 
-   &  &  & 25\% discount & \cellcolor{Color3}{45.1} & \cellcolor{Color3}{39.9} & \cellcolor{Color3}{36.1} & \cellcolor{Color2}{30.7} & \cellcolor{Color2}{27.0} \\ 
-   &  &  & 0\% discount & \cellcolor{Color4}{51.9} & \cellcolor{Color3}{46.7} & \cellcolor{Color3}{42.8} & \cellcolor{Color3}{37.1} & \cellcolor{Color2}{33.1} \\ 
-  &\phantom{.}\\[-6pt] & 47.0 & excess & 50\% discount & \cellcolor{Color6}{84.0} & \cellcolor{Color4}{63.8} & \cellcolor{Color4}{52.3} & \cellcolor{Color3}{39.4} & \cellcolor{Color2}{32.1} \\ 
-   &  &  & Indexed & \cellcolor{Color6}{84.2} & \cellcolor{Color5}{70.5} & \cellcolor{Color4}{62.2} & \cellcolor{Color4}{52.2} & \cellcolor{Color3}{45.8} \\ 
-   &  &  & 25\% discount & \cellcolor{Color6}{98.9} & \cellcolor{Color5}{76.6} & \cellcolor{Color4}{63.8} & \cellcolor{Color3}{49.3} & \cellcolor{Color3}{41.0} \\ 
-   &  &  & 0\% discount & \cellcolor{black}{\textcolor{white}{114.5}} & \cellcolor{Color6}{90.2} & \cellcolor{Color5}{76.2} & \cellcolor{Color4}{60.2} & \cellcolor{Color4}{50.8} \\ 
-  &\phantom{.}\\[-9pt] &  & real & 50\% discount & \cellcolor{Color3}{46.7} & \cellcolor{Color3}{40.6} & \cellcolor{Color3}{36.2} & \cellcolor{Color2}{30.1} & \cellcolor{Color2}{26.0} \\ 
-   &  &  & Indexed & \cellcolor{Color3}{46.8} & \cellcolor{Color3}{44.8} & \cellcolor{Color3}{43.1} & \cellcolor{Color3}{39.9} & \cellcolor{Color3}{37.1} \\ 
-   &  &  & 25\% discount & \cellcolor{Color4}{54.9} & \cellcolor{Color3}{48.8} & \cellcolor{Color3}{44.2} & \cellcolor{Color3}{37.7} & \cellcolor{Color2}{33.2} \\ 
-   &  &  & 0\% discount & \cellcolor{Color4}{63.6} & \cellcolor{Color4}{57.4} & \cellcolor{Color4}{52.8} & \cellcolor{Color3}{46.0} & \cellcolor{Color3}{41.1} \\ 
+ & 34.5 & real & 50\% discount & 33.9 & 29.4 & 26.2 & 21.7 & 18.7 \\ 
+   &  &  & Indexed & 34.3 & 32.6 & 31.1 & 28.5 & 26.2 \\ 
+   &  &  & 25\% discount & 39.6 & 35.0 & 31.7 & 26.9 & 23.6 \\ 
+   &  &  & 0\% discount & 45.5 & 40.9 & 37.4 & 32.4 & 28.8 \\ 
+  &\phantom{.}\\[-9pt] &  & excess & 50\% discount & 61.0 & 46.2 & 37.8 & 28.4 & 23.1 \\ 
+   &  &  & Indexed & 61.7 & 51.2 & 44.9 & 37.2 & 32.4 \\ 
+   &  &  & 25\% discount & 71.3 & 55.1 & 45.8 & 35.2 & 29.1 \\ 
+   &  &  & 0\% discount & 82.0 & 64.3 & 54.1 & 42.4 & 35.5 \\ 
+  &\phantom{.}\\[-6pt] & 39.0 & real & 50\% discount & 38.5 & 33.4 & 29.8 & 24.7 & 21.3 \\ 
+   &  &  & Indexed & 38.8 & 37.0 & 35.4 & 32.5 & 30.0 \\ 
+   &  &  & 25\% discount & 45.1 & 39.9 & 36.1 & 30.7 & 27.0 \\ 
+   &  &  & 0\% discount & 51.9 & 46.7 & 42.8 & 37.1 & 33.1 \\ 
+  &\phantom{.}\\[-9pt] &  & excess & 50\% discount & 69.2 & 52.5 & 43.0 & 32.3 & 26.3 \\ 
+   &  &  & Indexed & 69.8 & 58.1 & 51.1 & 42.5 & 37.1 \\ 
+   &  &  & 25\% discount & 81.1 & 62.7 & 52.2 & 40.2 & 33.3 \\ 
+   &  &  & 0\% discount & 93.5 & 73.4 & 61.9 & 48.6 & 40.9 \\ 
+  &\phantom{.}\\[-6pt] & 47.0 & real & 50\% discount & 46.7 & 40.6 & 36.2 & 30.1 & 26.0 \\ 
+   &  &  & Indexed & 46.8 & 44.8 & 43.1 & 39.9 & 37.1 \\ 
+   &  &  & 25\% discount & 54.9 & 48.8 & 44.2 & 37.7 & 33.2 \\ 
+   &  &  & 0\% discount & 63.6 & 57.4 & 52.8 & 46.0 & 41.1 \\ 
+  &\phantom{.}\\[-9pt] &  & excess & 50\% discount & 84.0 & 63.8 & 52.3 & 39.4 & 32.1 \\ 
+   &  &  & Indexed & 84.2 & 70.5 & 62.2 & 52.2 & 45.8 \\ 
+   &  &  & 25\% discount & 98.9 & 76.6 & 63.8 & 49.3 & 41.0 \\ 
+   &  &  & 0\% discount & 114.5 & 90.2 & 76.2 & 60.2 & 50.8 \\ 
    \bottomrule
 \end{tabular}
 
+};%
+\end{ocg}
+\begin{ocg}{ocgColored}{ocgColored}{0}
+\node (Coloured) {%
+% latex table generated in R 3.2.5 by xtable 1.8-2 package
+% Mon Apr 25 19:51:36 2016
+\begin{tabular}{Qlllrrrrr}
+  \toprule
+   &  &  &  & \multicolumn{5}{c}{\textbf{Nominal annual capital gain}}\\
+ \cmidrule(lr){5-9}
+ \textbf{\phantom{.}} & \textbf{Marginal tax rate} & \textbf{Return type} & \textbf{CGT treatment} & \textbf{4.0\%} & \textbf{5.0\%} & \textbf{6.0\%} & \textbf{8.0\%} & \textbf{10.0\%}\\
+ \midrule
+ & 34.5 & real & 50\% discount & \cellcolor{Color3}{33.9} & \cellcolor{Color2}{29.4} & \cellcolor{Color2}{26.2} & \cellcolor{Color2}{21.7} & \cellcolor{Color2}{18.7} \\ 
+   &  &  & Indexed & \cellcolor{Color3}{34.3} & \cellcolor{Color2}{32.6} & \cellcolor{Color2}{31.1} & \cellcolor{Color2}{28.5} & \cellcolor{Color2}{26.2} \\ 
+   &  &  & 25\% discount & \cellcolor{Color3}{39.6} & \cellcolor{Color3}{35.0} & \cellcolor{Color2}{31.7} & \cellcolor{Color2}{26.9} & \cellcolor{Color2}{23.6} \\ 
+   &  &  & 0\% discount & \cellcolor{Color3}{45.5} & \cellcolor{Color3}{40.9} & \cellcolor{Color3}{37.4} & \cellcolor{Color2}{32.4} & \cellcolor{Color2}{28.8} \\ 
+  &\phantom{.}\\[-9pt] &  & excess & 50\% discount & \cellcolor{Color4}{61.0} & \cellcolor{Color3}{46.2} & \cellcolor{Color3}{37.8} & \cellcolor{Color2}{28.4} & \cellcolor{Color2}{23.1} \\ 
+   &  &  & Indexed & \cellcolor{Color4}{61.7} & \cellcolor{Color4}{51.2} & \cellcolor{Color3}{44.9} & \cellcolor{Color3}{37.2} & \cellcolor{Color2}{32.4} \\ 
+   &  &  & 25\% discount & \cellcolor{Color5}{71.3} & \cellcolor{Color4}{55.1} & \cellcolor{Color3}{45.8} & \cellcolor{Color3}{35.2} & \cellcolor{Color2}{29.1} \\ 
+   &  &  & 0\% discount & \cellcolor{Color5}{82.0} & \cellcolor{Color4}{64.3} & \cellcolor{Color4}{54.1} & \cellcolor{Color3}{42.4} & \cellcolor{Color3}{35.5} \\ 
+  &\phantom{.}\\[-6pt] & 39.0 & real & 50\% discount & \cellcolor{Color3}{38.5} & \cellcolor{Color3}{33.4} & \cellcolor{Color2}{29.8} & \cellcolor{Color2}{24.7} & \cellcolor{Color2}{21.3} \\ 
+   &  &  & Indexed & \cellcolor{Color3}{38.8} & \cellcolor{Color3}{37.0} & \cellcolor{Color3}{35.4} & \cellcolor{Color2}{32.5} & \cellcolor{Color2}{30.0} \\ 
+   &  &  & 25\% discount & \cellcolor{Color3}{45.1} & \cellcolor{Color3}{39.9} & \cellcolor{Color3}{36.1} & \cellcolor{Color2}{30.7} & \cellcolor{Color2}{27.0} \\ 
+   &  &  & 0\% discount & \cellcolor{Color4}{51.9} & \cellcolor{Color3}{46.7} & \cellcolor{Color3}{42.8} & \cellcolor{Color3}{37.1} & \cellcolor{Color2}{33.1} \\ 
+  &\phantom{.}\\[-9pt] &  & excess & 50\% discount & \cellcolor{Color5}{69.2} & \cellcolor{Color4}{52.5} & \cellcolor{Color3}{43.0} & \cellcolor{Color2}{32.3} & \cellcolor{Color2}{26.3} \\ 
+   &  &  & Indexed & \cellcolor{Color5}{69.8} & \cellcolor{Color4}{58.1} & \cellcolor{Color4}{51.1} & \cellcolor{Color3}{42.5} & \cellcolor{Color3}{37.1} \\ 
+   &  &  & 25\% discount & \cellcolor{Color5}{81.1} & \cellcolor{Color4}{62.7} & \cellcolor{Color4}{52.2} & \cellcolor{Color3}{40.2} & \cellcolor{Color2}{33.3} \\ 
+   &  &  & 0\% discount & \cellcolor{Color6}{93.5} & \cellcolor{Color5}{73.4} & \cellcolor{Color4}{61.9} & \cellcolor{Color3}{48.6} & \cellcolor{Color3}{40.9} \\ 
+  &\phantom{.}\\[-6pt] & 47.0 & real & 50\% discount & \cellcolor{Color3}{46.7} & \cellcolor{Color3}{40.6} & \cellcolor{Color3}{36.2} & \cellcolor{Color2}{30.1} & \cellcolor{Color2}{26.0} \\ 
+   &  &  & Indexed & \cellcolor{Color3}{46.8} & \cellcolor{Color3}{44.8} & \cellcolor{Color3}{43.1} & \cellcolor{Color3}{39.9} & \cellcolor{Color3}{37.1} \\ 
+   &  &  & 25\% discount & \cellcolor{Color4}{54.9} & \cellcolor{Color3}{48.8} & \cellcolor{Color3}{44.2} & \cellcolor{Color3}{37.7} & \cellcolor{Color2}{33.2} \\ 
+   &  &  & 0\% discount & \cellcolor{Color4}{63.6} & \cellcolor{Color4}{57.4} & \cellcolor{Color4}{52.8} & \cellcolor{Color3}{46.0} & \cellcolor{Color3}{41.1} \\ 
+  &\phantom{.}\\[-9pt] &  & excess & 50\% discount & \cellcolor{Color6}{84.0} & \cellcolor{Color4}{63.8} & \cellcolor{Color4}{52.3} & \cellcolor{Color3}{39.4} & \cellcolor{Color2}{32.1} \\ 
+   &  &  & Indexed & \cellcolor{Color6}{84.2} & \cellcolor{Color5}{70.5} & \cellcolor{Color4}{62.2} & \cellcolor{Color4}{52.2} & \cellcolor{Color3}{45.8} \\ 
+   &  &  & 25\% discount & \cellcolor{Color6}{98.9} & \cellcolor{Color5}{76.6} & \cellcolor{Color4}{63.8} & \cellcolor{Color3}{49.3} & \cellcolor{Color3}{41.0} \\ 
+   &  &  & 0\% discount & \cellcolor{black}{\textcolor{white}{114.5}} & \cellcolor{Color6}{90.2} & \cellcolor{Color5}{76.2} & \cellcolor{Color4}{60.2} & \cellcolor{Color4}{50.8} \\ 
+   \bottomrule
+\end{tabular}
+
+};%
+\end{ocg}
+\end{tikzpicture}
 \footnotesize
 \begin{tabular}{lp{0.5\textwidth}}
-\footnotesize Notes: & {\footnotesize Inflation 2.5\%. Property earns 3\%\ nominal rent in addition to the capital growth and which is reinvested in the property till maturity. Risk free rate 4.5\%. Property is held for 15 years then disposed and capital gain realized without losses.}
+\footnotesize Notes: & {\footnotesize Inflation 2.5\%. Property earns 3\%\ nominal rent in addition to the capital growth and which is reinvested in the property till maturity. Risk free rate 4.5\%. Property is held for 15 years then disposed and capital gain realized without losses.\hfill{\switchocg{ocgBlack ocgColored}{\textcolor{DarkOrange}{\textbf{Click to colour cells.}}}}}
 \end{tabular}
 \end{table*}
 

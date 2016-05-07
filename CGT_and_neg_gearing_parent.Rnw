@@ -1,5 +1,7 @@
 % !TeX program = pdflatex
 \documentclass{grattan}
+\usepackage{ragged2e}
+
 
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
@@ -22,7 +24,7 @@ reload_all_data <- FALSE
 cache_most <- TRUE && !reload_all_data
 @
 
-
+\usepackage{ocgx,marginnote}
 \begin{document}
 %\clearpage
 %\chapter{Distribution of negative gearing}
@@ -217,6 +219,12 @@ if (!file.exists("impact_policy_after_tax_returns_weighted_all.rda") ||
     (-1 * impact_policy_after_tax_returns_weighted_all + price_pc_change_of_both_tax_changes_fully_capitalized) / 2
 }
 @
+<<omit_repeated>>=
+omit_repeated <- function(x){
+  ifelse(x != lag(x) | is.na(lag(x)), x, NA_character_)
+}
+@
+
 <<cgt_reducer_due_to_policy>>=
 cgt_reducer_due_to_policy <- cgt_reducer_due_to_policy
 @
@@ -1148,7 +1156,7 @@ NG.tx.exp <- round(NG.tx.exp, 1)
 \newlength{\overviewextra}
 \setlength{\overviewextra}{-2pt}
 \addtolength{\columnsep}{\overviewextra}
-\begin{overview}[-35pt] %\addcontentsline{toc}{chapter}{Overview}
+\begin{overview}[-25pt] %\addcontentsline{toc}{chapter}{Overview}
 A substantial change to Australia's tax arrangements is long overdue. The interaction of a fifty per cent capital gains tax (CGT) discount with negative gearing distorts investment decisions, makes housing markets more volatile and reduces home ownership. Like most tax concessions, these tax breaks largely benefit the wealthy.
 
 These two measures in combination allow investors to reduce and defer personal income tax, at an annual cost of \Sexpr{texNum(revenue_foregone_CG_and_NG, 2L, dollar = TRUE)} to the public purse. Our proposals to wind back the discount and negative gearing would save the Commonwealth Government about \highlight{\Sexpr{texNum(total_cost_of_proposed_policy, 2L, dollar = TRUE)} a year}. 
@@ -1171,6 +1179,8 @@ Phasing in change would reduce price shocks and make the reforms easier to sell.
 \renewcommand{\labelitemi}{\color{DarkOrange}\parbox[c]{.5em}{\ensuremath{\bullet}}}
 \renewcommand{\labelenumi}{\color{DarkOrange}{\bfseries \arabic{enumi}.~}}
 \begin{recommendations}[-35pt]
+
+\RaggedRight
 \begin{enumerate}
 \item \textcolor{DarkOrange}{Reduce the capital gains tax discount for individuals and trusts to \Sexpr{latex_percent(1 - new.discount)}} 
 \begin{itemize}
@@ -1419,7 +1429,56 @@ avg_marginal_rate_b4_CG_retired <-
 
 The benefits of waiting can be substantial. A person paying the top rate of income tax of 47c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was \Sexpr{latex_percent(avg_marginal_rate_CG)}; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was \Sexpr{latex_percent(avg_marginal_rate_CG_weighted_by_CG)}. The average marginal tax rate on the first dollar of capital gains for people in the workforce is \Sexpr{latex_percent(avg_marginal_rate_b4_CG_workforce)} compared to \Sexpr{latex_percent(avg_marginal_rate_b4_CG_retired)} for people over 65.
 
-
+<<CGT-by-age-taxable-income>>=
+sample_file %>%
+  group_by(
+    `Taxable income percentile` = ntile(Taxable_Income, 100),
+    `Age group` = cut(age_imp, 
+                      breaks = c(-Inf, 30, 50, 65, Inf),
+                      labels = c("Below\n30", "30-49", "50-64", "65+"), 
+                      include.lowest = TRUE, 
+                      right = FALSE, ## almost not needed
+                      ordered.results = TRUE)
+    ) %>%
+  summarise(probCG = mean(Net_CG_amt > 0), 
+            n_taxpayers = sum(WEIGHT)) %>%
+  ungroup %>%
+  group_by(`Age group`) %>%
+  mutate(
+    text.label = ifelse(`Taxable income percentile` == max(`Taxable income percentile`),
+                        as.character(`Age group`), 
+                        NA_character_),
+    # choice of 96 cosmetic (puts labels in a reasonable place semantically and aesthetically)
+    text.y = mean(probCG[`Taxable income percentile` > 96 & `Taxable income percentile` < 100]) 
+  ) %>%
+         {
+           grplot(., aes(x = `Taxable income percentile`, y = probCG, 
+                         color = rev(`Age group`), weight = n_taxpayers)) + 
+             theme(# gridlines go to far
+                   panel.grid.major.y = element_blank()) + 
+             annotate("segment",
+                      x = -Inf, 
+                      xend = 100, 
+                      color = theGrey,
+                      y = seq(0, 0.25, by = 0.05), 
+                      yend = seq(0, 0.25, by = 0.05), 
+                      size = rel(0.1)) + 
+             geom_smooth(size = 1.5, se = FALSE) + 
+             # Mark Below\n30 as grey
+             scale_color_manual(values = c(gpal(3), theGrey)) + 
+             annotate("text", 
+                      x = 101, 
+                      y = c(0.06, 0.1, 0.15, 0.27), 
+                      label = c("Below\n30", "30-49", "50-64", "65+"),
+                      size = 22/(14/5),
+                      hjust = 0,
+                      lineheight = 1.0,
+                      fontface = "bold", 
+                      colour = rev(c(gpal(3), theGrey))) + 
+             scale_y_continuous(label = function(x) percent(x)) +
+             scale_x_continuous(limits = c(-5, 112), breaks = c(0, 25, 50, 75, 100), expand = c(0,0)) 
+         } 
+@
 
 <<CGT-by-age-income>>=
 sample_file %>%
@@ -1449,9 +1508,8 @@ sample_file %>%
            grplot(., aes(x = `Taxable income (less CG) percentile`, y = probCG, 
                          color = rev(`Age group`), weight = n_taxpayers)) + 
              theme(axis.title.y = element_blank(),
-                   axis.title.x = element_text(hjust = 0.5, face = "bold")) + 
-             # gridlines go to far
-             theme(panel.grid.major.y = element_blank()) + 
+                   # gridlines go to far
+                   panel.grid.major.y = element_blank(), axis.title.x = element_blank()) + 
              annotate("segment",
                       x = -Inf, 
                       xend = 100, 
@@ -1503,7 +1561,7 @@ sample_file %>%
            grplot(., aes(x = `Taxable income (less CG) percentile`, y = avg_CGT, 
                          color = rev(`Age group`), weight = n_taxpayers)) + 
              theme(axis.title.y = element_blank(),
-                   axis.title.x = element_text(hjust = 0.5, face = "bold")) +  
+                   axis.title.x = element_text(hjust = 0.5, margin = margin(11, 0, 0, 0, unit = "pt"), face = "bold")) +  
              # gridlines go to far
              theme(panel.grid.major.y = element_blank()) + 
              annotate("segment",
@@ -1624,19 +1682,29 @@ data.table(
   rowwise %>%
   mutate(`EMTR (no CGT discount)` = emtr_savings(n = n, 
                                                  CGT_discount = 0), 
-         `EMTR (50\\% CGT discount)` = emtr_savings(n = n, 
+         `EMTR (50% CGT discount)` = emtr_savings(n = n, 
                                                     CGT_discount = 0.5), 
-         `EMTR (50\\% CGT discount) gains realized at lower rate` = emtr_savings(n, 
+         `EMTR (50% CGT discount) gains realized at lower rate` = emtr_savings(n, 
                                                                                  CGT_discount = 0.5, 
                                                                                  CGT_marginal_rate = 0.345)) %>%
   gather(CGT_regime, EMTR, -n, factor_key = TRUE) %>%
+  mutate(labels = ifelse(n == 10, gsub(")", ")\n", 
+                                       gsub("EMTR", "", as.character(CGT_regime)), 
+                                       fixed = TRUE), NA_character_)) %>%
   rename(`Holding period for assets (years)` = n) %>%
-  grplot(aes(x = `Holding period for assets (years)`, 
-             y = EMTR, 
-             colour = CGT_regime)) + 
-  geom_line() + 
-  scale_y_continuous(label = percent, breaks = (0:6)/10, limits = c(0, 0.65), expand = c(0,0)) + 
-  theme(panel.grid.major.y = element_line())
+  {
+    grplot(., aes(x = `Holding period for assets (years)`, 
+                  y = EMTR, 
+                  colour = CGT_regime)) + 
+      geom_line() + 
+      geom_text_repel(aes(label = labels),
+                      fontface = "bold", size = 22/(14/5), 
+                      point.padding = unit(0.05, "npc"),
+                      na.rm = TRUE) + 
+      scale_y_continuous(label = percent, breaks = (0:6)/10, limits = c(min(.$EMTR) - 0.05, max(.$EMTR) + 0.05), expand = c(0,0)) + 
+      theme(panel.grid.major.y = element_line(), 
+            axis.title.x = element_text(margin = margin(t = 10, unit = "pt")))
+  }
 @
 
 The benefits of waiting can be substantial. A person paying the top rate of income tax of 47\,c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower (34.5\,c) tax bracket would reduce the annual nominal tax rate on that investment from \Sexpr{latex_percent(emtr_savings(n = 15, CGT_marginal_rate = 0.47))} to \Sexpr{latex_percent(emtr_savings(n = 15, CGT_marginal_rate = 0.345))} \Vref{fig:delaying-realization-causes-reduction-in-effective-tax-rate}.
@@ -2045,17 +2113,18 @@ data.table::CJ(
   grplot(aes(x = `Return type`, fill = scenario, y = emtr)) + 
   geom_bar(stat = "identity", position = "dodge") + 
   scale_y_continuous(label = percent, expand = c(0,0)) + 
-  geom_hline(aes(yintercept = marginal_tax_rate), linetype = "dashed") + 
+  geom_hline(aes(yintercept = marginal_tax_rate), linetype = "dashed", color = theGrey) + 
   geom_text(aes(label = marginal_tax_rate_label, y = marginal_tax_rate), 
-            nudge_y = 0.05, # position = position_dodge(width = 0.9), 
+            nudge_y = 0.0125, # position = position_dodge(width = 0.9), 
             nudge_x = -0.5,
             size = 22/(14/5),
-            color = DarkOrange,
+            color = theGrey,
             vjust = -0.1, 
             hjust = 0,
             na.rm = TRUE)
 @
 <<emtr_nominal_historic_lower_assumptions>>=
+# Rerun
 emtr_nominal_historic_lower_assumptions <- function(){
   percent1 <- function(x){
     paste0(formatC(round(100 * x, 1), 
@@ -2073,17 +2142,17 @@ emtr_nominal_historic_lower_assumptions <- function(){
   data.table::CJ(
     return_type = c("nominal", "real", "excess"), 
     scenario = c("historic", "lower")
-  ) %>% 
+  ) %>% .[] %>%
     mutate(marginal_tax_rate = 0.47) %>%
     rowwise %>%
     mutate(return_type = return_type,  
-           marginal.tax.rate = marginal_tax_rate, 
            capital.gains = if (scenario == "historic") 0.073 else 0.050,
            risk.free.rate = if (scenario == "historic") 0.056 else 0.045,
-           inflation = if (scenario == "historic") 0.028 else 0.025,  
-           CGT.discount = 0.5, 
-           n = 15, 
-           nominal.rent = 0.03) %>%
+           inflation = if (scenario == "historic") 0.028 else 0.025,
+           ConstantXXXmarginal.tax.rate = marginal_tax_rate,
+           ConstantXXXCGT.discount = 0.5, 
+           ConstantXXXn = 15, 
+           ConstantXXXnominal.rent = 0.03) %>%
     mutate_each(funs(percent1_01))
 }
 @
@@ -2094,15 +2163,11 @@ emtr_nominal_historic_lower_assumptions <- function(){
 \caption{Assumptions for figure \Vref{fig:EMTR-savings}}
 \small
 <<assumptions-table, results='asis'>>=
-emtr_nominal_historic_lower_assumptions() %>%
-  select(-marginal.tax.rate) %>%  # duplicated
+emtr_nominal_historic_lower_assumptions() %>% .[] %>%
+  select(-marginal_tax_rate) %>%  # duplicated
   setnames(names(.), gsub("[._]", " ", names(.))) %>% .[] %>%
-  xtable(align = "lllrrrrrrr") %>%
-  print.xtable(floating = FALSE, 
-               booktabs = TRUE, 
-               include.rownames = FALSE, 
-               add.to.row = list(pos = list(which(.$`return type`[-1] != .$`return type`[-nrow(.)])), 
-                                 command = "[4pt]"))
+  mutate_each(funs(omit_repeated)) %>%
+  print_2heading_xtable(separator = "XXX", xtable.align = "lllrrrrrrr", floating = FALSE) 
 @
 \end{table*}
 
@@ -2954,12 +3019,14 @@ median_tx_inc_by_NG <-
 # For density annotations
 density_NG <- 
   sample_file_1314 %>%
+  select(Net_rent_amt, Taxable_Income) %>%
   filter(Net_rent_amt < 0, 
           Taxable_Income < 210e3) %$%
   density(Taxable_Income)
 
 density_other <- 
   sample_file_1314 %>% 
+  select(Net_rent_amt, Taxable_Income) %>%
   filter(Net_rent_amt >= 0, 
          Taxable_Income < 210e3) %$%
   density(Taxable_Income)
@@ -4712,13 +4779,7 @@ Effective tax rates measure the tax paid on investment returns as a share of the
 
 \Vref{fig:EMTR-savings} presents effective rates for two different return scenarios for an investor in the 47\,c tax bracket. \Vref{tbl:Real-EMTR-appendix} below presents calculations for a broader range of return scenarios and investor tax brackets. 
 
-
-\begin{table*}
-\centering
-\captionsetup{justification=centering}
-\caption{Effective marginal tax rates for a rental property}\label{tbl:Real-EMTR-appendix}
-\newcolumntype{Q}{@{}l@{}}
-<<emtr-long-appendix, results='asis'>>=
+<<percent1_01_TeX>>=
 percent1_01_TeX <- function(x){
   if (is.numeric(x) && mean(between(x, 0, 1) > 0.5)){
     paste0(formatC(round(100*x, 1), 
@@ -4727,16 +4788,8 @@ percent1_01_TeX <- function(x){
     x
   }
 }
-
-shade_cell <- function(x){
-  color <- cut(as.numeric(x), breaks = c(-Inf, 100*(1:6)/6, Inf), labels = c(paste0("Color", 1:6), "black"))
-  # black background -> white text
-  ifelse(as.numeric(x) > 100, 
-         paste0("\\cellcolor{", color, "}{\\textcolor{white}{", x, "}}"),
-         paste0("\\cellcolor{", color, "}{", x, "}"))
-}
-
-
+@
+<<digit_01_TeX>>=
 digit1_01_TeX <- function(x){
   if (is.numeric(x) && between(x, 0, 1)){
     formatC(round(100*x, 1), 
@@ -4745,11 +4798,10 @@ digit1_01_TeX <- function(x){
     x
   }
 }
+@
 
-omit_repeated <- function(x){
-  ifelse(x != lag(x) | is.na(lag(x)), x, NA_character_)
-}
-
+<<EMTR_Appendix_Table>>=
+EMTR_Appendix_Table <- 
 data.table::CJ(
   capital_gain_return = c(0.10, 0.08, 0.06, 0.05, 0.04), 
   marginal_tax_rate = c(0.47, 0.39, 0.345),
@@ -4774,10 +4826,7 @@ data.table::CJ(
   mutate(capital_gain_return = paste0("Nominal annual capital gain__", formatC(100*capital_gain_return, flag = "#", format = "f", digits = 1), percentage_symbol = "\\%")) %>%
   spread(capital_gain_return, emtr) %>% 
   ungroup %>%
-  arrange(desc(marginal_tax_rate)) %>%
-  group_by(marginal_tax_rate, return_type) %>%
-  arrange(`Nominal annual capital gain__5.0\\%`) %>%
-  ungroup %>%
+  arrange(marginal_tax_rate, desc(return_type), `Nominal annual capital gain__5.0\\%`) %>%
   mutate(`CGT treatment` = ifelse(Indexed, "Indexed", paste(latex_percent(CGT_discount, digits = 0, percentage_symbol = "\\%"), "discount"))) %>%
   select(-Indexed, -CGT_discount) %T>%
   {grattan:::chart_data(.)} %>%
@@ -4785,7 +4834,7 @@ data.table::CJ(
   mutate_each(funs(omit_repeated)) %>%
   setnames(old = grep("_[a-z]", names(.), value = TRUE), 
            new = sapply(gsub("_([a-z])", " \\1", grep("_[a-z]", names(.), value = TRUE)), capitalize)) %>% .[] %>%
-  mutate_each(funs(shade_cell), -`Marginal tax rate`, -`Return type`, -`CGT treatment`) %>%
+  # mutate_each(funs(shade_cell), -`Marginal tax rate`, -`Return type`, -`CGT treatment`) %>%
   # Increase space between groups by putting a newline with -6pt height (-9pt) for smaller
   mutate(`\\phantom{.}` = ifelse(!is.na(`Marginal tax rate`) & `Marginal tax rate` != first(`Marginal tax rate`), 
                                  "&\\phantom{.}\\\\[-6pt]", 
@@ -4798,7 +4847,22 @@ data.table::CJ(
          `Nominal annual capital gain__5.0\\%`, 
          `Nominal annual capital gain__6.0\\%`, 
          `Nominal annual capital gain__8.0\\%`,
-         `Nominal annual capital gain__10.0\\%`) %>%
+         `Nominal annual capital gain__10.0\\%`) 
+@
+
+
+\begin{table*}
+\centering
+\captionsetup{justification=centering}
+\caption[Effective marginal tax rates for a rental property]{Effective marginal tax rates for a rental property}\label{tbl:Real-EMTR-appendix}
+\newcolumntype{Q}{@{}l@{}}
+\begin{tikzpicture}
+\begin{ocg}{ocgBlack}{ocgBlack}{1}
+ \node (BlackNode) {%
+
+
+<<emtr-long-appendix, results='asis'>>=
+EMTR_Appendix_Table %>%
   {suppressWarnings(print_2heading_xtable(., 
                                           sanitize.text.function = function(x) x, 
                                           tabular.environment = "tabular", 
@@ -4807,9 +4871,35 @@ data.table::CJ(
   
   
 @
+};%
+\end{ocg}
+\begin{ocg}{ocgColored}{ocgColored}{0}
+\node (Coloured) {%
+<<emtr-long-appendix-cellcolored, results='asis'>>=
+shade_cell <- function(x){
+  color <- cut(as.numeric(x), breaks = c(-Inf, 100*(1:6)/6, Inf), labels = c(paste0("Color", 1:6), "black"))
+  # black background -> white text
+  ifelse(as.numeric(x) > 100, 
+         paste0("\\cellcolor{", color, "}{\\textcolor{white}{", x, "}}"),
+         paste0("\\cellcolor{", color, "}{", x, "}"))
+}
+
+EMTR_Appendix_Table %>%
+  mutate_each(funs(shade_cell), -`Marginal tax rate`, -`Return type`, -`CGT treatment`, -`\\phantom{.}`) %>%
+  {suppressWarnings(print_2heading_xtable(., 
+                                          sanitize.text.function = function(x) x, 
+                                          tabular.environment = "tabular", 
+                                          xtable.align = "lQlllrrrrr",
+                                          floating = FALSE))}
+  
+  
+@
+};%
+\end{ocg}
+\end{tikzpicture}
 \footnotesize
 \begin{tabular}{lp{0.5\textwidth}}
-\footnotesize Notes: & {\footnotesize Inflation 2.5\%. Property earns 3\%\ nominal rent in addition to the capital growth and which is reinvested in the property till maturity. Risk free rate 4.5\%. Property is held for 15 years then disposed and capital gain realized without losses.}
+\footnotesize Notes: & {\footnotesize Inflation 2.5\%. Property earns 3\%\ nominal rent in addition to the capital growth and which is reinvested in the property till maturity. Risk free rate 4.5\%. Property is held for 15 years then disposed and capital gain realized without losses.\hfill{\switchocg{ocgBlack ocgColored}{\textcolor{DarkOrange}{\textbf{Click to colour cells.}}}}}
 \end{tabular}
 \end{table*}
 
