@@ -21,7 +21,7 @@ options(warn = 2)
 
 # HILDA takes 7 minutes to load and tidy
 reload_all_data <- FALSE
-cache_most <- TRUE && !reload_all_data
+cache_most <- TRUE #&& !reload_all_data
 @
 
 \usepackage{ocgx,marginnote}
@@ -313,6 +313,7 @@ if (Sys.info()[names(Sys.info()) == "sysname"] == "Windows"){
   cluster <- makePSOCKcluster(cores)
   hilda_list <-
     parLapply(cl = cluster, X = enumerate.person.files, fun = read_hilda_file) 
+  stopCluster(cluster)
 } else {
   hilda_list <-
     mclapply(X = enumerate.person.files, FUN = read_hilda_file, mc.cores = cores)
@@ -325,13 +326,12 @@ names(hilda_list) <- enumerate.person.files.names
 hilda_all_waves_rp <- 
   rbindlist(hilda_list, use.names = TRUE, fill = TRUE)
 
-data.table::fwrite(hilda_all_waves_rp, file.path = "../Data/HILDA/Wave14/hilda-all-waves-rp.csv")
+saveRDS(hilda_all_waves_rp, "hilda_all_waves_rp.rds")
 @
 
-<<Use-prepared-hilda-all-waves, eval=!reload_all_data>>=
+<<Use-prepared-hilda-all-waves, cache=FALSE, eval=!reload_all_data>>=
 hilda_all_waves_rp <- 
-  fread("../Data/HILDA/Wave14/hilda-all-waves-rp.csv", 
-        select = c("xwaveid", "wave", "Year", "oifrntp", "lnwtrp"))
+  readRDS("hilda_all_waves_rp.rds")
 @
 
 <<Import-SIH, cache=TRUE>>=
@@ -2666,7 +2666,7 @@ prop_investors_over60_NG <-
 
 \begin{figure}[!htb]
 \Caption{More people negatively gear property investments in their peak earning years}{Percentage of \Sexpr{latest.sample.fy} taxpayers with }{fig:NG-PG-by-age}
-<<NG-PG-by-age>>=
+<<NG-PG-by-age, fig.width=13.3, out.width="13.3in", fig.height=8.0, out.height="8.0in">>=
 sample_file %>%
   # filter(Gross_rent_amt > 0) %>%
   group_by(age_range_description) %>%
@@ -2683,9 +2683,9 @@ sample_file %>%
                                           grplot(., aes(x = age, y = prop, fill = factor(gearing))) + 
                                             geom_bar(stat = "identity") +
                                             scale_y_continuous(label = percent, expand = c(0,0)) + 
-                                            scale_x_continuous(breaks = c(30, 50, 70)) + 
+                                            scale_x_continuous("Age", breaks = c(30, 50, 70)) + 
                                             annotate("text", 
-                                                     x = 77, 
+                                                     x = 76, 
                                                      y = sort(use_series(filter(., age == max(age)), prop)), 
                                                      label = c("Negative\ngearing", "Earning\nrental income\nbut not\nnegatively\ngeared"), 
                                                      fontface = "bold", 
@@ -2694,10 +2694,10 @@ sample_file %>%
                                                      hjust = 0,
                                                      colour = gpal(2)) + 
                                             annotate("blank", 
-                                                     x = 84, y = 0)
+                                                     x = 86, y = 0)
                                         }
 @
-\includegraphics[width=\columnwidth]{\Sexpr{atlas}/NG-PG-by-age-1}
+\includegraphics[width=1.225\columnwidth]{\Sexpr{atlas}/NG-PG-by-age-1}
 \source{\Sexpr{sample_file$fy.year[1]} sample file.}
 
 \notes{Taxpayers over the age of 70 are not disaggregated in taxstats and have been presented as having ages 70-75.}
@@ -3996,7 +3996,8 @@ sample_file_1314 %>%
       coord_flip() 
   }
 @
-<<PP-losers-salary-comparison-horiz-bar, cache=FALSE>>=
+
+<<PP-losers-salary-comparison-horiz-bar, cache=FALSE, fig.width=14, out.width="14in">>=
 sample_file_1314 %>%
   merge(occupation_decoder, by = "Occ_code") %>%
   mutate(Sw_amt = as.double(Sw_amt)) %>%  # integer overflow on mean
@@ -4015,6 +4016,7 @@ sample_file_1314 %>%
          prop_claim_losses = first(n_individuals, order_by = Claiming_PP) / sum(n_individuals)) %>%
   ungroup %>%
   filter(!grepl("Occupation not listed", Occupation_description)) %>%
+  filter(!grepl("driver", Occupation_description)) %>%
   
   
   # cosmetic
@@ -4071,12 +4073,75 @@ sample_file_1314 %>%
       geom_bar(stat = "identity", position = "dodge") + 
       scale_y_continuous(label = grattan_dollar,
                          expand = c(0,0), 
+                         breaks = c(0, 50e3, 100e3),
                          limits = c(0, max(.$average_salary) * 1.05))  + 
       theme(panel.grid.major.x = element_line(), 
+            plot.margin = unit(c(0.5, 1, 0.5, 1), "lines"),
             axis.title.x = element_text(margin = margin(11, 0, 5, 0))) + 
+      annotate("text", 
+               x = c(0.75,1.25), 
+               y = c(55e3), 
+               hjust = 0,
+               size = 22/(14/5),
+               label = c("Not claiming", "Claiming PP losses"), 
+               colour = gpal(2), 
+               fontface = "bold") + 
       coord_flip() 
   }
 @
+
+<<Proportions-PP-losses,cache=FALSE,fig.width=8.8,out.width="8.8in">>=
+sample_file_1314 %>%
+  merge(occupation_decoder, by = "Occ_code") %>%
+  mutate(Sw_amt = as.double(Sw_amt)) %>%  # integer overflow on mean
+  group_by(Occupation_description, Claiming_PP =  factor(ifelse(Net_PP_BI_amt < 0, 
+                                                                "Claiming PP losses", 
+                                                                "Not claiming"), 
+                                                         levels = c("Claiming PP losses", "Not claiming"))) %>%
+  summarise(average_salary = mean(Sw_amt), 
+            n_individuals = 50 * n()) %>%
+  group_by(Occupation_description) %>%
+  mutate(salary_difference = ifelse(Claiming_PP == "Not claiming", 
+                                    average_salary, 
+                                    first(average_salary, 
+                                          order_by = Claiming_PP) - last(average_salary, 
+                                                                         order_by = Claiming_PP)), 
+         prop_claim_losses = first(n_individuals, order_by = Claiming_PP) / sum(n_individuals)) %>%
+  ungroup %>%
+  filter(!grepl("Occupation not listed", Occupation_description)) %>%
+  filter(!grepl("driver", Occupation_description)) %>%
+  
+  
+  # cosmetic
+  mutate(Occupation_description = gsub("and type not specified or not listed", "", Occupation_description), 
+         Occupation_description = gsub("and", "&", Occupation_description), 
+         Occupation_description = ifelse(grepl("Community.*Personal", Occupation_description), 
+                                         "Community workers", 
+                                         Occupation_description), 
+         Occupation_description = ifelse(grepl("^Clerica", Occupation_description), 
+                                         "Clerical/Admin.", 
+                                         Occupation_description)) %>%
+  mutate(`Average salary` = average_salary) %>% 
+  arrange(Claiming_PP, average_salary) %>%
+  mutate(`Proportion claiming losses` = ifelse(Claiming_PP == "Not claiming", 0, prop_claim_losses)) %>%
+  mutate(Occupation_description = factor(Occupation_description, 
+                                         levels = unique(.$Occupation_description), 
+                                         ordered = TRUE)) %>%
+                                         {
+                                           grplot(., aes(x = Occupation_description, 
+                                                         y = `Proportion claiming losses`, 
+                                                         fill = rev(Claiming_PP))) + 
+                                             geom_bar(stat = "identity", position = "dodge") + 
+                                             scale_y_continuous(label = percent, 
+                                                                expand = c(0,0), 
+                                                                limits = c(0,max(.$prop_claim_losses) * 1.1)) + 
+                                             coord_flip() + 
+                                             theme(axis.text.y = element_blank(), 
+                                                   axis.title.x = element_text(margin = margin(11, 0, 5, 0)),
+                                                   plot.margin = unit(c(0.5,1,0.5,2), "lines"))
+                                         }
+@
+
 
 <<PP-losers-salary-comparison-ggrepel>>=
 sample_file_1314 %>%
