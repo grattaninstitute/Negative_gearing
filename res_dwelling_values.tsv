@@ -1,6 +1,5 @@
 FREQUENCY	MEASURE	ASGS_2011	TIME_FORMAT	obsTime	obsValue	label_ASGS_2011	label_MEASURE	label_FREQUENCY
 Q	1	0	P3M	2011-Q3	4418854	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
-<<<<<<< HEAD
 Q	1	0	P3M	2011-Q4	4400528.1	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
 Q	1	0	P3M	2012-Q1	4428147.6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
 Q	1	0	P3M	2012-Q2	4456988.8	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
@@ -630,7 +629,6 @@ Q	5	8	P3M	2014-Q1	566	Australian Capital Territory	Mean price of residential dwe
 Q	5	8	P3M	2014-Q2	571.8	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
 Q	5	8	P3M	2014-Q3	574.6	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
 Q	5	8	P3M	2014-Q4	588.9	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
-=======
 Q	1	0	P3M	2011-Q4	4.4005281E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
 Q	1	0	P3M	2012-Q1	4.4281476E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
 Q	1	0	P3M	2012-Q2	4.4569888E6	Australia	Value of dwelling stock: Owned by all sectors ($m)	Quarterly
@@ -1260,4 +1258,3 @@ Q	5	8	P3M	2014-Q1	566	Australian Capital Territory	Mean price of residential dwe
 Q	5	8	P3M	2014-Q2	5.718E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
 Q	5	8	P3M	2014-Q3	5.746E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
 Q	5	8	P3M	2014-Q4	5.889E2	Australian Capital Territory	Mean price of residential dwelling ($'000)	Quarterly
->>>>>>> 63e4067c1a2cf4673ac20e9a461cccd3e8beb173
