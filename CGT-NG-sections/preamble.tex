@@ -4,7 +4,7 @@
 \sisetup{detect-all} % to ensure helvetica is used
 \usepackage{longtable} % session info
 \usepackage{tabularx}  % boxed tables
-\usepackage{flushend} % for flushed columns at end of chapters
+% \usepackage{flushend} % for flushed columns at end of chapters
 \usepackage{makecell}
 
 \renewcommand{\classification}{\normalfont\textbf{\textcolor{red}{DRAFT NO CIRC}}}
@@ -16,24 +16,24 @@
 % \newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{3pt}}}\ULon}
 % \author{\redsout{John Daley and Danielle Wood}}
 
-\newcommand{\TBD}[1]{\colorbox{yellow}{#1}}
+\newcommand{\TBD}[1]{\textcolor{yellow}{#1}}
   
   
-  \newcommand\gao{Grattan analysis of}
-  \newcommand{\mpfootnotes}[1][1]{
-    \renewcommand{\thempfootnote}{\thefootnote}
-    \addtocounter{footnote}{-#1}
-        \renewcommand{\footnote}{\stepcounter{footnote}\footnotetext[\value{footnote}]}}
+\newcommand\gao{Grattan analysis of}
+\newcommand{\mpfootnotes}[1][1]{
+  \renewcommand{\thempfootnote}{\thefootnote}
+  \addtocounter{footnote}{-#1}
+  \renewcommand{\footnote}{\stepcounter{footnote}\footnotetext[\value{footnote}]}
+  }
     
-    \usetikzlibrary{shapes,arrows,automata,positioning}
-    \tikzstyle{block} = [rectangle, draw, text width=6em, text centered, rounded corners, minimum height=4em]
-    
-    \tikzstyle{line} = [draw, thick, -latex']
+\usetikzlibrary{shapes,arrows,automata,positioning}
+\tikzstyle{block} = [rectangle, draw, text width=6em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, thick, -latex']
                         
-                        \newcommand{\Act}[2]{\emph{#1} (#2)}
-                        \newcommand{\EMPH}[1]{\textbf{#1}}
-                        \newcommand{\highlight}[1]{\textbf{#1}}
-                        \newcommand\ie{\emph{i.e.~}}
+\newcommand{\Act}[2]{\emph{#1} (#2)}
+\newcommand{\EMPH}[1]{\textbf{#1}}
+\newcommand{\highlight}[1]{\textbf{#1}}
                         
-                        \usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
-                        \AtBeginEnvironment{quote}{\smaller}
+\usepackage{relsize,etoolbox}% http://ctan.org/pkg/{relsize,etoolbox}
+\AtBeginEnvironment{quote}{\smaller}
+

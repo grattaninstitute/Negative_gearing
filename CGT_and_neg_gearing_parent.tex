@@ -22,6 +22,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -49,11 +50,13 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-\usepackage{ragged2e}
 
+\usepackage{ocgx}
 
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
+
+\GrattanReportNumber{2016-99}
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
@@ -61,11 +64,16 @@
 \input{CGT-NG-sections/preamble}
 
 
-\usepackage{ocgx,marginnote}
+% \usepackage{marginnote}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
+
+
+
 %\clearpage
 %\chapter{Distribution of negative gearing}
+
+
 
 
 
@@ -88,9 +96,6 @@
 
 
 % We insert this now rather than pulling up the whole chunk from the box below.
-
-
-
 
 
 
@@ -145,19 +150,19 @@
 \begin{overview}[-25pt] %\addcontentsline{toc}{chapter}{Overview}
 A substantial change to Australia's tax arrangements is long overdue. The interaction of a fifty per cent capital gains tax (CGT) discount with negative gearing distorts investment decisions, makes housing markets more volatile and reduces home ownership. Like most tax concessions, these tax breaks largely benefit the wealthy.
 
-These two measures in combination allow investors to reduce and defer personal income tax, at an annual cost of \$12~billion to the public purse. Our proposals to wind back the discount and negative gearing would save the Commonwealth Government about \highlight{\$5.5~billion a year}. 
+These two measures in combination allow investors to reduce and defer personal income tax, at an annual cost of \$15~billion to the public purse. Our proposals to wind back the discount and negative gearing would save the Commonwealth Government about \highlight{\$6.7~billion a year}. 
 
 The discount on capital gains tax is designed to maintain incentives to save and invest.  Because taxes apply to nominal income, inflation would otherwise erode part of an investor's capital gains. Given actual returns, many investors have been overcompensated for inflation. 
 
 Policy has overzealously protected savings at the expense of competing considerations. The economic benefits of tax neutrality for savings are small: those with high incomes save almost the same amount regardless of the tax rate. Providing a discount means that other taxes must be higher, and they impose greater economic costs. The 50 per cent discount also encourages investors to focus too much on investments with capital growth rather than annual income. And it undermines income tax integrity by creating opportunities for artificial transactions to reduce tax. 
 
-\highlight{Reducing the capital gains discount to 75~percent} would provide a better balance between these competing considerations and would raise about \highlight{\$3.8~billion} a year.
+\highlight{Reducing the capital gains discount to 75~percent} would provide a better balance between these competing considerations and would raise about \highlight{\$5.4~billion} a year.
 
 Negative gearing allows those who borrow to invest to use losses to reduce tax on wages and salaries. In Australia negative gearing goes beyond broadly accepted principles for offsetting losses against gains. It diverts capital from more productive investments without greatly increasing housing supply. Like the CGT discount, negative gearing primarily benefits those on high incomes.
 
-Australia should follow international practice, and not deduct losses from passive investments from wage and salary income.  This change would raise \highlight{\$2~billion} a year in the short term, falling to \highlight{\$1.7~billion} as losses start to be written off against positive investment income. Other proposals, such as restricting negative gearing to new properties or limiting the dollar value of deductions, leave too many problems in place and introduce additional distortions. 
+Australia should follow international practice, and not deduct losses from passive investments from wage and salary income.  This change would raise \highlight{\$1.9~billion} a year in the short term, falling to \highlight{\$1.3~billion} as losses start to be written off against positive investment income. Other proposals, such as restricting negative gearing to new properties or limiting the dollar value of deductions, leave too many problems in place and introduce additional distortions. 
 
-These changes will improve housing affordability -- a little. We estimate housing prices would be up to -9,999,900~percent lower than otherwise. Rents won't change much, nor will the rate of new development.  With tight constraints on supply of land suitable for urban housing, most of the impact will be felt via lower land prices. The changes will not cause housing markets to collapse: their effects on prices are small compared to factors such as interest rates and supply of land.
+These changes will improve housing affordability -- a little. We estimate housing prices would be up to 2~percent lower than otherwise. Rents won't change much, nor will the rate of new development.  With tight constraints on supply of land suitable for urban housing, most of the impact will be felt via lower land prices. The changes will not cause housing markets to collapse: their effects on prices are small compared to factors such as interest rates and supply of land.
 
 Phasing in change would reduce price shocks and make the reforms easier to sell. It is better than grandfathering current holdings, which would increase complexity, limit the additional tax collected for many years, and be unfair to new investors, especially younger ones.
 \end{overview}
@@ -232,7 +237,7 @@ Given these costs and benefits, is the capital gains discount set at the right l
 % cairo pdf for unicode concordance
 
 
-Australian entities -- individuals, companies, and superannuation funds -- accrued \$74.3~billion of income through capital gains in 2013-14. Individuals accrued 44.7~percent
+Australian entities -- individuals, companies, and superannuation funds -- accrued \$74.3~billion of income through capital gains in 2013-14. Individuals accrued 45~percent
 of capital gains and gained more from real estate than any other source. (See \Vref{fig:CGT-by-entity-asset}.)
 
 \begin{figure}
@@ -269,7 +274,7 @@ Second, investors are also able to choose the time of an asset's sale to minimis
 
 
 
-The benefits of waiting can be substantial. A person paying the top rate of income tax of 47c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was 29.1~percent; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was 40.6~percent. The average marginal tax rate on the first dollar of capital gains for people in the workforce is 28.1~percent compared to 19.9~percent for people over 65.
+The benefits of waiting can be substantial. A person paying the top rate of income tax of 47c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was 29~percent; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was 41~percent. The average marginal tax rate on the first dollar of capital gains for people in the workforce is 28~percent compared to 20~percent for people over 65.
 
 
 
@@ -289,7 +294,7 @@ The benefits of waiting can be substantial. A person paying the top rate of inco
 
 
 
-The benefits of waiting can be substantial. A person paying the top rate of income tax of 47\,c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower (34.5\,c) tax bracket would reduce the annual nominal tax rate on that investment from 27.9~percent to 25.1~percent \Vref{fig:delaying-realization-causes-reduction-in-effective-tax-rate}.
+The benefits of waiting can be substantial. A person paying the top rate of income tax of 47\,c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower (34.5\,c) tax bracket would reduce the annual nominal tax rate on that investment from 28~percent to 25~percent \Vref{fig:delaying-realization-causes-reduction-in-effective-tax-rate}.
 
 \begin{figure}
 \Caption{The delay in realizing capital gains subsantially reduces the effective tax rate}{Nominal effective marginal tax rates on savings}{fig:delaying-realization-causes-reduction-in-effective-tax-rate}
@@ -306,7 +311,7 @@ A capital gains tax discount is an imperfect adjustment for inflation. The effec
 
 
 
-The 50 per cent discount has overcompensated property investors for inflation over the past 15 years. Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7.3~percent.  Inflation over this period averaged 2.9~percent annually. 
+The 50 per cent discount has overcompensated property investors for inflation over the past 15 years. Since the introduction of the capital gains tax discount in 1999, house prices have grown annually by an average of 7~percent.  Inflation over this period averaged 3~percent annually. 
 
 In contrast, long-term share investors who experienced low average capital returns because of the global financial crisis, would have been better off under a regime that taxed real capital gains. Share prices have grown by an average of only 3.6 per cent since 1999. 
  
@@ -326,7 +331,7 @@ When taxes are levied on nominal returns then tax rates on real gains depend on 
 
 
 Consider an investor Surya that has \$10,000 worth of shares. The shares pay no dividends so that all her returns are through capital growth.
-Imagine the shares increase in value by 8~percent over the first year while inflation is 2.5~percent. If she sells the shares at the end of the year her nominal return is \$800. Her real (inflation-adjusted) return is \$540.\footnote{All printed numbers are rounded in this box.}
+Imagine the shares increase in value by 8~percent over the first year while inflation is 2~percent. If she sells the shares at the end of the year her nominal return is \$800. Her real (inflation-adjusted) return is \$540.\footnote{All printed numbers are rounded in this box.}
 
 If she paid \highlight{tax directly on her real gain} at the 47\,c top marginal rate, she would pay \$252, and her \highlight{real after-tax return would be \$284.} If instead she paid \highlight{tax on her nominal gains with a 50 per cent discount} then she would pay tax of \$188 ($0.50 \times 0.47 \times \$800$) and she would receive a real after-tax return of \$349 (real return minus the \$190 tax). She is much better off\dots.
 
@@ -335,7 +340,7 @@ If she paid \highlight{tax directly on her real gain} at the 47\,c top marginal 
 The opposite is true if her returns are low. To repeat myself, except with nominal rate of return set at 3~percent:
 
 Consider an investor Surya that has \$10,000 worth of shares. The shares pay no dividends so that all her returns are through capital growth.
-Imagine the shares increase in value by 3~percent over the first year while inflation is 2.5~percent. If she sells the shares at the end of the year her nominal return is \$300. Her real (inflation-adjusted) return is \$49.
+Imagine the shares increase in value by 3~percent over the first year while inflation is 2~percent. If she sells the shares at the end of the year her nominal return is \$300. Her real (inflation-adjusted) return is \$49.
 
 If she paid \highlight{tax directly on her real gain} at the 47\,c top marginal rate, she would pay \$23, and her \highlight{real after-tax return would be \$26.} If instead she paid \highlight{tax on her nominal gains with a 50 per cent discount} then she would pay tax of \$70 ($0.50 \times 0.47 \times \$300$) and she would receive a real after-tax return of $-$\$22 (real return minus the \$70 tax).
 
@@ -394,21 +399,20 @@ On the other hand, the theoretical ideal implicitly assumes losses and gains are
 \centering
 \caption{Assumptions for figure \Vref{fig:EMTR-savings}}
 \small
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-<<<<<<< HEAD
-% Sat Apr 30 13:33:03 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 02:53:08 2019
 \begin{tabular}{llrrrrrrr}
   \toprule
    &  &  &  &  & \multicolumn{4}{c}{\textbf{Constant}}\\
  \cmidrule(lr){6-9}
  \textbf{return type} & \textbf{scenario} & \textbf{capital gains} & \textbf{risk free rate} & \textbf{inflation} & \textbf{marginal tax rate} & \textbf{CGT discount} & \textbf{n} & \textbf{nominal rent}\\
  \midrule
-excess & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
-  excess & lower & 5.0\% & 4.5\% & 2.5\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
-  nominal & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
-  nominal & lower & 5.0\% & 4.5\% & 2.5\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
-  real & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
-  real & lower & 5.0\% & 4.5\% & 2.5\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\ 
+excess & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15 & 3.0\% \\ 
+   & lower & 5.0\% & 4.5\% & 2.5\% &  &  &  &  \\ 
+  nominal & historic & 7.3\% & 5.6\% & 2.8\% &  &  &  &  \\ 
+   & lower & 5.0\% & 4.5\% & 2.5\% &  &  &  &  \\ 
+  real & historic & 7.3\% & 5.6\% & 2.8\% &  &  &  &  \\ 
+   & lower & 5.0\% & 4.5\% & 2.5\% &  &  &  &  \\ 
    \bottomrule
 \end{tabular}
 
@@ -418,7 +422,7 @@ excess & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15.00 & 3.0\% \\
 \subsection{Maintaining the progressivity of the tax system}\label{sec:maintaining-progressivity-tax-system}
 
 
-If returns to savings are not taxed, then inequality will tend to widen. The top ten per cent of wage and salary earners receive about 33.9~percent of all wages and salaries (before tax). They tend to save a greater proportion of their income than people who earn less, they are more likely to invest in higher risk, higher return assets, and they are more likely to make investments where a higher proportion of the returns are capital gains rather than income.  Consequently, among individual taxpayers, the top decile received 54.7~percent of all investment income, and 67.4~percent of all capital gains income (\Vref{fig:CG-by-decile} \&\ \Vref{fig:DecileStackedChart}). 
+If returns to savings are not taxed, then inequality will tend to widen. The top ten per cent of wage and salary earners receive about 34~percent of all wages and salaries (before tax). They tend to save a greater proportion of their income than people who earn less, they are more likely to invest in higher risk, higher return assets, and they are more likely to make investments where a higher proportion of the returns are capital gains rather than income.  Consequently, among individual taxpayers, the top decile received 55~percent of all investment income, and 67~percent of all capital gains income (\Vref{fig:CG-by-decile} \&\ \Vref{fig:DecileStackedChart}). 
 
 \begin{figure}
 \Caption{Most capital gains are earned by those in the highest income decile}{Proportion of net capital gains by income decile (2013-14)}{fig:CG-by-decile}
@@ -428,9 +432,9 @@ If returns to savings are not taxed, then inequality will tend to widen. The top
 
 
 
-Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes \emph{before} capital gains, 34.1~percent of taxable gains are from the top decile. Another 24.1~percent are from those with less than \$10,000 in taxable income before capital gains.
+Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes \emph{before} capital gains, 34~percent of taxable gains are from the top decile. Another 24~percent are from those with less than \$10,000 in taxable income before capital gains.
 
-Of the latter, many are over 50s that have waited until retirement to realise gains (section 2.2). There is also a sizeable group of 30-45 year olds with very high capital gains but no other taxable incomes (2.6~percent of taxpayers in this age group have capital gains in excess of \$10,000 and which make up more than 95\%\ of their total income).\marginpar{\textcolor{red}{\textbf{Not borne out.}}} Many are likely to be partners of high income earners that receive distributions of capital income through structures such as trusts. All of this is consistent with the finding that capital gains accrue disproportionately to those that are already well off. 
+Of the latter, many are over 50s that have waited until retirement to realise gains (section 2.2). There is also a sizeable group of 30-45 year olds with very high capital gains but no other taxable incomes (3~percent of taxpayers in this age group have capital gains in excess of \$10,000 and which make up more than 95\%\ of their total income).\marginpar{\textcolor{red}{\textbf{Not borne out.}}} Many are likely to be partners of high income earners that receive distributions of capital income through structures such as trusts. All of this is consistent with the finding that capital gains accrue disproportionately to those that are already well off. 
 
 There is no reason a priori why any particular level of inequality is preferable to another, particularly if those levels of inequality are a consequence of some people working harder, or taking more risks, than others.  
 However, if the returns on savings concentrate resources even more than wage inequality, then the reinvestment of the returns on savings can lead to continued increases in the concentration of wealth -- what Thomas Piketty described as an `endless inegalitarian spiral.'  Critics of Piketty's work, most notably Matthew Rognlie, argue that over the long-term, diminishing marginal returns should ultimately put a brake on the share of total income earnt by capital rather than labour.  However, Rognlie's finding that higher house prices (and associated economic rents) have been the dominant driver of the growth in the capital share of national income  do not undermine the Piketty thesis. Indeed, these findings suggest that so long as tight planning and zoning restrictions remain in place, those that can afford to save (and buy houses) are likely to keep capturing a growing share of national wealth.  
@@ -458,7 +462,7 @@ While some tax incentives for superannuation might be justified, the current reg
 
 
 
-Second, reducing the discount might not lead to much greater investment in owner-occupied housing and superannuation. Households already hold 41.5~percent of their assets outside these areas, even though they have substantial tax advantages. This is presumably because people want savings in forms that are available for use before retirement and without having to sell their home.  
+Second, reducing the discount might not lead to much greater investment in owner-occupied housing and superannuation. Households already hold 42~percent of their assets outside these areas, even though they have substantial tax advantages. This is presumably because people want savings in forms that are available for use before retirement and without having to sell their home.  
 
 
 
@@ -539,7 +543,7 @@ Suppose Dan, a lawyer earning \$250,000 a year,
 borrows \$750,000 %
 (interest only)
 to purchase a \$750,000 investment property. Interest on the loan is 6~percent a
-year and the property generates a rental return of 2.5~percent each
+year and the property generates a rental return of 2~percent each
 year. Most of the property's return is via capital appreciation of 5~percent each year.
 
 In the first year, Dan makes a loss of \$26,000 
@@ -589,14 +593,14 @@ The attractiveness of using investment losses to reduce taxes on wage
 income is evident in the age profile of those negatively gearing
 property. Investing in loss making properties is popular amongst those
 of working age, but far less prevalent amongst over 60s who are unlikely
-to benefit from the tax write-offs. 68.5~percent of those under 60
-with investment properties make rental losses compared to less than 32.6~percent over 60 (see \Vref{fig:NG-PG-by-age}).
+to benefit from the tax write-offs. 68~percent of those under 60
+with investment properties make rental losses compared to less than 33~percent over 60 (see \Vref{fig:NG-PG-by-age}).
 
 Of course, not all investments are negatively geared. `Positively geared' properties are those where the annual income on the property exceeds the annual costs of maintenance and interest. Typically, positively-geared investors have broowed less of the value of the property, and so they have lower interest costs.
 
 Negative gearing is used much less for investments outside of housing. Investors in assets other than real estate, such as equities or unincorporated businesses, are less likely to borrow some of the funding, and usually do not borrow so much that these investments are negatively geared. 
 
-Total lending to individuals for share investments is at most \$19 billion, compared to individuals' direct share holdings of around \$550~billion,\footnote{The ATO reported that the 2013-14 dividend income for individuals was \$23.8~billion. The HILDA survey showed in the same year \$0.389~trillion for household wealth in equities.}  and compared to borrowings of \$548~billion from banks for housing investor lending. 
+Total lending to individuals for share investments is at most \$19 billion, compared to individuals' direct share holdings of around \$550~billion,\footnote{The ATO reported that the 2013-14 dividend income for individuals was \$23.8~billion. The HILDA survey showed in the same year \$0.969~trillion for household wealth in equities.}  and compared to borrowings of \$548~billion from banks for housing investor lending. 
 
 When individuals do borrow to invest in equities, they are seldom negatively geared. Equities investors will only be negatively geared if they are at least 70 per cent leveraged.  The average leverage of those who do have a margin loan is around 27 per cent.  Few margin lending investors leverage more than 65 per cent. Usually the maximum leverage permitted is around 75 per cent. Most margin lending customers dislike margin calls, and so they tend to create a buffer of at least 10 per cent less than this. 
 
@@ -630,7 +634,7 @@ The asymmetry between the tax treatment of gains and losses makes debt financing
 \notes{Assumes 
 3~percent nominal rent income, 
 5~percent capital gain per year, 
-2.5~percent inflation,
+2~percent inflation,
 5~percent interest rate on borrowing, 
 50~percent CGT discount, 
 and
@@ -717,7 +721,7 @@ The fact that negative gearing is regressive is not in itself an argument for ch
 
 
 
-A lot of the public debate has centred on claims that most taxpayers negatively gearing have taxable incomes below \$80,000. This is not surprising given that only 19.4~percent of taxpayers have higher taxable incomes. 
+A lot of the public debate has centred on claims that most taxpayers negatively gearing have taxable incomes below \$80,000. This is not surprising given that only 19~percent of taxpayers have higher taxable incomes. 
 
 \begin{figure}
 \Caption{More taxpayers on higher incomes negatively gear}{Distribution of taxable incomes by negative gearing status, 2013-14}{fig:tx-inc-distr-by-NG}
@@ -779,7 +783,7 @@ Economic theory suggests the impact of reduced after tax returns to investors wi
 
 
 
-But the overall decrease in house prices is not likely to be large. Around two thirds of buyers -- owner occupiers -- will be not be affected by the tax changes. Even assuming that the change in tax benefits are fully passed through to prices, the price impact will be less than 7.4~percent (\Vref{tbl:Impact-house-prices}). Indeed, house prices may not actually fall if market dynamics continue to push prices upwards. But prices will be lower than they would have been in the absence of the tax changes.
+But the overall decrease in house prices is not likely to be large. Around two thirds of buyers -- owner occupiers -- will be not be affected by the tax changes. Even assuming that the change in tax benefits are fully passed through to prices, the price impact will be less than 7~percent (\Vref{tbl:Impact-house-prices}). Indeed, house prices may not actually fall if market dynamics continue to push prices upwards. But prices will be lower than they would have been in the absence of the tax changes.
 
 \begin{bigbox*}{Impact of limiting negative gearing {and CGT} tax concessions on house prices}{box:ImpactOfPrice}
 
@@ -789,15 +793,15 @@ Two different approaches yield similar results. Firstly we calculate the capital
 
 
 
-The proposed changes to negative gearing would reduce tax write-offs for property investment by about \$2~billion initially and \$1.7~billion over time. Assuming a discount rate of 
-5~percent, the present value of these lost tax benefits would be approximately \$34~billion.
+The proposed changes to negative gearing would reduce tax write-offs for property investment by about \$1.9~billion initially and \$1.3~billion over time. Assuming a discount rate of 
+5~percent, the present value of these lost tax benefits would be approximately \$26.8~billion.
 
 
-The proposed reduction of the capital gains tax discount to 25~percent would reduce after tax returns by about \$3.83~billion a year, or \$76.6~billion in perpetuity. Assuming 40~percent of this relates to gains on real estate (in line with 2013-14 gains realisations) then the expected present value of the lost benefits for would be approximately \$30.7~billion.
+The proposed reduction of the capital gains tax discount to 25~percent would reduce after tax returns by about \$5.36~billion a year, or \$0.107~trillion in perpetuity. Assuming 40~percent of this relates to gains on real estate (in line with 2013-14 gains realisations) then the expected present value of the lost benefits for would be approximately \$42.9~billion.
 
 
 
-If these lost benefits (\$30.7~billion + \$34~billion) were fully capitalized into the value of residential property -- currently worth \$5.4~trillion -- prices would fall in the order of 1.1~percent.
+If these lost benefits (\$42.9~billion + \$26.8~billion) were fully capitalized into the value of residential property -- currently worth \$5.4~trillion -- prices would fall in the order of 2~percent.
 
 \eject
 \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
@@ -806,8 +810,8 @@ If these lost benefits (\$30.7~billion + \$34~billion) were fully capitalized in
 \caption{Impact of policy changes on after-tax returns}\label{tbl:Impact-house-prices}
 \makebox[\linewidth][c]{
 
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri May 06 18:26:22 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 03:06:10 2019
 \begin{tabularx}{\linewidth}{lRRRR}
   \toprule
    &  & \multicolumn{3}{c}{\textbf{Return}}\\
@@ -832,7 +836,7 @@ Alternatively, we can calculate the impact of tax changes on returns as a propor
 
 Weighting these changes in returns by the share of residential property, suggests the average return (and therefore the price) would fall by about 2~percent. Yet this somewhat overstates the overall price effect because it is based on the change in returns for a representative investor in the top (47 per cent) tax bracket.
 
-Of course, price changes would not be uniform. Prices would fall by more in the segments of the market with more investors (inner city apartments, for example). The change in returns for investors indicates the \emph{maximum} rational price change (about 7.4~percent). However, this would only occur in locations where every prospective purchaser was an investor, and the fall in prices did not attract any owner occupiers. Tax changes would be unlikely to drag on property prices in any location by more than 3--4 per cent.
+Of course, price changes would not be uniform. Prices would fall by more in the segments of the market with more investors (inner city apartments, for example). The change in returns for investors indicates the \emph{maximum} rational price change (about 7~percent). However, this would only occur in locations where every prospective purchaser was an investor, and the fall in prices did not attract any owner occupiers. Tax changes would be unlikely to drag on property prices in any location by more than 3--4 per cent.
 
 \end{bigbox*}
 
@@ -896,7 +900,7 @@ The main constraint on new housing is land release and zoning restrictions -- es
 
 
 In any case, general tax breaks like negative gearing are an inefficient way of supporting the rental market.\footnote{ 
-  The most recent ABS lending data suggests that only 6.6~percent of recent lending to investors is for constructed properties (ABS Cat. 5671.0 Table 8). One recent paper suggests the 6.6~percent figure might be understated because the ABS data do not separately identify investor purchase of new housing (as opposed to construction of new housing). Assuming the share of lending for new dwellings by investors is a similar proportion as for owner occupiers, then 11.3~percent of lending for investment properties would be for new dwellings (either constructed or bought new). }   Blanket tax concessions for investors that primarily accrue to existing property owners through higher house prices are poorly targeted way of alleviating rental stress.  
+  The most recent ABS lending data suggests that only 9~percent of recent lending to investors is for constructed properties (ABS Cat. 5671.0 Table 8). One recent paper suggests the 9~percent figure might be understated because the ABS data do not separately identify investor purchase of new housing (as opposed to construction of new housing). Assuming the share of lending for new dwellings by investors is a similar proportion as for owner occupiers, then 12~percent of lending for investment properties would be for new dwellings (either constructed or bought new). }   Blanket tax concessions for investors that primarily accrue to existing property owners through higher house prices are poorly targeted way of alleviating rental stress.  
 
 
 \subsection{Capping loss deductions}
@@ -925,28 +929,28 @@ contribution to the budget bottom line.
 \begin{center}
 % Jim QC
 % eval=FALSE due no access to HILDA
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri May 06 18:27:02 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 03:14:46 2019
 \begin{tabular}{rr}
   \toprule
 Investment properties owned & Households \\ 
   \midrule
- -3 & 3,014 \\ 
-   -1 & 8,299,530 \\ 
-    1 & 129,969 \\ 
-    2 & 228,853 \\ 
-    3 & 76,952 \\ 
-    4 & 35,604 \\ 
-    5 & 17,512 \\ 
-    6 & 8,185 \\ 
-    7 & 3,260 \\ 
-    8 & 1,070 \\ 
-    9 & 3,430 \\ 
-   10 & 1,102 \\ 
-   13 & 1,838 \\ 
-   14 & 903 \\ 
-   27 & 1,226 \\ 
-   58 & 1,377 \\ 
+ -3 & 9,916 \\ 
+   -1 & 21,382,333 \\ 
+    1 & 376,377 \\ 
+    2 & 670,296 \\ 
+    3 & 224,579 \\ 
+    4 & 120,203 \\ 
+    5 & 54,685 \\ 
+    6 & 25,331 \\ 
+    7 & 9,216 \\ 
+    8 & 3,218 \\ 
+    9 & 8,674 \\ 
+   10 & 2,113 \\ 
+   13 & 3,664 \\ 
+   14 & 1,790 \\ 
+   27 & 6,242 \\ 
+   58 & 2,813 \\ 
    \bottomrule
 \end{tabular}
 
@@ -955,16 +959,14 @@ Investment properties owned & Households \\
 \end{table}
 
 \begin{table}
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri May 06 18:27:02 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 03:14:47 2019
 \begin{tabular}{rr}
   \toprule
   \midrule
-Not applicable & 7,631,426 \\ 
-  One other residential
-property owned and rented out & 818,633 \\ 
-  Two or more other residential
-properties owned and rented out & 316,366 \\ 
+0 & 7,631,426 \\ 
+  1 & 818,633 \\ 
+  2 & 316,366 \\ 
    \bottomrule
 \end{tabular}
 
@@ -973,32 +975,32 @@ properties owned and rented out & 316,366 \\
 
 \begin{table*}
 \caption{Taxpayers with wage and salary income claiming business losses by occupation}\label{tbl:bizlosses}
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri May 06 18:27:02 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 03:14:47 2019
 \begin{tabular}{lrrrrr}
   \toprule
 Occupation & Type & No. claiming losses & $\backslash$\% & Average loss & Average salary \\ 
   \midrule
-Clerical and Administrative & Primary & 2700.00 & 0.2\% & \$19,150 & \$57,224 \\ 
-  Clerical and Administrative & Non-Primary & 18850.00 & 1.3\% & \$9,584 & \$47,354 \\ 
-   [6pt]Community and Personal Service & Primary & 1250.00 & 0.1\% & \$26,742 & \$53,669 \\ 
-  Community and Personal Service & Non-Primary & 12200.00 & 1.2\% & \$10,866 & \$39,716 \\ 
-   [6pt]Consultants, apprentices & Primary & 2700.00 & 0.3\% & \$20,787 & \$71,238 \\ 
-  Consultants, apprentices & Non-Primary & 7450.00 & 0.8\% & \$9,772 & \$52,537 \\ 
-   [6pt]Labourers & Primary & 3200.00 & 0.3\% & \$24,215 & \$50,371 \\ 
-  Labourers & Non-Primary & 7750.00 & 0.8\% & \$9,577 & \$47,271 \\ 
-   [6pt]Machinery operators and drivers & Primary & 2800.00 & 0.5\% & \$26,135 & \$84,598 \\ 
-  Machinery operators and drivers & Non-Primary & 7250.00 & 1.2\% & \$12,330 & \$58,030 \\ 
-   [6pt]Managers & Primary & 5850.00 & 0.5\% & \$26,999 & \$116,575 \\ 
-  Managers & Non-Primary & 16850.00 & 1.4\% & \$12,182 & \$71,931 \\ 
-   [6pt]Other & Primary & 0.00 & 0.0\% &  &  \\ 
-  Other & Non-Primary & 0.00 & 0.0\% &  &  \\ 
-   [6pt]Professionals & Primary & 7800.00 & 0.4\% & \$29,668 & \$108,190 \\ 
-  Professionals & Non-Primary & 37800.00 & 1.8\% & \$10,215 & \$67,572 \\ 
-   [6pt]Sales & Primary & 1350.00 & 0.2\% & \$11,599 & \$53,636 \\ 
-  Sales & Non-Primary & 9000.00 & 1.2\% & \$12,939 & \$32,914 \\ 
-   [6pt]Technicians and Trades & Primary & 4200.00 & 0.4\% & \$24,392 & \$88,727 \\ 
-  Technicians and Trades & Non-Primary & 17000.00 & 1.5\% & \$8,902 & \$60,246 \\ 
+Clerical and Administrative & Primary & 2700.00 & 0\% & \$19,150 & \$57,224 \\ 
+  Clerical and Administrative & Non-Primary & 18850.00 & 1\% & \$9,584 & \$47,354 \\ 
+   [6pt]Community and Personal Service & Primary & 1250.00 & 0\% & \$26,742 & \$53,669 \\ 
+  Community and Personal Service & Non-Primary & 12200.00 & 1\% & \$10,866 & \$39,716 \\ 
+   [6pt]Consultants, apprentices & Primary & 2700.00 & 0\% & \$20,787 & \$71,238 \\ 
+  Consultants, apprentices & Non-Primary & 7450.00 & 1\% & \$9,772 & \$52,537 \\ 
+   [6pt]Labourers & Primary & 3200.00 & 0\% & \$24,215 & \$50,371 \\ 
+  Labourers & Non-Primary & 7750.00 & 1\% & \$9,577 & \$47,271 \\ 
+   [6pt]Machinery operators and drivers & Primary & 2800.00 & 0\% & \$26,135 & \$84,598 \\ 
+  Machinery operators and drivers & Non-Primary & 7250.00 & 1\% & \$12,330 & \$58,030 \\ 
+   [6pt]Managers & Primary & 5850.00 & 0\% & \$26,999 & \$116,575 \\ 
+  Managers & Non-Primary & 16850.00 & 1\% & \$12,182 & \$71,931 \\ 
+   [6pt]Other & Primary & 0.00 & 0\% &  &  \\ 
+  Other & Non-Primary & 0.00 & 0\% &  &  \\ 
+   [6pt]Professionals & Primary & 7800.00 & 0\% & \$29,668 & \$108,190 \\ 
+  Professionals & Non-Primary & 37800.00 & 2\% & \$10,215 & \$67,572 \\ 
+   [6pt]Sales & Primary & 1350.00 & 0\% & \$11,599 & \$53,636 \\ 
+  Sales & Non-Primary & 9000.00 & 1\% & \$12,939 & \$32,914 \\ 
+   [6pt]Technicians and Trades & Primary & 4200.00 & 0\% & \$24,392 & \$88,727 \\ 
+  Technicians and Trades & Non-Primary & 17000.00 & 2\% & \$8,902 & \$60,246 \\ 
    \bottomrule
 \end{tabular}
 
@@ -1078,7 +1080,7 @@ For most investors, the changes will mainly affect the timing, not the amount, o
 
 
 
-We estimate that quarantining losses for passive investments would increase income tax collections by \$2.03~billion a year in the short term. Over the medium term, accrued losses -- losses not offset against recurrent investment income -- will be deducted from capital gains. Assuming no change in investor behaviour, the additional tax revenue would stabilise at around \$1.7~billion a year.
+We estimate that quarantining losses for passive investments would increase income tax collections by \$1.92~billion a year in the short term. Over the medium term, accrued losses -- losses not offset against recurrent investment income -- will be deducted from capital gains. Assuming no change in investor behaviour, the additional tax revenue would stabilise at around \$1.34~billion a year.
 
 If deductions were limited even more to the particular asset or asset class, income tax collections would rise a little more because investors would wait longer on average until they could realise their losses. 
 
@@ -1122,18 +1124,18 @@ Capping losses is politically attractive because a smaller percentage of landlor
 
 \begin{table}
 \caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri May 06 18:27:38 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 03:14:56 2019
 \begin{tabular}{rrrS}
   \toprule
 Threshold & Costing & Number affected & \% \\ 
   \midrule
-$-$\$0 & \$2,367,161,951 & 750,916 & 37.5\% \\ 
-  $-$\$5,000 & \$1,338,384,383 & 399,066 & 19.9\% \\ 
-  $-$\$10,000 & \$792,874,978 & 208,285 & 10.4\% \\ 
-  $-$\$15,000 & \$497,080,842 & 117,180 & 5.8\% \\ 
-  $-$\$20,000 & \$325,448,717 & 68,459 & 3.4\% \\ 
-  $-$\$50,000 & \$43,317,917 & 8,622 & 0.4\% \\ 
+$-$\$0 & \$2,329,943,828 & 736,034 & 37\% \\ 
+  $-$\$5,000 & \$1,324,169,051 & 389,754 & 20\% \\ 
+  $-$\$10,000 & \$788,826,337 & 204,953 & 10\% \\ 
+  $-$\$15,000 & \$496,674,175 & 114,215 & 6\% \\ 
+  $-$\$20,000 & \$327,294,012 & 67,521 & 3\% \\ 
+  $-$\$50,000 & \$43,923,467 & 8,778 & 0\% \\ 
    \bottomrule
 \end{tabular}
 
@@ -1149,14 +1151,14 @@ An alternative proposal would limit the number of properties on which investors 
 
 
 
-Only 29.8~percent of landlords have two or more properties.  A fraction of these would not be taxed as they would the `first property' for a landlord. The relatively small number of taxpayers affected substantially reduces the potential budget gains. 
+Only 31~percent of landlords have two or more properties.  A fraction of these would not be taxed as they would the `first property' for a landlord. The relatively small number of taxpayers affected substantially reduces the potential budget gains. 
 
 In any case, capping property numbers is a crude way to target `excessive' negative gearing. Taxpayers can increase their deductions by purchasing fewer but more expensive properties. Consequently the policy will distort investment decisions by discouraging investors from buying more affordable properties. 
 
 \section{Summarising impact of proposed negative gearing and CGT changes}
 Our preferred policy is to reduce the CGT discount to 25~percent and limit negative gearing by quarantining all passive investment losses. 
 
-In addition to raising more than \$5.53~billion a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
+In addition to raising more than \$6.7~billion a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
 
 \chapter{Transition arrangements}
 
@@ -1193,11 +1195,11 @@ Suppose Hayley, an investor in the top tax bracket purchases a house for \$700,0
 
 If she were to sell the house she would crystallise the \$300,000 in gains, paying tax on 50~percent of the gains at her marginal tax rate of 49~percent (\$73,500). This would leave her with around \$926,500 from the sale: \$226,500 in net gains and her initial investment of \$700,000. 
 
-The sale will only be worthwhile if Hayley can find an alternative property that yields more than her current rental income of \$50,000  with the same opportunity for capital gains. With her \$926,500 sale proceeds she would need to find a property with net rental return of more than 5.4~percent a year. 
+The sale will only be worthwhile if Hayley can find an alternative property that yields more than her current rental income of \$50,000  with the same opportunity for capital gains. With her \$926,500 sale proceeds she would need to find a property with net rental return of more than 5~percent a year. 
 
-Properties with rental yields below 5.4~percent but higher than her current 5 would not be attractive because realising the tax liability on her current property erodes her capital base for investment.  
+Properties with rental yields below 5~percent but higher than her current 5 would not be attractive because realising the tax liability on her current property erodes her capital base for investment.  
 
-The higher the tax rate on capital gains the less willing she will be to realise gains to pursue new investment opportunities. If capital gains were taxed in full, rather than with a 50 per cent discount, her hurdle rate for the new investment would be 5.9~percent.
+The higher the tax rate on capital gains the less willing she will be to realise gains to pursue new investment opportunities. If capital gains were taxed in full, rather than with a 50 per cent discount, her hurdle rate for the new investment would be 6~percent.
 \end{smallbox}
 
 % For longtable.
@@ -1275,9 +1277,8 @@ Effective tax rates measure the tax paid on investment returns as a share of the
  \node (BlackNode) {%
 
 
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Mon Apr 25 19:50:50 2016
-
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 16:44:00 2019
 \begin{tabular}{Qlllrrrrr}
   \toprule
    &  &  &  & \multicolumn{5}{c}{\textbf{Nominal annual capital gain}}\\
@@ -1315,8 +1316,8 @@ Effective tax rates measure the tax paid on investment returns as a share of the
 \end{ocg}
 \begin{ocg}{ocgColored}{ocgColored}{0}
 \node (Coloured) {%
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Mon Apr 25 19:51:36 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 16:44:00 2019
 \begin{tabular}{Qlllrrrrr}
   \toprule
    &  &  &  & \multicolumn{5}{c}{\textbf{Nominal annual capital gain}}\\
@@ -1384,17 +1385,19 @@ The \verb=devtools::session_info()= is printed below.
 \begin{table*}[!htb]
 \centering
 \caption{Platform}
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri May 06 18:27:47 2016
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 16:44:02 2019
 \begin{tabular}{rl}
   \toprule
- version & R version 3.2.5 (2016-04-14) \\ 
+ version & R version 3.5.2 (2018-12-20) \\ 
+  os & Windows 10 x64 \\ 
   system & x86\_64, mingw32 \\ 
   ui & RTerm \\ 
   language & (EN) \\ 
   collate & English\_Australia.1252 \\ 
+  ctype & English\_Australia.1252 \\ 
   tz & Australia/Sydney \\ 
-  date & 2016-05-06 \\ 
+  date & 2019-01-21 \\ 
    \bottomrule
 \end{tabular}
 
@@ -1404,98 +1407,116 @@ The \verb=devtools::session_info()= is printed below.
 
 
 
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri May 06 18:27:47 2016
-\begin{longtable}{lllll}
+% latex table generated in R 3.5.2 by xtable 1.8-3 package
+% Mon Jan 21 16:44:02 2019
+\begin{longtable}{lllllllllll}
 \caption{Packages} \\ 
   \toprule
-package & * & version & date & source \\ 
+package & ondiskversion & loadedversion & path & loadedpath & attached & is\_base & date & source & md5ok & library \\ 
   \hline 
 \endhead 
 \hline 
 &\multicolumn{2}{l}{\footnotesize ${}^*$ attached} & \multicolumn{2}{r}{\footnotesize Continued on next page} 
 \endfoot 
 \endlastfoot 
-acepack &  & 1.3-3.3 & 2013-05-03 & CRAN (R 3.2.3) \\ 
-  assertthat &  & 0.1 & 2013-12-06 & CRAN (R 3.2.3) \\ 
-  bitops &  & 1.0-6 & 2013-08-17 & CRAN (R 3.2.3) \\ 
-  car & * & 2.1-2 & 2016-03-25 & CRAN (R 3.2.5) \\ 
-  cluster &  & 2.0.4 & 2016-04-18 & CRAN (R 3.2.5) \\ 
-  codetools &  & 0.2-14 & 2015-07-15 & CRAN (R 3.2.5) \\ 
-  colorspace &  & 1.2-6 & 2015-03-11 & CRAN (R 3.2.3) \\ 
-  crayon &  & 1.3.1 & 2015-07-13 & CRAN (R 3.2.3) \\ 
-  data.table & * & 1.9.7 & 2016-05-03 & Github (rdatatable/data.table@30ad684) \\ 
-  DBI &  & 0.3.1 & 2014-09-24 & CRAN (R 3.2.3) \\ 
-  devEMF & * & 2.0 & 2015-01-29 & CRAN (R 3.2.3) \\ 
-  devtools & * & 1.11.1 & 2016-04-21 & CRAN (R 3.2.5) \\ 
-  digest &  & 0.6.9 & 2016-01-08 & CRAN (R 3.2.3) \\ 
-  directlabels & * & 2015.12.16 & 2015-12-18 & CRAN (R 3.2.3) \\ 
-  dplyr & * & 0.4.3 & 2015-09-01 & CRAN (R 3.2.3) \\ 
-  evaluate &  & 0.8.3 & 2016-03-05 & CRAN (R 3.2.3) \\ 
-  expm & * & 0.999-0 & 2015-10-07 & CRAN (R 3.2.3) \\ 
-  forecast &  & 7.1 & 2016-04-14 & CRAN (R 3.2.5) \\ 
-  foreign & * & 0.8-66 & 2015-08-19 & CRAN (R 3.2.5) \\ 
-  formatR &  & 1.3 & 2016-03-05 & CRAN (R 3.2.3) \\ 
-  Formula & * & 1.2-1 & 2015-04-07 & CRAN (R 3.2.3) \\ 
-  fracdiff &  & 1.4-2 & 2012-12-02 & CRAN (R 3.2.3) \\ 
-  ggplot2 & * & 2.1.0 & 2016-03-01 & CRAN (R 3.2.5) \\ 
-  ggrepel & * & 0.5 & 2016-02-08 & CRAN (R 3.2.5) \\ 
-  grattan & * & 0.3.0.1 & 2016-05-04 & local \\ 
-  gridExtra & * & 2.2.1 & 2016-02-29 & CRAN (R 3.2.3) \\ 
-  gtable &  & 0.2.0 & 2016-02-26 & CRAN (R 3.2.3) \\ 
-  Hmisc & * & 3.17-3 & 2016-04-03 & CRAN (R 3.2.5) \\ 
-  httr & * & 1.1.0 & 2016-01-28 & CRAN (R 3.2.3) \\ 
-  knitr & * & 1.12.3 & 2016-01-22 & CRAN (R 3.2.3) \\ 
-  labeling &  & 0.3 & 2014-08-23 & CRAN (R 3.2.3) \\ 
-  lattice & * & 0.20-33 & 2015-07-14 & CRAN (R 3.2.5) \\ 
-  latticeExtra &  & 0.6-28 & 2016-02-09 & CRAN (R 3.2.3) \\ 
-  lazyeval &  & 0.1.10 & 2015-01-02 & CRAN (R 3.2.3) \\ 
-  lme4 &  & 1.1-12 & 2016-04-16 & CRAN (R 3.2.5) \\ 
-  lubridate &  & 1.5.6 & 2016-04-06 & CRAN (R 3.2.4) \\ 
-  magrittr & * & 1.5 & 2014-11-22 & CRAN (R 3.2.3) \\ 
-  MASS &  & 7.3-45 & 2015-11-10 & CRAN (R 3.2.5) \\ 
-  Matrix & * & 1.2-5 & 2016-04-17 & CRAN (R 3.2.5) \\ 
-  MatrixModels &  & 0.4-1 & 2015-08-22 & CRAN (R 3.2.3) \\ 
-  memoise &  & 1.0.0 & 2016-01-29 & CRAN (R 3.2.3) \\ 
-  mgcv &  & 1.8-12 & 2016-03-03 & CRAN (R 3.2.5) \\ 
-  minqa &  & 1.2.4 & 2014-10-09 & CRAN (R 3.2.3) \\ 
-  munsell &  & 0.4.3 & 2016-02-13 & CRAN (R 3.2.3) \\ 
-  nlme &  & 3.1-127 & 2016-04-16 & CRAN (R 3.2.5) \\ 
-  nloptr &  & 1.0.4 & 2014-08-04 & CRAN (R 3.2.3) \\ 
-  nnet &  & 7.3-12 & 2016-02-02 & CRAN (R 3.2.5) \\ 
-  openxlsx & * & 3.0.0 & 2015-07-03 & CRAN (R 3.2.3) \\ 
-  pbkrtest &  & 0.4-6 & 2016-01-27 & CRAN (R 3.2.3) \\ 
-  plyr &  & 1.8.3 & 2015-06-12 & CRAN (R 3.2.3) \\ 
-  purrr &  & 0.2.1 & 2016-02-13 & CRAN (R 3.2.3) \\ 
-  quadprog &  & 1.5-5 & 2013-04-17 & CRAN (R 3.2.3) \\ 
-  quantreg &  & 5.21 & 2016-02-13 & CRAN (R 3.2.3) \\ 
-  R6 &  & 2.1.2 & 2016-01-26 & CRAN (R 3.2.3) \\ 
-  RColorBrewer &  & 1.1-2 & 2014-12-07 & CRAN (R 3.2.3) \\ 
-  Rcpp &  & 0.12.4 & 2016-03-26 & CRAN (R 3.2.4) \\ 
-  RCurl &  & 1.95-4.8 & 2016-03-01 & CRAN (R 3.2.3) \\ 
-  readr & * & 0.2.2 & 2015-10-22 & CRAN (R 3.2.3) \\ 
-  readxl & * & 0.1.1 & 2016-03-28 & CRAN (R 3.2.5) \\ 
-  reshape2 &  & 1.4.1 & 2014-12-06 & CRAN (R 3.2.3) \\ 
-  rJava &  & 0.9-8 & 2016-01-07 & CRAN (R 3.2.3) \\ 
-  rpart &  & 4.1-10 & 2015-06-29 & CRAN (R 3.2.5) \\ 
-  rsdmx & * & 0.5-3 & 2016-03-16 & CRAN (R 3.2.4) \\ 
-  scales & * & 0.4.0 & 2016-02-26 & CRAN (R 3.2.3) \\ 
-  SparseM &  & 1.7 & 2015-08-15 & CRAN (R 3.2.3) \\ 
-  stringi &  & 1.0-1 & 2015-10-22 & CRAN (R 3.2.3) \\ 
-  stringr &  & 1.0.0 & 2015-04-30 & CRAN (R 3.2.3) \\ 
-  survey & * & 3.30-3 & 2014-08-15 & CRAN (R 3.2.3) \\ 
-  survival & * & 2.39-2 & 2016-04-16 & CRAN (R 3.2.5) \\ 
-  taxstats & * & 0.0.2.1314 & 2016-05-02 & Github (hughparsonage/taxstats@250c73f) \\ 
-  testthat & * & 1.0.2 & 2016-04-23 & CRAN (R 3.2.5) \\ 
-  tidyr & * & 0.4.1 & 2016-02-05 & CRAN (R 3.2.3) \\ 
-  timeDate &  & 3012.100 & 2015-01-23 & CRAN (R 3.2.3) \\ 
-  tseries &  & 0.10-34 & 2015-02-20 & CRAN (R 3.2.3) \\ 
-  withr &  & 1.0.1 & 2016-02-04 & CRAN (R 3.2.3) \\ 
-  XLConnect & * & 0.2-11 & 2015-03-01 & CRAN (R 3.2.3) \\ 
-  XLConnectJars & * & 0.2-9 & 2014-08-14 & CRAN (R 3.2.3) \\ 
-  XML &  & 3.98-1.4 & 2016-03-01 & CRAN (R 3.2.3) \\ 
-  xtable & * & 1.8-2 & 2016-02-05 & CRAN (R 3.2.3) \\ 
-  zoo & * & 1.7-12 & 2015-03-16 & CRAN (R 3.2.3) \\ 
+acepack & 1.4.1 & 1.4.1 & C:/R/R-3.5.1/library/acepack & C:/R/R-3.5.1/library/acepack & FALSE & FALSE & 2016-10-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  assertthat & 0.2.0 & 0.2.0 & C:/R/R-3.5.1/library/assertthat & C:/R/R-3.5.1/library/assertthat & FALSE & FALSE & 2017-04-11 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  backports & 1.1.3 & 1.1.3 & C:/R/R-3.5.1/library/backports & C:/R/R-3.5.1/library/backports & FALSE & FALSE & 2018-12-14 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  base64enc & 0.1.3 & 0.1-3 & C:/R/R-3.5.1/library/base64enc & C:/R/R-3.5.1/library/base64enc & FALSE & FALSE & 2015-07-28 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  bindr & 0.1.1 & 0.1.1 & C:/R/R-3.5.1/library/bindr & C:/R/R-3.5.1/library/bindr & FALSE & FALSE & 2018-03-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  bindrcpp & 0.2.2 & 0.2.2 & C:/R/R-3.5.1/library/bindrcpp & C:/R/R-3.5.1/library/bindrcpp & TRUE & FALSE & 2018-03-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  bitops & 1.0.6 & 1.0-6 & C:/R/R-3.5.1/library/bitops & C:/R/R-3.5.1/library/bitops & FALSE & FALSE & 2013-08-17 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  callr & 3.1.1 & 3.1.1 & C:/R/R-3.5.1/library/callr & C:/R/R-3.5.1/library/callr & FALSE & FALSE & 2018-12-21 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  cellranger & 1.1.0 & 1.1.0 & C:/R/R-3.5.1/library/cellranger & C:/R/R-3.5.1/library/cellranger & FALSE & FALSE & 2016-07-27 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  checkmate & 1.8.5 & 1.8.5 & C:/R/R-3.5.1/library/checkmate & C:/R/R-3.5.1/library/checkmate & FALSE & FALSE & 2017-10-24 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  cli & 1.0.1 & 1.0.1 & C:/R/R-3.5.1/library/cli & C:/R/R-3.5.1/library/cli & FALSE & FALSE & 2018-09-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  cluster & 2.0.7.1 & 2.0.7-1 & C:/R/R-3.5.1/library/cluster & C:/R/R-3.5.1/library/cluster & FALSE & FALSE & 2018-04-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  codetools & 0.2.16 & 0.2-16 & C:/R/R-3.5.1/library/codetools & C:/R/R-3.5.1/library/codetools & FALSE & FALSE & 2018-12-24 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  colorspace & 1.3.2 & 1.3-2 & C:/R/R-3.5.1/library/colorspace & C:/R/R-3.5.1/library/colorspace & FALSE & FALSE & 2016-12-14 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  crayon & 1.3.4 & 1.3.4 & C:/R/R-3.5.1/library/crayon & C:/R/R-3.5.1/library/crayon & FALSE & FALSE & 2017-09-16 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  data.table & 1.11.8 & 1.11.8 & C:/R/R-3.5.1/library/data.table & C:/R/R-3.5.1/library/data.table & TRUE & FALSE & 2018-09-30 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  desc & 1.2.0 & 1.2.0 & C:/R/R-3.5.1/library/desc & C:/R/R-3.5.1/library/desc & FALSE & FALSE & 2018-05-01 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  devEMF & 3.6.1 & 3.6-1 & C:/R/R-3.5.1/library/devEMF & C:/R/R-3.5.1/library/devEMF & TRUE & FALSE & 2018-05-22 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  devtools & 2.0.1 & 2.0.1 & C:/R/R-3.5.1/library/devtools & C:/R/R-3.5.1/library/devtools & TRUE & FALSE & 2018-10-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  digest & 0.6.18 & 0.6.18 & C:/R/R-3.5.1/library/digest & C:/R/R-3.5.1/library/digest & FALSE & FALSE & 2018-10-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  directlabels & 2018.5.22 & 2018.05.22 & C:/R/R-3.5.1/library/directlabels & C:/R/R-3.5.1/library/directlabels & TRUE & FALSE & 2018-05-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  dplyr & 0.7.8 & 0.7.8 & C:/R/R-3.5.1/library/dplyr & C:/R/R-3.5.1/library/dplyr & TRUE & FALSE & 2018-11-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  evaluate & 0.12 & 0.12 & C:/R/R-3.5.1/library/evaluate & C:/R/R-3.5.1/library/evaluate & FALSE & FALSE & 2018-10-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  expm & 0.999.3 & 0.999-3 & C:/R/R-3.5.1/library/expm & C:/R/R-3.5.1/library/expm & TRUE & FALSE & 2018-09-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  fastmatch & 1.1.0 & 1.1-0 & C:/R/R-3.5.1/library/fastmatch & C:/R/R-3.5.1/library/fastmatch & FALSE & FALSE & 2017-01-28 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  forcats & 0.3.0 & 0.3.0 & C:/R/R-3.5.1/library/forcats & C:/R/R-3.5.1/library/forcats & FALSE & FALSE & 2018-02-19 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  foreign & 0.8.71 & 0.8-71 & C:/R/R-3.5.1/library/foreign & C:/R/R-3.5.1/library/foreign & TRUE & FALSE & 2018-07-20 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  Formula & 1.2.3 & 1.2-3 & C:/R/R-3.5.1/library/Formula & C:/R/R-3.5.1/library/Formula & TRUE & FALSE & 2018-05-03 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  fs & 1.2.6 & 1.2.6 & C:/R/R-3.5.1/library/fs & C:/R/R-3.5.1/library/fs & FALSE & FALSE & 2018-08-23 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  ggplot2 & 3.1.0 & 3.1.0 & C:/R/R-3.5.1/library/ggplot2 & C:/R/R-3.5.1/library/ggplot2 & TRUE & FALSE & 2018-10-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  ggrepel & 0.8.0 & 0.8.0 & C:/R/R-3.5.1/library/ggrepel & C:/R/R-3.5.1/library/ggrepel & TRUE & FALSE & 2018-05-09 & CRAN (R 3.5.1) &  & C:/R/R-3.5.1/library \\ 
+  glue & 1.3.0 & 1.3.0 & C:/R/R-3.5.1/library/glue & C:/R/R-3.5.1/library/glue & FALSE & FALSE & 2018-07-17 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  grattan & 1.7.0.2 & 1.7.0.2 & C:/R/R-3.5.1/library/grattan & C:/R/R-3.5.1/library/grattan & TRUE & FALSE & 2019-01-09 & local &  & C:/R/R-3.5.1/library \\ 
+  grattanCharts & 0.10.0 & 0.10.0 & C:/R/R-3.5.1/library/grattanCharts & C:/R/R-3.5.1/library/grattanCharts & TRUE & FALSE & 2019-01-01 & local & TRUE & C:/R/R-3.5.1/library \\ 
+  gridExtra & 2.3 & 2.3 & C:/R/R-3.5.1/library/gridExtra & C:/R/R-3.5.1/library/gridExtra & TRUE & FALSE & 2017-09-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  gtable & 0.2.0 & 0.2.0 & C:/R/R-3.5.1/library/gtable & C:/R/R-3.5.1/library/gtable & FALSE & FALSE & 2016-02-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  haven & 2.0.0 & 2.0.0 & C:/R/R-3.5.1/library/haven & C:/R/R-3.5.1/library/haven & TRUE & FALSE & 2018-11-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  hildaData & 0.2.0 & 0.2.0 & C:/R/R-3.5.1/library/hildaData & C:/R/R-3.5.1/library/hildaData & TRUE & FALSE & 2018-07-20 & local & TRUE & C:/R/R-3.5.1/library \\ 
+  Hmisc & 4.1.1 & 4.1-1 & C:/R/R-3.5.1/library/Hmisc & C:/R/R-3.5.1/library/Hmisc & TRUE & FALSE & 2018-01-03 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  hms & 0.4.2 & 0.4.2 & C:/R/R-3.5.1/library/hms & C:/R/R-3.5.1/library/hms & FALSE & FALSE & 2018-03-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  htmlTable & 1.12 & 1.12 & C:/R/R-3.5.1/library/htmlTable & C:/R/R-3.5.1/library/htmlTable & FALSE & FALSE & 2018-05-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  htmltools & 0.3.6 & 0.3.6 & C:/R/R-3.5.1/library/htmltools & C:/R/R-3.5.1/library/htmltools & FALSE & FALSE & 2017-04-28 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  htmlwidgets & 1.3 & 1.3 & C:/R/R-3.5.1/library/htmlwidgets & C:/R/R-3.5.1/library/htmlwidgets & FALSE & FALSE & 2018-09-30 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  httr & 1.4.0 & 1.4.0 & C:/R/R-3.5.1/library/httr & C:/R/R-3.5.1/library/httr & TRUE & FALSE & 2018-12-11 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  hutils & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/hutils & C:/R/R-3.5.1/library/hutils & TRUE & FALSE & 2019-01-12 & local & TRUE & C:/R/R-3.5.1/library \\ 
+  hutilscpp & 0.0.2 & 0.0.2 & C:/R/R-3.5.1/library/hutilscpp & C:/R/R-3.5.1/library/hutilscpp & TRUE & FALSE & 2019-01-20 & local &  & C:/R/R-3.5.1/library \\ 
+  knitr & 1.21 & 1.21 & C:/R/R-3.5.1/library/knitr & C:/R/R-3.5.1/library/knitr & TRUE & FALSE & 2018-12-10 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  labeling & 0.3 & 0.3 & C:/R/R-3.5.1/library/labeling & C:/R/R-3.5.1/library/labeling & FALSE & FALSE & 2014-08-23 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  lattice & 0.20.38 & 0.20-38 & C:/R/R-3.5.1/library/lattice & C:/R/R-3.5.1/library/lattice & TRUE & FALSE & 2018-11-04 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  latticeExtra & 0.6.28 & 0.6-28 & C:/R/R-3.5.1/library/latticeExtra & C:/R/R-3.5.1/library/latticeExtra & FALSE & FALSE & 2016-02-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  lazyeval & 0.2.1 & 0.2.1 & C:/R/R-3.5.1/library/lazyeval & C:/R/R-3.5.1/library/lazyeval & FALSE & FALSE & 2017-10-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  magrittr & 1.5 & 1.5 & C:/R/R-3.5.1/library/magrittr & C:/R/R-3.5.1/library/magrittr & TRUE & FALSE & 2014-11-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  Matrix & 1.2.15 & 1.2-15 & C:/R/R-3.5.1/library/Matrix & C:/R/R-3.5.1/library/Matrix & TRUE & FALSE & 2018-11-01 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  memoise & 1.1.0 & 1.1.0 & C:/R/R-3.5.1/library/memoise & C:/R/R-3.5.1/library/memoise & FALSE & FALSE & 2017-04-21 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  munsell & 0.5.0 & 0.5.0 & C:/R/R-3.5.1/library/munsell & C:/R/R-3.5.1/library/munsell & FALSE & FALSE & 2018-06-12 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  nnet & 7.3.12 & 7.3-12 & C:/R/R-3.5.1/library/nnet & C:/R/R-3.5.1/library/nnet & FALSE & FALSE & 2016-02-02 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  openxlsx & 4.1.0 & 4.1.0 & C:/R/R-3.5.1/library/openxlsx & C:/R/R-3.5.1/library/openxlsx & TRUE & FALSE & 2018-05-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  pillar & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/pillar & C:/R/R-3.5.1/library/pillar & FALSE & FALSE & 2018-12-15 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  pkgbuild & 1.0.2 & 1.0.2 & C:/R/R-3.5.1/library/pkgbuild & C:/R/R-3.5.1/library/pkgbuild & FALSE & FALSE & 2018-10-16 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  pkgconfig & 2.0.2 & 2.0.2 & C:/R/R-3.5.1/library/pkgconfig & C:/R/R-3.5.1/library/pkgconfig & FALSE & FALSE & 2018-08-16 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  pkgload & 1.0.2 & 1.0.2 & C:/R/R-3.5.1/library/pkgload & C:/R/R-3.5.1/library/pkgload & FALSE & FALSE & 2018-10-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  plyr & 1.8.4 & 1.8.4 & C:/R/R-3.5.1/library/plyr & C:/R/R-3.5.1/library/plyr & FALSE & FALSE & 2016-06-08 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  prettyunits & 1.0.2 & 1.0.2 & C:/R/R-3.5.1/library/prettyunits & C:/R/R-3.5.1/library/prettyunits & FALSE & FALSE & 2015-07-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  processx & 3.2.1 & 3.2.1 & C:/R/R-3.5.1/library/processx & C:/R/R-3.5.1/library/processx & FALSE & FALSE & 2018-12-05 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  ps & 1.3.0 & 1.3.0 & C:/R/R-3.5.1/library/ps & C:/R/R-3.5.1/library/ps & FALSE & FALSE & 2018-12-21 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  purrr & 0.2.5 & 0.2.5 & C:/R/R-3.5.1/library/purrr & C:/R/R-3.5.1/library/purrr & FALSE & FALSE & 2018-05-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  quadprog & 1.5.5 & 1.5-5 & C:/R/R-3.5.1/library/quadprog & C:/R/R-3.5.1/library/quadprog & FALSE & FALSE & 2013-04-17 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  R6 & 2.3.0 & 2.3.0 & C:/R/R-3.5.1/library/R6 & C:/R/R-3.5.1/library/R6 & FALSE & FALSE & 2018-10-04 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  RColorBrewer & 1.1.2 & 1.1-2 & C:/R/R-3.5.1/library/RColorBrewer & C:/R/R-3.5.1/library/RColorBrewer & FALSE & FALSE & 2014-12-07 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
+  Rcpp & 1.0.0 & 1.0.0 & C:/R/R-3.5.1/library/Rcpp & C:/R/R-3.5.1/library/Rcpp & FALSE & FALSE & 2018-11-07 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  RCurl & 1.95.4.11 & 1.95-4.11 & C:/R/R-3.5.1/library/RCurl & C:/R/R-3.5.1/library/RCurl & FALSE & FALSE & 2018-07-15 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  readr & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/readr & C:/R/R-3.5.1/library/readr & TRUE & FALSE & 2018-12-21 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  readxl & 1.2.0 & 1.2.0 & C:/R/R-3.5.1/library/readxl & C:/R/R-3.5.1/library/readxl & TRUE & FALSE & 2018-12-19 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  remotes & 2.0.2 & 2.0.2 & C:/R/R-3.5.1/library/remotes & C:/R/R-3.5.1/library/remotes & FALSE & FALSE & 2018-10-30 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  rlang & 0.3.0.1 & 0.3.0.1 & C:/R/R-3.5.1/library/rlang & C:/R/R-3.5.1/library/rlang & FALSE & FALSE & 2018-10-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  rpart & 4.1.13 & 4.1-13 & C:/R/R-3.5.1/library/rpart & C:/R/R-3.5.1/library/rpart & FALSE & FALSE & 2018-02-23 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  rprojroot & 1.3.2 & 1.3-2 & C:/R/R-3.5.1/library/rprojroot & C:/R/R-3.5.1/library/rprojroot & FALSE & FALSE & 2018-01-03 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  rsdmx & 0.5.13 & 0.5-13 & C:/R/R-3.5.1/library/rsdmx & C:/R/R-3.5.1/library/rsdmx & TRUE & FALSE & 2018-09-21 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  rstudioapi & 0.8 & 0.8 & C:/R/R-3.5.1/library/rstudioapi & C:/R/R-3.5.1/library/rstudioapi & FALSE & FALSE & 2018-10-02 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  scales & 1.0.0 & 1.0.0 & C:/R/R-3.5.1/library/scales & C:/R/R-3.5.1/library/scales & TRUE & FALSE & 2018-08-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  sessioninfo & 1.1.1 & 1.1.1 & C:/R/R-3.5.1/library/sessioninfo & C:/R/R-3.5.1/library/sessioninfo & FALSE & FALSE & 2018-11-05 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  stringi & 1.2.4 & 1.2.4 & C:/R/R-3.5.1/library/stringi & C:/R/R-3.5.1/library/stringi & FALSE & FALSE & 2018-07-20 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  stringr & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/stringr & C:/R/R-3.5.1/library/stringr & FALSE & FALSE & 2018-05-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  survey & 3.35 & 3.35 & C:/R/R-3.5.1/library/survey & C:/R/R-3.5.1/library/survey & TRUE & FALSE & 2018-12-17 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
+  survival & 2.43.3 & 2.43-3 & C:/R/R-3.5.1/library/survival & C:/R/R-3.5.1/library/survival & TRUE & FALSE & 2018-11-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  sysfonts & 0.8 & 0.8 & C:/R/R-3.5.1/library/sysfonts & C:/R/R-3.5.1/library/sysfonts & FALSE & FALSE & 2018-10-11 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  taxstats & 0.1.0.1415 & 0.1.0.1415 & C:/R/R-3.5.1/library/taxstats & C:/R/R-3.5.1/library/taxstats & TRUE & FALSE & 2018-12-02 & local & TRUE & C:/R/R-3.5.1/library \\ 
+  testthat & 2.0.1 & 2.0.1 & C:/R/R-3.5.1/library/testthat & C:/R/R-3.5.1/library/testthat & TRUE & FALSE & 2018-10-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  tibble & 1.4.2 & 1.4.2 & C:/R/R-3.5.1/library/tibble & C:/R/R-3.5.1/library/tibble & FALSE & FALSE & 2018-01-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  tidyr & 0.8.2 & 0.8.2 & C:/R/R-3.5.1/library/tidyr & C:/R/R-3.5.1/library/tidyr & TRUE & FALSE & 2018-10-28 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  tidyselect & 0.2.5 & 0.2.5 & C:/R/R-3.5.1/library/tidyselect & C:/R/R-3.5.1/library/tidyselect & FALSE & FALSE & 2018-10-11 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  usethis & 1.4.0 & 1.4.0 & C:/R/R-3.5.1/library/usethis & C:/R/R-3.5.1/library/usethis & TRUE & FALSE & 2018-08-14 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  withr & 2.1.2 & 2.1.2 & C:/R/R-3.5.1/library/withr & C:/R/R-3.5.1/library/withr & FALSE & FALSE & 2018-03-15 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  xfun & 0.4 & 0.4 & C:/R/R-3.5.1/library/xfun & C:/R/R-3.5.1/library/xfun & FALSE & FALSE & 2018-10-23 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  XML & 3.98.1.16 & 3.98-1.16 & C:/R/R-3.5.1/library/XML & C:/R/R-3.5.1/library/XML & FALSE & FALSE & 2018-08-19 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  xtable & 1.8.3 & 1.8-3 & C:/R/R-3.5.1/library/xtable & C:/R/R-3.5.1/library/xtable & TRUE & FALSE & 2018-08-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  zip & 1.0.0 & 1.0.0 & C:/R/R-3.5.1/library/zip & C:/R/R-3.5.1/library/zip & FALSE & FALSE & 2017-04-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+  zoo & 1.8.4 & 1.8-4 & C:/R/R-3.5.1/library/zoo & C:/R/R-3.5.1/library/zoo & TRUE & FALSE & 2018-09-19 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
    \bottomrule
 \end{longtable}
 

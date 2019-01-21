@@ -1,15 +1,23 @@
 % !TeX program = pdflatex
 \documentclass{grattan}
-\usepackage{ragged2e}
 
+\usepackage{ocgx}
 
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
+
+\GrattanReportNumber{2016-99}
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
 
 \input{CGT-NG-sections/preamble}
+
+
+% \usepackage{marginnote}
+
+\begin{document}
+
 <<MODELLING-PARAMETERS, echo=FALSE>>=
 new.discount <- 0.25  # proposed CGT
 TARGET.FY <- "2015-16"
@@ -24,8 +32,6 @@ reload_all_data <- FALSE
 cache_most <- TRUE #&& !reload_all_data
 @
 
-\usepackage{ocgx,marginnote}
-\begin{document}
 %\clearpage
 %\chapter{Distribution of negative gearing}
 <<knitrOpts, echo=FALSE, results='hide'>>=
@@ -4478,43 +4484,23 @@ xwaveid_with_NG_then_profit <-
     keyby = "xwaveid"] %>%
   .[(rw)]
 
-
-
-hilda_all_waves_rp %>%
-  select(xwaveid, 
-         wave, 
-         Year, 
-         oifrntp, 
-         lnwtrp) %>%
-  rename(FY_rental_property_profit_or_loss = oifrntp) %>%
-  mutate(Profit_loss = if_else(grepl("Loss", FY_rental_property_profit_or_loss, fixed = TRUE), 
-                              "Loss", 
-                              if_else(grepl("Profit", FY_rental_property_profit_or_loss, fixed = TRUE),
-                                     "Profit", 
-                                     if_else(grepl("Break.even", FY_rental_property_profit_or_loss), 
-                                            "Break even", 
-                                            NA_character_)))) %>%
-  group_by(xwaveid) %>%
-  filter(any(grepl("Loss", FY_rental_property_profit_or_loss, fixed = TRUE))) %>% invisible
-
 hilda_rp_who_negatively_gearing <-
   xwaveid_with_NG_then_profit %>%
-  mutate(
+  .[, 
     # Returns NA by design
-    loss_event = Profit_loss %in% c("Profit", "Break even") & lag(Profit_loss) == "Loss",
-    fill_down = na.locf(Profit_loss, na.rm = FALSE), 
-    fill_up   = na.locf(Profit_loss, na.rm = FALSE, fromLast = TRUE), 
-    left_censored = if_else(isTRUE(Year == min(Year)), 
-                           TRUE, 
-                           if_else(!is.na(first(fill_up, order_by = Year)), 
-                                  first(fill_up, order_by = Year) == "Loss", 
-                                  FALSE)
-                                  ), 
-    right_censored = if_else(isTRUE(Year == max(Year)), 
-                            TRUE, 
-                            if_else(!is.na(last(fill_down, order_by = Year)), 
-                                   last(fill_down, order_by = Year) == "Loss",
-                                   is.na(last(fill_down, order_by = Year)))) 
+    loss_event := Profit_loss %in% c("Profit", "Break even") & shift(Profit_loss, type = "lead") == "Loss"] %>%
+  .[, fill_down := na.locf(Profit_loss, na.rm = FALSE)] %>%
+  .[, fill_up   := na.locf(Profit_loss, na.rm = FALSE, fromLast = TRUE)] %>%
+  .[, left_censored := if_else(Year == min(Year), 
+                               TRUE, 
+                               coalesce(first(fill_up, order_by = Year) == "Loss",
+                                        FALSE))] %>%
+  .[, right_censored := if_else(Year == max(Year), 
+                                TRUE, 
+                                if_else(!is.na(last(fill_down, order_by = Year)), 
+                                        last(fill_down, order_by = Year) == "Loss",
+                                        is.na(last(fill_down, order_by = Year))))] %>% 
+  .[]
     #0 = right censored
     #1 = event at time
     #2 = left censored
@@ -4525,21 +4511,16 @@ hilda_rp_who_negatively_gearing <-
     #                                    1, 
     #                                    
     # )
-
-  ) %>%
-  ungroup 
   # Survival analysis
 
 # Check this!
 weights_by_waveid <- 
   hilda_rp_who_negatively_gearing %>% 
-  select(xwaveid, Year, lnwtrp) %>% 
-  group_by(xwaveid) %>% 
-  summarise(lon_weight = last(lnwtrp, order_by = Year)) %>%
-  # Also, is this right?
-  filter(!is.na(lon_weight)) %>%
-  setkey(xwaveid)
-
+  selector(xwaveid, Year, WEIGHT) %>% 
+  .[!is.na(WEIGHT)] %>%
+  setkey(xwaveid, Year) %>%
+  .[, .(lon_weight = last(WEIGHT)), keyby = .(xwaveid)] %>%
+  .[]
   
 @
 
@@ -4676,70 +4657,64 @@ ggsurv <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
 #  optimistic: Loss NA NA Profit ==> Loss    Loss   Loss   Profit
 # pessimistic: Loss NA NA Proift ==> Loss    Profit Profit Profit
 
-cumsum_reset <- function(x){
+cumsum_reset <- function(x) {
   x * ave(x, c(0, cumsum(diff(x) != 0)), FUN = seq_along)
 }
 
-truth_durations <- function(cond){
+truth_durations <- function(cond) {
   # c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE)
   # ==> c(2, 1, 2)
   y <- cumsum_reset(cond)
   y[lead(y, default = 0) == 0 & y != 0]
 }
 
-mean_duration <- function(x){
+mean_duration <- function(x) {
   mean(truth_durations(x)) 
 }
 
 hilda_rp_who_negatively_gearing %>%
-  group_by(xwaveid) %>%
-  mutate(
-    is_interval = is.na(Profit_loss) & !is.na(fill_up) & !is.na(fill_down),
-    is_clear    = (is_interval & fill_up == fill_down) | !is_interval,
-    optimistic  = if_else(!is_interval, 
-                         Profit_loss,
-                         if_else(is_clear,
-                                # i.e. Loss NA Loss ==> Loss Loss Loss
-                                fill_up, 
-                                "Loss")), 
-    pessimistic = if_else(!is_interval, 
-                         Profit_loss,
-                         if_else(is_clear,
-                                # i.e. Loss NA Loss ==> Loss Loss Loss
-                                fill_up, 
-                                "Profit")), 
-    gaps_filled = sum(!is_clear),
-    CONDO = optimistic == "Loss" & !is.na(optimistic),
-    CONDP = pessimistic == "Loss" & !is.na(pessimistic),
-    
-    years_with_losses_optimistic = cumsum_reset(optimistic == "Loss" & !is.na(optimistic)), 
-    years_with_losses_pessimistic = cumsum_reset(pessimistic == "Loss" & !is.na(pessimistic)), 
-    years_total = cumsum(!is.na(optimistic))
-    
-    ) %>% 
-  # mutate(entered_property_market = min(Year[which(Profit_loss == "Loss")])) %>%
-  ungroup %>%
-  group_by(xwaveid) %>%
-  summarise(
+  .[, is_interval := is.na(Profit_loss) & !is.na(fill_up) & !is.na(fill_down), keyby = "xwaveid"] %>%
+  .[, is_clear    := (is_interval & fill_up == fill_down) | !is_interval] %>%
+  .[, optimistic  := if_else(!is_interval, 
+                             Profit_loss,
+                             if_else(is_clear,
+                                     # i.e. Loss NA Loss ==> Loss Loss Loss
+                                     fill_up, 
+                                     "Loss"))] %>%
+  .[, pessimistic := if_else(!is_interval, 
+                             Profit_loss,
+                             if_else(is_clear,
+                                     # i.e. Loss NA Loss ==> Loss Loss Loss
+                                     fill_up, 
+                                     "Profit"))] %>%
+  .[, gaps_filled := sum(!is_clear), keyby = "xwaveid"] %>%
+  .[, CONDO := optimistic == "Loss" & !is.na(optimistic)] %>%
+  .[, CONDP := pessimistic == "Loss" & !is.na(pessimistic)] %>%
+  
+  .[, years_with_losses_optimistic := cumsum_reset(optimistic == "Loss" & !is.na(optimistic)), keyby = "xwaveid"] %>%
+  .[, years_with_losses_pessimistic := cumsum_reset(pessimistic == "Loss" & !is.na(pessimistic)), keyby = "xwaveid"] %>%
+  .[, years_total := cumsum(!is.na(optimistic)), keyby = "xwaveid"] %>%
+# mutate(entered_property_market = min(Year[which(Profit_loss == "Loss")])) %>%
+
+  .[, .(
     # might be two spells could do min(optimistic) max(pessimistic) as well!
     optimistic1 = max(years_with_losses_optimistic) / max(years_total), 
     pessimistic1 = max(years_with_losses_pessimistic) / max(years_total),
     
-     optimistic_avg_spell = mean_duration(CONDO),
+    optimistic_avg_spell = mean_duration(CONDO),
     pessimistic_avg_spell = mean_duration(CONDP),
     
     years_at_risk = max(years_total), 
     
-    censor_status = if_else(any(right_censored), 1, 2)
-    )  %T>% 
+    censor_status = if_else(any(right_censored), 1, 2)),
+    keyby = "xwaveid"] %>%
+  .[]  %T>% 
   {
     hilda_surv_data <<- .
   } %>%
-  group_by(xwaveid) %>%
-  summarise(hazard_rate_optimistic = optimistic_avg_spell / years_at_risk, 
-            hazard_rate_pessimistic = pessimistic_avg_spell / years_at_risk
-            ) %>% .[] %>%
-  setkey(xwaveid) %>%
+  .[, .(hazard_rate_optimistic = optimistic_avg_spell / years_at_risk, 
+        hazard_rate_pessimistic = pessimistic_avg_spell / years_at_risk),
+    keyby = "xwaveid"] %>%
   merge(weights_by_waveid) %$%
   weighted.mean(hazard_rate_pessimistic, lon_weight)
   

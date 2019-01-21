@@ -1,7 +1,7 @@
-Cost of policy ($bn) by policy option with CGT discount set at 25% 2015-16
+Cost of policy ($bn) by policy option with CGT discount set at 25.0% 2015-16
 ====================================
-5695531901.0 Quarantine NG losses and reduce CGT discount (Year 0)
-5076125997.4 Quarantine NG losses and reduce CGT discount
-3652537959.8 Reduce CGT discount
-4637148689.3 Henry proposal
-5655764601.8 Quarantine NG losses and reduce CGT discount (alternate)
+7279143717.2 Quarantine NG losses and reduce CGT discount (Year 0)
+6561828856.3 Quarantine NG losses and reduce CGT discount
+5360494291.3 Reduce CGT discount
+6572828594.0 Henry proposal
+6839224700.0 Quarantine NG losses and reduce CGT discount (alternate)
