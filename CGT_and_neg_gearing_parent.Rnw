@@ -346,7 +346,19 @@ hilda_used <- TRUE
 @
 
 <<Import-SIH>>=
-sih201314 <- read_dta("~/Data/ABS/IncomeHouse2013-14_Stata/Stata files/sih13bh.dta")
+if (file.exists(sih13bh.dta <- "~/Data/ABS/IncomeHouse2013-14_Stata/Stata files/sih13bh.dta")) {
+  provide.dir("ABS")
+  sih201314 <- 
+    read_dta(sih13bh.dta) %>%
+    as.data.table %>% 
+    selector(cols = c("NUMRPRCF", "SIHHHWT")) %>%
+    .[, SIHHHWT := round(SIHHHWT, 2)] %>%
+    .[]
+  
+  fwrite(sih201314, "ABS/sih201314.tsv", sep = "\t")
+} else {
+  sih201314 <- fread("ABS/sih201314.tsv", sep = "\t")
+}
 @
 
 <<Import-misc-ATO>>=
