@@ -33,7 +33,7 @@ options(warn = 2)
 
 # HILDA takes 7 minutes to load and tidy
 reload_all_data <- FALSE
-cache_most <- TRUE #&& !reload_all_data
+cache_most <- FALSE #&& !reload_all_data
 @
 
 %\clearpage
@@ -4417,7 +4417,7 @@ An alternative is to limit deductions. This could apply to all deductions includ
 An alternative proposal would limit the number of properties on which investors are able to claim losses.  This is an unattractive option. It would raise little, is poorly targeted, and would increase the distortions in the housing market.
 
 <<prop_landlords_n_properties>>=
-prop_landlords_geq_n_properties <- function(n){
+prop_landlords_geq_n_properties <- function(n) {
   # Access to HILDA restricts function readability
   if (exists("hilda_w14_hh")){
     hilda_w14_hh %>%
