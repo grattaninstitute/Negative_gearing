@@ -56,12 +56,16 @@
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
 
-\GrattanReportNumber{2016-99}
+\YEAR{2015}
+\MONTH{August}
+\GrattanReportNumber{2015-5}
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
 
 \input{CGT-NG-sections/preamble}
+\acknowledgements{\input{tex/Acknowledgements.tex}}
+
 
 
 % \usepackage{marginnote}
@@ -1408,120 +1412,134 @@ The \verb=devtools::session_info()= is printed below.
 
 
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Mon Jan 21 16:44:02 2019
-\begin{longtable}{lllllllllll}
+% Mon Jan 21 19:49:12 2019
+\begin{longtable}{lllll}
 \caption{Packages} \\ 
   \toprule
-package & ondiskversion & loadedversion & path & loadedpath & attached & is\_base & date & source & md5ok & library \\ 
+package & date & source & md5ok & att \\ 
   \hline 
 \endhead 
 \hline 
 &\multicolumn{2}{l}{\footnotesize ${}^*$ attached} & \multicolumn{2}{r}{\footnotesize Continued on next page} 
 \endfoot 
 \endlastfoot 
-acepack & 1.4.1 & 1.4.1 & C:/R/R-3.5.1/library/acepack & C:/R/R-3.5.1/library/acepack & FALSE & FALSE & 2016-10-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  assertthat & 0.2.0 & 0.2.0 & C:/R/R-3.5.1/library/assertthat & C:/R/R-3.5.1/library/assertthat & FALSE & FALSE & 2017-04-11 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  backports & 1.1.3 & 1.1.3 & C:/R/R-3.5.1/library/backports & C:/R/R-3.5.1/library/backports & FALSE & FALSE & 2018-12-14 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  base64enc & 0.1.3 & 0.1-3 & C:/R/R-3.5.1/library/base64enc & C:/R/R-3.5.1/library/base64enc & FALSE & FALSE & 2015-07-28 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  bindr & 0.1.1 & 0.1.1 & C:/R/R-3.5.1/library/bindr & C:/R/R-3.5.1/library/bindr & FALSE & FALSE & 2018-03-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  bindrcpp & 0.2.2 & 0.2.2 & C:/R/R-3.5.1/library/bindrcpp & C:/R/R-3.5.1/library/bindrcpp & TRUE & FALSE & 2018-03-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  bitops & 1.0.6 & 1.0-6 & C:/R/R-3.5.1/library/bitops & C:/R/R-3.5.1/library/bitops & FALSE & FALSE & 2013-08-17 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  callr & 3.1.1 & 3.1.1 & C:/R/R-3.5.1/library/callr & C:/R/R-3.5.1/library/callr & FALSE & FALSE & 2018-12-21 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  cellranger & 1.1.0 & 1.1.0 & C:/R/R-3.5.1/library/cellranger & C:/R/R-3.5.1/library/cellranger & FALSE & FALSE & 2016-07-27 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  checkmate & 1.8.5 & 1.8.5 & C:/R/R-3.5.1/library/checkmate & C:/R/R-3.5.1/library/checkmate & FALSE & FALSE & 2017-10-24 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  cli & 1.0.1 & 1.0.1 & C:/R/R-3.5.1/library/cli & C:/R/R-3.5.1/library/cli & FALSE & FALSE & 2018-09-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  cluster & 2.0.7.1 & 2.0.7-1 & C:/R/R-3.5.1/library/cluster & C:/R/R-3.5.1/library/cluster & FALSE & FALSE & 2018-04-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  codetools & 0.2.16 & 0.2-16 & C:/R/R-3.5.1/library/codetools & C:/R/R-3.5.1/library/codetools & FALSE & FALSE & 2018-12-24 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  colorspace & 1.3.2 & 1.3-2 & C:/R/R-3.5.1/library/colorspace & C:/R/R-3.5.1/library/colorspace & FALSE & FALSE & 2016-12-14 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  crayon & 1.3.4 & 1.3.4 & C:/R/R-3.5.1/library/crayon & C:/R/R-3.5.1/library/crayon & FALSE & FALSE & 2017-09-16 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  data.table & 1.11.8 & 1.11.8 & C:/R/R-3.5.1/library/data.table & C:/R/R-3.5.1/library/data.table & TRUE & FALSE & 2018-09-30 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  desc & 1.2.0 & 1.2.0 & C:/R/R-3.5.1/library/desc & C:/R/R-3.5.1/library/desc & FALSE & FALSE & 2018-05-01 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  devEMF & 3.6.1 & 3.6-1 & C:/R/R-3.5.1/library/devEMF & C:/R/R-3.5.1/library/devEMF & TRUE & FALSE & 2018-05-22 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  devtools & 2.0.1 & 2.0.1 & C:/R/R-3.5.1/library/devtools & C:/R/R-3.5.1/library/devtools & TRUE & FALSE & 2018-10-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  digest & 0.6.18 & 0.6.18 & C:/R/R-3.5.1/library/digest & C:/R/R-3.5.1/library/digest & FALSE & FALSE & 2018-10-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  directlabels & 2018.5.22 & 2018.05.22 & C:/R/R-3.5.1/library/directlabels & C:/R/R-3.5.1/library/directlabels & TRUE & FALSE & 2018-05-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  dplyr & 0.7.8 & 0.7.8 & C:/R/R-3.5.1/library/dplyr & C:/R/R-3.5.1/library/dplyr & TRUE & FALSE & 2018-11-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  evaluate & 0.12 & 0.12 & C:/R/R-3.5.1/library/evaluate & C:/R/R-3.5.1/library/evaluate & FALSE & FALSE & 2018-10-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  expm & 0.999.3 & 0.999-3 & C:/R/R-3.5.1/library/expm & C:/R/R-3.5.1/library/expm & TRUE & FALSE & 2018-09-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  fastmatch & 1.1.0 & 1.1-0 & C:/R/R-3.5.1/library/fastmatch & C:/R/R-3.5.1/library/fastmatch & FALSE & FALSE & 2017-01-28 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  forcats & 0.3.0 & 0.3.0 & C:/R/R-3.5.1/library/forcats & C:/R/R-3.5.1/library/forcats & FALSE & FALSE & 2018-02-19 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  foreign & 0.8.71 & 0.8-71 & C:/R/R-3.5.1/library/foreign & C:/R/R-3.5.1/library/foreign & TRUE & FALSE & 2018-07-20 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  Formula & 1.2.3 & 1.2-3 & C:/R/R-3.5.1/library/Formula & C:/R/R-3.5.1/library/Formula & TRUE & FALSE & 2018-05-03 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  fs & 1.2.6 & 1.2.6 & C:/R/R-3.5.1/library/fs & C:/R/R-3.5.1/library/fs & FALSE & FALSE & 2018-08-23 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  ggplot2 & 3.1.0 & 3.1.0 & C:/R/R-3.5.1/library/ggplot2 & C:/R/R-3.5.1/library/ggplot2 & TRUE & FALSE & 2018-10-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  ggrepel & 0.8.0 & 0.8.0 & C:/R/R-3.5.1/library/ggrepel & C:/R/R-3.5.1/library/ggrepel & TRUE & FALSE & 2018-05-09 & CRAN (R 3.5.1) &  & C:/R/R-3.5.1/library \\ 
-  glue & 1.3.0 & 1.3.0 & C:/R/R-3.5.1/library/glue & C:/R/R-3.5.1/library/glue & FALSE & FALSE & 2018-07-17 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  grattan & 1.7.0.2 & 1.7.0.2 & C:/R/R-3.5.1/library/grattan & C:/R/R-3.5.1/library/grattan & TRUE & FALSE & 2019-01-09 & local &  & C:/R/R-3.5.1/library \\ 
-  grattanCharts & 0.10.0 & 0.10.0 & C:/R/R-3.5.1/library/grattanCharts & C:/R/R-3.5.1/library/grattanCharts & TRUE & FALSE & 2019-01-01 & local & TRUE & C:/R/R-3.5.1/library \\ 
-  gridExtra & 2.3 & 2.3 & C:/R/R-3.5.1/library/gridExtra & C:/R/R-3.5.1/library/gridExtra & TRUE & FALSE & 2017-09-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  gtable & 0.2.0 & 0.2.0 & C:/R/R-3.5.1/library/gtable & C:/R/R-3.5.1/library/gtable & FALSE & FALSE & 2016-02-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  haven & 2.0.0 & 2.0.0 & C:/R/R-3.5.1/library/haven & C:/R/R-3.5.1/library/haven & TRUE & FALSE & 2018-11-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  hildaData & 0.2.0 & 0.2.0 & C:/R/R-3.5.1/library/hildaData & C:/R/R-3.5.1/library/hildaData & TRUE & FALSE & 2018-07-20 & local & TRUE & C:/R/R-3.5.1/library \\ 
-  Hmisc & 4.1.1 & 4.1-1 & C:/R/R-3.5.1/library/Hmisc & C:/R/R-3.5.1/library/Hmisc & TRUE & FALSE & 2018-01-03 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  hms & 0.4.2 & 0.4.2 & C:/R/R-3.5.1/library/hms & C:/R/R-3.5.1/library/hms & FALSE & FALSE & 2018-03-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  htmlTable & 1.12 & 1.12 & C:/R/R-3.5.1/library/htmlTable & C:/R/R-3.5.1/library/htmlTable & FALSE & FALSE & 2018-05-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  htmltools & 0.3.6 & 0.3.6 & C:/R/R-3.5.1/library/htmltools & C:/R/R-3.5.1/library/htmltools & FALSE & FALSE & 2017-04-28 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  htmlwidgets & 1.3 & 1.3 & C:/R/R-3.5.1/library/htmlwidgets & C:/R/R-3.5.1/library/htmlwidgets & FALSE & FALSE & 2018-09-30 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  httr & 1.4.0 & 1.4.0 & C:/R/R-3.5.1/library/httr & C:/R/R-3.5.1/library/httr & TRUE & FALSE & 2018-12-11 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  hutils & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/hutils & C:/R/R-3.5.1/library/hutils & TRUE & FALSE & 2019-01-12 & local & TRUE & C:/R/R-3.5.1/library \\ 
-  hutilscpp & 0.0.2 & 0.0.2 & C:/R/R-3.5.1/library/hutilscpp & C:/R/R-3.5.1/library/hutilscpp & TRUE & FALSE & 2019-01-20 & local &  & C:/R/R-3.5.1/library \\ 
-  knitr & 1.21 & 1.21 & C:/R/R-3.5.1/library/knitr & C:/R/R-3.5.1/library/knitr & TRUE & FALSE & 2018-12-10 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  labeling & 0.3 & 0.3 & C:/R/R-3.5.1/library/labeling & C:/R/R-3.5.1/library/labeling & FALSE & FALSE & 2014-08-23 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  lattice & 0.20.38 & 0.20-38 & C:/R/R-3.5.1/library/lattice & C:/R/R-3.5.1/library/lattice & TRUE & FALSE & 2018-11-04 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  latticeExtra & 0.6.28 & 0.6-28 & C:/R/R-3.5.1/library/latticeExtra & C:/R/R-3.5.1/library/latticeExtra & FALSE & FALSE & 2016-02-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  lazyeval & 0.2.1 & 0.2.1 & C:/R/R-3.5.1/library/lazyeval & C:/R/R-3.5.1/library/lazyeval & FALSE & FALSE & 2017-10-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  magrittr & 1.5 & 1.5 & C:/R/R-3.5.1/library/magrittr & C:/R/R-3.5.1/library/magrittr & TRUE & FALSE & 2014-11-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  Matrix & 1.2.15 & 1.2-15 & C:/R/R-3.5.1/library/Matrix & C:/R/R-3.5.1/library/Matrix & TRUE & FALSE & 2018-11-01 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  memoise & 1.1.0 & 1.1.0 & C:/R/R-3.5.1/library/memoise & C:/R/R-3.5.1/library/memoise & FALSE & FALSE & 2017-04-21 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  munsell & 0.5.0 & 0.5.0 & C:/R/R-3.5.1/library/munsell & C:/R/R-3.5.1/library/munsell & FALSE & FALSE & 2018-06-12 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  nnet & 7.3.12 & 7.3-12 & C:/R/R-3.5.1/library/nnet & C:/R/R-3.5.1/library/nnet & FALSE & FALSE & 2016-02-02 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  openxlsx & 4.1.0 & 4.1.0 & C:/R/R-3.5.1/library/openxlsx & C:/R/R-3.5.1/library/openxlsx & TRUE & FALSE & 2018-05-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  pillar & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/pillar & C:/R/R-3.5.1/library/pillar & FALSE & FALSE & 2018-12-15 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  pkgbuild & 1.0.2 & 1.0.2 & C:/R/R-3.5.1/library/pkgbuild & C:/R/R-3.5.1/library/pkgbuild & FALSE & FALSE & 2018-10-16 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  pkgconfig & 2.0.2 & 2.0.2 & C:/R/R-3.5.1/library/pkgconfig & C:/R/R-3.5.1/library/pkgconfig & FALSE & FALSE & 2018-08-16 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  pkgload & 1.0.2 & 1.0.2 & C:/R/R-3.5.1/library/pkgload & C:/R/R-3.5.1/library/pkgload & FALSE & FALSE & 2018-10-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  plyr & 1.8.4 & 1.8.4 & C:/R/R-3.5.1/library/plyr & C:/R/R-3.5.1/library/plyr & FALSE & FALSE & 2016-06-08 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  prettyunits & 1.0.2 & 1.0.2 & C:/R/R-3.5.1/library/prettyunits & C:/R/R-3.5.1/library/prettyunits & FALSE & FALSE & 2015-07-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  processx & 3.2.1 & 3.2.1 & C:/R/R-3.5.1/library/processx & C:/R/R-3.5.1/library/processx & FALSE & FALSE & 2018-12-05 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  ps & 1.3.0 & 1.3.0 & C:/R/R-3.5.1/library/ps & C:/R/R-3.5.1/library/ps & FALSE & FALSE & 2018-12-21 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  purrr & 0.2.5 & 0.2.5 & C:/R/R-3.5.1/library/purrr & C:/R/R-3.5.1/library/purrr & FALSE & FALSE & 2018-05-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  quadprog & 1.5.5 & 1.5-5 & C:/R/R-3.5.1/library/quadprog & C:/R/R-3.5.1/library/quadprog & FALSE & FALSE & 2013-04-17 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  R6 & 2.3.0 & 2.3.0 & C:/R/R-3.5.1/library/R6 & C:/R/R-3.5.1/library/R6 & FALSE & FALSE & 2018-10-04 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  RColorBrewer & 1.1.2 & 1.1-2 & C:/R/R-3.5.1/library/RColorBrewer & C:/R/R-3.5.1/library/RColorBrewer & FALSE & FALSE & 2014-12-07 & CRAN (R 3.5.0) & TRUE & C:/R/R-3.5.1/library \\ 
-  Rcpp & 1.0.0 & 1.0.0 & C:/R/R-3.5.1/library/Rcpp & C:/R/R-3.5.1/library/Rcpp & FALSE & FALSE & 2018-11-07 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  RCurl & 1.95.4.11 & 1.95-4.11 & C:/R/R-3.5.1/library/RCurl & C:/R/R-3.5.1/library/RCurl & FALSE & FALSE & 2018-07-15 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  readr & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/readr & C:/R/R-3.5.1/library/readr & TRUE & FALSE & 2018-12-21 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  readxl & 1.2.0 & 1.2.0 & C:/R/R-3.5.1/library/readxl & C:/R/R-3.5.1/library/readxl & TRUE & FALSE & 2018-12-19 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  remotes & 2.0.2 & 2.0.2 & C:/R/R-3.5.1/library/remotes & C:/R/R-3.5.1/library/remotes & FALSE & FALSE & 2018-10-30 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  rlang & 0.3.0.1 & 0.3.0.1 & C:/R/R-3.5.1/library/rlang & C:/R/R-3.5.1/library/rlang & FALSE & FALSE & 2018-10-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  rpart & 4.1.13 & 4.1-13 & C:/R/R-3.5.1/library/rpart & C:/R/R-3.5.1/library/rpart & FALSE & FALSE & 2018-02-23 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  rprojroot & 1.3.2 & 1.3-2 & C:/R/R-3.5.1/library/rprojroot & C:/R/R-3.5.1/library/rprojroot & FALSE & FALSE & 2018-01-03 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  rsdmx & 0.5.13 & 0.5-13 & C:/R/R-3.5.1/library/rsdmx & C:/R/R-3.5.1/library/rsdmx & TRUE & FALSE & 2018-09-21 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  rstudioapi & 0.8 & 0.8 & C:/R/R-3.5.1/library/rstudioapi & C:/R/R-3.5.1/library/rstudioapi & FALSE & FALSE & 2018-10-02 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  scales & 1.0.0 & 1.0.0 & C:/R/R-3.5.1/library/scales & C:/R/R-3.5.1/library/scales & TRUE & FALSE & 2018-08-09 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  sessioninfo & 1.1.1 & 1.1.1 & C:/R/R-3.5.1/library/sessioninfo & C:/R/R-3.5.1/library/sessioninfo & FALSE & FALSE & 2018-11-05 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  stringi & 1.2.4 & 1.2.4 & C:/R/R-3.5.1/library/stringi & C:/R/R-3.5.1/library/stringi & FALSE & FALSE & 2018-07-20 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  stringr & 1.3.1 & 1.3.1 & C:/R/R-3.5.1/library/stringr & C:/R/R-3.5.1/library/stringr & FALSE & FALSE & 2018-05-10 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  survey & 3.35 & 3.35 & C:/R/R-3.5.1/library/survey & C:/R/R-3.5.1/library/survey & TRUE & FALSE & 2018-12-17 & CRAN (R 3.5.2) & TRUE & C:/R/R-3.5.1/library \\ 
-  survival & 2.43.3 & 2.43-3 & C:/R/R-3.5.1/library/survival & C:/R/R-3.5.1/library/survival & TRUE & FALSE & 2018-11-26 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  sysfonts & 0.8 & 0.8 & C:/R/R-3.5.1/library/sysfonts & C:/R/R-3.5.1/library/sysfonts & FALSE & FALSE & 2018-10-11 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  taxstats & 0.1.0.1415 & 0.1.0.1415 & C:/R/R-3.5.1/library/taxstats & C:/R/R-3.5.1/library/taxstats & TRUE & FALSE & 2018-12-02 & local & TRUE & C:/R/R-3.5.1/library \\ 
-  testthat & 2.0.1 & 2.0.1 & C:/R/R-3.5.1/library/testthat & C:/R/R-3.5.1/library/testthat & TRUE & FALSE & 2018-10-13 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  tibble & 1.4.2 & 1.4.2 & C:/R/R-3.5.1/library/tibble & C:/R/R-3.5.1/library/tibble & FALSE & FALSE & 2018-01-22 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  tidyr & 0.8.2 & 0.8.2 & C:/R/R-3.5.1/library/tidyr & C:/R/R-3.5.1/library/tidyr & TRUE & FALSE & 2018-10-28 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  tidyselect & 0.2.5 & 0.2.5 & C:/R/R-3.5.1/library/tidyselect & C:/R/R-3.5.1/library/tidyselect & FALSE & FALSE & 2018-10-11 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  usethis & 1.4.0 & 1.4.0 & C:/R/R-3.5.1/library/usethis & C:/R/R-3.5.1/library/usethis & TRUE & FALSE & 2018-08-14 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  withr & 2.1.2 & 2.1.2 & C:/R/R-3.5.1/library/withr & C:/R/R-3.5.1/library/withr & FALSE & FALSE & 2018-03-15 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  xfun & 0.4 & 0.4 & C:/R/R-3.5.1/library/xfun & C:/R/R-3.5.1/library/xfun & FALSE & FALSE & 2018-10-23 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  XML & 3.98.1.16 & 3.98-1.16 & C:/R/R-3.5.1/library/XML & C:/R/R-3.5.1/library/XML & FALSE & FALSE & 2018-08-19 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  xtable & 1.8.3 & 1.8-3 & C:/R/R-3.5.1/library/xtable & C:/R/R-3.5.1/library/xtable & TRUE & FALSE & 2018-08-29 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  zip & 1.0.0 & 1.0.0 & C:/R/R-3.5.1/library/zip & C:/R/R-3.5.1/library/zip & FALSE & FALSE & 2017-04-25 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
-  zoo & 1.8.4 & 1.8-4 & C:/R/R-3.5.1/library/zoo & C:/R/R-3.5.1/library/zoo & TRUE & FALSE & 2018-09-19 & CRAN (R 3.5.1) & TRUE & C:/R/R-3.5.1/library \\ 
+acepack & 2016-10-29 & CRAN (R 3.5.1) & TRUE &  \\ 
+  assertthat & 2017-04-11 & CRAN (R 3.5.1) & TRUE &  \\ 
+  backports & 2018-12-14 & CRAN (R 3.5.2) & TRUE &  \\ 
+  base64enc & 2015-07-28 & CRAN (R 3.5.0) & TRUE &  \\ 
+  bindr & 2018-03-13 & CRAN (R 3.5.1) & TRUE &  \\ 
+  bindrcpp & 2018-03-29 & CRAN (R 3.5.1) & TRUE & * \\ 
+  bitops & 2013-08-17 & CRAN (R 3.5.0) & TRUE &  \\ 
+  callr & 2018-12-21 & CRAN (R 3.5.2) & TRUE &  \\ 
+  cellranger & 2016-07-27 & CRAN (R 3.5.1) & TRUE &  \\ 
+  checkmate & 2017-10-24 & CRAN (R 3.5.1) & TRUE &  \\ 
+  cli & 2018-09-25 & CRAN (R 3.5.1) & TRUE &  \\ 
+  cluster & 2018-04-13 & CRAN (R 3.5.1) & TRUE &  \\ 
+  colorspace & 2016-12-14 & CRAN (R 3.5.1) & TRUE &  \\ 
+  crayon & 2017-09-16 & CRAN (R 3.5.1) & TRUE &  \\ 
+  data.table & 2018-09-30 & CRAN (R 3.5.1) & TRUE & * \\ 
+  desc & 2018-05-01 & CRAN (R 3.5.1) & TRUE &  \\ 
+  devEMF & 2018-05-22 & CRAN (R 3.5.0) & TRUE & * \\ 
+  devtools & 2018-10-26 & CRAN (R 3.5.1) & TRUE & * \\ 
+  digest & 2018-10-10 & CRAN (R 3.5.1) & TRUE &  \\ 
+  directlabels & 2018-05-25 & CRAN (R 3.5.1) & TRUE & * \\ 
+  dplyr & 2018-11-10 & CRAN (R 3.5.1) & TRUE & * \\ 
+  evaluate & 2018-10-09 & CRAN (R 3.5.1) & TRUE &  \\ 
+  expm & 2018-09-22 & CRAN (R 3.5.1) & TRUE & * \\ 
+  fastmatch & 2017-01-28 & CRAN (R 3.5.0) & TRUE &  \\ 
+  forcats & 2018-02-19 & CRAN (R 3.5.1) & TRUE &  \\ 
+  foreign & 2018-07-20 & CRAN (R 3.5.1) & TRUE & * \\ 
+  Formula & 2018-05-03 & CRAN (R 3.5.0) & TRUE & * \\ 
+  fs & 2018-08-23 & CRAN (R 3.5.1) & TRUE &  \\ 
+  ggplot2 & 2018-10-25 & CRAN (R 3.5.1) & TRUE & * \\ 
+  ggrepel & 2018-05-09 & CRAN (R 3.5.1) &  & * \\ 
+  glue & 2018-07-17 & CRAN (R 3.5.1) & TRUE &  \\ 
+  grattan & 2019-01-09 & local &  & * \\ 
+  grattanCharts & 2019-01-01 & local & TRUE & * \\ 
+  gridExtra & 2017-09-09 & CRAN (R 3.5.1) & TRUE & * \\ 
+  gtable & 2016-02-26 & CRAN (R 3.5.1) & TRUE &  \\ 
+  haven & 2018-11-22 & CRAN (R 3.5.1) & TRUE & * \\ 
+  hildaData & 2019-01-21 & local & TRUE & * \\ 
+  Hmisc & 2018-01-03 & CRAN (R 3.5.1) & TRUE & * \\ 
+  hms & 2018-03-10 & CRAN (R 3.5.1) & TRUE &  \\ 
+  htmlTable & 2018-05-26 & CRAN (R 3.5.1) & TRUE &  \\ 
+  htmltools & 2017-04-28 & CRAN (R 3.5.1) & TRUE &  \\ 
+  htmlwidgets & 2018-09-30 & CRAN (R 3.5.1) & TRUE &  \\ 
+  httr & 2018-12-11 & CRAN (R 3.5.2) & TRUE & * \\ 
+  hutils & 2019-01-12 & local & TRUE & * \\ 
+  hutilscpp & 2019-01-20 & local &  & * \\ 
+  knitr & 2018-12-10 & CRAN (R 3.5.2) & TRUE & * \\ 
+  labeling & 2014-08-23 & CRAN (R 3.5.0) & TRUE &  \\ 
+  lattice & 2018-11-04 & CRAN (R 3.5.1) & TRUE & * \\ 
+  latticeExtra & 2016-02-09 & CRAN (R 3.5.1) & TRUE &  \\ 
+  lazyeval & 2017-10-29 & CRAN (R 3.5.1) & TRUE &  \\ 
+  magrittr & 2014-11-22 & CRAN (R 3.5.1) & TRUE & * \\ 
+  Matrix & 2018-11-01 & CRAN (R 3.5.1) & TRUE & * \\ 
+  memoise & 2017-04-21 & CRAN (R 3.5.1) & TRUE &  \\ 
+  munsell & 2018-06-12 & CRAN (R 3.5.1) & TRUE &  \\ 
+  nnet & 2016-02-02 & CRAN (R 3.5.1) & TRUE &  \\ 
+  openxlsx & 2018-05-26 & CRAN (R 3.5.1) & TRUE & * \\ 
+  pillar & 2018-12-15 & CRAN (R 3.5.2) & TRUE &  \\ 
+  pkgbuild & 2018-10-16 & CRAN (R 3.5.1) & TRUE &  \\ 
+  pkgconfig & 2018-08-16 & CRAN (R 3.5.1) & TRUE &  \\ 
+  pkgload & 2018-10-29 & CRAN (R 3.5.1) & TRUE &  \\ 
+  plyr & 2016-06-08 & CRAN (R 3.5.1) & TRUE &  \\ 
+  prettyunits & 2015-07-13 & CRAN (R 3.5.1) & TRUE &  \\ 
+  processx & 2018-12-05 & CRAN (R 3.5.1) & TRUE &  \\ 
+  ps & 2018-12-21 & CRAN (R 3.5.2) & TRUE &  \\ 
+  purrr & 2018-05-29 & CRAN (R 3.5.1) & TRUE &  \\ 
+  quadprog & 2013-04-17 & CRAN (R 3.5.0) & TRUE &  \\ 
+  R6 & 2018-10-04 & CRAN (R 3.5.1) & TRUE &  \\ 
+  RColorBrewer & 2014-12-07 & CRAN (R 3.5.0) & TRUE &  \\ 
+  Rcpp & 2018-11-07 & CRAN (R 3.5.1) & TRUE &  \\ 
+  RCurl & 2018-07-15 & CRAN (R 3.5.1) & TRUE &  \\ 
+  readr & 2018-12-21 & CRAN (R 3.5.2) & TRUE & * \\ 
+  readxl & 2018-12-19 & CRAN (R 3.5.2) & TRUE & * \\ 
+  remotes & 2018-10-30 & CRAN (R 3.5.1) & TRUE &  \\ 
+  rlang & 2018-10-25 & CRAN (R 3.5.1) & TRUE &  \\ 
+  rpart & 2018-02-23 & CRAN (R 3.5.1) & TRUE &  \\ 
+  rprojroot & 2018-01-03 & CRAN (R 3.5.1) & TRUE &  \\ 
+  rsdmx & 2018-09-21 & CRAN (R 3.5.1) & TRUE & * \\ 
+  rstudioapi & 2018-10-02 & CRAN (R 3.5.1) & TRUE &  \\ 
+  scales & 2018-08-09 & CRAN (R 3.5.1) & TRUE & * \\ 
+  sessioninfo & 2018-11-05 & CRAN (R 3.5.1) & TRUE & * \\ 
+  stringi & 2018-07-20 & CRAN (R 3.5.1) & TRUE &  \\ 
+  stringr & 2018-05-10 & CRAN (R 3.5.1) & TRUE &  \\ 
+  survey & 2018-12-17 & CRAN (R 3.5.2) & TRUE & * \\ 
+  survival & 2018-11-26 & CRAN (R 3.5.1) & TRUE & * \\ 
+  sysfonts & 2018-10-11 & CRAN (R 3.5.1) & TRUE &  \\ 
+  taxstats & 2018-12-02 & local & TRUE & * \\ 
+  testthat & 2018-10-13 & CRAN (R 3.5.1) & TRUE & * \\ 
+  tibble & 2018-01-22 & CRAN (R 3.5.1) & TRUE &  \\ 
+  tidyr & 2018-10-28 & CRAN (R 3.5.1) & TRUE & * \\ 
+  tidyselect & 2018-10-11 & CRAN (R 3.5.1) & TRUE &  \\ 
+  usethis & 2018-08-14 & CRAN (R 3.5.1) & TRUE & * \\ 
+  withr & 2018-03-15 & CRAN (R 3.5.1) & TRUE &  \\ 
+  xfun & 2018-10-23 & CRAN (R 3.5.1) & TRUE &  \\ 
+  XML & 2018-08-19 & CRAN (R 3.5.1) & TRUE &  \\ 
+  xtable & 2018-08-29 & CRAN (R 3.5.1) & TRUE & * \\ 
+  zip & 2017-04-25 & CRAN (R 3.5.1) & TRUE &  \\ 
+  zoo & 2018-09-19 & CRAN (R 3.5.1) & TRUE & * \\ 
    \bottomrule
 \end{longtable}
 
 
-
+\clearpage
+\section{Attached packages}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlstr{"bindrcpp"}\hlstd{,} \hlstr{"hildaData"}\hlstd{,} \hlstr{"hutils"}\hlstd{,} \hlstr{"ggrepel"}\hlstd{,} \hlstr{"testthat"}\hlstd{,} \hlstr{"taxstats"}\hlstd{,}
+\hlstr{"magrittr"}\hlstd{,} \hlstr{"tidyr"}\hlstd{,} \hlstr{"usethis"}\hlstd{,} \hlstr{"devtools"}\hlstd{,} \hlstr{"expm"}\hlstd{,} \hlstr{"Hmisc"}\hlstd{,}
+\hlstr{"Formula"}\hlstd{,} \hlstr{"lattice"}\hlstd{,} \hlstr{"foreign"}\hlstd{,} \hlstr{"survey"}\hlstd{,} \hlstr{"survival"}\hlstd{,} \hlstr{"Matrix"}\hlstd{,}
+\hlstr{"grid"}\hlstd{,} \hlstr{"zoo"}\hlstd{,} \hlstr{"httr"}\hlstd{,} \hlstr{"rsdmx"}\hlstd{,} \hlstr{"readr"}\hlstd{,} \hlstr{"openxlsx"}\hlstd{,} \hlstr{"readxl"}\hlstd{,}
+\hlstr{"xtable"}\hlstd{,} \hlstr{"grattan"}\hlstd{,} \hlstr{"directlabels"}\hlstd{,} \hlstr{"scales"}\hlstd{,} \hlstr{"ggplot2"}\hlstd{,} \hlstr{"gridExtra"}\hlstd{,}
+\hlstr{"dplyr"}\hlstd{,} \hlstr{"haven"}\hlstd{,} \hlstr{"hutilscpp"}\hlstd{,} \hlstr{"grattanCharts"}\hlstd{,} \hlstr{"devEMF"}\hlstd{,} \hlstr{"knitr"}\hlstd{,}
+\hlstr{"data.table"}\hlstd{,} \hlstr{"sessioninfo"}\hlstd{,} \hlstr{"stats"}\hlstd{,} \hlstr{"graphics"}\hlstd{,} \hlstr{"grDevices"}\hlstd{,}
+\hlstr{"utils"}\hlstd{,} \hlstr{"datasets"}\hlstd{,} \hlstr{"methods"}\hlstd{,} \hlstr{"base"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \twocolumn
 \chapter{Benchmarking 2013-14 sample file benchmarks}
@@ -1630,7 +1648,7 @@ acepack & 1.4.1 & 1.4.1 & C:/R/R-3.5.1/library/acepack & C:/R/R-3.5.1/library/ac
 
 
 % citations
-\input{package_cite_input}
+\input{tex/package_cite_input}
 
 
 

@@ -1046,9 +1046,8 @@ numbers=noenddot,
 \AtBeginEnvironment{tabularx}{\small}
 \newcolumntype{R}{>{\RaggedLeft\arraybackslash}X}
 \newcolumntype{Q}{>{\raggedleft\arraybackslash}X}
-
-
-\AtBeginDocument{
+  
+\AtBeginDocument{%
   \pagestyle{empty}
   \let\mytitle\@title
   \let\mysubtitle\@subtitle

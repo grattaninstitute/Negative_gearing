@@ -6,12 +6,16 @@
 \title{Negative gearing and the capital gains discount}
 \author{John Daley and Danielle Wood}
 
-\GrattanReportNumber{2016-99}
+\YEAR{2015}
+\MONTH{August}
+\GrattanReportNumber{2015-5}
 
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography2.bib} % r packages
 
 \input{CGT-NG-sections/preamble}
+\acknowledgements{\input{tex/Acknowledgements.tex}}
+
 
 
 % \usepackage{marginnote}
@@ -5008,6 +5012,7 @@ The \verb=devtools::session_info()= is printed below.
 % \phantom{.}
 \end{multicols*}
 <<sessionInfo>>=
+library(sessioninfo)
 SessionInfo <- session_info()
 @
 
@@ -5045,6 +5050,10 @@ addtorow$command  <- c(paste("\\hline \n",
 <<loaded_packages, results='asis'>>=
 SessionInfo$packages %>%
   as.data.frame %>%
+  as.data.table %>%
+  selector(package, attached, date, source, md5ok) %>%
+  .[, "att" := if_else(attached, "*", "")] %>%
+  .[, attached := NULL] %>%
   xtable(caption = "Packages") %>% 
   print.xtable(caption.placement = "top", 
                include.rownames = FALSE, 
@@ -5055,7 +5064,18 @@ SessionInfo$packages %>%
                hline.after = c(-1, nrow(.)))
 @
 
-
+\clearpage
+\section{Attached packages}
+<<the_attached_packages, echo=TRUE>>=
+c("bindrcpp", "hildaData", "hutils", "ggrepel", "testthat", "taxstats", 
+"magrittr", "tidyr", "usethis", "devtools", "expm", "Hmisc", 
+"Formula", "lattice", "foreign", "survey", "survival", "Matrix", 
+"grid", "zoo", "httr", "rsdmx", "readr", "openxlsx", "readxl", 
+"xtable", "grattan", "directlabels", "scales", "ggplot2", "gridExtra", 
+"dplyr", "haven", "hutilscpp", "grattanCharts", "devEMF", "knitr", 
+"data.table", "sessioninfo", "stats", "graphics", "grDevices", 
+"utils", "datasets", "methods", "base")
+@
 
 \twocolumn
 \chapter{Benchmarking 2013-14 sample file benchmarks}
@@ -5170,15 +5190,19 @@ citPkgs <- names(sessionInfo()$otherPkgs)
 suppressWarnings({
 knitr::write_bib(citPkgs, file="bibliography2.bib")      
 })
+
+hutils::provide.dir("tex")
 package_cite_input <- paste0("\\nocite{", paste0(paste0("R-", citPkgs), collapse=","), "}")
-write(package_cite_input, file = "package_cite_input.tex")
+write(package_cite_input, file = "tex/package_cite_input.tex")
 @
 % citations
-\input{package_cite_input}
+\input{tex/package_cite_input}
 
 <<Is-HILDA-used>>=
 if(hilda_used || grepl("hilda", names(Filter(isTRUE, eapply(.GlobalEnv, is.data.frame))))){
-  write("This paper uses unit record data from the Household, Income and Labour Dynamics in Australia (HILDA) Survey. The HILDA Project was initiated and is funded by the Australian Government Department of Social Services (DSS) and is managed by the Melbourne Institute of Applied Economic and Social Research (Melbourne Institute). The findings and views reported in this paper, however, are those of the authors and should not be attributed to either DSS or the Melbourne Institute.", file = "HILDA-acknowledgement-paragraph.tex")
+  write("This paper uses unit record data from the Household, Income and Labour Dynamics in Australia (HILDA) Survey. The HILDA Project was initiated and is funded by the Australian Government Department of Social Services (DSS) and is managed by the Melbourne Institute of Applied Economic and Social Research (Melbourne Institute). The findings and views reported in this paper, however, are those of the authors and should not be attributed to either DSS or the Melbourne Institute.", 
+        # In Acknowledgements.tex
+        file = "tex/HILDA-acknowledgement-paragraph.tex")
 }
 @
 

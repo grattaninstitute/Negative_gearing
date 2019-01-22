@@ -4,3 +4,6 @@
   0.2	surya-low-returns
   0.8	PP-losers-salary-comparison-horiz-bar
   0.5	Proportions-PP-losses
+  0.7	sessionInfo
+  0.0	loaded_packages
+  0.1	the_attached_packages
