@@ -69,10 +69,27 @@
 
 
 % \usepackage{marginnote}
+
+
+
+
+
+\rehead[\normalfont\texttt{new.discount} = 0.25\quad
+        \texttt{TARGET.FY} = 2017-18\quad
+        \texttt{latest.sample.fy} = 2015-16]%
+        {\normalfont\texttt{new.discount} = 0.25\quad
+        \texttt{TARGET.FY} = 2017-18\quad
+        \texttt{latest.sample.fy} = 2015-16}
+\rohead[\normalfont\texttt{new.discount} = 0.25\quad
+        \texttt{TARGET.FY} = 2017-18\quad
+        \texttt{latest.sample.fy} = 2015-16]%
+        {\normalfont\texttt{new.discount} = 0.25\quad
+        \texttt{TARGET.FY} = 2017-18\quad
+        \texttt{latest.sample.fy} = 2015-16}
+
+\renewcommand{\classification}{}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-
-
 
 %\clearpage
 %\chapter{Distribution of negative gearing}
@@ -123,7 +140,13 @@
 
 
 
+
+
+
+
 %%% Costings analysis
+
+
 
 
 
@@ -154,17 +177,17 @@
 \begin{overview}[-25pt] %\addcontentsline{toc}{chapter}{Overview}
 A substantial change to Australia's tax arrangements is long overdue. The interaction of a fifty per cent capital gains tax (CGT) discount with negative gearing distorts investment decisions, makes housing markets more volatile and reduces home ownership. Like most tax concessions, these tax breaks largely benefit the wealthy.
 
-These two measures in combination allow investors to reduce and defer personal income tax, at an annual cost of \$15~billion to the public purse. Our proposals to wind back the discount and negative gearing would save the Commonwealth Government about \highlight{\$6.7~billion a year}. 
+These two measures in combination allow investors to reduce and defer personal income tax, at an annual cost of \$12~billion to the public purse. Our proposals to wind back the discount and negative gearing would save the Commonwealth Government about \highlight{\$5.3~billion a year}. 
 
 The discount on capital gains tax is designed to maintain incentives to save and invest.  Because taxes apply to nominal income, inflation would otherwise erode part of an investor's capital gains. Given actual returns, many investors have been overcompensated for inflation. 
 
 Policy has overzealously protected savings at the expense of competing considerations. The economic benefits of tax neutrality for savings are small: those with high incomes save almost the same amount regardless of the tax rate. Providing a discount means that other taxes must be higher, and they impose greater economic costs. The 50 per cent discount also encourages investors to focus too much on investments with capital growth rather than annual income. And it undermines income tax integrity by creating opportunities for artificial transactions to reduce tax. 
 
-\highlight{Reducing the capital gains discount to 75~percent} would provide a better balance between these competing considerations and would raise about \highlight{\$5.3~billion} a year.
+\highlight{Reducing the capital gains discount to 75~percent} would provide a better balance between these competing considerations and would raise about \highlight{\$3.9~billion} a year.
 
 Negative gearing allows those who borrow to invest to use losses to reduce tax on wages and salaries. In Australia negative gearing goes beyond broadly accepted principles for offsetting losses against gains. It diverts capital from more productive investments without greatly increasing housing supply. Like the CGT discount, negative gearing primarily benefits those on high incomes.
 
-Australia should follow international practice, and not deduct losses from passive investments from wage and salary income.  This change would raise \highlight{\$1.9~billion} a year in the short term, falling to \highlight{\$1.3~billion} as losses start to be written off against positive investment income. Other proposals, such as restricting negative gearing to new properties or limiting the dollar value of deductions, leave too many problems in place and introduce additional distortions. 
+Australia should follow international practice, and not deduct losses from passive investments from wage and salary income.  This change would raise \highlight{\$2.3~billion} a year in the short term, falling to \highlight{\$1.5~billion} as losses start to be written off against positive investment income. Other proposals, such as restricting negative gearing to new properties or limiting the dollar value of deductions, leave too many problems in place and introduce additional distortions. 
 
 These changes will improve housing affordability -- a little. We estimate housing prices would be up to 2~percent lower than otherwise. Rents won't change much, nor will the rate of new development.  With tight constraints on supply of land suitable for urban housing, most of the impact will be felt via lower land prices. The changes will not cause housing markets to collapse: their effects on prices are small compared to factors such as interest rates and supply of land.
 
@@ -241,16 +264,21 @@ Given these costs and benefits, is the capital gains discount set at the right l
 % cairo pdf for unicode concordance
 
 
-Australian entities -- individuals, companies, and superannuation funds -- accrued \$74.3~billion of income through capital gains in 2013-14. Individuals accrued 45~percent
+Australian entities -- individuals, companies, and superannuation funds -- accrued \$0.116~trillion of income through capital gains in 2017-18. Individuals accrued 35~percent
 of capital gains and gained more from real estate than any other source. (See \Vref{fig:CGT-by-entity-asset}.)
 
 \begin{figure}
-\Caption{Capital gains from real estate assets are almost always through individuals}{Taxable net capital gains, 2013-14}{fig:CGT-by-entity-asset}
+\Caption{Capital gains from real estate assets are almost always through individuals}{Taxable net capital gains, 2017-18}{fig:CGT-by-entity-asset}
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//CGT-by-entity-asset-1}
 \source{\url{http://data.gov.au/dataset/25e81c18-2083-4abe-81b6-0f530053c63f/resource/4e5cc0c1-a1b5-4bd2-80f4-6845ef78658b/download/Taxstats2014Summary5Index-of-chart-data.xlsx}}
 \end{figure}
 
 Capital gains are taxed as part of the income of individuals, companies and superannuation funds. In 2013-14, capital gains tax raised around \$7.5~billion, around 3\%\ of total income. This is expected to have climbed to \$8.9~billion in the following year.\footnote{2015-16 Budget Paper 1. Table 5 memoranda. \url{http://www.budget.gov.au/2015-16/content/bp1/html/bp1_bs4-03.htm}}
+
+In 2018-19, capital gains tax was forecast to raise around \$16.6\,bn.%
+  \footnote{MYEFO 2018-19; Note 3: Taxation revenue by type (continued). 
+  \textcolor{blue}{\url{https://budget.gov.au/2018-19/content/myefo/download/MYEFO_2018-19.pdf}}.}
+
 
 \section{Capital gains receive a range of tax advantages}
 Before 1985, capital gains were not taxed in Australia. Since then, the tax treatment of capital gains has varied, but they have always been taxed at a lower rate than wage and salary income \Vref{box:Short-History}. 
@@ -272,13 +300,14 @@ Large corporations pay tax on their capital gains at the corporate rate of 30 pe
 Capital gains also receive other less explicit tax advantages compared to recurrent income. First, capital gains are taxed on sale rather than as they accrue. This deferral of tax is akin to the government providing the investor with an interest free loan.  This substantially reduces the effective tax rate paid on gains, with the tax benefit increasing if the asset is held for longer.
 
 
-With the 50 per cent discount, this deferral over 15 years for a top marginal rate taxpayer reduces the effective nominal tax rate on capital gains from 32 per cent to 28 per cent. (\Vref{fig:CG-marginal-tax-rates})
+With the 50 per cent discount, this deferral over 15 years for a top marginal rate taxpayer reduces the effective nominal tax rate on capital gains from 32 per cent to 28 per cent. (\Vref{fig:delaying-realization-causes-reduction-in-effective-tax-rate})
 
 Second, investors are also able to choose the time of an asset's sale to minimise taxes on capital gains. They can reduce their tax by selling assets when their income is low, such as after retirement, so they are taxed at a lower marginal rate. Some Australians, particularly high income earners, wait until retirement to realise capital gains. Those 65 and older are much more likely to sell assets than those who are younger (\Vrefrange{fig:CGT-by-age-income}{fig:CGT-by-age-income-weight-CG}).
 
 
 
-The benefits of waiting can be substantial. A person paying the top rate of income tax of 47c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was 29~percent; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was 41~percent. The average marginal tax rate on the first dollar of capital gains for people in the workforce is 28~percent compared to 20~percent for people over 65.
+The benefits of waiting can be substantial. A person paying the top rate of income tax of 47\,c (including Medicare levy) who times the sale of an investment after 15 years for when they are in the lower tax bracket would reduce the annual nominal tax rate on that investment from 28 per cent to 26 per cent. The average marginal tax rate of those with capital gains tax was 30~percent; however, this weights an individual with a capital gain of \$1 equally as someone with a capital gain of \$500,000. Weighting by the value of capital gain, the average marginal tax rate was 42~percent. The average marginal tax rate on the first dollar of capital gains for people in the workforce is 29~percent compared to 20~percent for people over 65.
+
 
 
 
@@ -287,7 +316,7 @@ The benefits of waiting can be substantial. A person paying the top rate of inco
 
 
 \begin{figure}
-\Caption{Older taxpayers are more likely to have capital gains than younger taxpayers, for all age groups at almost all income levels}{Probability of net capital gains}{fig:CGT-by-age-income}
+\Caption{Older taxpayers are more likely to have capital gains than younger taxpayers, for all age groups at almost all income levels}{Probability of net capital gains (2015-16)}{fig:CGT-by-age-income}
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//CGT-by-age-income-1}
 \Caption{}{Average value of net capital gains}{fig:CGT-by-age-income-weight-CG}
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//CGT-by-age-income-weight-CG-1}
@@ -393,7 +422,7 @@ On the other hand, the theoretical ideal implicitly assumes losses and gains are
 
 
 
-\begin{figure}
+\begin{figure}[hb]
 \Caption{The effective tax rate on excess returns for property has been close the income tax rate over the past 15 years}{Effective marginal tax rates on savings}{fig:EMTR-savings}
 
 
@@ -401,11 +430,11 @@ On the other hand, the theoretical ideal implicitly assumes losses and gains are
 \end{figure}
 \begin{table*}
 \centering
-\caption{Assumptions for figure \Vref{fig:EMTR-savings}}
+\caption{Assumptions for \Vref{fig:EMTR-savings}}
 \small
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:21:54 2019
-\begin{tabular}{llrrrrrrr}
+% Sat Jan 26 00:09:51 2019
+\begin{tabularx}{\linewidth}{llrrrrrrr}
   \toprule
    &  &  &  &  & \multicolumn{4}{c}{\textbf{Constant}}\\
  \cmidrule(lr){6-9}
@@ -418,7 +447,7 @@ excess & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15 & 3.0\% \\
   real & historic & 7.3\% & 5.6\% & 2.8\% &  &  &  &  \\ 
    & lower & 5.0\% & 4.5\% & 2.5\% &  &  &  &  \\ 
    \bottomrule
-\end{tabular}
+\end{tabularx}
 
 \end{table*}
 
@@ -426,17 +455,17 @@ excess & historic & 7.3\% & 5.6\% & 2.8\% & 47.0\% & 50.0\% & 15 & 3.0\% \\
 \subsection{Maintaining the progressivity of the tax system}\label{sec:maintaining-progressivity-tax-system}
 
 
-If returns to savings are not taxed, then inequality will tend to widen. The top ten per cent of wage and salary earners receive about 34~percent of all wages and salaries (before tax). They tend to save a greater proportion of their income than people who earn less, they are more likely to invest in higher risk, higher return assets, and they are more likely to make investments where a higher proportion of the returns are capital gains rather than income.  Consequently, among individual taxpayers, the top decile received 55~percent of all investment income, and 67~percent of all capital gains income (\Vref{fig:CG-by-decile} \&\ \Vref{fig:DecileStackedChart}). 
+If returns to savings are not taxed, then inequality will tend to widen. The top ten per cent of wage and salary earners receive about 34~percent of all wages and salaries (before tax). They tend to save a greater proportion of their income than people who earn less, they are more likely to invest in higher risk, higher return assets, and they are more likely to make investments where a higher proportion of the returns are capital gains rather than income.  Consequently, among individual taxpayers, the top decile received 53~percent of all investment income, and 68~percent of all capital gains income (\Vref{fig:CG-by-decile} \&\ \Vref{fig:DecileStackedChart}). 
 
 \begin{figure}
-\Caption{Most capital gains are earned by those in the highest income decile}{Proportion of net capital gains by income decile (2013-14)}{fig:CG-by-decile}
+\Caption{Most capital gains are earned by those in the highest income decile}{Proportion of net capital gains by income decile (2015-16)}{fig:CG-by-decile}
 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//CG-by-decile-1}
 \end{figure}
 
 
 
-Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes \emph{before} capital gains, 34~percent of taxable gains are from the top decile. Another 24~percent are from those with less than \$10,000 in taxable income before capital gains.
+Because capital gains are lumpy, some lower income earners will have relatively high taxable incomes in the year they realise gains. But even if we look at taxable incomes \emph{before} capital gains, 30~percent of taxable gains are from the top decile. Another 26~percent are from those with less than \$10,000 in taxable income before capital gains.
 
 Of the latter, many are over 50s that have waited until retirement to realise gains (section 2.2). There is also a sizeable group of 30-45 year olds with very high capital gains but no other taxable incomes (3~percent of taxpayers in this age group have capital gains in excess of \$10,000 and which make up more than 95\%\ of their total income).\marginpar{\textcolor{red}{\textbf{Not borne out.}}} Many are likely to be partners of high income earners that receive distributions of capital income through structures such as trusts. All of this is consistent with the finding that capital gains accrue disproportionately to those that are already well off. 
 
@@ -472,11 +501,11 @@ Second, reducing the discount might not lead to much greater investment in owner
 
 
 
-% \begin{figure*}
-% \Caption{}{Distribution of taxes and income by taxable income decile}{fig:DecileStackedChart}
-% \includegraphics[width = \textwidth]{atlas/stacked-column-chart-1}
-% \the\textwidth
-% \end{figure*}
+\begin{figure*}
+\Caption{}{Distribution of taxes and income by taxable income decile}{fig:DecileStackedChart}
+\includegraphics[width = \textwidth]{CGT-NG-atlas//stacked-column-chart-1}
+\the\textwidth
+\end{figure*}
 
 \chapter{Negative gearing}
 Negative gearing allows taxpayers to subtract the losses they make on
@@ -585,10 +614,10 @@ investment.\footnote{See for example: Brown (2012). There is some
 
 
 \begin{figure}[!htb]
-\Caption{More people negatively gear property investments in their peak earning years}{Percentage of 2013-14 taxpayers with }{fig:NG-PG-by-age}
+\Caption{More people negatively gear property investments in their peak earning years}{Percentage of 2015-16 taxpayers with }{fig:NG-PG-by-age}
 
 \includegraphics[width=1.225\columnwidth]{CGT-NG-atlas//NG-PG-by-age-1}
-\source{2013-14 sample file.}
+\source{2015-16 sample file.}
 
 \notes{Taxpayers over the age of 70 are not disaggregated in taxstats and have been presented as having ages 70-75.}
 \end{figure}
@@ -612,7 +641,7 @@ When individuals do borrow to invest in equities, they are seldom negatively gea
 
 
 
-Very few loans to invest in unincorporated businesses will be negatively geared. Banks are understandably reluctant to lend to businesses that do not have enough cashflow to cover interest payments. Total interest costs for unincorporated businesses were \$1.52~billion in 2013-14  (much smaller than negative gearing against property), and much of this would have been incurred by profitable businesses. And unincorporated business losses totalled \$4.06~billion \TBD{(section 5.2.3)}; many of these businesses would not have borrowed. 
+Very few loans to invest in unincorporated businesses will be negatively geared. Banks are understandably reluctant to lend to businesses that do not have enough cashflow to cover interest payments. Total interest costs for unincorporated businesses were \$1.34~billion in 2015-16  (much smaller than negative gearing against property), and much of this would have been incurred by profitable businesses. And unincorporated business losses totalled \$4.32~billion \TBD{(section 5.2.3)}; many of these businesses would not have borrowed. 
 
 \section{Negative gearing goes beyond generally accepted principles for offsetting losses against gains}
 The ability to deduct expenses incurred in generating assessable income is part of the normal operation of the Australian tax system, and applies to a wide range of investments and business activities. If losses were not deductible but gains were taxed, the asymmetry would make high-risk (high expected return) assets a less attractive investment. Deductibility of interest payments in theory also maintains tax neutrality for investors choosing between debt and equity financing.  
@@ -656,10 +685,12 @@ While this bias towards higher leverage applies to all investments, in practice,
 
 \subsection{Bias towards capital gains not annual returns}
 As the RBA notes:
+
 \begin{quote}
-\dots\ in most countries the earning of rental income is seen as the most important reason for investing in rental properties\dots. This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
+\dots\ in most countries the earning of rental income is seen as the most important reason for investing in rental properties\dots{}. This seems to stand in contrast to the situation in Australia where properties are commonly marketed on the presumption that they do not earn positive taxable income for a considerable period.
 \end{quote}
-\textcite{seelig2009understanding} echoes the RBA view, finding that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.
+
+\textcite{SeeligThompsonBurkeEtAl2009} echoes the RBA view, finding that the majority of property investors saw capital gains as more important that rental income in motivating them to invest in property.
 
 
 These biases are not just theoretical arguments. They are reflected in how investors have changed their behaviour since capital gains tax changes increased the attractiveness of negative gearing from 1999.
@@ -668,11 +699,11 @@ These biases are not just theoretical arguments. They are reflected in how inves
 
 
 \begin{figure}
-\Caption{More people are negatively gearing and have higher losses}{Number of people negatively gearing property 1993-94 to 2013-14}{fig:number-NG-time-series} 
+\Caption{More people are negatively gearing and have higher losses}{Number of people negatively gearing property 1993-94 to 2015-16}{fig:number-NG-time-series} 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//number-NG-time-series-1}
 \vspace*{4pt}
 \captionsetup{font = {small, color=theGrey}}
-\caption*{Average net rental loss, (2014-15 dollars)}\label{fig:number-NG-and-net-losses-time-series}
+\caption*{Average net rental loss, (2017-18 dollars)}\label{fig:number-NG-and-net-losses-time-series}
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//avg-net-losses-time-series-1}
 \end{figure}
 
@@ -680,24 +711,24 @@ Negatively geared residential property investments have grown rapidly over 20 ye
 
 \begin{figure}
 \Caption{Almost all the growth in property investment since 1994 has been because of loss-making landlords}%
-{Number of landlords with positive and negative net rental income, 1993-94 to 2013-14}{fig:number-of-investors-by-gearing}
+{Number of landlords with positive and negative net rental income, 1993-94 to 2015-16}{fig:number-of-investors-by-gearing}
 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//number-of-investors-by-gearing-1}
 \end{figure}
 
-\textcite{seelig2009understanding} find that around half of investors would not have invested in property if negative gearing had not been available.  Meanwhile there has been little change in the number of positively geared investors. Almost all the additional investors in property over the last 15 years were negatively geared (\Vref{fig:number-of-investors-by-gearing}).
+\textcite{SeeligThompsonBurkeEtAl2009} find that around half of investors would not have invested in property if negative gearing had not been available.  Meanwhile there has been little change in the number of positively geared investors. Almost all the additional investors in property over the last 15 years were negatively geared (\Vref{fig:number-of-investors-by-gearing}).
 
 
  
  And the average level of gearing for property investors is increasing.
- Even though interest rates are falling, interest deductions as a proportion of rents increased from 45.6~per cent of gross rental payments in \mbox{1997-98} to 84.2 in 2007-08. With falling interest rates, interest deductions as a proportion of gross rents have fallen to 55.1~per cent in 2013-14.\footcite[p.~65]{Treasury2015a}
+ Even though interest rates are falling, interest deductions as a proportion of rents increased from 45.6~per cent of gross rental payments in \mbox{1997-98} to 84.2 in 2007-08. With falling interest rates, interest deductions as a proportion of gross rents had fallen to 51.6~per cent in 2015-16.
  
 
 
-As a result, Australian landlords have moved from being collectively profitable, to accruing billions in net rental losses each year. In 2013-14, 1.26~million landlords reported collective losses of \$11~billion. Consequently, total net rents have been consistently negative since the introduction of the CGT discount. (\Vref{fig:Net-rent-time-series}).  Losses are reducing only because interest rates have fallen rapidly.
+As a result, Australian landlords have moved from being collectively profitable, to accruing billions in net rental losses each year. In 2015-16, 1.29~million landlords reported collective losses of \$11.3~billion. Consequently, total net rents have been consistently negative since the introduction of the CGT discount. (\Vref{fig:Net-rent-time-series}).  Losses are reducing only because interest rates have fallen rapidly.
 
 \begin{figure}
-\Caption{Since the introduction of the capital gain tax discount, rental losses have been large, overwhelming profits}{Total real net rent (profit $-$ loss), individual taxpayers, (2014-15 dollars)}{fig:Net-rent-time-series}
+\Caption{Since the introduction of the capital gain tax discount, rental losses have been large, overwhelming profits}{Total real net rent (profit \(-\) loss), individual taxpayers, (2017-18 dollars)}{fig:Net-rent-time-series}
 
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//Net-rent-time-series-1}
 \end{figure}
@@ -725,17 +756,25 @@ The fact that negative gearing is regressive is not in itself an argument for ch
 
 
 
-A lot of the public debate has centred on claims that most taxpayers negatively gearing have taxable incomes below \$80,000. This is not surprising given that only 19~percent of taxpayers have higher taxable incomes. 
+A lot of the public debate has centred on claims that most taxpayers negatively gearing have taxable incomes below \$80,000. This is not surprising given that only 21~percent of taxpayers have higher taxable incomes. 
 
 \begin{figure}
 \Caption{More taxpayers on higher incomes negatively gear}{Distribution of taxable incomes by negative gearing status, 2013-14}{fig:tx-inc-distr-by-NG}
 % dev omit emf due to alpha
 
+
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//tx-inc-distr-by-NG-1}
 \end{figure}
 
+\begin{figure}
+\Caption{More taxpayers on higher incomes negatively gear (2015-16)}{Distribution of taxable incomes by negative gearing status, 2015-16}{fig:tx-inc-distr-by-NG-latest}
+% dev omit emf due to alpha
 
-As shown in \Vref{fig:tx-inc-distr-by-NG}, people with higher incomes are more likely to negatively gear. The median taxable incomes for taxpayers that negatively gear is \$62,000 compared to  \$41,000 for those taxpayers that don't negatively gear.
+\includegraphics[width=\columnwidth]{CGT-NG-atlas//tx-inc-distr-by-NG-latest-1}
+\end{figure}
+
+
+As shown in \Vref{fig:tx-inc-distr-by-NG}, people with higher incomes are more likely to negatively gear. The median taxable incomes for taxpayers that negatively gear is \$65,000 compared to  \$42,000 for those taxpayers that don't negatively gear.
 
 
 The tax benefits from negative gearing are even more skewed toward high income earners. They are more likely to borrow more, and with higher marginal tax rates, the deductions are worth more. 
@@ -745,15 +784,15 @@ The tax benefits from negative gearing are even more skewed toward high income e
 
 
 \begin{figure}
-\Caption{Negative gearing mostly benefits those on high incomes, and the difference is especially stark when incomes are measured before subtracting rental interest deductions}{Percentage of each decile's share of the benefit in reduced income tax due to negative gearing (2012-13)}{fig:Benefit-NG-before-after-deductions}
+\Caption{Negative gearing mostly benefits those on high incomes, and the difference is especially stark when incomes are measured before subtracting rental interest deductions}{Percentage of each decile's share of the benefit in reduced income tax due to negative gearing (2015-16)}{fig:Benefit-NG-before-after-deductions}
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//Benefit-NG-before-after-deductions-1}
-\notes{Taxable income before rental deductions means $\text{Taxable Income} - \min(\text{Net rental profit}, 0)$.
+\notes{Taxable income before rental deductions means \(\text{Taxable Income} - \min(\text{Net rental profit}, 0)\).
 Income tax includes medicare levy, LITO, and the temporary budget repair levy but not other tax benefits (\emph{e.g.}~the seniors and pensioners tax offset (SAPTO))}
 
-\source{\gao\ 2013-14 sample file}
+\source{\gao\ 2015-16 sample file}
 \end{figure}
 
-Overall, the top ten per cent of income earners before rental deductions receive almost~47~percent 
+Overall, the top ten per cent of income earners before rental deductions receive over~47~percent 
 of the tax benefits of negative gearing. The skew does not look quite so bad if taxpayers are grouped by their taxable incomes, as shown in the left hand side of \Vref{fig:Benefit-NG-before-after-deductions}. But comparisons based on taxable incomes understate the earnings of those that are negative gearing. Taxable incomes are assessed after rental losses. In other words, people who are negatively gearing have lower taxable incomes because they are negatively gearing. The distribution before rental deductions, shown on the right hand side of \Vref{fig:Benefit-NG-before-after-deductions}, shows that those on higher incomes receive the lion's share of the tax benefits from negative gearing.
 
 %\flushcolsend
@@ -797,15 +836,15 @@ Two different approaches yield similar results. Firstly we calculate the capital
 
 
 
-The proposed changes to negative gearing would reduce tax write-offs for property investment by about \$1.9~billion initially and \$1.3~billion over time. Assuming a discount rate of 
-5~percent, the present value of these lost tax benefits would be approximately \$26.8~billion.
+The proposed changes to negative gearing would reduce tax write-offs for property investment by about \$2.3~billion initially and \$1.5~billion over time. Assuming a discount rate of 
+5~percent, the present value of these lost tax benefits would be approximately \$29.5~billion.
 
 
-The proposed reduction of the capital gains tax discount to 25~percent would reduce after tax returns by about \$5.32~billion a year, or \$0.106~trillion in perpetuity. Assuming 40~percent of this relates to gains on real estate (in line with 2013-14 gains realisations) then the expected present value of the lost benefits for would be approximately \$42.5~billion.
+The proposed reduction of the capital gains tax discount to 25~percent would reduce after tax returns by about \$3.85~billion a year, or \$77~billion in perpetuity. Assuming 40~percent of this relates to gains on real estate (in line with 2015-16 gains realisations) then the expected present value of the lost benefits for would be approximately \$30.8~billion.
 
 
 
-If these lost benefits (\$42.5~billion + \$26.8~billion) were fully capitalized into the value of residential property -- currently worth \$5.4~trillion -- prices would fall in the order of 2~percent.
+If these lost benefits (\$30.8~billion + \$29.5~billion) were fully capitalized into the value of residential property -- currently worth \$5.4~trillion -- prices would fall in the order of 1~percent.
 
 \eject
 \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
@@ -814,8 +853,11 @@ If these lost benefits (\$42.5~billion + \$26.8~billion) were fully capitalized 
 \caption{Impact of policy changes on after-tax returns}\label{tbl:Impact-house-prices}
 \makebox[\linewidth][c]{
 
+% This chunk is kept for historical purposes -- the original layout
+
+
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:03 2019
+% Sat Jan 26 00:10:01 2019
 \begin{tabularx}{\linewidth}{lRRRR}
   \toprule
    &  & \multicolumn{3}{c}{\textbf{Return}}\\
@@ -823,9 +865,9 @@ If these lost benefits (\$42.5~billion + \$26.8~billion) were fully capitalized 
  \textbf{Owner type} & \textbf{Share of property} & \textbf{BAU} & \textbf{Proposed} & \textbf{\ensuremath{\Delta} \%}\\
  \midrule
 Negatively geared & 18.0\% & 7.0\% & 6.5\% & 6.1\% \\ 
+  Owner-occupied & 70.0\% & - & - & - \\ 
   Positively geared & 7.0\% & 6.4\% & 6.0\% & 6.8\% \\ 
   Ungeared & 5.0\% & 5.8\% & 5.3\% & 7.8\% \\ 
-  Owner-occupied & 70.0\% & - & - & - \\ 
    \bottomrule
 \end{tabularx}
 
@@ -836,7 +878,7 @@ Negatively geared & 18.0\% & 7.0\% & 6.5\% & 6.1\% \\
 \notes{Negatively geared property had 80\%\ of the value of the property borrowed; positively geared is 40\%.}
 \end{table}
 Alternatively, we can calculate the impact of tax changes on returns as a proportion of asset values for different classes of owners as shown in
-\Vref{tbl:Impact-house-prices}
+\Vref{tbl:Impact-house-prices}.
 
 Weighting these changes in returns by the share of residential property, suggests the average return (and therefore the price) would fall by about 2~percent. Yet this somewhat overstates the overall price effect because it is based on the change in returns for a representative investor in the top (47 per cent) tax bracket.
 
@@ -934,8 +976,8 @@ contribution to the budget bottom line.
 % Jim QC
 % eval=FALSE due no access to HILDA
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:13 2019
-\begin{tabular}{rr}
+% Sat Jan 26 00:10:14 2019
+\begin{tabularx}{\linewidth}{rr}
   \toprule
 {\textbf{Investment properties owned}} & {\textbf{Households}} \\ 
   \midrule
@@ -956,7 +998,7 @@ contribution to the budget bottom line.
    27 & 6,242 \\ 
    58 & 2,813 \\ 
    \bottomrule
-\end{tabular}
+\end{tabularx}
 
 \end{center}
 \source{HILDA}
@@ -964,15 +1006,15 @@ contribution to the budget bottom line.
 
 \begin{table}
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:13 2019
-\begin{tabular}{rr}
+% Sat Jan 26 00:10:14 2019
+\begin{tabularx}{\linewidth}{rr}
   \toprule
   \midrule
 0 & 7,631,426 \\ 
   1 & 818,633 \\ 
   2 & 316,366 \\ 
    \bottomrule
-\end{tabular}
+\end{tabularx}
 
 \source{Survey Income Housing 2013-14}
 \end{table}
@@ -980,35 +1022,35 @@ contribution to the budget bottom line.
 \begin{table*}
 \caption{Taxpayers with wage and salary income claiming business losses by occupation}\label{tbl:bizlosses}
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:14 2019
-\begin{tabular}{lrrrrr}
+% Sat Jan 26 00:10:15 2019
+\begin{tabularx}{\linewidth}{lrrrrr}
   \toprule
 {\textbf{Occupation}} & {\textbf{Type}} & {\textbf{No. claiming losses}} & {\textbf{\%}} & {\textbf{Average loss}} & {\textbf{Average salary}} \\ 
   \midrule
-Clerical and Administrative & Primary & 2700.00 & 0\% & \$19,150 & \$57,224 \\ 
-  Clerical and Administrative & Non-Primary & 18850.00 & 1\% & \$9,584 & \$47,354 \\ 
-   [6pt]Community and Personal Service & Primary & 1250.00 & 0\% & \$26,742 & \$53,669 \\ 
-  Community and Personal Service & Non-Primary & 12200.00 & 1\% & \$10,866 & \$39,716 \\ 
-   [6pt]Consultants, apprentices & Primary & 2700.00 & 0\% & \$20,787 & \$71,238 \\ 
-  Consultants, apprentices & Non-Primary & 7450.00 & 1\% & \$9,772 & \$52,537 \\ 
-   [6pt]Labourers & Primary & 3200.00 & 0\% & \$24,215 & \$50,371 \\ 
-  Labourers & Non-Primary & 7750.00 & 1\% & \$9,577 & \$47,271 \\ 
-   [6pt]Machinery operators and drivers & Primary & 2800.00 & 0\% & \$26,135 & \$84,598 \\ 
-  Machinery operators and drivers & Non-Primary & 7250.00 & 1\% & \$12,330 & \$58,030 \\ 
-   [6pt]Managers & Primary & 5850.00 & 0\% & \$26,999 & \$116,575 \\ 
-  Managers & Non-Primary & 16850.00 & 1\% & \$12,182 & \$71,931 \\ 
-   [6pt]Other & Primary & 0.00 & 0\% &  &  \\ 
-  Other & Non-Primary & 0.00 & 0\% &  &  \\ 
-   [6pt]Professionals & Primary & 7800.00 & 0\% & \$29,668 & \$108,190 \\ 
-  Professionals & Non-Primary & 37800.00 & 2\% & \$10,215 & \$67,572 \\ 
-   [6pt]Sales & Primary & 1350.00 & 0\% & \$11,599 & \$53,636 \\ 
-  Sales & Non-Primary & 9000.00 & 1\% & \$12,939 & \$32,914 \\ 
-   [6pt]Technicians and Trades & Primary & 4200.00 & 0\% & \$24,392 & \$88,727 \\ 
-  Technicians and Trades & Non-Primary & 17000.00 & 2\% & \$8,902 & \$60,246 \\ 
+Clerical and Administrative & Primary & 2450 & 0\% & \$20,154 & \$80,048 \\ 
+  Clerical and Administrative & Non-Primary & 19200 & 1\% & \$12,817 & \$50,484 \\ 
+   [6pt]Community and Personal Service & Primary & 1300 & 0\% & \$23,243 & \$66,380 \\ 
+  Community and Personal Service & Non-Primary & 12400 & 1\% & \$8,029 & \$42,930 \\ 
+   [6pt]Consultants, apprentices & Primary & 1450 & 0\% & \$24,215 & \$70,604 \\ 
+  Consultants, apprentices & Non-Primary & 7500 & 1\% & \$8,596 & \$59,818 \\ 
+   [6pt]Labourers & Primary & 3250 & 0\% & \$30,074 & \$58,522 \\ 
+  Labourers & Non-Primary & 8050 & 1\% & \$12,428 & \$47,932 \\ 
+   [6pt]Machinery operators and drivers & Primary & 2850 & 0\% & \$31,535 & \$80,644 \\ 
+  Machinery operators and drivers & Non-Primary & 6750 & 1\% & \$11,488 & \$56,406 \\ 
+   [6pt]Managers & Primary & 5000 & 0\% & \$38,115 & \$131,118 \\ 
+  Managers & Non-Primary & 19500 & 2\% & \$14,479 & \$72,434 \\ 
+   [6pt]Other & Primary & 0 & 0\% &  &  \\ 
+  Other & Non-Primary & 50 & 0\% & \$14,467 & \$13,897 \\ 
+   [6pt]Professionals & Primary & 4950 & 0\% & \$39,878 & \$111,882 \\ 
+  Professionals & Non-Primary & 39350 & 2\% & \$11,564 & \$67,704 \\ 
+   [6pt]Sales & Primary & 650 & 0\% & \$25,238 & \$82,820 \\ 
+  Sales & Non-Primary & 9600 & 1\% & \$9,822 & \$42,365 \\ 
+   [6pt]Technicians and Trades & Primary & 3900 & 0\% & \$30,661 & \$93,263 \\ 
+  Technicians and Trades & Non-Primary & 19400 & 2\% & \$9,068 & \$64,657 \\ 
    \bottomrule
-\end{tabular}
+\end{tabularx}
 
-\source{2\%\ sample file 2013-14}
+\source{2\%\ sample file 2015-16}
 \end{table*}
 
 %\flushcolsend
@@ -1039,16 +1081,14 @@ Currently there are more restrictions on deducting business losses than there ar
 
 
 
-
-
-The losses claimed are relatively small. In 2013-14 only 240,000~taxpayers claimed \$4~billion in business losses (compared to 1.2~million claiming \$10~billion in losses on property).
+The losses claimed are relatively small. In 2015-16 only 250,000~taxpayers claimed \$4~billion in business losses (compared to 1.3~million claiming \$10~billion in losses on property).
 
 \TBD{\dots}
 
 
 
 \begin{figure}
-\caption{Those earning more claim bigger primary production losses}{Salary}{fig:PP-losses-by-occ}
+\Caption{Those earning more claim bigger primary production losses}{Salary}{fig:PP-losses-by-occ}
 
 
 
@@ -1063,15 +1103,15 @@ The losses claimed are relatively small. In 2013-14 only 240,000~taxpayers claim
 \end{figure}
 
 \begin{figure}
-\Caption{Relative salaries are higher for those earning PP}{Salary, 2013-14}{fig:density-salary-by-PP-losses}
+\Caption{Relative salaries are higher for those earning PP}{Salary, 2015-16}{fig:density-salary-by-PP-losses}
 \includegraphics[width=\columnwidth]{CGT-NG-atlas//density-salary-by-PP-losses-1}
 \end{figure}
 
-However, many of the losses being claimed may not serve this policy purpose. Around 40~percent of business losses claimed are from primary production -- for example, animal or crop farming, vineyards or animal breeding. 53,000~taxpayers claimed \$1.6~billion  in primary production losses -- almost \$30,000 per claimant. In all occupational categories, average salaries for those claiming primary production losses were substantially higher -- between 21~percent and 64~percent -- than the average salaries for their occupation. And the largest tax breaks were for the highest income professions  suggesting that the primary production activity may often be more a lifestyle activity, such as a hobby farm, than a sustainable business. 
+However, many of the losses being claimed may not serve this policy purpose. Around 40~percent of business losses claimed are from primary production -- for example, animal or crop farming, vineyards or animal breeding. 45,000~taxpayers claimed \$1.6~billion  in primary production losses -- almost \$40,000 per claimant. In all occupational categories, average salaries for those claiming primary production losses were substantially higher -- between 21~percent and 64~percent -- than the average salaries for their occupation. And the largest tax breaks were for the highest income professions  suggesting that the primary production activity may often be more a lifestyle activity, such as a hobby farm, than a sustainable business. 
 
 
 
-About 190,000 taxpayers claimed an average of \$13,000 of non-farm business losses. It is likely that many of these people were individual contractors in fields related to their main job. Some of the losses may simply be taxpayers claiming lifestyle costs where they will be less scrutinised. Tax returns require less detail for costs claimed as part of running a business rather than in incurring wage and salary income (for example, travel costs do not need to be separately disclosed). 
+About 200,000 taxpayers claimed an average of \$14,000 of non-farm business losses. It is likely that many of these people were individual contractors in fields related to their main job. Some of the losses may simply be taxpayers claiming lifestyle costs where they will be less scrutinised. Tax returns require less detail for costs claimed as part of running a business rather than in incurring wage and salary income (for example, travel costs do not need to be separately disclosed). 
 
 
 
@@ -1082,9 +1122,15 @@ Restricting negative gearing by quarantining loss deductions for passive investm
 
 For most investors, the changes will mainly affect the timing, not the amount, of tax deductions. The costs of property and share investments will still be deducted against investment income, including subsequent capital gains, although the tax rate applied to some costs will include the CGT discount. 
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## [1] 2982084886
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
-
-We estimate that quarantining losses for passive investments would increase income tax collections by \$1.92~billion a year in the short term. Over the medium term, accrued losses -- losses not offset against recurrent investment income -- will be deducted from capital gains. Assuming no change in investor behaviour, the additional tax revenue would stabilise at around \$1.34~billion a year.
+We estimate that quarantining losses for passive investments would increase income tax collections by \$2.27~billion a year in the short term. Over the medium term, accrued losses -- losses not offset against recurrent investment income -- will be deducted from capital gains. Assuming no change in investor behaviour, the additional tax revenue would stabilise at around \$1.48~billion a year.
 
 If deductions were limited even more to the particular asset or asset class, income tax collections would rise a little more because investors would wait longer on average until they could realise their losses. 
 
@@ -1129,19 +1175,19 @@ Capping losses is politically attractive because a smaller percentage of landlor
 \begin{table}
 \caption{Budgetary impact of caps to negative gearing}\label{tbl:cap-NG}
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:22 2019
-\begin{tabular}{rrrS}
+% Sat Jan 26 00:10:23 2019
+\begin{tabularx}{\linewidth}{rrrS}
   \toprule
 {\textbf{Threshold}} & {\textbf{Costing}} & {\textbf{Number affected}} & {\textbf{\%}} \\ 
   \midrule
-$-$\$0 & \$2,329,943,828 & 736,034 & 37\% \\ 
-  $-$\$5,000 & \$1,324,169,051 & 389,754 & 20\% \\ 
-  $-$\$10,000 & \$788,826,337 & 204,953 & 10\% \\ 
-  $-$\$15,000 & \$496,674,175 & 114,215 & 6\% \\ 
-  $-$\$20,000 & \$327,294,012 & 67,521 & 3\% \\ 
-  $-$\$50,000 & \$43,923,467 & 8,778 & 0\% \\ 
+$-$\$0 & \$2,483,067,238 & 770,576 & 38\% \\ 
+  $-$\$5,000 & \$1,411,118,007 & 416,172 & 21\% \\ 
+  $-$\$10,000 & \$832,498,426 & 222,330 & 11\% \\ 
+  $-$\$15,000 & \$518,432,512 & 121,711 & 6\% \\ 
+  $-$\$20,000 & \$338,933,623 & 72,443 & 4\% \\ 
+  $-$\$50,000 & \$46,831,392 & 7,343 & 0\% \\ 
    \bottomrule
-\end{tabular}
+\end{tabularx}
 
 \end{table}
 
@@ -1162,14 +1208,20 @@ In any case, capping property numbers is a crude way to target `excessive' negat
 \section{Summarising impact of proposed negative gearing and CGT changes}
 Our preferred policy is to reduce the CGT discount to 25~percent and limit negative gearing by quarantining all passive investment losses. 
 
-In addition to raising more than \$6.66~billion a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
+In addition to raising more than \$5.33~billion a year, these changes will reduce (although not eliminate) distortions in investment choices toward debt financing of investment. Effective tax rates will increase a bit more for highly leveraged investors because they lose some of the tax benefits of upfront loss write offs \TBD{(Figure 18)}. However, effective tax rates will remain lower for this group because they still eventually write off their losses at a tax rate higher than they pay on gains. 
 
 \chapter{Transition arrangements}
 
 
 
 
-
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## [1] 0.187
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \begin{figure}
 \Caption{Negative gearing spells are short}{Survival curve of negative gearing responding persons}{fig:NG-spells-are-short}
 
@@ -1282,7 +1334,7 @@ Effective tax rates measure the tax paid on investment returns as a share of the
 
 
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:58 2019
+% Sat Jan 26 00:10:59 2019
 \begin{tabular}{Qlllrrrrr}
   \toprule
    &  &  &  & \multicolumn{5}{c}{\textbf{Nominal annual capital gain}}\\
@@ -1321,7 +1373,7 @@ Effective tax rates measure the tax paid on investment returns as a share of the
 \begin{ocg}{ocgColored}{ocgColored}{0}
 \node (Coloured) {%
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:58 2019
+% Sat Jan 26 00:10:59 2019
 \begin{tabular}{Qlllrrrrr}
   \toprule
    &  &  &  & \multicolumn{5}{c}{\textbf{Nominal annual capital gain}}\\
@@ -1390,20 +1442,20 @@ The \verb=devtools::session_info()= is printed below.
 \centering
 \caption{Platform}
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:59 2019
-\begin{tabular}{rl}
+% Sat Jan 26 00:11:00 2019
+\begin{tabularx}{\linewidth}{l}
   \toprule
- version & R version 3.5.2 (2018-12-20) \\ 
-  os & Windows 10 x64 \\ 
-  system & x86\_64, mingw32 \\ 
-  ui & RTerm \\ 
-  language & (EN) \\ 
-  collate & English\_Australia.1252 \\ 
-  ctype & English\_Australia.1252 \\ 
-  tz & Australia/Sydney \\ 
-  date & 2019-01-23 \\ 
+ R version 3.5.2 (2018-12-20) \\ 
+  Windows 10 x64 \\ 
+  x86\_64, mingw32 \\ 
+  RTerm \\ 
+  (EN) \\ 
+  English\_Australia.1252 \\ 
+  English\_Australia.1252 \\ 
+  Australia/Sydney \\ 
+  2019-01-26 \\ 
    \bottomrule
-\end{tabular}
+\end{tabularx}
 
 \end{table*}
 
@@ -1412,7 +1464,7 @@ The \verb=devtools::session_info()= is printed below.
 
 
 % latex table generated in R 3.5.2 by xtable 1.8-3 package
-% Wed Jan 23 03:22:59 2019
+% Sat Jan 26 00:11:00 2019
 \begin{longtable}{lllll}
 \caption{Packages} \\ 
   \toprule
@@ -1447,7 +1499,6 @@ acepack & 2016-10-29 & CRAN (R 3.5.1) & TRUE &  \\
   dplyr & 2018-11-10 & CRAN (R 3.5.1) & TRUE & * \\ 
   evaluate & 2018-10-09 & CRAN (R 3.5.1) & TRUE &  \\ 
   expm & 2018-09-22 & CRAN (R 3.5.1) & TRUE & * \\ 
-  fansi & 2018-10-05 & CRAN (R 3.5.1) & TRUE &  \\ 
   fastmatch & 2017-01-28 & CRAN (R 3.5.0) & TRUE &  \\ 
   forcats & 2018-02-19 & CRAN (R 3.5.1) & TRUE &  \\ 
   foreign & 2018-07-20 & CRAN (R 3.5.1) & TRUE & * \\ 
@@ -1469,7 +1520,7 @@ acepack & 2016-10-29 & CRAN (R 3.5.1) & TRUE &  \\
   htmlwidgets & 2018-09-30 & CRAN (R 3.5.1) & TRUE &  \\ 
   httr & 2018-12-11 & CRAN (R 3.5.2) & TRUE & * \\ 
   hutils & 2019-01-12 & local & TRUE & * \\ 
-  hutilscpp & 2019-01-22 & local &  & * \\ 
+  hutilscpp & 2019-01-25 & local &  & * \\ 
   knitr & 2018-12-10 & CRAN (R 3.5.2) & TRUE & * \\ 
   labeling & 2014-08-23 & CRAN (R 3.5.0) & TRUE &  \\ 
   lattice & 2018-11-04 & CRAN (R 3.5.1) & TRUE & * \\ 
@@ -1507,20 +1558,24 @@ acepack & 2016-10-29 & CRAN (R 3.5.1) & TRUE &  \\
   rprojroot & 2018-01-03 & CRAN (R 3.5.1) & TRUE &  \\ 
   rsdmx & 2018-09-21 & CRAN (R 3.5.1) & TRUE & * \\ 
   rstudioapi & 2018-10-02 & CRAN (R 3.5.1) & TRUE &  \\ 
+  SampleFile1415 & 2018-07-06 & local & TRUE &  \\ 
+  SampleFile1516 & 2018-11-30 & local & TRUE &  \\ 
   scales & 2018-08-09 & CRAN (R 3.5.1) & TRUE & * \\ 
   sessioninfo & 2018-11-05 & CRAN (R 3.5.1) & TRUE & * \\ 
+  showtext & 2018-01-16 & CRAN (R 3.5.1) & TRUE &  \\ 
+  showtextdb & 2017-09-11 & CRAN (R 3.5.1) & TRUE &  \\ 
   stringi & 2018-07-20 & CRAN (R 3.5.1) & TRUE &  \\ 
   stringr & 2018-05-10 & CRAN (R 3.5.1) & TRUE &  \\ 
   survey & 2018-12-17 & CRAN (R 3.5.2) & TRUE & * \\ 
   survival & 2018-11-26 & CRAN (R 3.5.1) & TRUE & * \\ 
   sysfonts & 2018-10-11 & CRAN (R 3.5.1) & TRUE &  \\ 
   taxstats & 2018-12-02 & local & TRUE & * \\ 
+  taxstats1516 & 2018-05-23 & local & TRUE & * \\ 
   testthat & 2018-10-13 & CRAN (R 3.5.1) & TRUE & * \\ 
   tibble & 2018-01-22 & CRAN (R 3.5.1) & TRUE &  \\ 
   tidyr & 2018-10-28 & CRAN (R 3.5.1) & TRUE & * \\ 
   tidyselect & 2018-10-11 & CRAN (R 3.5.1) & TRUE &  \\ 
   usethis & 2018-08-14 & CRAN (R 3.5.1) & TRUE & * \\ 
-  utf8 & 2018-05-24 & CRAN (R 3.5.1) & TRUE &  \\ 
   withr & 2018-03-15 & CRAN (R 3.5.1) & TRUE &  \\ 
   xfun & 2018-10-23 & CRAN (R 3.5.1) & TRUE &  \\ 
   XML & 2018-08-19 & CRAN (R 3.5.1) & TRUE &  \\ 
@@ -1545,12 +1600,26 @@ acepack & 2016-10-29 & CRAN (R 3.5.1) & TRUE &  \\
 \hlstr{"data.table"}\hlstd{,} \hlstr{"sessioninfo"}\hlstd{,} \hlstr{"stats"}\hlstd{,} \hlstr{"graphics"}\hlstd{,} \hlstr{"grDevices"}\hlstd{,}
 \hlstr{"utils"}\hlstd{,} \hlstr{"datasets"}\hlstd{,} \hlstr{"methods"}\hlstd{,} \hlstr{"base"}\hlstd{)}
 \end{alltt}
+\begin{verbatim}
+##  [1] "bindrcpp"      "hildaData"     "hutils"        "ggrepel"      
+##  [5] "testthat"      "taxstats"      "magrittr"      "tidyr"        
+##  [9] "usethis"       "devtools"      "expm"          "Hmisc"        
+## [13] "Formula"       "lattice"       "foreign"       "survey"       
+## [17] "survival"      "Matrix"        "grid"          "zoo"          
+## [21] "httr"          "rsdmx"         "readr"         "openxlsx"     
+## [25] "readxl"        "xtable"        "grattan"       "directlabels" 
+## [29] "scales"        "ggplot2"       "gridExtra"     "dplyr"        
+## [33] "haven"         "hutilscpp"     "grattanCharts" "devEMF"       
+## [37] "knitr"         "data.table"    "sessioninfo"   "stats"        
+## [41] "graphics"      "grDevices"     "utils"         "datasets"     
+## [45] "methods"       "base"
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
 
 \twocolumn
 \chapter{Benchmarking 2013-14 sample file benchmarks}
-
+TBD
 
 
 \chapter{Markov diagram for negative quarantining}
