@@ -1,34 +1,42 @@
 language: r
 pandoc: false
 sudo: true
-cache: 
-  - packages
-  - /tmp/texlive
-  - /$HOME/texlive
+cache:
+- packages
+- "/tmp/texlive"
+- "/$HOME/texlive"
 warnings_are_errors: false
-  
 r_github_packages:
-  - HughParsonage/TeXCheckR
-  - HughParsonage/grattanReporter
-
+- HughParsonage/TeXCheckR
+- HughParsonage/grattanReporter
 before_install:
-  - source ./travis/texlive.sh
-  - tlmgr update --self
-  - tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator needspace tablefootnote tocloft xpatch multirow bbding mathastext isomath relsize niceframe-type1
-  - if [ $TRAVIS_REPO_SLUG == "HughParsonage/grattex" ]; then tlmgr install tex-gyre eulervm bold-extra fancyvrb realboxes manfnt lstaddons; fi
-  # pdftotext
-  - if [ $TRAVIS_REPO_SLUG == "HughParsonage/grattex" ]; then sudo apt-get install poppler-utils; fi
-  - tlmgr update --all
-  - sudo apt-get update
-  - sudo apt-get install texlive-bibtex-extra
-
-install: echo Installation step #do not remove this line!
-
+- source ./travis/texlive.sh
+- tlmgr update --self
+- tlmgr install acronym bigfoot blindtext chngcntr cmap nowidow mdframed navigator
+  needspace tablefootnote tocloft xpatch multirow bbding mathastext isomath relsize
+  niceframe-type1
+- if [ $TRAVIS_REPO_SLUG == "HughParsonage/grattex" ]; then tlmgr install tex-gyre
+  eulervm bold-extra fancyvrb realboxes manfnt lstaddons; fi
+- if [ $TRAVIS_REPO_SLUG == "HughParsonage/grattex" ]; then sudo apt-get install poppler-utils;
+  fi
+- tlmgr update --all
+- sudo apt-get update
+- sudo apt-get install texlive-bibtex-extra
+install: echo Installation step
 before_script:
-    # as somehow no biber package is available for ubuntu 12.04 via apt, let's just download it directly
-    # - wget "http://downloads.sourceforge.net/project/biblatex-biber/biblatex-biber/0.9.9/binaries/Linux/biber-linux_x86_64.tar.gz"
-    - wget http://mirrors.ctan.org/biblio/biber/binaries/Linux/biber-linux_x86_64.tar.gz
-    - tar xzf biber-linux_x86_64.tar.gz
-    - export PATH=$PATH:$PWD
-    - tlmgr update biber chngcntr
-    - Rscript do_make.R
+- wget http://mirrors.ctan.org/biblio/biber/binaries/Linux/biber-linux_x86_64.tar.gz
+- tar xzf biber-linux_x86_64.tar.gz
+- export PATH=$PATH:$PWD
+- tlmgr update biber chngcntr
+- Rscript do_make.R
+- pdflatex -interaction=nonstopmode CGT_and_neg_gearing_parent.Rnw > /dev/null
+- biber CGT_and_neg_gearing_parent
+- pdflatex -interaction=batchmode CGT_and_neg_gearing_parent.Rnw > /dev/null
+- pdflatex -interaction=batchmode CGT_and_neg_gearing_parent.Rnw > /dev/null
+deploy:
+  provider: releases
+  api_key:
+    secure: UkcaBiwMIRifmtB9mkbXGrAO5pBDNSOLKobmPE9F3iVntz7vc+IZuBP4AcSpUqswmsv1YJY0FfJ9+AkLg0b3cqnpFx4vKrnZtnyb6N+kjxlsr1LYpMqF7yd1D/YHShd1Y6ItqiIg91qeXukl++I0JkQyv7VEITBZXUUMF5Cw6MP0L5zZxsW7IsDElsUQoqihIsattR2e58nUPlEWWhdRRWfSNB45j+Qll6CIV0Hrq7WPTYPcelWTZAEXNWoT8YyCLToGeLM6f6y+azhy+Fd+udvtWP8nfuOVbhf3xLTSBm2paALC6VeQ0AJ31BgCxdZCXvq2ubPRw480qf59yDx2Mq+3ZP+xOVHbdJL00K9pmRugWdvxm2S1c+/Jm9suiWNtqLGSw7CstiNzkPEsNiUtA1jZhq1xeEvEa8CwIvC7/95CWX4PDOBmfb5ob5V4ybT4UNnoShPwUmrivpWxMgxX+YB6QdKc7Y9rz187/epkaXpntHNqOQgOK6b+bKBfxNrsSzMulqNhuQ0MXQol1hiAqkD6lccqSbILp0iDKubt50YSFb8o4EafEgLrd5hObWO6PjDnqXnKAE4i/EM6/BTH4Cu4GkL9MskOmFga9B0kyslBLIgamGk3aQztr0pl194tzEXKgno5H3aRldraf4pulVQBOuVbHjwaO8xldF9E3aw=
+  file: CGT_and_neg_gearing_parent.pdf
+  on:
+    repo: grattaninstitute/Negative_gearing

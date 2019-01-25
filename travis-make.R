@@ -26,4 +26,10 @@ packages_ <-
     "data.table", "sessioninfo")
 install.packages(packages_, repos = "https://cran.rstudio.com", dependencies = TRUE)
 
+knitr::knit("CGT_and_neg_gearing_parent.Rnw")
+
+
+
+
+
 
